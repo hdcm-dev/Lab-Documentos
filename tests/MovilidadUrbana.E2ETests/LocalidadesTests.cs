@@ -163,4 +163,44 @@ public class LocalidadesTests : PruebaE2E
         await Expect(otra.GetByTestId("fila")).ToHaveCountAsync(2);
         await Expect(otra.GetByTestId("cuerpo-tabla")).Not.ToContainTextAsync("Mercedes");
     }
+
+    [Test]
+    [Description("El filtro de provincia deja solo las localidades de esa provincia")]
+    public async Task ElFiltroDeProvinciaDejaSoloLasDeEsaProvincia()
+    {
+        await Page.GetByTestId("filtro-provincia").SelectOptionAsync("Corrientes");
+
+        await Expect(Page.GetByTestId("fila")).ToHaveCountAsync(1);
+        await Expect(Page.GetByTestId("contador")).ToHaveTextAsync("1");
+        await Expect(Page.GetByTestId("cuerpo-tabla")).ToContainTextAsync("Corrientes");
+        await Expect(Page.GetByTestId("cuerpo-tabla")).Not.ToContainTextAsync("Resistencia");
+        await Expect(Page.GetByTestId("sin-datos")).ToBeHiddenAsync();
+    }
+
+    [Test]
+    [Description("El filtro sin coincidencias muestra el mensaje de listado vacío")]
+    public async Task ElFiltroSinCoincidenciasMuestraElMensajeDeVacio()
+    {
+        // Ninguna de las dos localidades sembradas es de Mendoza.
+        await Page.GetByTestId("filtro-provincia").SelectOptionAsync("Mendoza");
+
+        await Expect(Page.GetByTestId("fila")).ToHaveCountAsync(0);
+        await Expect(Page.GetByTestId("contador")).ToHaveTextAsync("0");
+        await Expect(Page.GetByTestId("sin-datos")).ToBeVisibleAsync();
+        await Expect(Page.GetByTestId("sin-datos")).ToContainTextAsync("Mendoza");
+    }
+
+    [Test]
+    [Description("Volver al filtro vacío devuelve el listado completo")]
+    public async Task VolverAlFiltroVacioDevuelveElListadoCompleto()
+    {
+        await Page.GetByTestId("filtro-provincia").SelectOptionAsync("Chaco");
+        await Expect(Page.GetByTestId("fila")).ToHaveCountAsync(1);
+
+        await Page.GetByTestId("filtro-provincia").SelectOptionAsync(new SelectOptionValue { Value = "" });
+
+        await Expect(Page.GetByTestId("fila")).ToHaveCountAsync(2);
+        await Expect(Page.GetByTestId("contador")).ToHaveTextAsync("2");
+        await Expect(Page.GetByTestId("sin-datos")).ToBeHiddenAsync();
+    }
 }

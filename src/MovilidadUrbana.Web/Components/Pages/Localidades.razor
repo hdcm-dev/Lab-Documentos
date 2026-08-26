@@ -73,7 +73,18 @@
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span>Listado</span>
-                <span class="badge text-bg-secondary" data-testid="contador">@_localidades.Count</span>
+                <span class="badge text-bg-secondary" data-testid="contador">@Visibles.Count</span>
+            </div>
+            <div class="card-body border-bottom py-2">
+                <label for="filtroProvincia" class="form-label mb-1">Filtrar por provincia</label>
+                <select class="form-select" id="filtroProvincia"
+                        data-testid="filtro-provincia" @bind="_filtroProvincia">
+                    <option value="">Todas las provincias</option>
+                    @foreach (var provincia in Catalogos.Provincias)
+                    {
+                        <option value="@provincia">@provincia</option>
+                    }
+                </select>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-hover mb-0 align-middle" data-testid="tabla">
@@ -87,7 +98,7 @@
                         </tr>
                     </thead>
                     <tbody data-testid="cuerpo-tabla">
-                        @foreach (var localidad in _localidades)
+                        @foreach (var localidad in Visibles)
                         {
                             <tr @key="localidad.Id" data-testid="fila" data-id="@localidad.Id">
                                 <td data-testid="celda-nombre">@localidad.Nombre</td>
@@ -107,9 +118,13 @@
                     </tbody>
                 </table>
             </div>
-            @if (_localidades.Count == 0)
+            @if (Visibles.Count == 0)
             {
-                <div class="card-body" data-testid="sin-datos">No hay localidades cargadas.</div>
+                <div class="card-body" data-testid="sin-datos">
+                    @(_filtroProvincia.Length == 0
+                        ? "No hay localidades cargadas."
+                        : $"No hay localidades en {_filtroProvincia}.")
+                </div>
             }
         </div>
     </div>
@@ -143,6 +158,7 @@
 
 @code {
     private IReadOnlyList<Localidad> _localidades = [];
+    private string _filtroProvincia = string.Empty;
     private ModeloDeLocalidad _modelo = new();
     private IReadOnlyDictionary<string, string> _errores = new Dictionary<string, string>();
     private (string Mensaje, string Tipo)? _aviso;
@@ -151,6 +167,15 @@
     protected override async Task OnInitializedAsync() => await RecargarAsync();
 
     private async Task RecargarAsync() => _localidades = await Servicio.ListarAsync();
+
+    /// <summary>
+    /// Lo que la tabla muestra. El filtro no vuelve al servidor: el listado de una sesión es chico
+    /// y ya está en memoria, así que filtrar acá evita una consulta por cada cambio del desplegable.
+    /// </summary>
+    private IReadOnlyList<Localidad> Visibles =>
+        _filtroProvincia.Length == 0
+            ? _localidades
+            : _localidades.Where(item => item.Provincia == _filtroProvincia).ToList();
 
     private string? Error(string campo) => _errores.TryGetValue(campo, out var mensaje) ? mensaje : null;
 

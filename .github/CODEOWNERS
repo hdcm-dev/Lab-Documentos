@@ -1,7 +1,0 @@
-# Dueños por ruta. GitHub asigna revisor automáticamente y, con «Require review
-# from Code Owners» activo en la protección de rama, su aprobación es obligatoria.
-#
-# Son los dos lugares donde un error no se arregla con un revert: el pipeline y
-# las migraciones de datos.
-.github/workflows/   @equipo/devops
-src/**/Persistencia/ @equipo/datos

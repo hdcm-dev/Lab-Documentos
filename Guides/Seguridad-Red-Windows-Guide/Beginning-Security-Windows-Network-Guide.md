@@ -1,8 +1,8 @@
 # Guía de iniciación a la auditoría de seguridad en un servidor Windows en red
 
 **Documento:** Beginning-Security-Windows-Network-Guide.md
-**Versión:** 1.0
-**Estado:** En revisión de mesa
+**Versión:** 1.3
+**Estado:** Aprobado (mesa evaluadora, ciclos 1 a 3)
 **Fecha:** 2026-09-17
 **Audiencia:** persona sin experiencia previa en redes ni en administración de sistemas, con acceso autorizado a un servidor Windows
 **Idioma:** español
@@ -14,7 +14,7 @@
 
 Esta guía enseña a **buscar rastros de intrusión en sistemas propios o sobre los que se tiene autorización escrita**. Las técnicas de las secciones finales (§11) sirven para entender cómo actúa un atacante y así defenderse mejor. Ejecutarlas sobre sistemas ajenos, o sobre la red de una organización sin permiso formal, es ilegal en la mayoría de las jurisdicciones y puede constituir delito. Practique siempre en el laboratorio del §10.
 
-**Sobre las salidas de comandos que verá en esta guía.** No se ejecutaron en un servidor real al redactarla. Cada salida está rotulada como *ilustrativa*: reproduce la **forma** de lo que devuelve el comando y el **significado de cada columna**, para que usted reconozca lo que verá en su propio equipo. Los valores concretos (nombres, números, fechas) son de ejemplo. Cuando la guía afirma un hecho técnico (qué evento registra un borrado, qué privilegio permite limpiar un log), ese hecho está referenciado en la bibliografía (Apéndice B).
+**Sobre las salidas de comandos que verá en esta guía.** No provienen de un sistema real, sino de un **escenario testigo**: un servidor hipotético pero típico, comprometido, descrito por completo en el §2.9 y en el Anexo D. Todas las salidas de la guía se **derivan de ese único escenario** y son coherentes entre sí: la misma intrusión, las mismas cuentas, los mismos procesos, la misma línea de tiempo, vistas desde cada comando. No es una captura real, pero tampoco son valores sueltos inventados capítulo a capítulo: es un caso único y consistente, la forma en que se construye el material de entrenamiento forense. Las direcciones de red usan rangos reservados para documentación (RFC 1918 para lo interno, RFC 5737 para lo externo). Cuando la guía afirma un hecho técnico (qué evento registra un borrado, qué privilegio permite limpiar un log), ese hecho está referenciado en la bibliografía (Apéndice B).
 
 ---
 
@@ -35,6 +35,8 @@ Esta guía enseña a **buscar rastros de intrusión en sistemas propios o sobre 
 - [Apéndice A — Glosario](#apéndice-a--glosario)
 - [Apéndice B — Bibliografía](#apéndice-b--bibliografía)
 - [Apéndice C — Tabla de eventos de Windows citados](#apéndice-c--tabla-de-eventos-de-windows-citados)
+- [Apéndice D — El escenario testigo completo](#apéndice-d--el-escenario-testigo-completo)
+- [Apéndice E — Galería de logs comentados](#apéndice-e--galería-de-logs-comentados)
 
 ---
 
@@ -79,6 +81,14 @@ R. El antivirus detecta *programas maliciosos conocidos*. Un intruso que ya obtu
 
 **P. Si el atacante borra los logs, ¿no es inútil mirarlos?**
 R. No, por tres motivos que la guía desarrolla: (1) el **acto de borrar** deja su propio rastro (§5.5); (2) los logs pueden estar **copiados fuera** del equipo antes del borrado (§5.6); (3) hay evidencia que **no está en los logs** y que el atacante rara vez limpia (§8).
+
+## 1.6 Rutas de lectura sugeridas
+
+No hace falta leer todo de corrido. Según su urgencia:
+
+- **Ruta "sospecho ahora mismo":** §4 (no destruir evidencia) → §5.5 y §5.7 (detectar y exportar) → §6 → §7 → §12.2. Es el camino de una respuesta inmediata.
+- **Ruta "quiero aprender bien":** en orden, §1 → §12. Cada capítulo se apoya en el anterior.
+- **Ruta "quiero practicar":** §10 (laboratorio) primero, y desde ahí visite cada capítulo haciendo sus ejercicios.
 
 ---
 
@@ -167,8 +177,49 @@ Para confirmar que su consola tiene privilegios:
 **P. ¿Por qué el controlador de dominio merece atención especial?**
 R. Porque concentra el control de todas las identidades de la organización. Comprometer un equipo cualquiera afecta a ese equipo; comprometer el DC permite hacerse pasar por cualquier usuario, incluido el administrador, en toda la red (Metcalf, 2019). Un atacante que llega al DC puede fabricarse credenciales válidas para siempre.
 
-**P. Veo una conexión de mi servidor a `52.113.194.132`. ¿Es interna o sale a Internet?**
-R. Sale a Internet: no cae en ninguno de los rangos privados del cuadro de §2.2. Eso no la hace maliciosa por sí sola (podría ser una actualización de Windows), pero sí es candidata a revisar en el §7, mientras que una conexión a `192.168.1.5` es tráfico interno.
+**P. Veo una conexión de mi servidor a `203.0.113.14`. ¿Es interna o sale a Internet?**
+R. Sale a Internet: no cae en ninguno de los rangos privados del cuadro de §2.2. Eso no la hace maliciosa por sí sola (podría ser una actualización de Windows), pero sí es candidata a revisar en el §7, mientras que una conexión a `192.168.1.5` es tráfico interno. (De hecho, `203.0.113.14` es la dirección del atacante en el escenario de esta guía: ver §2.9.)
+
+## 2.9 El escenario testigo de esta guía
+
+Para que las salidas de comando no sean valores inventados sueltos, toda la guía sigue **un mismo caso hipotético y coherente**. Cada vez que un comando muestra una salida, esa salida es la que produciría *este* servidor. Convendría que lo lea ahora; volverá a él en cada capítulo.
+
+**La organización.** Empresa mediana, dominio `CONTOSO.LOCAL` (nombre de ejemplo, no es una empresa real).
+
+| Equipo | Rol | IP |
+|---|---|---|
+| SRV-DC01 | Controlador de dominio | 10.0.10.5 |
+| **SRV-FILE01** | Servidor de archivos — **el equipo que investigamos** | 10.0.10.20 |
+| SRV-LOG01 | Colector de eventos (recibe copias, §5.6) | 10.0.30.9 |
+| Clientes | Estaciones de trabajo | 10.0.20.0/24 |
+
+**Los vicios de administración que abren la puerta** (el enunciado pedía "una red con vicios"):
+
+1. El escritorio remoto (RDP) de SRV-FILE01 está **expuesto a Internet**.
+2. La cuenta de mesa de ayuda `soporte` tiene **administrador local** sobre el servidor y **contraseña débil**.
+3. No hay segundo factor (MFA) en el acceso remoto.
+
+**Qué pasó (madrugada del 15/09/2026).** Un atacante adivina la contraseña de `soporte` por RDP desde `203.0.113.14`, entra, crea una cuenta administradora oculta `svc_update`, deja un programa `C:\Users\Public\update.exe` como servicio y como tarea programada para volver siempre, **borra el registro de seguridad** con `svc_update` a las 03:40, y establece un canal de salida a `203.0.113.14:443` por el que se lleva datos.
+
+```mermaid
+graph LR
+    A[03:14 entra por RDP<br/>como 'soporte'] --> B[03:16 crea admin oculta<br/>'svc_update']
+    B --> C[03:20 deja update.exe<br/>en C:\Users\Public]
+    C --> D[03:22 servicio +<br/>03:23 tarea programada]
+    D --> E[03:40 borra el<br/>registro de seguridad]
+    E --> F[C2 y exfiltración<br/>a 203.0.113.14:443]
+```
+
+**Cuentas que aparecerán en las salidas:**
+
+| Cuenta | Qué es |
+|---|---|
+| `CONTOSO\flopez` | Administradora legítima (trabaja de día) |
+| `CONTOSO\soporte` | Cuenta legítima **comprometida** (por ella entró el atacante) |
+| `SRV-FILE01\svc_update` | Cuenta **creada por el atacante** (puerta trasera) |
+| `update.exe` (PID 9310) | Programa del atacante, en `C:\Users\Public` |
+
+El Anexo D reúne la línea de tiempo completa y la lista de qué muestra cada comando. A lo largo de la guía verá aparecer, una por una, todas estas piezas; el §12.1 las cruza para cerrar el caso.
 
 ---
 
@@ -250,6 +301,8 @@ Cuando usted actúa sobre un sistema comprometido, sus propias acciones dejan ra
 
 **Regla.** Ante sospecha de intrusión *activa*, primero se **observa y se preserva**; recién cuando se entiende el alcance se **actúa**, y se actúa todo junto, en una ventana coordinada (§12).
 
+**Supuesto de acceso.** Esta guía asume que usted investiga con una cuenta de administrador **legítima** sobre un equipo al que tiene acceso autorizado. Si el atacante ya cambió las credenciales de administrador, o el equipo quedó aislado de la red, el acceso mismo se vuelve parte del problema: en ese caso, no fuerce el ingreso y escale a un especialista (§12.3).
+
 ## 4.2 Orden de volatilidad
 
 **Definición — Volatilidad.** Qué tan rápido desaparece una evidencia. Lo más volátil se recolecta primero. Este orden proviene de la práctica forense estándar (Brezinski & Killalea, 2002, RFC 3227).
@@ -282,6 +335,15 @@ PowerShell hace la comparación por usted con `Compare-Object` (se muestra en §
 
 Todo lo que recolecte, guárdelo **fuera del equipo investigado**: un pendrive, una carpeta de red, otro equipo. Y guarde también la *fecha y hora* de cada recolección.
 
+**Paso previo (una sola vez).** Conecte su unidad externa y anote su letra (aquí se usa `E:`). Cree la carpeta de evidencia antes de exportar nada; si no existe, los comandos de exportación fallarán con "ruta no encontrada":
+
+```powershell
+# Crear la carpeta de evidencia en la unidad externa (ajuste E: a su unidad)
+New-Item -ItemType Directory -Path E:\evidencia -Force
+```
+
+**Qué se espera ver:** la confirmación de la carpeta creada (o, si ya existía, sus datos). A partir de aquí, todos los comandos que escriben en `E:\evidencia` funcionarán.
+
 ```powershell
 # Deja constancia de quién, dónde y cuándo se corrió cada cosa.
 # Todo lo que escriba después en esta consola queda copiado a un archivo.
@@ -307,7 +369,24 @@ Un triage mínimo para un principiante, en orden de volatilidad, es exactamente 
 
 El §10.5 arma este triage como un único script que usted podrá correr en el laboratorio.
 
-## 4.6 Preguntas guía
+## 4.6 Sistema comprometido: qué mirar en los primeros 10 minutos
+
+Cuando la sospecha es fuerte y no sabe por dónde empezar, siga esta lista en orden. Está pensada para responder rápido tres preguntas: **¿sigue el atacante adentro? ¿qué tocó? ¿alcanzó a borrar rastros?** Cada paso enlaza al capítulo donde se explica.
+
+| # | Mire… | Con… | Qué busca | Sección |
+|---|---|---|---|---|
+| 1 | Sesiones abiertas ahora | `query user` | Una sesión (sobre todo RDP) que no debería estar | §6.6 |
+| 2 | Conexiones salientes | `Get-NetTCPConnection` | Un proceso hablando con una IP externa desconocida | §7.2 |
+| 3 | Procesos y su ruta | `Get-Process` | Algo corriendo desde `C:\Users\Public`, `Temp`, `ProgramData` | §6.1 |
+| 4 | **¿Borraron el log?** | evento **1102/104** | El rastro del borrado (y quién lo hizo) | §5.5 |
+| 5 | **¿El borrado fue intencional?** | señales de §5.5.3 | Distinguir vaciado deliberado de causa legítima | §5.5.3 |
+| 6 | Cuentas de administrador | `Get-LocalGroupMember` | Una cuenta que nadie reconoce (una puerta trasera) | §9.2 |
+| 7 | Servicios y tareas nuevas | `Get-CimInstance Win32_Service`, `Get-ScheduledTask` | Persistencia recién creada | §6.4, §6.5 |
+| 8 | Exportar todo a un pendrive | `wevtutil epl` | Preservar antes de que borren más | §5.7 |
+
+**Regla de oro mientras hace esto (repetida del §4.1):** observe y preserve; **no** reinicie, **no** cambie contraseñas y **no** bloquee al atacante todavía. Primero entender; contener viene después y coordinado (§12.2). Si ve un daño irreversible **en curso** (archivos cifrándose), esa es la única excepción: aísle el equipo de la red ya.
+
+## 4.7 Preguntas guía
 
 **P. Encontré lo que parece un proceso malicioso conectado a una IP extraña. Mi primer impulso es apagar el servidor para "cortar el ataque". ¿Está bien?**
 R. Casi nunca. Apagar destruye la memoria (§4.2), que es la evidencia más valiosa y la más volátil: ahí pueden estar las credenciales robadas y el programa del atacante que solo vive en RAM. Además, un apagado abrupto puede disparar mecanismos de daño. Lo correcto es preservar primero (capturar memoria y triage), entender el alcance, y recién entonces contener de forma coordinada (§12). La excepción es un daño en curso e irreversible, como un cifrado masivo de archivos: ahí sí se aísla de inmediato.
@@ -349,17 +428,19 @@ El comando central es `Get-WinEvent`.
 Get-WinEvent -LogName Security -MaxEvents 20 | Format-Table TimeCreated, Id, Message -AutoSize -Wrap
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (escenario testigo — importante: esta salida es del *colector* SRV-LOG01):**
 
 ```
 TimeCreated           Id   Message
 -----------           --   -------
-2026-09-17 03:14:22  4624  Se inició una sesión correctamente. ...
-2026-09-17 03:14:20  4672  Se asignaron privilegios especiales a un nuevo inicio de sesión. ...
-2026-09-17 03:10:05  4720  Se creó una cuenta de usuario. ...
+2026-09-15 03:16:40  4732  Se agregó un miembro a un grupo local con seguridad habilitada. Miembro: svc_update ...
+2026-09-15 03:16:05  4720  Se creó una cuenta de usuario. Nueva cuenta: svc_update ...
+2026-09-15 03:14:22  4624  Se inició una sesión correctamente. Cuenta: soporte  Tipo: 10 ...
 ```
 
-**Cómo interpretarlo:** cada fila es un evento con su hora exacta, su número (Id) y una descripción. La hora `03:14` y el evento `4720` (cuenta de usuario creada) a esa hora ya son dos indicios a cruzar.
+**Cómo interpretarlo:** cada fila es un evento con su hora, su número (Id) y una descripción. La secuencia cuenta una historia: a las 03:14 del 15/09 alguien inició sesión como `soporte` (tipo 10 = escritorio remoto), y dos minutos después se creó la cuenta `svc_update` y se la hizo administradora. Tres indicios encadenados.
+
+> **Por qué "del colector".** Si usted corre este mismo comando en **SRV-FILE01** (el equipo comprometido), **no** verá estas tres filas: el atacante borró el registro de seguridad local a las 03:40 (§5.5), así que allí los eventos previos a esa hora ya no están. Sobreviven en la copia del **colector WEF** (§5.6), que los recibió cuando ocurrieron. Esta diferencia —el local vacío, el colector completo— es, en una sola pantalla, la razón de ser de toda la guía.
 
 ## 5.4 Los eventos que debe conocer
 
@@ -383,6 +464,17 @@ No hace falta memorizar cientos. Con esta tabla cubre la mayoría de los rastros
 | **4616** | Security | Se cambió la hora del sistema | Ensuciar la línea de tiempo |
 | **4104** | PowerShell/Operational | Bloque de script de PowerShell ejecutado | El "qué se ejecutó" (§6.7) |
 
+**Leer un fallo de inicio de sesión (4625) a fondo.** El 4625 trae un campo **Subestado** (`Sub Status`) que dice *por qué* falló, y esa diferencia cambia el diagnóstico:
+
+| Subestado | Significado | Qué implica |
+|---|---|---|
+| `0xC0000064` | El usuario **no existe** | Están probando nombres al azar (*password spraying* a ciegas) |
+| `0xC000006A` | El usuario existe pero **la contraseña es incorrecta** | Están adivinando la clave de una **cuenta real** — más peligroso |
+| `0xC0000234` | Cuenta **bloqueada** | Las defensas reaccionaron; el ataque siguió intentando |
+| `0xC0000072` | Cuenta **deshabilitada** | Intentan una cuenta vieja que debería estar cerrada |
+
+En el escenario, la ráfaga de 4625 contra `soporte` trae `0xC000006A`: el atacante sabe que `soporte` existe y le adivina la contraseña. Una ráfaga con `0xC000006A` sobre **una** cuenta es fuerza bruta dirigida; muchos `0xC0000064` con nombres distintos es spraying. Leer el subestado le dice cuál de los dos enfrenta.
+
 ### 5.4.1 Anatomía de un inicio de sesión (4624)
 
 El evento 4624 trae un campo clave, el **Logon Type** (tipo de inicio de sesión), que dice *cómo* entró el usuario:
@@ -402,12 +494,12 @@ Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4624; StartTime=(Get-Date
   Format-Table TimeCreated, Message -Wrap
 ```
 
-**Qué se espera ver:** cero, una o varias filas, cada una con la hora y el detalle de una conexión de escritorio remoto.
-**Cómo interpretarlo:** anote la IP de origen que aparece en el mensaje ("Dirección de red de origen"). Si es una IP que no reconoce, o de fuera de la red (compare con §2.2), es un indicio serio para cruzar con lo que hizo esa sesión después.
+**Qué se espera ver (escenario testigo, consultado en el colector):** una fila del 15/09 03:14:22 con la cuenta `soporte` y, en el detalle, "Dirección de red de origen: 203.0.113.14".
+**Cómo interpretarlo:** anote la IP de origen que aparece en el mensaje ("Dirección de red de origen"). Aquí es `203.0.113.14`, una dirección **externa** (no cae en los rangos privados de §2.2) desde la que nadie de la empresa debería iniciar sesión por RDP: indicio serio, que se cruza con todo lo que esa sesión hizo después. (En SRV-FILE01 esta consulta no devuelve nada por el borrado de las 03:40; por eso se consulta el colector.)
 
 ## 5.5 Detectar el borrado: el rastro que el atacante no puede evitar del todo
 
-Esta es la respuesta directa a "están borrando los logs".
+Esta es la respuesta directa a "están borrando los logs". Para ver cómo lucen estos eventos renderizados campo por campo, con qué leer en cada uno, consulte el **Anexo E** (galería de logs comentados).
 
 ```powershell
 # requiere administrador
@@ -418,36 +510,66 @@ Get-WinEvent -FilterHashtable @{LogName='System'; Id=104} -ErrorAction SilentlyC
   Format-Table TimeCreated, Id, Message -Wrap
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (escenario testigo, ejecutado en SRV-FILE01):**
 
 ```
 TimeCreated           Id   Message
 -----------           --   -------
-2026-09-17 03:20:11  1102  El registro de auditoría se borró. Sujeto: Cuenta: jperez ...
+2026-09-15 03:40:11  1102  El registro de auditoría se borró. Sujeto: Cuenta: svc_update ...
 ```
 
-**Cómo interpretarlo:** el evento 1102 dice **quién** borró el log y **cuándo**. Un 1102 fuera de una tarea de mantenimiento planificada es una de las señales más fuertes que existen. Y note la trampa: el propio 1102 puede haber sido borrado *después*. Por eso el siguiente paso es cruzar con la numeración.
+**Cómo interpretarlo:** el evento 1102 dice **quién** borró el log y **cuándo**. Aquí lo borró `svc_update` a las 03:40 del 15/09 — y `svc_update` es una cuenta que el administrador legítimo **no reconoce**: primer eslabón del caso. Un 1102 fuera de una tarea de mantenimiento planificada es una de las señales más fuertes que existen. Note además la consecuencia: como fue un borrado **total**, los eventos *anteriores* a las 03:40 (el inicio de sesión del atacante, la creación de la cuenta) ya no están en este log local; hay que ir a buscarlos al colector (§5.6). Y la trampa: el propio 1102 podría haber sido borrado *después*; por eso el siguiente paso es mirar la numeración.
 
-### 5.5.1 La numeración que delata borrados parciales
+### 5.5.1 La numeración: dos formas de borrado que se ven distinto
 
-**Definición — RecordId.** Cada evento tiene un número de serie correlativo (`RecordId`) que solo crece. Un atacante sofisticado no vacía todo el log (eso deja el 1102): borra *eventos individuales*. Eso deja un **salto en la numeración** sin un 1102 que lo explique.
+**Definición — RecordId.** Cada evento tiene un número de serie correlativo (`RecordId`) que solo crece dentro de un mismo registro. Sirve para detectar manipulación, y hay que distinguir dos casos:
+
+- **Borrado total** (el del escenario): al vaciar el registro completo, el `RecordId` **se reinicia** y vuelve a empezar por números bajos. Un registro de seguridad con `RecordId` bajos y un 1102 como primer evento es la firma de un borrado total reciente.
+- **Borrado parcial**: un atacante más fino borra *eventos individuales* sin vaciar todo (así evita dejar el 1102). Eso deja un **salto** en la numeración: …1002, 1003, **1250**, 1251… sin un 1102 ni un reinicio que lo expliquen.
 
 ```powershell
 # requiere administrador
-# Muestra los números de serie recientes. Un salto grande sin un 1102 es sospechoso.
+# Muestra los números de serie. Reinicio a números bajos = borrado total.
+# Salto en el medio sin 1102 = posible borrado parcial.
 Get-WinEvent -LogName Security -MaxEvents 200 |
   Select-Object RecordId, TimeCreated, Id |
   Sort-Object RecordId |
   Format-Table -AutoSize
 ```
 
-**Qué se espera ver:** una columna `RecordId` que aumenta de a uno (…1001, 1002, 1003…).
-**Cómo interpretarlo:** si ve …1002, 1003, **1250**, 1251… con un salto grande y sin un evento 1102/104 en el medio ni un reinicio que lo justifique, alguien pudo haber extraído eventos del registro. Es un indicio de manipulación fina.
+**Qué se espera ver (escenario testigo):** los `RecordId` arrancan en números bajos (el log se reinició a las 03:40) y el primero de todos corresponde al evento 1102.
+**Cómo interpretarlo:** un `RecordId` que empieza cerca de 1 junto a un 1102 confirma el borrado total del escenario. Si en cambio, en otro caso, viera la numeración subir normalmente pero con un salto grande sin 1102, sospeche un borrado parcial (manipulación fina).
 
 ### 5.5.2 Otras señales de manipulación
 
 - **4719** (cambió la política de auditoría) o **1100** (se detuvo el servicio de eventos) *justo antes* de un período sin registros: el atacante apagó la grabación, actuó y la volvió a encender.
 - **4616** (cambio de hora): un salto de hora ensucia la línea de tiempo para que los eventos parezcan estar en otro momento. Verifíquelo cruzando con fuentes externas (§7).
+
+### 5.5.3 Cómo saber que el borrado fue intencional
+
+Un log vacío no siempre es un ataque. Antes de declarar "me borraron los logos a propósito", hay que separar la **acción deliberada** de la **causa legítima**. La clave es entender qué significa cada cosa.
+
+**Punto de partida: el 1102 y el 104 son acciones explícitas.** Windows **no** genera estos eventos por accidente. Un 1102 (registro de seguridad) o un 104 (otro registro) se producen **únicamente** cuando alguien ejecuta la orden de *vaciar* ese registro —desde el Visor de eventos, con `wevtutil cl`, o por programa—. No aparecen porque el disco se llene, ni porque el log rote por tamaño, ni por un reinicio. Por eso, la sola presencia de un 1102/104 **ya es** una acción intencional de borrado: la única pregunta que queda es si esa acción fue legítima (un administrador en una tarea planificada) o maliciosa.
+
+**Señales de que ese vaciado fue malicioso, no de mantenimiento:**
+
+| Señal | Por qué apunta a intención maliciosa |
+|---|---|
+| Lo ejecutó una cuenta **desconocida** o inesperada | En el escenario, el 1102 lo hizo `svc_update`, una cuenta creada por el atacante 24 minutos antes |
+| **Horario** fuera de ventana de mantenimiento (madrugada, fin de semana) | 03:40 no es horario de un administrador trabajando |
+| **Coincide en el tiempo** con otra actividad sospechosa | El 1102 llega justo después de crear la puerta trasera y la persistencia |
+| Se borran **varios registros a la vez** (Security *y* System) | El mantenimiento no vacía todo junto; el encubrimiento sí |
+| Va **precedido de 4719 o 1100** (auditoría apagada / servicio detenido) | Secuencia clásica: apagar la grabación → actuar → borrar |
+| Va **acompañado de 4616** (cambio de hora) | Doble manipulación de la evidencia temporal |
+| Nadie del equipo **reconoce ni registró** ese borrado | No hay ticket, no hay tarea, no hay responsable |
+
+**Cuando NO hay 1102 pero el log igual está vacío o corto.** Aquí hay que descartar causas legítimas antes de gritar "borrado":
+
+- **Rotación por tamaño/retención**: si el log llegó a su tamaño máximo, Windows **sobrescribe** los eventos más viejos. Esto **no** genera 1102 y es normal; se reconoce porque el evento más antiguo que queda es reciente pero la numeración (`RecordId`) es **alta y continua** (no se reinició).
+- **Reinstalación o equipo nuevo**: un servidor recién montado tiene pocos eventos, legítimamente.
+- **Borrado parcial (malicioso)**: si en cambio la numeración **salta** sin 1102 (§5.5.1), o el log es sospechosamente corto sin que la retención lo explique, ahí sí hay manipulación fina.
+
+**La regla práctica.** Intencionalidad maliciosa = (hay un 1102/104 **o** un salto/reinicio de numeración no explicado por retención) **y** el contexto es hostil (cuenta desconocida, horario raro, coincide con otra actividad, nadie lo reconoce). Un 1102 solo ya prueba que *alguien vació el log a propósito*; el contexto decide si ese alguien era el enemigo. Ante la duda, trátelo como incidente y preserve: es más barato investigar de más que perder la evidencia.
 
 ## 5.6 La defensa de fondo: sacar los logs del equipo
 
@@ -503,7 +625,7 @@ El registro de eventos cuenta lo que *pasó*. Este capítulo mira lo que *está 
 Get-Process | Select-Object Id, ProcessName, Path | Sort-Object ProcessName | Format-Table -AutoSize
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (escenario testigo, en SRV-FILE01):**
 
 ```
 Id    ProcessName   Path
@@ -573,8 +695,15 @@ Get-CimInstance Win32_Service |
   Select-Object Name, State, StartMode, PathName | Format-Table -AutoSize -Wrap
 ```
 
-**Qué se espera ver:** los servicios de terceros (antivirus, drivers) y, ojalá, nada más.
-**Cómo interpretarlo:** un servicio con nombre genérico o aleatorio, que arranca automáticamente (`StartMode = Auto`) y apunta a un ejecutable en `Temp`, `Public` o `ProgramData`, es persistencia (§3.2). Cruce con el evento **7045** (§5.4): dice cuándo se instaló y quién.
+**Qué se espera ver (escenario testigo, en SRV-FILE01):**
+
+```
+Name          State    StartMode  PathName
+----          -----    ---------  --------
+WinDefendUpd  Running  Auto       C:\Users\Public\update.exe
+```
+
+**Cómo interpretarlo:** `WinDefendUpd` imita el nombre del antivirus de Windows (Windows Defender), pero un servicio legítimo de Defender **nunca** correría desde `C:\Users\Public`. Arranca solo (`Auto`) y apunta al mismo `update.exe` (PID 9310) que ya vimos conectado a Internet (§7.2): es el mecanismo de persistencia del atacante. Cruce con el evento **7045** (§5.4), que en el colector muestra su instalación el 15/09 a las 03:22.
 
 ## 6.5 Tareas programadas: la otra persistencia
 
@@ -590,8 +719,16 @@ Get-ScheduledTask | Where-Object State -ne 'Disabled' |
   } | Format-Table -AutoSize -Wrap
 ```
 
-**Qué se espera ver:** muchas tareas de mantenimiento de Microsoft (rutas que empiezan con `\Microsoft\Windows\`) y las de su software.
-**Cómo interpretarlo:** una tarea fuera de `\Microsoft\Windows\`, con nombre raro, que ejecuta `powershell`, `cmd` o un archivo de una carpeta de usuario, especialmente si se dispara "al iniciar sesión" o "cada X minutos", es un mecanismo para volver a ejecutarse. Cruce con el evento **4698**.
+**Qué se espera ver (escenario testigo, filas relevantes):**
+
+```
+Nombre          Ruta                    Accion
+------          ----                    ------
+SystemUpdate    \                       powershell.exe -w hidden -enc SQBFAFgA...
+...             \Microsoft\Windows\...   (muchas tareas legítimas de Microsoft)
+```
+
+**Cómo interpretarlo:** la tarea `\SystemUpdate` está en la raíz (`\`), **fuera** de `\Microsoft\Windows\` donde viven las de Microsoft, y ejecuta `powershell.exe` con `-w hidden` (ventana oculta) y `-enc` (comando codificado para que usted no lo lea): tres señales de ocultamiento. Es la segunda vía de persistencia del atacante (además del servicio): asegura que, aunque usted borre `update.exe`, vuelva a ejecutarse. Cruce con el evento **4698** (creación de tarea), que el colector fecha el 15/09 a las 03:23.
 
 ## 6.6 Sesiones y usuarios activos
 
@@ -600,15 +737,15 @@ Get-ScheduledTask | Where-Object State -ne 'Disabled' |
 query user
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (escenario testigo, en SRV-FILE01):**
 
 ```
  USERNAME    SESSIONNAME   ID  STATE   IDLE TIME  LOGON TIME
- admin       console        1  Active  .          17/09/2026 08:30
- jperez      rdp-tcp#2      3  Active  2:14       17/09/2026 03:14
+ flopez      console        1  Active  .          17/09/2026 08:30
+ soporte     rdp-tcp#2      3  Active  2:14       15/09/2026 03:14
 ```
 
-**Cómo interpretarlo:** una sesión por escritorio remoto (`rdp-tcp`) de un usuario a las 03:14, o de un usuario que no debería estar, se cruza directamente con los eventos 4624 tipo 10 (§5.4.1). Complete con las cuentas locales y de administrador:
+**Cómo interpretarlo:** la sesión de `flopez` en `console` a las 08:30 de hoy es la administradora legítima trabajando. La de `soporte` por escritorio remoto (`rdp-tcp`), iniciada a las **03:14 del 15/09** y todavía activa dos días después, es el atacante: cuenta de mesa de ayuda conectada de madrugada por RDP y sin cerrar sesión. Se cruza directamente con el evento 4624 tipo 10 desde `203.0.113.14` (§5.4.1). Complete con las cuentas locales y de administrador:
 
 ```powershell
 # Usuarios locales y miembros del grupo Administradores
@@ -616,7 +753,17 @@ Get-LocalUser | Select-Object Name, Enabled, LastLogon | Format-Table -AutoSize
 Get-LocalGroupMember -Group "Administradores" 2>$null; Get-LocalGroupMember -Group "Administrators" 2>$null
 ```
 
-**Cómo interpretarlo:** una cuenta de administrador que usted no reconoce, o una cuenta habilitada que debería estar deshabilitada (como la cuenta invitado), es un IoC. Cruce las altas con los eventos 4720/4732 (§5.4).
+**Qué se espera ver (escenario testigo — miembros de Administradores en SRV-FILE01):**
+
+```
+Name                    ObjectClass  PrincipalSource
+----                    -----------  ---------------
+SRV-FILE01\Administrador User        Local
+CONTOSO\Administradores del dominio  Group  ActiveDirectory
+SRV-FILE01\svc_update    User        Local
+```
+
+**Cómo interpretarlo:** las dos primeras entradas son esperables (el administrador local y el grupo de administradores del dominio). La tercera, `svc_update`, es una cuenta **local** que nadie del equipo de sistemas creó: es la puerta trasera del atacante, la misma que aparece como sujeto del borrado del log (§5.5). Una cuenta de administrador que usted no reconoce, o una cuenta habilitada que debería estar deshabilitada (como la cuenta invitado), es un IoC. Cruce las altas con los eventos 4720/4732 (§5.4), que el colector fecha el 15/09 a las 03:16.
 
 ## 6.7 Qué se ejecutó en PowerShell
 
@@ -674,16 +821,16 @@ Get-NetTCPConnection -State Established |
   } | Format-Table -AutoSize -Wrap
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (escenario testigo, en SRV-FILE01):**
 
 ```
 Destino                PID   Proceso    Ruta
 -------                ---   -------    ----
-40.126.32.68:443       7104  svchost    C:\Windows\System32\svchost.exe
-185.230.62.14:443      9310  update     C:\Users\Public\update.exe
+20.190.160.14:443      7104  svchost    C:\Windows\System32\svchost.exe
+203.0.113.14:443       9310  update     C:\Users\Public\update.exe
 ```
 
-**Cómo interpretarlo:** la primera línea (svchost desde System32 a un `:443` de Microsoft) es plausiblemente una actualización. La segunda (`update.exe` desde `C:\Users\Public`) reúne tres indicios: proceso en carpeta de usuario, nombre genérico, conexión saliente a una IP desconocida. Es su principal sospechoso. El filtro `Where-Object` descarta las conexiones internas (§2.2) para que se vea lo que sale a Internet.
+**Cómo interpretarlo:** la primera línea (svchost desde System32 a un `:443` de un rango de Microsoft) es plausiblemente una actualización de Windows. La segunda es el atacante: `update.exe`, PID **9310**, corriendo desde `C:\Users\Public` y conectado a `203.0.113.14:443` —la misma IP externa desde la que entró por RDP (§5.4.1)—. Reúne tres indicios de una sola vez: proceso en carpeta de usuario, nombre genérico que imita una actualización, y conexión saliente a una dirección desconocida. Es su principal sospechoso, y el PID 9310 lo enlaza con el proceso de §6.1, el servicio de §6.4 y la tarea de §6.5. El filtro `Where-Object` descarta las conexiones internas (§2.2) para que se vea lo que sale a Internet.
 
 **Equivalente clásico** (funciona también en CMD, útil si PowerShell está restringido):
 
@@ -756,7 +903,7 @@ Este capítulo es la segunda gran respuesta a "están borrando los logs". Window
 
 ## 8.2 Prefetch: qué se ejecutó
 
-**Definición — Prefetch.** Windows guarda en `C:\Windows\Prefetch` un archivo `.pf` por cada programa que se ejecuta, para acelerar su próximo arranque. Como efecto colateral, es una lista de qué se ejecutó y cuándo.
+**Definición — Prefetch.** Windows guarda en `C:\Windows\Prefetch` un archivo `.pf` por cada programa que se ejecuta, para acelerar su próximo arranque. Como efecto colateral, es una lista de qué se ejecutó y cuándo. Este comportamiento y su valor forense están documentados en las herramientas de análisis de referencia (Zimmerman, 2023).
 
 ```powershell
 # requiere administrador
@@ -766,14 +913,24 @@ Get-ChildItem C:\Windows\Prefetch\*.pf -ErrorAction SilentlyContinue |
   Select-Object Name, LastWriteTime -First 40 | Format-Table -AutoSize
 ```
 
-**Qué se espera ver:** una lista de archivos como `UPDATE.EXE-1A2B3C4D.pf` con su fecha.
-**Cómo interpretarlo:** el nombre revela ejecutables que quizás ya no estén en el disco (el atacante borró el `.exe` pero no su Prefetch). Un `.pf` de un programa que no reconoce, o de uno que "no debería" haber corrido, es un rastro de ejecución. La fecha lo ubica en la línea de tiempo. (Nota: el Prefetch puede estar deshabilitado en algunos servidores.)
+**Qué se espera ver (escenario testigo, filas relevantes):**
+
+```
+Name                       LastWriteTime
+----                       -------------
+UPDATE.EXE-9F3A1C7D.pf     15/09/2026 03:20:41
+POWERSHELL.EXE-AB12CD34.pf 15/09/2026 03:23:02
+```
+
+**Cómo interpretarlo:** el `.pf` de `UPDATE.EXE` prueba que ese programa **se ejecutó** el 15/09 a las 03:20, aunque el atacante haya borrado los logs: el Prefetch no es un log de auditoría y sobrevivió. La fecha 03:20 encaja con la línea de tiempo (§2.9): fue justo después de crear la cuenta y antes de instalar el servicio. Aun si el atacante hubiera borrado `update.exe` del disco, este rastro seguiría delatando su ejecución. Un `.pf` de un programa que no reconoce es un rastro de ejecución; la fecha lo ubica en la línea de tiempo. (Nota: el Prefetch puede estar deshabilitado en algunos servidores.)
 
 ## 8.3 SRUM: cuántos datos se llevaron
 
 **Definición — SRUM (System Resource Usage Monitor).** Base de datos donde Windows anota, por programa y por día, cuánta red y recursos consumió. Es una de las pocas fuentes que responde "¿cuántos datos salieron y cuándo?" *hacia atrás en el tiempo*, útil para estimar una exfiltración (§3.2).
 
-SRUM no se lee con un comando simple: se necesita una herramienta forense (por ejemplo `SrumECmd` de Eric Zimmerman, §8.5). Lo importante ahora es que **usted sepa que ese dato existe**: aunque borren los logs, el volumen de datos que envió cada programa quedó anotado aparte.
+SRUM no se lee con un comando simple: se necesita una herramienta forense (por ejemplo `SrumECmd` de Eric Zimmerman, §8.5; Zimmerman, 2023). Lo importante ahora es que **usted sepa que ese dato existe**: aunque borren los logs, el volumen de datos que envió cada programa quedó anotado aparte.
+
+**En el escenario testigo**, al procesar el SRUM de SRV-FILE01 aparecería que `update.exe` envió unos **2,3 GB** hacia el exterior entre el 15 y el 17 de septiembre, mientras que un programa así no debería enviar prácticamente nada. Ese volumen anómalo, atribuido a un proceso que ya identificamos como malicioso (§6, §7), es la evidencia de la **exfiltración**: no solo entraron, se llevaron datos.
 
 ## 8.4 El sistema de archivos: $MFT y el journal
 
@@ -781,7 +938,7 @@ SRUM no se lee con un comando simple: se necesita una herramienta forense (por e
 
 **Definición — USN Journal.** Diario de cambios del disco: anota creaciones, modificaciones y borrados de archivos. Permite reconstruir qué archivos tocó el atacante y cuáles borró.
 
-Estos también requieren herramientas forenses (`MFTECmd`, §8.5). El concepto que debe retener: **el disco recuerda los archivos borrados por un tiempo**; borrar un archivo no lo hace desaparecer de inmediato del MFT ni del journal.
+Estos también requieren herramientas forenses (`MFTECmd`, §8.5; Zimmerman, 2023). El concepto que debe retener: **el disco recuerda los archivos borrados por un tiempo**; borrar un archivo no lo hace desaparecer de inmediato del MFT ni del journal.
 
 ## 8.5 Recolectar todo esto sin ser forense: KAPE y Velociraptor
 
@@ -820,8 +977,10 @@ Recordando §2.5: quien controla el controlador de dominio (DC) controla a todos
 
 El primer chequeo en un dominio es **quién es administrador**. Los grupos más sensibles: *Domain Admins*, *Enterprise Admins*, *Administrators*.
 
+> **Antes de correr los comandos de este capítulo.** Los comandos `Get-AD*` pertenecen al módulo de administración de Active Directory (parte de las herramientas RSAT), que suele estar instalado en los controladores de dominio pero **no** en un servidor común. Si un comando `Get-AD*` da error de "término no reconocido", use el equivalente clásico con `net` que se indica al pie de cada bloque, o ejecútelo desde el controlador de dominio.
+
 ```powershell
-# En un controlador de dominio o equipo con las herramientas de AD instaladas
+# En un controlador de dominio o equipo con las herramientas de AD instaladas (módulo RSAT)
 # Miembros de los grupos más poderosos del dominio
 Get-ADGroupMember "Domain Admins"  | Select-Object name, objectClass
 Get-ADGroupMember "Enterprise Admins" | Select-Object name, objectClass
@@ -855,6 +1014,8 @@ No necesita dominar estas técnicas; necesita reconocer su nombre y su rastro, p
 | **Golden Ticket** | Fabricar un "pase" universal falso tras robar una clave maestra del dominio | Muy difícil de ver; se remedia rotando la cuenta `krbtgt` dos veces |
 
 **Cómo interpretarlo:** si en el registro aparece un 4662 con permisos de replicación desde una máquina común, o una ráfaga de 4769, no intente resolverlo solo: documente, preserve (§4) y escale a un especialista. Reconocer el nombre del ataque es ya un gran paso.
+
+> **Advertencia sobre la ausencia de estos eventos.** Los eventos 4662 (acceso a objetos de AD) y 4769 (vales Kerberos) **solo se registran si la auditoría correspondiente está activada** en las políticas del dominio, y no lo está por defecto en todos los entornos. Por eso, *no ver* estos eventos **no prueba** que el ataque no ocurrió: puede significar simplemente que no se estaban registrando. Es un caso más del principio del §7.6: la ausencia en un log no descarta, solo la presencia confirma. Activar esta auditoría es una de las medidas de endurecimiento del §12.4.
 
 ## 9.5 Herramientas de auditoría del dominio
 
@@ -1040,11 +1201,11 @@ Se nombran las estándar, con su propósito. En el laboratorio se instalan en la
 El ejercicio más seguro y más instructivo para empezar. Desde la VM de Kali (o desde cualquier equipo con Nmap), contra la **VM del servidor en el laboratorio**:
 
 ```bash
-# EN EL LABORATORIO, contra su propia VM (aquí 10.10.10.5)
-nmap -sV 10.10.10.5
+# EN EL LABORATORIO, contra su propia VM que reproduce SRV-FILE01 (aquí 10.0.10.20)
+nmap -sV 10.0.10.20
 ```
 
-**Qué se espera ver (ilustrativo):**
+**Qué se espera ver (VM de laboratorio que reproduce el escenario testigo):**
 
 ```
 PORT     STATE SERVICE       VERSION
@@ -1053,7 +1214,7 @@ PORT     STATE SERVICE       VERSION
 3389/tcp open  ms-wbt-server Microsoft Terminal Services
 ```
 
-**Cómo interpretarlo desde la defensa:** cada puerto abierto es una puerta que alguien podría tocar. Ver el 3389 (escritorio remoto) abierto le dice que su servidor acepta conexiones RDP: si además está expuesto a Internet, es exactamente el punto de entrada del §3.2. El pentest le muestra su servidor *como lo ve el atacante*, y eso le indica qué cerrar.
+**Cómo interpretarlo desde la defensa:** cada puerto abierto es una puerta que alguien podría tocar. Ver el **3389** (escritorio remoto) abierto es, en el escenario testigo, exactamente el vicio de administración que abrió el ataque (§2.9): RDP alcanzable. El pentest le muestra su servidor *como lo ve el atacante* —antes de comprometerlo— y eso le indica qué cerrar. Cierre ese círculo: el §11.5 le propone lanzar el ataque contra esta misma VM y buscar su rastro con los comandos de §5–§7.
 
 **El lado defensivo del mismo ejercicio:** mientras Nmap escanea, corra en la VM servidor los comandos del §7 y del §5. Verá aparecer la ráfaga de conexiones y, según la configuración, los eventos correspondientes. Acaba de observar un ataque y su rastro **al mismo tiempo**. Ese es el objetivo pedagógico del capítulo.
 
@@ -1092,6 +1253,16 @@ Encontrar indicios es la mitad del trabajo. La otra mitad es actuar sin empeorar
 ## 12.1 Confirmar antes de declarar
 
 Un solo IoC casi nunca es prueba (§3.5). Antes de declarar un incidente, cruce al menos dos o tres indicios coherentes en el tiempo: un inicio de sesión anómalo (§5) **que coincide con** un proceso nuevo en ruta rara (§6) **que abre** una conexión saliente desconocida (§7) **seguido de** un borrado de log (§5.5). Cuando la línea de tiempo cuenta una historia, tiene un incidente.
+
+**El escenario testigo cerrado.** Así se cruzan las piezas que fueron apareciendo capítulo a capítulo:
+
+1. El registro local de SRV-FILE01 estaba casi vacío y empezaba con un **1102** (§5.5): alguien lo borró el 15/09 a las 03:40 con la cuenta `svc_update`, que nadie reconoce.
+2. `svc_update` figura en **Administradores locales** (§9.2 / §6.6); su alta (**4720/4732**) sobrevive en el **colector WEF** (§5.3), fechada el 15/09 a las 03:16.
+3. El colector también conserva el **4624 tipo 10** desde `203.0.113.14` como `soporte` a las 03:14 (§5.4.1): así entró, por RDP expuesto y con una cuenta de contraseña débil (los vicios del §2.9).
+4. `update.exe` (PID 9310) sigue **corriendo** desde `C:\Users\Public` (§6.1), como **servicio** `WinDefendUpd` (§6.4) y **tarea** `\SystemUpdate` (§6.5), y está **conectado** a `203.0.113.14:443` (§7.2) —la IP del atacante—.
+5. El **Prefetch** prueba que `update.exe` se ejecutó el 15/09 a las 03:20 (§8.2) y el **SRUM** muestra ~2,3 GB exfiltrados (§8.3).
+
+Ningún indicio, solo, probaba nada. Juntos cuentan una única historia coherente: acceso por RDP → puerta trasera → persistencia → borrado del log → C2 y robo de datos. **Eso** es un incidente confirmado.
 
 ## 12.2 El orden correcto de la respuesta
 
@@ -1239,6 +1410,144 @@ Referencia rápida de los Event IDs mencionados. Fuente: Microsoft (2023a).
 | 4728 / 4732 / 4756 | Security | Se agregó un usuario a un grupo con privilegios | §5.4, §9.2 |
 | 4769 | Security | Solicitud de vale de servicio Kerberos (relevante para Kerberoasting) | §9.4 |
 | 7045 | System | Se instaló un servicio nuevo | §5.4, §6.4 |
+
+---
+
+# Apéndice D — El escenario testigo completo
+
+Toda salida de comando de esta guía se deriva de este único caso hipotético y coherente (presentado en §2.9). Es un servidor de archivos típico de una pyme, con vicios de administración habituales, comprometido. No es una captura real; es un caso sintético internamente consistente, la forma en que se construye el material de entrenamiento forense. Direcciones internas en rango privado (RFC 1918); externas en rango de documentación (RFC 5737).
+
+## D.1 Topología
+
+| Equipo | Rol | IP |
+|---|---|---|
+| SRV-DC01 | Controlador de dominio (`CONTOSO.LOCAL`) | 10.0.10.5 |
+| SRV-FILE01 | Servidor de archivos — investigado | 10.0.10.20 |
+| SRV-LOG01 | Colector de eventos WEF (segmento aparte) | 10.0.30.9 |
+| Clientes | Estaciones de trabajo | 10.0.20.0/24 |
+| (externo) | Atacante | 203.0.113.14 |
+
+## D.2 Vicios de administración que habilitan el ataque
+
+1. RDP (3389) de SRV-FILE01 expuesto a Internet.
+2. Cuenta `soporte` (mesa de ayuda) con administrador local sobre el servidor y contraseña débil.
+3. Sin segundo factor (MFA) en el acceso remoto.
+
+## D.3 Línea de tiempo (2026-09-15)
+
+| Hora | Acción | Evidencia | Dónde sobrevive |
+|---|---|---|---|
+| 03:02–03:13 | Prueba de contraseñas contra `soporte` por RDP | Ráfaga de 4625 | Colector |
+| 03:14:22 | Inicio de sesión RDP como `soporte` desde 203.0.113.14 | 4624 tipo 10, 4672 | Colector |
+| 03:16:05 | Crea la cuenta local `svc_update` | 4720 | Colector; y §9.2 en vivo |
+| 03:16:40 | Agrega `svc_update` a Administradores | 4732 | Colector; y §9.2 en vivo |
+| 03:20:41 | Ejecuta `C:\Users\Public\update.exe` (PID 9310) | Prefetch UPDATE.EXE | Disco local (§8.2) |
+| 03:22:11 | Instala el servicio `WinDefendUpd` | 7045 | Colector; y §6.4 en vivo |
+| 03:23:02 | Crea la tarea `\SystemUpdate` (PowerShell oculto) | 4698 | Colector; y §6.5 en vivo |
+| 03:35 → | Beaconing y exfiltración a 203.0.113.14:443 (~2,3 GB) | Conexión; SRUM | §7.2, §8.3 en vivo |
+| 03:40:11 | **Borra el registro de seguridad** con `svc_update` | 1102 | Log local (§5.5) |
+
+## D.4 Qué muestra cada comando (mapa de salidas)
+
+| Sección | Comando | Ejecutado en | Muestra |
+|---|---|---|---|
+| §5.3 | `Get-WinEvent Security` | Colector | 4624/4720/4732 del 15/09 |
+| §5.4.1 | 4624 tipo 10 | Colector | `soporte` desde 203.0.113.14 |
+| §5.5 | 1102/104 | Local | borrado por `svc_update`, 03:40 |
+| §5.5.1 | RecordId | Local | reiniciado a números bajos (borrado total) |
+| §6.1 | `Get-Process` | Local | `update` PID 9310, `C:\Users\Public` |
+| §6.4 | servicios | Local | `WinDefendUpd` → update.exe |
+| §6.5 | tareas | Local | `\SystemUpdate` → powershell oculto |
+| §6.6 | `query user` | Local | sesión `soporte` rdp desde 03:14 |
+| §7.2 | conexiones | Local | update.exe → 203.0.113.14:443 |
+| §8.2 | Prefetch | Local | UPDATE.EXE, 03:20 |
+| §8.3 | SRUM | Local | ~2,3 GB por update.exe |
+| §9.2 | admins locales | Local | `svc_update` |
+
+## D.5 Moraleja del escenario
+
+El equipo comprometido, mirado **solo en su log local**, parece casi limpio: el atacante lo borró. Pero el caso se reconstruye igual, porque la evidencia vive en **más de un lugar y de más de una forma** (§1.2): el colector conserva lo previo al borrado, el sistema vivo delata la puerta trasera, y los artefactos del disco prueban la ejecución y el robo. Esa es, en un solo caso, la tesis completa de la guía.
+
+---
+
+# Apéndice E — Galería de logs comentados
+
+Cómo se ven los eventos del caso **tal como los muestra el Visor de eventos de Windows**, y qué leer en cada uno. Todos pertenecen al escenario testigo (Anexo D). Se indica dónde vive cada evento: en la **copia del colector** (sobrevivió al borrado) o en el **log local** (después del borrado). Este anexo responde, uno por uno: *qué mirar, qué campo importa y qué significa*.
+
+## E.1 4625 — Inicio de sesión fallido (uno de la ráfaga) · [colector]
+
+```
+Registro: Security   Id de evento: 4625
+Fecha y hora: 15/09/2026 03:11:57
+Error al iniciar sesión una cuenta.
+    Tipo de inicio de sesión:    10
+    Cuenta:                      soporte    Dominio: CONTOSO
+    Motivo del error:            Nombre de usuario desconocido o contraseña incorrecta.
+    Estado / Subestado:          0xC000006D / 0xC000006A
+    Dirección de red de origen:  203.0.113.14   Puerto: 49722
+```
+
+**Qué leer:** el **subestado `0xC000006A`** ("contraseña incorrecta", la cuenta *sí* existe → adivinan la clave de una cuenta real, ver §5.4); el **tipo 10** (por RDP); la **IP externa**; y sobre todo la **repetición**: ~40 de estos en 11 minutos = fuerza bruta.
+
+## E.2 4624 — El inicio de sesión que tuvo éxito · [colector]
+
+```
+Registro: Security   Id de evento: 4624
+Fecha y hora: 15/09/2026 03:14:22
+Se inició sesión correctamente.
+    Cuenta:                      soporte    Dominio: CONTOSO
+    Id. de inicio de sesión:     0x3E9A11
+    Tipo de inicio de sesión:    10
+    Nombre de estación:          KALI
+    Dirección de red de origen:  203.0.113.14
+```
+
+**Qué leer:** el **tipo 10 + IP externa** = acceso remoto desde afuera; el **Id. de inicio de sesión `0x3E9A11`** (anótelo: enlaza todo lo que hizo esta sesión); el **nombre de estación `KALI`** (no es un equipo de la empresa); y la **hora**, pegada al final de la ráfaga de 4625 (fallos → éxito = contraseña adivinada).
+
+## E.3 4720 + 4732 — Creación de la puerta trasera y su ascenso a admin · [colector]
+
+```
+4720  15/09/2026 03:16:05  Se creó una cuenta de usuario.
+      Sujeto: soporte (Id 0x3E9A11)   Nueva cuenta: SRV-FILE01\svc_update
+4732  15/09/2026 03:16:40  Se agregó un miembro a un grupo local con seguridad habilitada.
+      Sujeto: soporte (Id 0x3E9A11)   Miembro: svc_update   Grupo: Administradores (Builtin)
+```
+
+**Qué leer:** el **mismo Id de sesión `0x3E9A11`** en ambos y en el 4624 encadena la historia: la sesión que entró creó `svc_update` y la hizo **Administradora** en 35 segundos. Esa velocidad es un **script**, no una persona. El grupo `Administradores` = control total del equipo.
+
+## E.4 7045 — Servicio de persistencia · [colector, registro System]
+
+```
+Registro: System   Id de evento: 7045   15/09/2026 03:22:11
+    Nombre del servicio:  WinDefendUpd
+    Nombre de archivo:    C:\Users\Public\update.exe
+    Tipo de inicio:       inicio automático
+```
+
+**Qué leer:** un servicio **no vive en `C:\Users\Public`** (basta este dato); el nombre imita a Defender; **inicio automático** = persistencia. Y note: **está en System, no en Security** — si el atacante borró solo Security, este quedó. Mire siempre ambos registros.
+
+## E.5 1102 — El borrado del registro de seguridad · [log LOCAL]
+
+```
+Registro: Security   Id de evento: 1102   15/09/2026 03:40:11
+Origen: Microsoft-Windows-Eventlog
+El registro de auditoría se borró.
+    Sujeto:  SRV-FILE01\svc_update   (Id de inicio de sesión: 0x5F2C08)
+```
+
+**Qué leer:** **quién** (`svc_update`, la cuenta del atacante, no un admin conocido); **cuándo** (03:40, madrugada); y que es el **primer evento del log** (todo lo anterior ya no está aquí → se lee del colector). Recuerde: **el 1102 solo existe si alguien vació el log a propósito** (§5.5.3); por sí mismo prueba intención de borrado.
+
+## E.6 Un log sano, para calibrar el ojo · [local, registro System]
+
+```
+RecordId  TimeCreated           Id    Origen
+ 184402   15/09/2026 02:58:03   7036  Service Control Manager
+ 184403   15/09/2026 03:00:11   6013  EventLog
+ 184404   15/09/2026 03:22:11   7045  Service Control Manager
+ 184405   15/09/2026 03:45:02   7040  Service Control Manager
+```
+
+**Qué leer:** el **`RecordId` alto y continuo** (184402, 184403…) prueba que este log **no** fue vaciado (si lo hubieran vaciado, arrancaría cerca de 1). Compararlo con el Security local (que empieza en el 1102 con RecordId bajo) muestra, por diferencia, que **el Security fue borrado y el System no**. Aprender a leer un log sano es lo que hace evidente uno manipulado.
 
 ---
 

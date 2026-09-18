@@ -1,0 +1,23 @@
+# L17 — mismo-contrato
+# fecha: 2026-09-18T14:35:39Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: curl -s -i -X POST http://127.0.0.1:5180/api/productos -H 'Content-Type: application/json' -d '{"nombre":"Yerba 1 kg","precio":4500}' | head -1; curl -s -i http://127.0.0.1:5180/api/productos; echo; echo; ls src/Backend/MyProject.WebAPI/*.db; echo; grep -rn 'Infrastructure' src/Backend/MyProject.WebAPI --include=*.cs
+# ---
+HTTP/1.1 201 Created
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 18 Sep 2026 14:35:39 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+[{"id":"4d92be49-136f-48a9-a5fa-44542894db69","nombre":"Yerba 1 kg","precio":4500.0}]
+
+src/Backend/MyProject.WebAPI/myproject.db
+
+src/Backend/MyProject.WebAPI/Program.cs:4:using MyProject.Infrastructure;
+src/Backend/MyProject.WebAPI/Program.cs:12:builder.Services.AddInfrastructure(builder.Configuration.GetConnectionString("MyProject") ?? "Data Source=myproject.db");
+
+# --- código de salida: 0

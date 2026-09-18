@@ -1,0 +1,44 @@
+# L12 — regresion
+# fecha: 2026-09-18T14:35:05Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: grep -n "precio" src/Backend/MyProject.Domain/Productos/Producto.cs; echo; dotnet test
+# ---
+15:    public static Producto Create(string nombre, decimal precio)
+20:        return new Producto { Id = Guid.NewGuid(), Nombre = nombre, Precio = precio, Activo = true };
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  MyProject.Domain -> /tmp/work/MyProject/src/Backend/MyProject.Domain/bin/Debug/net10.0/MyProject.Domain.dll
+  MyProject.Application -> /tmp/work/MyProject/src/Backend/MyProject.Application/bin/Debug/net10.0/MyProject.Application.dll
+  MyProject.Domain.Tests -> /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/bin/Debug/net10.0/MyProject.Domain.Tests.dll
+Test run for /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/bin/Debug/net10.0/MyProject.Domain.Tests.dll (.NETCoreApp,Version=v10.0)
+  MyProject.Application.Tests -> /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/bin/Debug/net10.0/MyProject.Application.Tests.dll
+A total of 1 test files matched the specified pattern.
+Test run for /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/bin/Debug/net10.0/MyProject.Application.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.55]     MyProject.Domain.Tests.ProductoTests.Create_con_precio_negativo_lanza_DomainException [FAIL]
+  Failed MyProject.Domain.Tests.ProductoTests.Create_con_precio_negativo_lanza_DomainException [4 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(MyProject.Domain.Common.DomainException)
+  Stack Trace:
+     at MyProject.Domain.Tests.ProductoTests.Create_con_precio_negativo_lanza_DomainException() in /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/ProductoTests.cs:line 10
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+
+Failed!  - Failed:     1, Passed:     2, Skipped:     0, Total:     3, Duration: 49 ms - MyProject.Domain.Tests.dll (net10.0)
+[xUnit.net 00:00:00.39]     MyProject.Application.Tests.CrearProductoHandlerTests.Handle_con_precio_negativo_no_guarda_nada [FAIL]
+  Failed MyProject.Application.Tests.CrearProductoHandlerTests.Handle_con_precio_negativo_no_guarda_nada [16 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(MyProject.Domain.Common.DomainException)
+  Stack Trace:
+     at MyProject.Application.Tests.CrearProductoHandlerTests.Handle_con_precio_negativo_no_guarda_nada() in /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/CrearProductoHandlerTests.cs:line 26
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     1, Passed:     1, Skipped:     0, Total:     2, Duration: 77 ms - MyProject.Application.Tests.dll (net10.0)
+
+# --- código de salida: 1

@@ -1,0 +1,11 @@
+# L04 — ciclo-agregar
+# fecha: 2026-09-18T14:34:15Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet add src/Backend/MyProject.Domain reference src/Backend/MyProject.Infrastructure
+# ---
+Reference `..\MyProject.Infrastructure\MyProject.Infrastructure.csproj` added to the project.
+
+# --- código de salida: 0

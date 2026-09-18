@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Backend/">
+    <Project Path="src/Backend/MyProject.Application/MyProject.Application.csproj" />
+    <Project Path="src/Backend/MyProject.Domain/MyProject.Domain.csproj" />
+    <Project Path="src/Backend/MyProject.Infrastructure/MyProject.Infrastructure.csproj" />
+    <Project Path="src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Clients/">
+    <Project Path="src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Backend/">
+    <Project Path="tests/Backend/MyProject.Application.Tests/MyProject.Application.Tests.csproj" />
+    <Project Path="tests/Backend/MyProject.Domain.Tests/MyProject.Domain.Tests.csproj" />
+  </Folder>
+</Solution>

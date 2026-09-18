@@ -1,0 +1,20 @@
+# L18 — sin-savechanges
+# fecha: 2026-09-18T14:35:48Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: grep -n 'Add(\|SaveChanges\|CompletedTask' src/Backend/MyProject.Infrastructure/Persistence/Repositories/ProductoRepository.cs; echo; curl -s -i -X POST http://127.0.0.1:5180/api/productos -H 'Content-Type: application/json' -d '{"nombre":"Yerba 1 kg","precio":4500}' | head -1; curl -s -i http://127.0.0.1:5180/api/productos
+# ---
+20:        _db.Productos.Add(producto);        // marca la entidad para insertar
+21:        await Task.CompletedTask;           // (L18) falta confirmar la escritura
+
+HTTP/1.1 201 Created
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 18 Sep 2026 14:35:47 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+[]
+# --- código de salida: 0

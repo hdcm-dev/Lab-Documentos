@@ -1,0 +1,50 @@
+# L15 — get
+# fecha: 2026-09-18T14:35:20Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: curl -s -i http://127.0.0.1:5180/api/productos; echo; echo; curl -s -i http://127.0.0.1:5180/api/productos/ac7fa981-7a2b-4c64-a4f7-1ca49fac3365; echo; echo; curl -s http://127.0.0.1:5180/openapi/v1.json | head -c 400; echo; echo; curl -s -i http://127.0.0.1:5180/api/productos/00000000-0000-0000-0000-000000000000 | head -1
+# ---
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 18 Sep 2026 14:35:20 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+[{"id":"ac7fa981-7a2b-4c64-a4f7-1ca49fac3365","nombre":"Yerba 1 kg","precio":4500}]
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 18 Sep 2026 14:35:20 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+{"id":"ac7fa981-7a2b-4c64-a4f7-1ca49fac3365","nombre":"Yerba 1 kg","precio":4500}
+
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "MyProject.WebAPI | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:5180/"
+    }
+  ],
+  "paths": {
+    "/api/productos": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain
+
+HTTP/1.1 404 Not Found
+
+# --- código de salida: 0

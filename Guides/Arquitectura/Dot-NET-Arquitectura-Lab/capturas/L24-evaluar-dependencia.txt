@@ -1,0 +1,35 @@
+# L24 — evaluar-dependencia
+# fecha: 2026-09-18T14:36:26Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/EvaluarDependencia
+# comando: dotnet add package AutoMapper --version 14.0.0 | tail -3; echo; dotnet list package --vulnerable; echo; for v in automapper/14.0.0 automapper/15.0.0 mediatr/12.5.0 mediatr/13.0.0; do echo "== $v"; curl -s https://api.nuget.org/v3-flatcontainer/$v/$(basename $(dirname $v)).nuspec | grep -o "<license[^>]*>[^<]*</license>"; done
+# ---
+info : Generating MSBuild file /tmp/work/EvaluarDependencia/obj/EvaluarDependencia.csproj.nuget.g.targets.
+info : Writing assets file to disk. Path: /tmp/work/EvaluarDependencia/obj/project.assets.json
+log  : Restored /tmp/work/EvaluarDependencia/EvaluarDependencia.csproj (in 1.5 sec).
+
+  Determining projects to restore...
+/tmp/work/EvaluarDependencia/EvaluarDependencia.csproj : warning NU1903: Package 'AutoMapper' 14.0.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+
+Project `EvaluarDependencia` has the following vulnerable packages
+   [net10.0]: 
+   Top-level Package      Requested   Resolved   Severity   Advisory URL                                     
+   > AutoMapper           14.0.0      14.0.0     High       https://github.com/advisories/GHSA-rvv3-g6hj-g44x
+
+
+== automapper/14.0.0
+<license type="expression">MIT</license>
+== automapper/15.0.0
+<license type="file">LICENSE.md</license>
+== mediatr/12.5.0
+<license type="expression">Apache-2.0</license>
+== mediatr/13.0.0
+<license type="file">LICENSE.md</license>
+
+# --- código de salida: 0

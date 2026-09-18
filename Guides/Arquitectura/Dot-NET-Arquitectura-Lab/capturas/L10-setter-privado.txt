@@ -1,0 +1,22 @@
+# L10 — setter-privado
+# fecha: 2026-09-18T14:34:45Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet build src/Backend/MyProject.Application
+# ---
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  MyProject.Domain -> /tmp/work/MyProject/src/Backend/MyProject.Domain/bin/Debug/net10.0/MyProject.Domain.dll
+/tmp/work/MyProject/src/Backend/MyProject.Application/Productos/Intento.cs(10,9): error CS0200: Property or indexer 'Producto.Precio' cannot be assigned to -- it is read only [/tmp/work/MyProject/src/Backend/MyProject.Application/MyProject.Application.csproj]
+
+Build FAILED.
+
+/tmp/work/MyProject/src/Backend/MyProject.Application/Productos/Intento.cs(10,9): error CS0200: Property or indexer 'Producto.Precio' cannot be assigned to -- it is read only [/tmp/work/MyProject/src/Backend/MyProject.Application/MyProject.Application.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.73
+
+# --- código de salida: 1

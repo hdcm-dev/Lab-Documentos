@@ -1,0 +1,35 @@
+# L07 — separado
+# fecha: 2026-09-18T14:34:24Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: cat src/Backend/MyProject.Domain/Producto.cs; echo; dotnet build src/Backend/MyProject.Domain
+# ---
+using MyProject.Infrastructure.Persistence;
+
+namespace MyProject.Domain;
+
+public class Producto
+{
+    public string Nombre { get; set; } = "";
+
+    public void Guardar(ConexionSql conexion) =>
+        conexion.Ejecutar($"INSERT INTO Productos VALUES ('{Nombre}')");
+}
+
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+/tmp/work/MyProject/src/Backend/MyProject.Domain/Producto.cs(1,17): error CS0234: The type or namespace name 'Infrastructure' does not exist in the namespace 'MyProject' (are you missing an assembly reference?) [/tmp/work/MyProject/src/Backend/MyProject.Domain/MyProject.Domain.csproj]
+/tmp/work/MyProject/src/Backend/MyProject.Domain/Producto.cs(9,25): error CS0246: The type or namespace name 'ConexionSql' could not be found (are you missing a using directive or an assembly reference?) [/tmp/work/MyProject/src/Backend/MyProject.Domain/MyProject.Domain.csproj]
+
+Build FAILED.
+
+/tmp/work/MyProject/src/Backend/MyProject.Domain/Producto.cs(1,17): error CS0234: The type or namespace name 'Infrastructure' does not exist in the namespace 'MyProject' (are you missing an assembly reference?) [/tmp/work/MyProject/src/Backend/MyProject.Domain/MyProject.Domain.csproj]
+/tmp/work/MyProject/src/Backend/MyProject.Domain/Producto.cs(9,25): error CS0246: The type or namespace name 'ConexionSql' could not be found (are you missing a using directive or an assembly reference?) [/tmp/work/MyProject/src/Backend/MyProject.Domain/MyProject.Domain.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.43
+
+# --- código de salida: 1

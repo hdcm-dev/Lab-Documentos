@@ -1,0 +1,30 @@
+# L11 — tests
+# fecha: 2026-09-18T14:34:56Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet sln add tests/Backend/MyProject.Domain.Tests tests/Backend/MyProject.Application.Tests && dotnet add tests/Backend/MyProject.Domain.Tests reference src/Backend/MyProject.Domain && dotnet add tests/Backend/MyProject.Application.Tests reference src/Backend/MyProject.Application && dotnet test
+# ---
+Project `tests/Backend/MyProject.Domain.Tests/MyProject.Domain.Tests.csproj` added to the solution.
+Project `tests/Backend/MyProject.Application.Tests/MyProject.Application.Tests.csproj` added to the solution.
+Reference `..\..\..\src\Backend\MyProject.Domain\MyProject.Domain.csproj` added to the project.
+Reference `..\..\..\src\Backend\MyProject.Application\MyProject.Application.csproj` added to the project.
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/MyProject.Application.Tests.csproj (in 367 ms).
+  Restored /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/MyProject.Domain.Tests.csproj (in 367 ms).
+  4 of 6 projects are up-to-date for restore.
+  MyProject.Domain -> /tmp/work/MyProject/src/Backend/MyProject.Domain/bin/Debug/net10.0/MyProject.Domain.dll
+  MyProject.Application -> /tmp/work/MyProject/src/Backend/MyProject.Application/bin/Debug/net10.0/MyProject.Application.dll
+  MyProject.Domain.Tests -> /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/bin/Debug/net10.0/MyProject.Domain.Tests.dll
+Test run for /tmp/work/MyProject/tests/Backend/MyProject.Domain.Tests/bin/Debug/net10.0/MyProject.Domain.Tests.dll (.NETCoreApp,Version=v10.0)
+  MyProject.Application.Tests -> /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/bin/Debug/net10.0/MyProject.Application.Tests.dll
+A total of 1 test files matched the specified pattern.
+Test run for /tmp/work/MyProject/tests/Backend/MyProject.Application.Tests/bin/Debug/net10.0/MyProject.Application.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 64 ms - MyProject.Domain.Tests.dll (net10.0)
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 39 ms - MyProject.Application.Tests.dll (net10.0)
+
+# --- código de salida: 0

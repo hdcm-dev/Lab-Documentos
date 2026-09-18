@@ -1,0 +1,35 @@
+# L22-contracts — nace-contracts
+# fecha: 2026-09-18T14:36:05Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet new classlib -n MyProject.Contracts -o src/Contracts/MyProject.Contracts && rm src/Contracts/MyProject.Contracts/Class1.cs && mv src/Backend/MyProject.WebAPI/Contracts/*.cs src/Contracts/MyProject.Contracts/ && rmdir src/Backend/MyProject.WebAPI/Contracts && dotnet sln add src/Contracts/MyProject.Contracts && dotnet add src/Backend/MyProject.WebAPI reference src/Contracts/MyProject.Contracts && dotnet new console -n MyProject.ConsoleClient -o src/Clients/MyProject.ConsoleClient && dotnet sln add src/Clients/MyProject.ConsoleClient && dotnet add src/Clients/MyProject.ConsoleClient reference src/Contracts/MyProject.Contracts && dotnet list src/Clients/MyProject.ConsoleClient reference
+# ---
+The template "Class Library" was created successfully.
+
+Processing post-creation actions...
+Restoring /tmp/work/MyProject/src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj:
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj (in 99 ms).
+Restore succeeded.
+
+
+Project `src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj` added to the solution.
+Reference `..\..\Contracts\MyProject.Contracts\MyProject.Contracts.csproj` added to the project.
+The template "Console App" was created successfully.
+
+Processing post-creation actions...
+Restoring /tmp/work/MyProject/src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj:
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj (in 101 ms).
+Restore succeeded.
+
+
+Project `src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj` added to the solution.
+Reference `..\..\Contracts\MyProject.Contracts\MyProject.Contracts.csproj` added to the project.
+Project reference(s)
+--------------------
+../../Contracts/MyProject.Contracts/MyProject.Contracts.csproj
+
+# --- código de salida: 0

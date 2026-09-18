@@ -1,0 +1,16 @@
+# L19 — json-mal-formado
+# fecha: 2026-09-18T14:35:56Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: curl -s -i -X POST http://127.0.0.1:5180/api/productos -H 'Content-Type: application/json' -d '{"nombre":"Mate","precio":}'
+# ---
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json; charset=utf-8
+Date: Fri, 18 Sep 2026 14:35:55 GMT
+Server: Kestrel
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"One or more validation errors occurred.","status":400,"errors":{"request":["The request field is required."],"$.precio":["'}' is an invalid start of a value. Path: $.precio | LineNumber: 0 | BytePositionInLine: 26."]},"traceId":"00-eed4d6e1cae37b834ec6ffd23408786f-d02ae3560d9d8290-00"}
+# --- código de salida: 0

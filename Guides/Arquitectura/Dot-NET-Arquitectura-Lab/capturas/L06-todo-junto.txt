@@ -1,0 +1,19 @@
+# L06 — todo-junto
+# fecha: 2026-09-18T14:34:22Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/TodoJunto
+# comando: dotnet build
+# ---
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  TodoJunto -> /tmp/work/TodoJunto/bin/Debug/net10.0/TodoJunto.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.59
+
+# --- código de salida: 0

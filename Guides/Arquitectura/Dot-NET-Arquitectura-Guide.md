@@ -45,7 +45,7 @@ public class Producto
     // El constructor es privado para controlar cómo se crea una instancia
     private Producto() { }
 
-    public static Producto Crear(string nombre, decimal precio)
+    public static Producto Create(string nombre, decimal precio)
     {
         if (precio <= 0) throw new DomainException("El precio debe ser mayor a cero.");
         return new Producto { Id = Guid.NewGuid(), Nombre = nombre, Precio = precio, Activo = true };
@@ -104,8 +104,8 @@ public record CrearProductoRequestDto(string Nombre, decimal Precio);
 Similar al DTO pero orientado a la **capa de presentación (UI)**. Modela exactamente lo que una vista necesita mostrar, que puede diferir de la estructura del dominio.
 
 ```csharp
-// MyProject.WebFront/Models/ProductoListaViewModel.cs
-public class ProductoListaViewModel
+// MyProject.WebFront/ViewModels/ProductoListItemViewModel.cs
+public class ProductoListItemViewModel
 {
     public Guid Id { get; set; }
     public string Nombre { get; set; }
@@ -161,8 +161,25 @@ No implica dos bases de datos (eso es CQRS avanzado). En la mayoría de proyecto
 
 Librería .NET que implementa el patrón **Mediator**. Desacopla quien envía una solicitud de quien la maneja. El Controller (o componente Blazor) envía un Command/Query a través de MediatR, y el Handler correspondiente lo procesa.
 
-```
-Controller → IMediator.Send(command) → Handler → Repositorio → DB
+```mermaid
+flowchart LR
+    C["Controller<br/><i>o componente Blazor</i>"]
+    M(("IMediator"))
+    H["CrearProductoHandler"]
+    R["IProductoRepository"]
+    DB[("Base de datos")]
+
+    C -->|"Send(command)"| M
+    M -->|"resuelve el handler<br/>por tipo de mensaje"| H
+    H --> R
+    R --> DB
+
+    classDef pres fill:#d0ebff,stroke:#1c7ed6,color:#000
+    classDef app fill:#d3f9d8,stroke:#37b24d,color:#000
+    classDef infra fill:#ffe3e3,stroke:#f03e3e,color:#000
+    class C pres
+    class M,H,R app
+    class DB infra
 ```
 
 Beneficio: el Controller no conoce la implementación del Handler. Solo conoce el contrato (el Command/Query).
@@ -171,9 +188,9 @@ Beneficio: el Controller no conoce la implementación del Handler. Solo conoce e
 
 ### Repository Pattern
 
-Abstracción que aísla la lógica de acceso a datos. Expone métodos de dominio (`ObtenerPorId`, `Guardar`, `Eliminar`) sin revelar cómo se implementa la persistencia.
+Abstracción que aísla la lógica de acceso a datos. Expone las operaciones estándar del patrón (`GetByIdAsync`, `AddAsync`, `RemoveAsync`) sin revelar cómo se implementa la persistencia.
 
-- La **interfaz** vive en `Application` (el dominio la define).
+- La **interfaz** vive en `Domain` (el dominio define qué necesita guardar y recuperar).
 - La **implementación** vive en `Infrastructure` (EF Core la implementa).
 
 ---
@@ -188,40 +205,95 @@ Proyecto especial de .NET que puede contener componentes Blazor (`.razor`), pág
 
 Estilo arquitectónico propuesto por Robert C. Martin que organiza el sistema en capas concéntricas donde la **regla de dependencia** establece que el código solo puede apuntar hacia adentro (hacia el dominio). Las capas externas (infraestructura, UI) dependen de las internas (aplicación, dominio), nunca al revés.
 
+```mermaid
+flowchart TD
+    subgraph EXT["🌐 Frameworks & Drivers — lo que cambia seguido"]
+        direction TB
+        subgraph ADAPT["🔌 Interface Adapters"]
+            direction TB
+            subgraph APP["⚙️ Use Cases (Application)"]
+                direction TB
+                subgraph DOM["💛 Entities (Domain)"]
+                    D["Producto · Pedido<br/>Value Objects<br/>Reglas de negocio puras<br/><b>Interfaces</b> IProductoRepository<br/><i>cero dependencias</i>"]
+                end
+                A["Commands · Queries · Handlers<br/>DTOs<br/><b>Interfaces</b> IEmailService · ICurrentUserService"]
+            end
+            I["Controllers · Componentes Blazor<br/>Repositorios EF Core<br/>Presenters · Mappers"]
+        end
+        E["ASP.NET Core · EF Core · SQL Server<br/>MAUI · HttpClient · SMTP · Storage"]
+    end
+
+    E -.->|usa| I
+    I -->|depende de| A
+    A -->|depende de| D
+
+    classDef dominio fill:#fff3bf,stroke:#f59f00,stroke-width:3px,color:#000
+    classDef aplicacion fill:#d3f9d8,stroke:#37b24d,stroke-width:2px,color:#000
+    classDef adaptador fill:#d0ebff,stroke:#1c7ed6,stroke-width:2px,color:#000
+    classDef externo fill:#ffe3e3,stroke:#f03e3e,stroke-width:2px,color:#000
+
+    class D,DOM dominio
+    class A,APP aplicacion
+    class I,ADAPT adaptador
+    class E,EXT externo
+```
+
+**Cómo leer el gráfico**: cada caja está *contenida* en la anterior, igual que los anillos concéntricos del diagrama original de Martin. Esa contención es **de dependencia, no de ubicación**: un anillo exterior conoce y referencia a los interiores, pero no los contiene. En la solución, `Domain`, `Application` e `Infrastructure` son proyectos (y espacios de nombres) **hermanos** —`MyProject.Domain`, `MyProject.Application`, `MyProject.Infrastructure`—, y la cebolla se ve en sus referencias: `Infrastructure → Application → Domain`. Las flechas —la regla de dependencia— siempre viajan **hacia adentro**: nunca hay una flecha que salga del centro hacia afuera.
+
+| Anillo | Sabe de… | Ignora por completo… |
+|---|---|---|
+| 💛 **Domain** | nada externo | que existe una base de datos, un HTTP, un Blazor |
+| ⚙️ **Application** | Domain | EF Core, ASP.NET, el cliente que lo invoca |
+| 🔌 **Interface Adapters** | Application y Domain | el motor concreto de BD (lo recibe inyectado) |
+| 🌐 **Frameworks & Drivers** | todo lo de adentro | — |
+
+> **Inversión de dependencias**: la flecha de `Infrastructure` hacia `Domain` del diagrama de la sección 2 apunta hacia arriba justamente por esto. El repositorio EF Core vive afuera pero **implementa** una interfaz declarada adentro (`IProductoRepository` en `Domain`; las de servicios técnicos, como `IEmailService`, en `Application`). Así el código de negocio nunca compila contra `Microsoft.EntityFrameworkCore`, y se puede reemplazar SQL Server por Postgres, o por un doble en memoria en los tests, sin tocar una línea del dominio.
+
 ---
 
 ## 2. Visión General de la Solución
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          MyProject.sln                              │
-│                                                                     │
-│   PRESENTACIÓN                                                      │
-│   ┌─────────────────┐  ┌─────────────────┐  ┌──────────────────┐  │
-│   │  WebFront        │  │    Desktop       │  │     WebAPI       │  │
-│   │  (Blazor WASM    │  │  (MAUI Hybrid)   │  │  (ASP.NET Core)  │  │
-│   │  o Server)       │  │                  │  │                  │  │
-│   └────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘  │
-│            │                     │                      │            │
-│            └──────────┬──────────┘                      │            │
-│                       ↓                                 ↓            │
-│   ┌───────────────────────────┐   ┌─────────────────────────────┐  │
-│   │       Shared.UI           │   │        Application           │  │
-│   │  (Razor Class Library)    │   │  (Use Cases, DTOs, Contratos)│  │
-│   └───────────────────────────┘   └──────────────┬──────────────┘  │
-│                                                   ↓                 │
-│                                   ┌─────────────────────────────┐  │
-│                                   │           Domain             │  │
-│                                   │  (Entidades, Value Objects,  │  │
-│                                   │   Reglas de negocio puras)   │  │
-│                                   └──────────────┬──────────────┘  │
-│                                                  ↑                  │
-│                                   ┌──────────────────────────────┐ │
-│                                   │        Infrastructure         │ │
-│                                   │  (EF Core, Repos, Servicios  │ │
-│                                   │   externos, Email, Storage)  │ │
-│                                   └──────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph SLN["MyProject.sln"]
+        direction TB
+
+        subgraph PRES["Presentation"]
+            direction LR
+            WF["WebFront<br/>(Blazor WASM o Server)"]
+            DK["Desktop<br/>(MAUI Hybrid)"]
+            API["WebAPI<br/>(ASP.NET Core)"]
+        end
+
+        SUI["Shared.UI<br/>(Razor Class Library)"]
+
+        subgraph CORE["Core"]
+            direction TB
+            APP["Application<br/>(Use Cases, DTOs, Contratos)"]
+            DOM["Domain<br/>(Entidades, Value Objects,<br/>reglas de negocio puras)"]
+        end
+
+        INF["Infrastructure<br/>(EF Core, Repos, servicios externos,<br/>Email, Storage)"]
+    end
+
+    WF --> SUI
+    DK --> SUI
+    WF -.->|HTTP/REST| API
+    DK -.->|HTTP/REST| API
+    API --> APP
+    APP --> DOM
+    INF -->|"implementa sus interfaces"| APP
+    INF --> DOM
+    API -.->|"sólo para registrar el DI"| INF
+
+    classDef pres fill:#d0ebff,stroke:#1c7ed6,stroke-width:2px,color:#000
+    classDef app fill:#d3f9d8,stroke:#37b24d,stroke-width:2px,color:#000
+    classDef dom fill:#fff3bf,stroke:#f59f00,stroke-width:3px,color:#000
+    classDef infra fill:#ffe3e3,stroke:#f03e3e,stroke-width:2px,color:#000
+    class WF,DK,API,SUI pres
+    class APP app
+    class DOM dom
+    class INF infra
 ```
 
 **WebFront** y **Desktop** se comunican con **WebAPI** exclusivamente vía HTTP/REST. Nunca referencian directamente los proyectos de dominio o infraestructura de la API.
@@ -377,8 +449,8 @@ public class CrearProductoHandler : IRequestHandler<CrearProductoCommand, Guid>
 
     public async Task<Guid> Handle(CrearProductoCommand request, CancellationToken ct)
     {
-        var producto = Producto.Crear(request.Nombre, request.Precio);
-        await _repo.AgregarAsync(producto, ct);
+        var producto = Producto.Create(request.Nombre, request.Precio);
+        await _repo.AddAsync(producto, ct);
         return producto.Id;
     }
 }
@@ -467,17 +539,17 @@ public class ProductosController : ControllerBase
     public ProductosController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet]
-    public async Task<IActionResult> ObtenerTodos(CancellationToken ct)
+    public async Task<IActionResult> GetAll(CancellationToken ct)
     {
         var resultado = await _mediator.Send(new ObtenerProductosQuery(), ct);
         return Ok(resultado);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Crear([FromBody] CrearProductoCommand command, CancellationToken ct)
+    public async Task<IActionResult> Create([FromBody] CrearProductoCommand command, CancellationToken ct)
     {
         var id = await _mediator.Send(command, ct);
-        return CreatedAtAction(nameof(ObtenerPorId), new { id }, null);
+        return CreatedAtAction(nameof(GetById), new { id }, null);
     }
 }
 ```
@@ -501,8 +573,8 @@ MyProject.WebFront/
 ├── Pages/                               ← Páginas de la aplicación (rutas)
 │   ├── Productos/
 │   │   ├── Index.razor                  ← Lista de productos
-│   │   ├── Detalle.razor               ← Detalle de un producto
-│   │   └── Formulario.razor            ← Crear / Editar
+│   │   ├── Details.razor               ← Detalle de un producto
+│   │   └── Form.razor                  ← Crear / Editar
 │   └── Clientes/
 │       └── Index.razor
 │
@@ -520,7 +592,7 @@ MyProject.WebFront/
 │
 ├── ViewModels/                          ← Modelos de formularios y de vista
 │   ├── ProductoFormViewModel.cs
-│   └── ProductoListaItemViewModel.cs
+│   └── ProductoListItemViewModel.cs
 │
 ├── Mappers/                             ← Conversión DTO ↔ ViewModel
 │   └── ProductoMapper.cs
@@ -545,10 +617,10 @@ Esta es la capa más importante del front. Define cómo se comunica con la WebAP
 // Services/Interfaces/IProductoApiService.cs
 public interface IProductoApiService
 {
-    Task<List<ProductoResponseDto>> ObtenerTodosAsync(CancellationToken ct = default);
-    Task<ProductoResponseDto?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
-    Task<Guid> CrearAsync(CrearProductoRequestDto request, CancellationToken ct = default);
-    Task EliminarAsync(Guid id, CancellationToken ct = default);
+    Task<List<ProductoResponseDto>> GetAllAsync(CancellationToken ct = default);
+    Task<ProductoResponseDto?> GetByIdAsync(Guid id, CancellationToken ct = default);
+    Task<Guid> CreateAsync(CrearProductoRequestDto request, CancellationToken ct = default);
+    Task DeleteAsync(Guid id, CancellationToken ct = default);
 }
 ```
 
@@ -562,13 +634,13 @@ public class ProductoApiService : IProductoApiService
 
     public ProductoApiService(HttpClient http) => _http = http;
 
-    public async Task<List<ProductoResponseDto>> ObtenerTodosAsync(CancellationToken ct = default)
+    public async Task<List<ProductoResponseDto>> GetAllAsync(CancellationToken ct = default)
     {
         return await _http.GetFromJsonAsync<List<ProductoResponseDto>>("api/productos", ct)
                ?? new List<ProductoResponseDto>();
     }
 
-    public async Task<Guid> CrearAsync(CrearProductoRequestDto request, CancellationToken ct = default)
+    public async Task<Guid> CreateAsync(CrearProductoRequestDto request, CancellationToken ct = default)
     {
         var response = await _http.PostAsJsonAsync("api/productos", request, ct);
         response.EnsureSuccessStatusCode();
@@ -586,16 +658,16 @@ Refit genera la implementación automáticamente a partir de una interfaz decora
 public interface IProductoApiService
 {
     [Get("/api/productos")]
-    Task<List<ProductoResponseDto>> ObtenerTodosAsync(CancellationToken ct = default);
+    Task<List<ProductoResponseDto>> GetAllAsync(CancellationToken ct = default);
 
     [Get("/api/productos/{id}")]
-    Task<ProductoResponseDto> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
+    Task<ProductoResponseDto> GetByIdAsync(Guid id, CancellationToken ct = default);
 
     [Post("/api/productos")]
-    Task<ApiResponse<Guid>> CrearAsync([Body] CrearProductoRequestDto request, CancellationToken ct = default);
+    Task<ApiResponse<Guid>> CreateAsync([Body] CrearProductoRequestDto request, CancellationToken ct = default);
 
     [Delete("/api/productos/{id}")]
-    Task<IApiResponse> EliminarAsync(Guid id, CancellationToken ct = default);
+    Task<IApiResponse> DeleteAsync(Guid id, CancellationToken ct = default);
 }
 ```
 
@@ -623,24 +695,28 @@ builder.Services
 
 ### Flujo completo dentro del WebFront
 
-```
-Usuario interactúa con la UI
-        ↓
-[Componente Blazor (.razor)]
-        ↓
-[ViewModel / Estado del componente]
-        ↓
-[IProductoApiService] (inyectado, la página no sabe si es Refit, HttpClient, o mock)
-        ↓
-[HTTP GET/POST/PUT/DELETE]
-        ↓
-[WebAPI REST]
-        ↓
-[Respuesta DTO]
-        ↓
-[Mapper: DTO → ViewModel]
-        ↓
-[La vista se actualiza con StateHasChanged()]
+```mermaid
+flowchart TD
+    U(["Usuario interactúa con la UI"])
+    C["Componente Blazor (.razor)"]
+    VM["ViewModel / Estado del componente"]
+    S["IProductoApiService<br/><i>inyectado: la página no sabe si es<br/>Refit, HttpClient o un mock</i>"]
+    HTTP{{"HTTP GET / POST / PUT / DELETE"}}
+    API["WebAPI REST"]
+    DTO["Respuesta DTO"]
+    MAP["Mapper: DTO → ViewModel"]
+    V["La vista se actualiza<br/>con StateHasChanged()"]
+
+    U --> C --> VM --> S --> HTTP --> API
+    API --> DTO --> MAP --> V
+    V -.->|nuevo ciclo| C
+
+    classDef ui fill:#d0ebff,stroke:#1c7ed6,color:#000
+    classDef svc fill:#e5dbff,stroke:#7048e8,color:#000
+    classDef net fill:#ffe3e3,stroke:#f03e3e,color:#000
+    class C,VM,V ui
+    class S,MAP,DTO svc
+    class HTTP,API net
 ```
 
 ### Ejemplo de una página Blazor con este patrón
@@ -662,19 +738,19 @@ else
 }
 
 @code {
-    private List<ProductoListaItemViewModel> _productos = new();
+    private List<ProductoListItemViewModel> _productos = new();
     private bool _cargando = true;
 
     protected override async Task OnInitializedAsync()
     {
-        var dtos = await ProductoService.ObtenerTodosAsync();
+        var dtos = await ProductoService.GetAllAsync();
         _productos = dtos.Select(ProductoMapper.ToViewModel).ToList();
         _cargando = false;
     }
 
     private async Task EliminarProducto(Guid id)
     {
-        await ProductoService.EliminarAsync(id);
+        await ProductoService.DeleteAsync(id);
         _productos.RemoveAll(p => p.Id == id);
     }
 }
@@ -744,7 +820,7 @@ MyProject.Shared.UI/
 MyProject.Desktop/
 │
 ├── Pages/                               ← Páginas específicas del desktop (si difieren del web)
-│   └── Inicio.razor
+│   └── Home.razor
 │
 ├── Services/                            ← Misma capa de servicios que el WebFront
 │   ├── Interfaces/
@@ -836,59 +912,57 @@ builder.Services
 
 ## 12. Diagrama Final Completo
 
-```
-USUARIO WEB              USUARIO DESKTOP
-     │                        │
-     ▼                        ▼
-┌──────────────┐     ┌─────────────────┐
-│  WebFront    │     │    Desktop      │
-│  (Blazor)    │     │ (MAUI Hybrid)   │
-│              │     │                 │
-│  ┌─────────┐ │     │  ┌───────────┐  │
-│  │  Pages  │ │     │  │  Pages    │  │
-│  └────┬────┘ │     │  └─────┬─────┘  │
-│       │      │     │        │        │
-│  ┌────▼────┐ │     │  ┌─────▼─────┐  │
-│  │Services │ │     │  │ Services  │  │
-│  │(Refit)  │ │     │  │ (Refit)   │  │
-│  └────┬────┘ │     │  └─────┬─────┘  │
-└───────│──────┘     └────────│────────┘
-        │                     │
-        └──────────┬──────────┘
-                   │  HTTP/REST
-                   ▼
-        ┌─────────────────────┐
-        │       WebAPI        │
-        │   (ASP.NET Core)    │
-        │                     │
-        │  ┌───────────────┐  │
-        │  │  Controllers  │  │  ← Thin layer
-        │  └───────┬───────┘  │
-        │          │ MediatR   │
-        │  ┌───────▼───────┐  │
-        │  │  Application  │  │  ← Commands / Queries / Handlers
-        │  │  Use Cases    │  │
-        │  └───────┬───────┘  │
-        │          │          │
-        │  ┌───────▼───────┐  │
-        │  │    Domain     │  │  ← Entidades, reglas de negocio
-        │  └───────┬───────┘  │
-        │          │          │
-        │  ┌───────▼───────┐  │
-        │  │Infrastructure │  │  ← EF Core, repositorios, servicios externos
-        │  └───────┬───────┘  │
-        └──────────│──────────┘
-                   │
-                   ▼
-             ┌───────────┐
-             │ Base de   │
-             │   Datos   │
-             └───────────┘
+```mermaid
+flowchart TD
+    UW(["👤 Usuario web"])
+    UD(["🖥️ Usuario desktop"])
 
-        ┌───────────────────────────┐
-        │        Shared.UI          │  ← Componentes Blazor reutilizables
-        │    (Razor Class Library)  │     consumidos por WebFront y Desktop
-        └───────────────────────────┘
+    subgraph FRONT["WebFront (Blazor)"]
+        direction TB
+        FP["Pages"] --> FS["Services (Refit)"]
+    end
+
+    subgraph DESK["Desktop (MAUI Hybrid)"]
+        direction TB
+        DP["Pages"] --> DS["Services (Refit)"]
+    end
+
+    SUI["Shared.UI (Razor Class Library)<br/><i>componentes Blazor reutilizables</i>"]
+
+    subgraph BACK["WebAPI (ASP.NET Core)"]
+        direction TB
+        CTRL["Controllers<br/><i>capa delgada</i>"]
+        APP["Application<br/><i>Commands / Queries / Handlers</i>"]
+        DOM["Domain<br/><i>entidades, reglas de negocio</i>"]
+        INF["Infrastructure<br/><i>EF Core, repositorios, servicios externos</i>"]
+
+        CTRL -->|MediatR| APP
+        APP --> DOM
+        INF --> DOM
+    end
+
+    DB[("Base de datos")]
+
+    UW --> FP
+    UD --> DP
+    FS -->|HTTP/REST| CTRL
+    DS -->|HTTP/REST| CTRL
+    APP -.->|"usa sus interfaces,<br/>resueltas por DI"| INF
+    INF --> DB
+
+    SUI -.->|consumido por| FP
+    SUI -.->|consumido por| DP
+
+    classDef user fill:#f8f9fa,stroke:#868e96,color:#000
+    classDef pres fill:#d0ebff,stroke:#1c7ed6,stroke-width:2px,color:#000
+    classDef app fill:#d3f9d8,stroke:#37b24d,stroke-width:2px,color:#000
+    classDef dom fill:#fff3bf,stroke:#f59f00,stroke-width:3px,color:#000
+    classDef infra fill:#ffe3e3,stroke:#f03e3e,stroke-width:2px,color:#000
+    class UW,UD user
+    class FP,FS,DP,DS,CTRL,SUI pres
+    class APP app
+    class DOM dom
+    class INF,DB infra
 ```
 
 ---

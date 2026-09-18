@@ -1,0 +1,56 @@
+# L23 — estructura
+# fecha: 2026-09-18T14:36:24Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet sln list; echo; find src tests -maxdepth 2 -type d | sort; echo; cat MyProject.slnx
+# ---
+Project(s)
+----------
+src/Backend/MyProject.Application/MyProject.Application.csproj
+src/Backend/MyProject.Domain/MyProject.Domain.csproj
+src/Backend/MyProject.Infrastructure/MyProject.Infrastructure.csproj
+src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj
+src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj
+src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj
+tests/Backend/MyProject.Application.Tests/MyProject.Application.Tests.csproj
+tests/Backend/MyProject.Domain.Tests/MyProject.Domain.Tests.csproj
+
+src
+src/Backend
+src/Backend/MyProject.Application
+src/Backend/MyProject.Domain
+src/Backend/MyProject.Infrastructure
+src/Backend/MyProject.WebAPI
+src/Clients
+src/Clients/MyProject.ConsoleClient
+src/Contracts
+src/Contracts/MyProject.Contracts
+tests
+tests/Backend
+tests/Backend/MyProject.Application.Tests
+tests/Backend/MyProject.Domain.Tests
+
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Backend/">
+    <Project Path="src/Backend/MyProject.Application/MyProject.Application.csproj" />
+    <Project Path="src/Backend/MyProject.Domain/MyProject.Domain.csproj" />
+    <Project Path="src/Backend/MyProject.Infrastructure/MyProject.Infrastructure.csproj" />
+    <Project Path="src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj" />
+  </Folder>
+  <Folder Name="/src/Clients/">
+    <Project Path="src/Clients/MyProject.ConsoleClient/MyProject.ConsoleClient.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/MyProject.Contracts/MyProject.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Backend/">
+    <Project Path="tests/Backend/MyProject.Application.Tests/MyProject.Application.Tests.csproj" />
+    <Project Path="tests/Backend/MyProject.Domain.Tests/MyProject.Domain.Tests.csproj" />
+  </Folder>
+</Solution>
+
+# --- código de salida: 0

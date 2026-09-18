@@ -1,0 +1,17 @@
+# L01 — nueva-solucion
+# fecha: 2026-09-18T14:34:02Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet new sln -n MyProject && dotnet new globaljson --sdk-version "$(dotnet --version)" --roll-forward latestFeature && ls
+# ---
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+The template "Solution File" was created successfully.
+
+The template "global.json file" was created successfully.
+
+MyProject.slnx
+global.json
+
+# --- código de salida: 0

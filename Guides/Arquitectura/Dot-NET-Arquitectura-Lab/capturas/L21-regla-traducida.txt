@@ -1,0 +1,19 @@
+# L21 — regla-traducida
+# fecha: 2026-09-18T14:36:04Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: curl -s -i -X POST http://127.0.0.1:5180/api/productos -H 'Content-Type: application/json' -d '{"nombre":"Mate","precio":-5}'
+# ---
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+Date: Fri, 18 Sep 2026 14:36:04 GMT
+Server: Kestrel
+Cache-Control: no-cache,no-store
+Expires: -1
+Pragma: no-cache
+Transfer-Encoding: chunked
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Regla de negocio incumplida","status":400,"detail":"El precio debe ser mayor a cero.","traceId":"00-024c2f9dcf12895776e8da5ded6d9e08-79928bdc81734fef-00"}
+# --- código de salida: 0

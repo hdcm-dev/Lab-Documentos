@@ -1,0 +1,65 @@
+# L08 — esqueleto
+# fecha: 2026-09-18T14:34:26Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /tmp/work/MyProject
+# comando: dotnet new classlib -n MyProject.Application -o src/Backend/MyProject.Application && rm src/Backend/MyProject.Application/Class1.cs && dotnet new webapi --use-controllers --no-https -n MyProject.WebAPI -o src/Backend/MyProject.WebAPI && rm -f src/Backend/MyProject.WebAPI/WeatherForecast.cs src/Backend/MyProject.WebAPI/Controllers/WeatherForecastController.cs src/Backend/MyProject.WebAPI/MyProject.WebAPI.http && dotnet sln add src/Backend/MyProject.Application src/Backend/MyProject.WebAPI && dotnet add src/Backend/MyProject.Application reference src/Backend/MyProject.Domain && dotnet add src/Backend/MyProject.Infrastructure reference src/Backend/MyProject.Application && dotnet add src/Backend/MyProject.WebAPI reference src/Backend/MyProject.Application src/Backend/MyProject.Infrastructure && for p in Domain Application Infrastructure WebAPI; do echo "== MyProject.$p"; dotnet list src/Backend/MyProject.$p reference; done && dotnet build
+# ---
+The template "Class Library" was created successfully.
+
+Processing post-creation actions...
+Restoring /tmp/work/MyProject/src/Backend/MyProject.Application/MyProject.Application.csproj:
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/src/Backend/MyProject.Application/MyProject.Application.csproj (in 93 ms).
+Restore succeeded.
+
+
+The template "ASP.NET Core Web API" was created successfully.
+
+Processing post-creation actions...
+Restoring /tmp/work/MyProject/src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj:
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj (in 2.92 sec).
+Restore succeeded.
+
+
+Project `src/Backend/MyProject.Application/MyProject.Application.csproj` added to the solution.
+Project `src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj` added to the solution.
+Reference `..\MyProject.Domain\MyProject.Domain.csproj` added to the project.
+Reference `..\MyProject.Application\MyProject.Application.csproj` added to the project.
+Reference `..\MyProject.Application\MyProject.Application.csproj` added to the project.
+Reference `..\MyProject.Infrastructure\MyProject.Infrastructure.csproj` added to the project.
+== MyProject.Domain
+There are no Project to Project references in project src/Backend/MyProject.Domain.
+== MyProject.Application
+Project reference(s)
+--------------------
+../MyProject.Domain/MyProject.Domain.csproj
+== MyProject.Infrastructure
+Project reference(s)
+--------------------
+../MyProject.Domain/MyProject.Domain.csproj
+../MyProject.Application/MyProject.Application.csproj
+== MyProject.WebAPI
+Project reference(s)
+--------------------
+../MyProject.Application/MyProject.Application.csproj
+../MyProject.Infrastructure/MyProject.Infrastructure.csproj
+  Determining projects to restore...
+  Restored /tmp/work/MyProject/src/Backend/MyProject.Application/MyProject.Application.csproj (in 130 ms).
+  Restored /tmp/work/MyProject/src/Backend/MyProject.Infrastructure/MyProject.Infrastructure.csproj (in 130 ms).
+  Restored /tmp/work/MyProject/src/Backend/MyProject.WebAPI/MyProject.WebAPI.csproj (in 271 ms).
+  1 of 4 projects are up-to-date for restore.
+  MyProject.Domain -> /tmp/work/MyProject/src/Backend/MyProject.Domain/bin/Debug/net10.0/MyProject.Domain.dll
+  MyProject.Application -> /tmp/work/MyProject/src/Backend/MyProject.Application/bin/Debug/net10.0/MyProject.Application.dll
+  MyProject.Infrastructure -> /tmp/work/MyProject/src/Backend/MyProject.Infrastructure/bin/Debug/net10.0/MyProject.Infrastructure.dll
+  MyProject.WebAPI -> /tmp/work/MyProject/src/Backend/MyProject.WebAPI/bin/Debug/net10.0/MyProject.WebAPI.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.94
+
+# --- código de salida: 0

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MyProject.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Pedido usa el Producto de la variante sin precio (PrecioDeVenta). -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\ProductoSinPrecio\Domain\ProductoSinPrecio.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

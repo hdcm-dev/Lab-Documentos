@@ -1,0 +1,22 @@
+# V02 — registrar-pedido
+# fecha: 2026-09-19T22:55:07Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project Pedidos/Demo
+# ---
+Escenario principal: registrado, total 21000
+   pedidos guardados: 1, confirmaciones: 1
+2a producto inexistente: DomainException: No existe el producto 00000000-0000-0000-0000-000000000000.
+   pedidos guardados: 1, confirmaciones: 1
+3a producto sin precio: DomainException: 'Bombilla' no tiene precio: no se puede vender.
+   pedidos guardados: 1, confirmaciones: 1
+3b cantidad cero: DomainException: La cantidad debe ser mayor a cero.
+   pedidos guardados: 1, confirmaciones: 1
+4a pedido sin ítems: DomainException: No se confirma un pedido sin ítems.
+   pedidos guardados: 1, confirmaciones: 1
+3a después de asignar precio: registrado, total 2700
+   pedidos guardados: 2, confirmaciones: 2
+
+# --- código de salida: 0

@@ -1,0 +1,15 @@
+# V01 — producto-sin-precio
+# fecha: 2026-09-19T20:03:45Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project ProductoSinPrecio/Demo
+# ---
+1. Alta sin precio: Precio = null
+2. Vender sin precio: DomainException: 'Yerba 1 kg' no tiene precio: no se puede vender.
+3. Asignar precio -5: DomainException: El precio debe ser mayor a cero.
+4. Vender con precio: 4500
+5. Alta con precio 0: DomainException: El precio debe ser mayor a cero.
+
+# --- código de salida: 0

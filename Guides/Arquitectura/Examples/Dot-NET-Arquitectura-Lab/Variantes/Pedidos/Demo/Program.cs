@@ -1,58 +1,113 @@
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 using MyProject.Application.Common;
 using MyProject.Application.Pedidos.Commands.RegistrarPedido;
+using MyProject.Application.Productos.Commands.CambiarPrecioProducto;
 using MyProject.Domain.Common;
 using MyProject.Domain.Pedidos;
 using MyProject.Domain.Productos;
+using MyProject.Infrastructure.Persistence;
+using MyProject.Infrastructure.Persistence.Repositories;
 
-// Composition root de la demostración: dobles en memoria en lugar de EF Core.
-var yerba = Producto.Create("Yerba 1 kg", 4500m);
-var mate = Producto.Create("Mate", 12000m);
-var bombilla = Producto.Create("Bombilla");                    // llegó sin manifiesto de precios
+// Composition root de la demostración: EF Core sobre SQLite en memoria; la base vive mientras la conexión esté abierta.
+await using var conexion = new SqliteConnection("Data Source=:memory:");
+await conexion.OpenAsync();
+var contador = new ContadorDeConfirmaciones();                // observa cada SaveChanges del DbContext
 
-var productos = new ProductosEnMemoria(yerba, mate, bombilla);
-var pedidos = new PedidosEnMemoria();
-var unitOfWork = new UnitOfWorkContador();
-var handler = new RegistrarPedidoHandler(productos, pedidos, unitOfWork, TimeProvider.System);
+var services = new ServiceCollection();
+services.AddDbContext<AppDbContext>(o => o.UseSqlite(conexion).AddInterceptors(contador)); // Scoped: un DbContext por scope (por request en la API)
+services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<AppDbContext>());              // Scoped: el mismo DbContext del scope, visto como Unit of Work
+services.AddScoped<IProductoRepository, ProductoRepository>();                              // Scoped: comparte el DbContext del scope
+services.AddScoped<IPedidoRepository, PedidoRepository>();                                  // Scoped: ídem
+services.AddScoped<RegistrarPedidoHandler>();                                               // Scoped: vive lo que dura el request
+services.AddScoped<CambiarPrecioProductoHandler>();                                         // Scoped: ídem
+services.AddSingleton(TimeProvider.System);                                                 // Singleton: el reloj no tiene estado
+await using var provider = services.BuildServiceProvider();
 
-await Registrar("Escenario principal", [new(yerba.Id, 2), new(mate.Id, 1)]);
-await Registrar("2a producto inexistente", [new(yerba.Id, 1), new(Guid.Empty, 1)]);
-await Registrar("3a producto sin precio", [new(yerba.Id, 1), new(bombilla.Id, 1)]);
-await Registrar("3b cantidad cero", [new(mate.Id, 0)]);
-await Registrar("4a pedido sin ítems", []);
+// Carga inicial: crea el esquema y guarda los productos del enunciado.
+Guid yerba, mate, bombilla;
+using (var scope = provider.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.EnsureCreatedAsync();
+    var productos = scope.ServiceProvider.GetRequiredService<IProductoRepository>();
+    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+    var y = Producto.Create("Yerba 1 kg", 4500m);
+    var m = Producto.Create("Mate", 12000m);
+    var b = Producto.Create("Bombilla");                       // llegó sin manifiesto de precios
+    await productos.AddAsync(y); await productos.AddAsync(m); await productos.AddAsync(b);
+    await unitOfWork.SaveChangesAsync();
+    (yerba, mate, bombilla) = (y.Id, m.Id, b.Id);
+}
 
-bombilla.AsignarPrecio(900m);                                  // llegó el manifiesto
-await Registrar("3a después de asignar precio", [new(bombilla.Id, 3)]);
+var confirmacionesDePedidos = 0;                               // confirmaciones hechas por RegistrarPedidoHandler
+
+if (args is not ["cambiar-precio"])                            // V02: los escenarios del enunciado (§4.10)
+{
+    await Registrar("Escenario principal", [new(yerba, 2), new(mate, 1)]);
+    await Registrar("2a producto inexistente", [new(yerba, 1), new(Guid.Empty, 1)]);
+    await Registrar("3a producto sin precio", [new(yerba, 1), new(bombilla, 1)]);
+    await Registrar("3b cantidad cero", [new(mate, 0)]);
+    await Registrar("4a pedido sin ítems", []);
+
+    await CambiarPrecio(bombilla, 900m, conSeguimiento: true, mostrar: false);   // llegó el manifiesto: mismo Use Case que se mide abajo
+    await Registrar("3a después de asignar precio", [new(bombilla, 3)]);
+    Console.WriteLine();
+}
+
+// V03: Use Case de modificación, obtener → cambiar → SaveChangesAsync. Con seguimiento el cambio llega; sin seguimiento, no (§5.5).
+await CambiarPrecio(mate, 13000m, conSeguimiento: true);
+await CambiarPrecio(mate, 14000m, conSeguimiento: false);
+using (var scope = provider.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var precio = await db.Productos.Where(p => p.Id == mate).Select(p => p.Precio).SingleAsync();
+    Console.WriteLine($"Precio de 'Mate' en la base: {precio:G29}");
+}
 
 async Task Registrar(string caso, RegistrarPedidoItem[] items)
 {
+    using var scope = provider.CreateScope();                  // un scope por Use Case, como un request
+    var handler = scope.ServiceProvider.GetRequiredService<RegistrarPedidoHandler>();
+    var antes = contador.Total;
     try
     {
         var r = await handler.Handle(new RegistrarPedidoCommand(items));
-        Console.WriteLine($"{caso}: registrado, total {r.Total}");
+        Console.WriteLine($"{caso}: registrado, total {r.Total:G29}");   // G29: SQLite devuelve 21000.0; se muestra sin ceros
     }
     catch (DomainException ex)
     {
         Console.WriteLine($"{caso}: DomainException: {ex.Message}");
     }
-    Console.WriteLine($"   pedidos guardados: {pedidos.Guardados.Count}, confirmaciones: {unitOfWork.Confirmaciones}");
+    confirmacionesDePedidos += contador.Total - antes;
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    Console.WriteLine($"   pedidos guardados: {await db.Pedidos.CountAsync()}, confirmaciones: {confirmacionesDePedidos}");
 }
 
-class ProductosEnMemoria(params Producto[] productos) : IProductoRepository
+async Task CambiarPrecio(Guid productoId, decimal nuevoPrecio, bool conSeguimiento, bool mostrar = true)
 {
-    public Task<Producto?> GetByIdAsync(Guid id, CancellationToken ct = default) =>
-        Task.FromResult(productos.FirstOrDefault(p => p.Id == id));
-    public Task AddAsync(Producto producto, CancellationToken ct = default) => Task.CompletedTask;
+    using var scope = provider.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    // Con seguimiento: el Handler tal como lo registra el composition root.
+    // Sin seguimiento: el mismo Handler y el mismo DbContext, con el Repository de contraste armado a mano.
+    var handler = conSeguimiento
+        ? scope.ServiceProvider.GetRequiredService<CambiarPrecioProductoHandler>()
+        : new CambiarPrecioProductoHandler(new ProductoRepositorySinSeguimiento(db), db);
+    var nombre = await db.Productos.Where(p => p.Id == productoId).Select(p => p.Nombre).SingleAsync();
+    var filas = await handler.Handle(new CambiarPrecioProductoCommand(productoId, nuevoPrecio));
+    if (mostrar)
+        Console.WriteLine($"Cambiar precio de '{nombre}' a {nuevoPrecio} {(conSeguimiento ? "con seguimiento" : "sin seguimiento (AsNoTracking)")}: filas afectadas: {filas}");
 }
 
-class PedidosEnMemoria : IPedidoRepository
+// Interceptor de EF Core: cuenta las confirmaciones sin tocar el DbContext ni el Handler.
+class ContadorDeConfirmaciones : SaveChangesInterceptor
 {
-    public List<Pedido> Guardados { get; } = new();
-    public void Add(Pedido pedido) => Guardados.Add(pedido);
-}
-
-class UnitOfWorkContador : IUnitOfWork
-{
-    public int Confirmaciones { get; private set; }
-    // Cuenta confirmaciones; el doble no escribe filas, así que devuelve 0.
-    public Task<int> SaveChangesAsync(CancellationToken ct = default) { Confirmaciones++; return Task.FromResult(0); }
+    public int Total { get; private set; }
+    public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken ct = default)
+    {
+        Total++;
+        return base.SavedChangesAsync(eventData, result, ct);
+    }
 }

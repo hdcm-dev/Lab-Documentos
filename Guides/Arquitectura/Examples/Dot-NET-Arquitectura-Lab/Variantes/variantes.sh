@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Variantes de la guía de arquitectura .NET (§3.7 y §4.10): programas aparte, fuera de lab.sh y de MyProject/.
+# Variantes de la guía de arquitectura .NET (§3.7, §4.10 y §5.5): programas aparte, fuera de lab.sh y de MyProject/.
 # Se ejecuta dentro de mcr.microsoft.com/dotnet/sdk:10.0 con esta carpeta montada en /variantes:
 #   docker run --rm --user "$(id -u):$(id -g)" -e IMAGEN=... -e DIGEST=... \
 #     -v "$PWD":/variantes -w /variantes mcr.microsoft.com/dotnet/sdk:10.0 bash variantes.sh
@@ -33,4 +33,5 @@ cap V01 build-producto-sin-precio "dotnet build ProductoSinPrecio/Demo"
 cap V01 producto-sin-precio "dotnet run --no-build --project ProductoSinPrecio/Demo"
 cap V02 build-pedidos "dotnet build Pedidos/Demo"
 cap V02 registrar-pedido "dotnet run --no-build --project Pedidos/Demo"
+cap V03 cambiar-precio "dotnet run --no-build --project Pedidos/Demo -- cambiar-precio"
 find . -name bin -o -name obj | xargs rm -rf

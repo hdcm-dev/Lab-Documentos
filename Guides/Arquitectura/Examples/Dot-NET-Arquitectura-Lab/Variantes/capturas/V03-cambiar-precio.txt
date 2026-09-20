@@ -1,0 +1,13 @@
+# V03 — cambiar-precio
+# fecha: 2026-09-19T23:51:48Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project Pedidos/Demo -- cambiar-precio
+# ---
+Cambiar precio de 'Mate' a 13000 con seguimiento: filas afectadas: 1
+Cambiar precio de 'Mate' a 14000 sin seguimiento (AsNoTracking): filas afectadas: 0
+Precio de 'Mate' en la base: 13000
+
+# --- código de salida: 0

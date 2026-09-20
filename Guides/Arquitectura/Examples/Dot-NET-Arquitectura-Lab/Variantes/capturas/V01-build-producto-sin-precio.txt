@@ -1,5 +1,5 @@
 # V01 — build-producto-sin-precio
-# fecha: 2026-09-19T20:03:40Z
+# fecha: 2026-09-19T23:51:28Z
 # imagen: mcr.microsoft.com/dotnet/sdk:10.0
 # digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
 # sdk: 10.0.400
@@ -8,8 +8,8 @@
 # ---
 An issue was encountered verifying workloads. For more information, run "dotnet workload update".
   Determining projects to restore...
-  Restored /variantes/ProductoSinPrecio/Domain/ProductoSinPrecio.Domain.csproj (in 117 ms).
-  Restored /variantes/ProductoSinPrecio/Demo/ProductoSinPrecio.Demo.csproj (in 123 ms).
+  Restored /variantes/ProductoSinPrecio/Domain/ProductoSinPrecio.Domain.csproj (in 135 ms).
+  Restored /variantes/ProductoSinPrecio/Demo/ProductoSinPrecio.Demo.csproj (in 152 ms).
   ProductoSinPrecio.Domain -> /variantes/ProductoSinPrecio/Domain/bin/Debug/net10.0/ProductoSinPrecio.Domain.dll
   ProductoSinPrecio.Demo -> /variantes/ProductoSinPrecio/Demo/bin/Debug/net10.0/ProductoSinPrecio.Demo.dll
 
@@ -17,6 +17,6 @@ Build succeeded.
     0 Warning(s)
     0 Error(s)
 
-Time Elapsed 00:00:04.06
+Time Elapsed 00:00:04.11
 
 # --- código de salida: 0

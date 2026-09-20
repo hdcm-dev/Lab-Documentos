@@ -1,5 +1,5 @@
 # V02 — registrar-pedido
-# fecha: 2026-09-19T22:55:07Z
+# fecha: 2026-09-19T23:51:45Z
 # imagen: mcr.microsoft.com/dotnet/sdk:10.0
 # digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
 # sdk: 10.0.400
@@ -18,5 +18,9 @@ Escenario principal: registrado, total 21000
    pedidos guardados: 1, confirmaciones: 1
 3a después de asignar precio: registrado, total 2700
    pedidos guardados: 2, confirmaciones: 2
+
+Cambiar precio de 'Mate' a 13000 con seguimiento: filas afectadas: 1
+Cambiar precio de 'Mate' a 14000 sin seguimiento (AsNoTracking): filas afectadas: 0
+Precio de 'Mate' en la base: 13000
 
 # --- código de salida: 0

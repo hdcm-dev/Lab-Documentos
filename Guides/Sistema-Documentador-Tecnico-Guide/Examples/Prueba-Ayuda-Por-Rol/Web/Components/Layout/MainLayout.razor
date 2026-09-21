@@ -1,0 +1,38 @@
+@inherits LayoutComponentBase
+@inject IStringLocalizer<Textos> T
+@inject NavigationManager Nav
+
+<header class="barra">
+    <a class="marca" href="/">@T["Fábrica de Geometría"] <small>@T["demo de ayuda por rol"]</small></a>
+    <nav>
+        @if (_role is not null)
+        {
+            <span class="papel papel-@_role">@(_role == "Administrator" ? T["Administrador"] : T["Alumno"])</span>
+            <a href="/">@T["Panel"]</a>
+            <a href="/ayuda">@T["Ayuda"]</a>
+            <a href="/salir">@T["Salir"]</a>
+        }
+        <span class="idiomas">
+            @foreach (var c in new[] { "es", "en" })
+            {
+                <a class="@(c == _culture ? "activo" : "")" href="/cultura/@c?volver=@Uri.EscapeDataString(_path)">@c.ToUpperInvariant()</a>
+            }
+        </span>
+    </nav>
+</header>
+<main>@Body</main>
+<footer>@T["Prueba de concepto — no es Lab-Geometria. El contenido deriva de sus casos de uso CU-00022 a CU-00029."]</footer>
+
+@code {
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+    private string? _role;
+    private string _culture = "es";
+    private string _path = "/";
+
+    protected override void OnInitialized()
+    {
+        _role = HttpContext?.User.FindFirst("gf:role")?.Value;
+        _culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        _path = "/" + Nav.ToBaseRelativePath(Nav.Uri);
+    }
+}

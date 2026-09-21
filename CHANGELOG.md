@@ -2,13 +2,22 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
-## 2026-09-21 (reorganización)
+## 2026-09-21 (reorganización y guía nueva)
 
 ### Guides/Git-Flow-Guides/ — reubicación
 
 #### Cambiado
 
 - `Guides/GitFlow-Practice-Guide/` y `Guides/GitHubFlow-Practice-Guide/` pasan a `Guides/Git-Flow-Guides/`, que las agrupa como las dos variantes del mismo tema. Es una mudanza pura: los cuatro archivos no cambian un carácter y ningún documento del repositorio citaba las rutas viejas.
+
+### Guides/Sistema-Documentador-Tecnico-Guide/ — v1.0.0 (nueva)
+
+#### Añadido
+
+- **`Sistema-Documentador-Tecnico-Guide.md`** (759 líneas, `DOC-SDT-0001`, estado `draft`): apunte que responde si un portal de documentación como el de OneSignal nace de Markdown renderizado, y qué hace falta para montar uno propio. Verificado contra el sitio: lo genera Mintlify desde MDX más OpenAPI, y el fuente de cada página se obtiene agregando `.md` a la URL (§1). Sobre esa evidencia desarrolla el modelo *docs as code* (§2), las piezas de un sistema documentador (§3), audiencias y privilegios con la distinción entre papel de usuario y confidencialidad (§5), el caso de un panel .NET con Lab-Geometria —mismo repositorio o auxiliar, coherencia de ramas, quién renderiza— (§6), la documentación como fase del ciclo de desarrollo con sus estados, sus tres formas de envejecer y el deprecado (§8), preguntas guía para diseñar uno propio (§9), glosario (§11) y registro de evidencias (§12).
+- **§7 «Ayuda por rol en Lab-Geometria»**: propuesta completa —arquitectura, contrato del frontmatter, derivación desde la especificación, dónde se decide el papel, idiomas y validaciones en CI—, con prueba de concepto ejecutada.
+- **`Examples/Prueba-Ayuda-Por-Rol/`**: la prueba de concepto, en devcontainer reproducible (`dotnet:1-10.0`, puerto 5190). `Consola/` es el motor aislado —catálogo, filtro por papel, `llms.txt` y validador— y termina con `Validador: 3 fallas` y `[exit=1]` **a propósito**: dos defectos plantados y un tercero que encontró el validador por su cuenta. `Web/` es un panel Blazor .NET 10 con ingreso simulado por papel, ayuda contextual, `404` por rol que no filtra el título en el HTML, fuente `.md` servido, `llms.txt` recortado a la sesión y dos idiomas. El contenido deriva de los casos de uso CU-00022, CU-00023, CU-00024, CU-00026, CU-00028 y CU-00029 (v1.1) de Lab-Geometria, declarados en `traces`. Siete capturas del 2026-09-19.
+- **`Examples/Lanzar-Example.md`**: tool-prompt para levantar la prueba, exponerla por un túnel de Cloudflare y entregar la URL, con las variantes `--bajar` y `--estado`.
 
 ## 2026-09-21 (mesa de editores, ciclo 3)
 

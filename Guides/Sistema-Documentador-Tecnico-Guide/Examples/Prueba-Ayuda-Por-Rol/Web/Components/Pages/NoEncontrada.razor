@@ -1,0 +1,11 @@
+@page "/no-encontrada"
+@layout MainLayout
+@inject IStringLocalizer<Textos> T
+<PageTitle>404</PageTitle>
+
+<section class="no-encontrada">
+    <p class="codigo">404</p>
+    <h1>@T["Esta página no existe para tu papel."]</h1>
+    <p>@T["La ayuda de otro papel no se oculta: no se envía. Para el servidor, esta página no existe."]</p>
+    <p><a href="/ayuda">@T["Volver a la ayuda"]</a></p>
+</section>

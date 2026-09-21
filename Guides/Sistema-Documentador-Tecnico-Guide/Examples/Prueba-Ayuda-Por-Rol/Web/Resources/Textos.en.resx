@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Fábrica de Geometría" xml:space="preserve"><value>Geometry Factory</value></data>
+  <data name="demo de ayuda por rol" xml:space="preserve"><value>role-based help demo</value></data>
+  <data name="Administrador" xml:space="preserve"><value>Administrator</value></data>
+  <data name="Alumno" xml:space="preserve"><value>Student</value></data>
+  <data name="Panel" xml:space="preserve"><value>Panel</value></data>
+  <data name="Ayuda" xml:space="preserve"><value>Help</value></data>
+  <data name="Salir" xml:space="preserve"><value>Sign out</value></data>
+  <data name="Ingresar" xml:space="preserve"><value>Sign in</value></data>
+  <data name="Prueba de concepto — no es Lab-Geometria. El contenido deriva de sus casos de uso CU-00022 a CU-00029." xml:space="preserve"><value>Proof of concept — this is not Lab-Geometria. The content is derived from its use cases CU-00022 to CU-00029.</value></data>
+  <data name="Elegí con qué papel entrar" xml:space="preserve"><value>Choose a role to sign in with</value></data>
+  <data name="Es un ingreso simulado. En Lab-Geometria el papel lo emite el servicio al canjear las credenciales; acá se elige con un clic para comparar lo que ve cada uno." xml:space="preserve"><value>This is a simulated sign-in. In Lab-Geometria the role is issued by the service when credentials are exchanged; here you pick it with one click to compare what each role sees.</value></data>
+  <data name="Envía trabajos y lee sus observaciones." xml:space="preserve"><value>Submits work and reads its findings.</value></data>
+  <data name="Gobierna las cuentas y da desenlace a las revisiones." xml:space="preserve"><value>Manages accounts and decides reviews.</value></data>
+  <data name="Probá: entrá como alumno y pedí /ayuda/administrador/gobernar-las-cuentas — responde 404." xml:space="preserve"><value>Try it: sign in as a student and request /ayuda/administrador/gobernar-las-cuentas — it returns 404.</value></data>
+  <data name="Panel del administrador" xml:space="preserve"><value>Administrator panel</value></data>
+  <data name="Panel del alumno" xml:space="preserve"><value>Student panel</value></data>
+  <data name="Pantallas simuladas. Cada una lleva su ayuda contextual: el enlace sólo aparece si el papel puede ver la página." xml:space="preserve"><value>Simulated screens. Each one carries its contextual help: the link only appears if your role can see the page.</value></data>
+  <data name="Tu contraseña" xml:space="preserve"><value>Your password</value></data>
+  <data name="Cambiala cuando quieras, o cuando el laboratorio te lo pida." xml:space="preserve"><value>Change it whenever you like, or when the lab asks you to.</value></data>
+  <data name="Enviar un trabajo" xml:space="preserve"><value>Submit work</value></data>
+  <data name="Pegá el texto que emitió tu programa." xml:space="preserve"><value>Paste the text your program printed.</value></data>
+  <data name="Mis trabajos" xml:space="preserve"><value>My work</value></data>
+  <data name="Tus envíos, su estado y el desenlace de la revisión." xml:space="preserve"><value>Your submissions, their state and the review outcome.</value></data>
+  <data name="Cuentas de la comisión" xml:space="preserve"><value>Class accounts</value></data>
+  <data name="Habilitar, bloquear, rehabilitar y dar de baja." xml:space="preserve"><value>Enable, block, re-enable and remove.</value></data>
+  <data name="Reseteo de contraseña" xml:space="preserve"><value>Password reset</value></data>
+  <data name="Para el alumno que olvidó la suya." xml:space="preserve"><value>For the student who forgot theirs.</value></data>
+  <data name="Revisión" xml:space="preserve"><value>Review</value></data>
+  <data name="Aprobar o rechazar los trabajos pendientes." xml:space="preserve"><value>Approve or reject pending work.</value></data>
+  <data name="¿Cómo se hace?" xml:space="preserve"><value>How do I do it?</value></data>
+  <data name="Sin traducir" xml:space="preserve"><value>Not translated</value></data>
+  <data name="Elegí un tema. Ves sólo las páginas de tu papel." xml:space="preserve"><value>Pick a topic. You only see the pages for your role.</value></data>
+  <data name="Esta página no existe para tu papel." xml:space="preserve"><value>This page does not exist for your role.</value></data>
+  <data name="Esta página todavía no está traducida; se muestra en el idioma original." xml:space="preserve"><value>This page has not been translated yet; it is shown in its original language.</value></data>
+  <data name="Deriva de" xml:space="preserve"><value>Derived from</value></data>
+  <data name="Visible para" xml:space="preserve"><value>Visible to</value></data>
+  <data name="Fuente" xml:space="preserve"><value>Source</value></data>
+  <data name="La ayuda de otro papel no se oculta: no se envía. Para el servidor, esta página no existe." xml:space="preserve"><value>Help for another role is not hidden: it is never sent. As far as the server is concerned, this page does not exist.</value></data>
+  <data name="Volver a la ayuda" xml:space="preserve"><value>Back to help</value></data>
+</root>

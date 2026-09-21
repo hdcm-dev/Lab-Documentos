@@ -1,0 +1,53 @@
+Catálogo: 3 páginas → administrador/habilitar-cuentas, alumno/entregar-trabajo, comun/ingresar
+
+== Rol Student: navegación
+     1  /ayuda/comun/ingresar  «Ingresar al laboratorio»
+    10  /ayuda/alumno/entregar-trabajo  «Entregar un trabajo»
+   GET administrador/habilitar-cuentas → 404
+-- llms.txt (Student)
+# Ayuda de Fábrica de Geometría (Student)
+- [Ingresar al laboratorio](/ayuda/comun/ingresar.md): Cómo entrar con la cuenta que te habilitaron.
+- [Entregar un trabajo](/ayuda/alumno/entregar-trabajo.md): Pegar la salida del programa y leer las discrepancias.
+
+== Rol Administrator: navegación
+     1  /ayuda/comun/ingresar  «Ingresar al laboratorio»
+    10  /ayuda/administrador/habilitar-cuentas  «Habilitar cuentas»
+   GET administrador/habilitar-cuentas → 200
+-- llms.txt (Administrator)
+# Ayuda de Fábrica de Geometría (Administrator)
+- [Ingresar al laboratorio](/ayuda/comun/ingresar.md): Cómo entrar con la cuenta que te habilitaron.
+- [Habilitar cuentas](/ayuda/administrador/habilitar-cuentas.md): Alta, bloqueo y reseteo desde /cuentas.
+
+== HTML de comun/ingresar (Student) — ¿se escapa el <script>?
+<h1 id="ingresar-al-laboratorio">Ingresar al laboratorio</h1>
+<p>Entrá con el correo y la contraseña provisoria. Después, si sos alumno, seguí con <a href="../alumno/entregar-trabajo.md">Entregar un trabajo</a>.</p>
+<p>&lt;script&gt;alert('x')&lt;/script&gt;</p>
+
+== HTML de la tabla (Administrator)
+<h1 id="habilitar-cuentas">Habilitar cuentas</h1>
+<table>
+<thead>
+<tr>
+<th>Operación</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Habilitar</td>
+<td>Crea la cuenta con contraseña provisoria</td>
+</tr>
+<tr>
+<td>Bloquear</td>
+<td>Impide el ingreso</td>
+</tr>
+</tbody>
+</table>
+<p>Ver también <a href="../comun/ingresar.md">Ingresar</a> y <a href="../comun/no-existe.md">algo que no existe</a>.</p>
+
+FALLA enlace roto: administrador/habilitar-cuentas → ../comun/no-existe.md
+FALLA cruce de rol: alumno/entregar-trabajo → administrador/habilitar-cuentas; Student no puede verla
+FALLA cruce de rol: comun/ingresar → alumno/entregar-trabajo; Administrator no puede verla
+
+Validador: 3 fallas
+[exit=1]

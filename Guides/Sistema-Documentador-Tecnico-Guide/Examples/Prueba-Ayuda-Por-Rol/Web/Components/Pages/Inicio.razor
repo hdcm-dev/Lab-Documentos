@@ -1,0 +1,42 @@
+@page "/"
+@attribute [Authorize]
+@inject IStringLocalizer<Textos> T
+<PageTitle>@T["Panel"]</PageTitle>
+
+<h1>@(_admin ? T["Panel del administrador"] : T["Panel del alumno"])</h1>
+<p class="bajada">@T["Pantallas simuladas. Cada una lleva su ayuda contextual: el enlace sólo aparece si el papel puede ver la página."]</p>
+
+<div class="pantallas">
+    @foreach (var (titulo, texto, tema) in _admin ? Admin : Alumno)
+    {
+        <article class="pantalla">
+            <h2>@T[titulo]</h2>
+            <p>@T[texto]</p>
+            <AyudaContextual Tema="@tema" />
+        </article>
+    }
+    <article class="pantalla">
+        <h2>@T["Tu contraseña"]</h2>
+        <p>@T["Cambiala cuando quieras, o cuando el laboratorio te lo pida."]</p>
+        <AyudaContextual Tema="contrasena" />
+    </article>
+</div>
+
+@code {
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+    private bool _admin;
+    private static readonly (string, string, string)[] Alumno =
+    [
+        ("Enviar un trabajo", "Pegá el texto que emitió tu programa.", "envio"),
+        ("Mis trabajos", "Tus envíos, su estado y el desenlace de la revisión.", "mis-trabajos"),
+    ];
+    private static readonly (string, string, string)[] Admin =
+    [
+        ("Cuentas de la comisión", "Habilitar, bloquear, rehabilitar y dar de baja.", "cuentas"),
+        ("Reseteo de contraseña", "Para el alumno que olvidó la suya.", "reseteo"),
+        ("Revisión", "Aprobar o rechazar los trabajos pendientes.", "desenlace"),
+    ];
+
+    protected override void OnInitialized() =>
+        _admin = HttpContext?.User.FindFirst("gf:role")?.Value == "Administrator";
+}

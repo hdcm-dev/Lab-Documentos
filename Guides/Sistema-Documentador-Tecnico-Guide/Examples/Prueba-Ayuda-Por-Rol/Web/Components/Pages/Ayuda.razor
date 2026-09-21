@@ -1,0 +1,60 @@
+@page "/ayuda"
+@page "/ayuda/{*Slug}"
+@attribute [Authorize]
+@inject HelpCatalog Catalog
+@inject IStringLocalizer<Textos> T
+@inject NavigationManager Nav
+<PageTitle>@(_hit?.Page.Meta.Title ?? T["Ayuda"])</PageTitle>
+
+<div class="ayuda">
+    <aside>
+        <h2>@T["Ayuda"]</h2>
+        <ul>
+            @foreach (var r in _nav)
+            {
+                <li class="@(r.Page.Slug == Slug ? "activo" : "")">
+                    <a href="/ayuda/@r.Page.Slug">@r.Page.Meta.Title</a>
+                    @if (r.IsFallback) { <em class="sin-traducir" title="@T["Sin traducir"]">es</em> }
+                </li>
+            }
+        </ul>
+        <p class="crudo"><a href="/ayuda/llms.txt">llms.txt</a></p>
+    </aside>
+    <article>
+        @if (Slug is null)
+        {
+            <h1>@T["Ayuda"]</h1>
+            <p>@T["Elegí un tema. Ves sólo las páginas de tu papel."]</p>
+        }
+        else if (_hit is not null)
+        {
+            @if (_hit.IsFallback)
+            {
+                <p class="aviso">@T["Esta página todavía no está traducida; se muestra en el idioma original."]</p>
+            }
+            @((MarkupString)HelpCatalog.ToHtml(_hit.Page))
+            <dl class="meta">
+                <dt>@T["Deriva de"]</dt><dd>@string.Join(", ", _hit.Access.Traces)</dd>
+                <dt>@T["Visible para"]</dt><dd>@string.Join(", ", _hit.Access.Roles)</dd>
+                <dt>@T["Fuente"]</dt><dd><a href="/ayuda/@(_hit.Page.Slug).md">@(_hit.Page.Culture)/@(_hit.Page.Slug).md</a></dd>
+            </dl>
+        }
+    </article>
+</div>
+
+@code {
+    [Parameter] public string? Slug { get; set; }
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+    private IReadOnlyList<HelpResult> _nav = [];
+    private HelpResult? _hit;
+
+    protected override void OnParametersSet()
+    {
+        var role = HttpContext?.User.FindFirst("gf:role")?.Value ?? "";
+        var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        _nav = Catalog.Navigation(role, culture);
+        if (Slug is null) return;
+        _hit = Catalog.Get(Slug, role, culture);
+        if (_hit is null) Nav.NotFound();   // mismo 404 que un recurso inexistente
+    }
+}

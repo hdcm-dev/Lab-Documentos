@@ -1,0 +1,21 @@
+@inject HelpCatalog Catalog
+@inject IStringLocalizer<Textos> T
+@* Enlace desde una pantalla a su página de ayuda. Si el rol no puede verla, no se dibuja nada. *@
+@if (_hit is not null)
+{
+    <a class="ayuda-contextual" href="/ayuda/@_hit.Page.Slug">
+        <span aria-hidden="true">?</span> @T["¿Cómo se hace?"] — @_hit.Page.Meta.Title
+    </a>
+}
+
+@code {
+    [Parameter, EditorRequired] public string Tema { get; set; } = "";
+    [CascadingParameter] public HttpContext? HttpContext { get; set; }
+    private HelpResult? _hit;
+
+    protected override void OnInitialized()
+    {
+        var role = HttpContext?.User.FindFirst("gf:role")?.Value ?? "";
+        _hit = Catalog.ByTopic(Tema, role, CultureInfo.CurrentUICulture.TwoLetterISOLanguageName);
+    }
+}

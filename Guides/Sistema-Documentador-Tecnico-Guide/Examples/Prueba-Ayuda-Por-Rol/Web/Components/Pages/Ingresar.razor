@@ -1,0 +1,19 @@
+@page "/ingresar"
+@inject IStringLocalizer<Textos> T
+<PageTitle>@T["Ingresar"]</PageTitle>
+
+<section class="ingreso">
+    <h1>@T["Elegí con qué papel entrar"]</h1>
+    <p>@T["Es un ingreso simulado. En Lab-Geometria el papel lo emite el servicio al canjear las credenciales; acá se elige con un clic para comparar lo que ve cada uno."]</p>
+    <div class="tarjetas">
+        <a class="tarjeta" href="/entrar/Student">
+            <strong>@T["Alumno"]</strong>
+            <span>@T["Envía trabajos y lee sus observaciones."]</span>
+        </a>
+        <a class="tarjeta" href="/entrar/Administrator">
+            <strong>@T["Administrador"]</strong>
+            <span>@T["Gobierna las cuentas y da desenlace a las revisiones."]</span>
+        </a>
+    </div>
+    <p class="nota">@T["Probá: entrá como alumno y pedí /ayuda/administrador/gobernar-las-cuentas — responde 404."]</p>
+</section>

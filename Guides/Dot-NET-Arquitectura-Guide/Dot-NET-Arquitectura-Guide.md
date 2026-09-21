@@ -2,7 +2,7 @@
 doc_id: GUIA-NET-ARQ
 doc_type: study-guide
 title: Arquitectura de soluciones .NET — guía de estudio y de criterios
-version: 2.3.0
+version: 2.4.0
 status: vigente
 origin: ai-assisted
 confidence: alta en lo capturado en laboratorio; media en lo rotulado como criterio de esta guía
@@ -61,7 +61,7 @@ Se supone C# básico: qué es una clase, un método y una propiedad, y cómo se 
 | **Recorrido** | §1 → §9, ejecutando cada paso de laboratorio en orden | Quien estudia el tema por primera vez |
 | **Consulta** | Directo a [§9.1](#91-mapa-de-entrada-dónde-está-el-problema) (mapa de entrada) y de ahí al capítulo que corresponda; [§7](#7-cada-objeto-responde-una-pregunta) para decidir qué clase usar | Quien ya diseña y necesita un criterio puntual |
 
-En las Partes I y II el orden de cada capítulo es fijo: prerrequisitos, definiciones —cada una con la remisión al bloque de código que la materializa—, decisiones formuladas como pregunta —con la respuesta en una línea en negrita, su porqué y, cuando la pregunta admite más de una manera de resolverla, ejemplos que cumplen (✅) y que no cumplen (❌); cuando se responde con un experimento, el contraste lo da la salida registrada—, práctica y una pregunta de cierre sobre cuándo no aplica lo visto. Debajo de los bloques **[Compilado]** que materializan una definición, una tabla «línea → concepto» dice qué definición encarna cada línea. La Parte III no define: entra por una tabla (§7.1, §9.1), sigue con preguntas y termina en un criterio de una línea (§9.8) y en ejercicios (§9.7).
+En las Partes I y II el orden de cada capítulo es fijo: prerrequisitos, definiciones —cada una con la remisión al bloque de código que la materializa—, decisiones formuladas como pregunta —con la respuesta primero, en negrita, su porqué y, cuando la pregunta admite más de una manera de resolverla, ejemplos que cumplen (✅) y que no cumplen (❌); cuando se responde con un experimento, el contraste lo da la salida registrada—, práctica y una pregunta de cierre sobre cuándo no aplica lo visto. Debajo de los bloques **[Compilado]** que materializan una definición, una tabla «línea → concepto» dice qué definición encarna cada línea. La Parte III no define: entra por una tabla (§7.1, §9.1), sigue con preguntas y termina en un criterio de una línea (§9.8) y en ejercicios (§9.7).
 
 ### 0.4 El problema conductor
 
@@ -87,7 +87,7 @@ Los escenarios describen situaciones, no estructuras: la estructura de partida d
 | **[Compilado sin captura: `Conceptos-DI/…`]** | Programa aparte que compiló con SDK 10.0.400 y cero advertencias y se ejecutó con `dotnet run`, pero que ningún guion corre y no tiene salida versionada (§2.2) |
 | **[Fragmento ilustrativo: motivo]** | El bloque no forma parte del código final del laboratorio: o no se compiló, o se compiló solo para provocar un error y se eliminó, o es un programa aparte que ilustra un concepto; el motivo se declara. `[Fragmento ilustrativo: contraejemplo]` marca el código que muestra lo que **no** conviene hacer |
 | **Criterio de esta guía** | Recomendación propia, no una norma ni un dato externo |
-| [Autor, año](#anexo-e-referencias) | Afirmación respaldada por la fuente citada en el Anexo E |
+| [Autor, año](#anexo-e-referencias) | Afirmación respaldada por la fuente citada en el Anexo E. Toda cita de un **mecanismo** viene con tres cosas: el texto de la fuente, qué implica para quien diseña y el código que lo materializa; una cita va sola sólo cuando habla del método de esta guía y no de un mecanismo |
 | Tipo nombrado sin código | Los tipos que dan nombre a una definición se muestran en la sección donde se usan; los auxiliares (`DomainException`, `DependencyInjection.cs`, `ObtenerProductoPorIdHandler`…) se nombran sin código y su archivo completo está en [`Examples/Dot-NET-Arquitectura-Lab/MyProject/`](Examples/Dot-NET-Arquitectura-Lab/MyProject/), en la carpeta que indica su espacio de nombres (`MyProject.Domain.Productos` → `src/Backend/MyProject.Domain/Productos/`); se copia desde ahí antes de compilar el paso. Los archivos intermedios que un paso reemplaza (`InMemoryProductoRepository`, el `Program.cs` de L13, `Intento.cs`) no están en `MyProject/`: viven en `lab.sh`, con el número de línea indicado donde se los nombra |
 
 Qué recorta un extracto: los bloques de salida omiten líneas que no hacen al punto (encabezados HTTP, avisos de restauración) y acortan las rutas absolutas con `...`; una línea larga puede partirse en dos con sangría; una línea `...` sola marca líneas quitadas dentro de un bloque. Nunca se altera el texto de una línea mostrada. Los bloques **[Compilado]** omiten la declaración de la clase, los `using` y los miembros que no hacen al punto, y no reescriben ninguna expresión.
@@ -252,10 +252,10 @@ dotnet build
 
 - **Dependencia.** El código A depende de B si A no compila o no funciona sin B. En .NET, entre proyectos, se declara con una referencia (§1.1).
 - **Interfaz.** Tipo de C# que declara métodos sin implementarlos (`interface IProductoRepository`). Quien la usa depende de la declaración, no de una implementación concreta.
-- **Regla de dependencia.** Principio de Clean Architecture: las dependencias del código fuente apuntan solo hacia adentro, hacia las políticas de mayor nivel; nada de un círculo interior puede nombrar algo de un círculo exterior ([Martin, 2012](#ref-martin-2012)).
+- **Regla de dependencia.** Principio de Clean Architecture: las dependencias del código fuente apuntan solo hacia adentro, hacia las políticas de mayor nivel; nada de un círculo interior puede nombrar algo de un círculo exterior ([Martin, 2012](#ref-martin-2012)). La formulación es anterior: Evans ya mandaba «Partition a complex program into layers. Develop a design within each layer that is cohesive and that depends only on the layers below» ([Evans, 2015](#ref-evans-2015), *Layered Architecture*, p. 10). Qué implica: no es una regla de orden sino de dirección —lo de abajo no puede nombrar lo de arriba—, y el compilador la hace cumplir cuando cada capa es un proyecto. → §3.3, `IProductoRepository.cs` (la interfaz, adentro) y §5.5, `ProductoRepository.cs` (la implementación, afuera); el error CS0234 de L07 es la regla haciéndose cumplir.
 - **Inversión de dependencias.** Cuando el código de adentro necesita algo de afuera (guardar datos), declara una interfaz adentro y la implementación vive afuera. La flecha del código queda apuntando hacia adentro aunque la llamada vaya hacia afuera ([Martin, 2012](#ref-martin-2012)).
 - **Inyección de dependencias (DI).** Mecanismo por el cual un **contenedor** entrega a cada clase las implementaciones de las interfaces que pide en su constructor. En ASP.NET Core viene incluido (`builder.Services`).
-- **Composition root.** El único lugar del programa que conoce todas las piezas y registra en el contenedor qué implementación corresponde a cada interfaz. En esta guía es `Program.cs` de la WebAPI. → §2.5, `Program.cs`, l. 14–18; el ciclo de vida de cada registro, en la tabla que lo sigue.
+- **Composition root.** El único lugar del programa que conoce todas las piezas y registra en el contenedor qué implementación corresponde a cada interfaz. El término es de Mark Seemann, que lo define como «a (preferably) unique location in an application where modules are composed together» y lo ubica lo más cerca posible del punto de entrada ([Seemann, 2011](#ref-seemann-2011)). En esta guía es `Program.cs` de la WebAPI. → §2.5, `Program.cs`, l. 14–18; el ciclo de vida de cada registro, en la tabla que lo sigue.
 
 Martin describe cuatro círculos. Su correspondencia con los proyectos de la guía es esta, y el anidamiento de los círculos expresa **dependencia, no ubicación**: los proyectos son hermanos en disco y en espacios de nombres; la cebolla existe solo en sus referencias.
 
@@ -566,14 +566,12 @@ Cuatro preguntas, en orden:
 | 3 | ¿Vale siempre, o solo antes de una acción (vender, facturar, despachar)? | Si vale siempre, es una *Invariant*: se verifica al crear el objeto y en cada método que cambia el dato | Es la *Precondition* de esa acción: va en el método de la acción, no en la creación (§3.7) |
 | 4 | Si se incumple, ¿el mensaje de error lo entiende quien administra el catálogo? | Confirma la 1: «El precio debe ser mayor a cero» | Revisar la 1: «String or binary data would be truncated» es de la base, no del negocio |
 
-Lo que decide no es el texto de la condición sino su razón. El mismo «el nombre admite hasta *n* caracteres» puede ser cualquiera de las dos cosas:
+Lo que decide no es el texto de la condición sino su razón. El mismo «el nombre admite hasta *n* caracteres» puede ser cualquiera de las dos cosas (la pregunta siguiente —si la regla que pasó el filtro es una *Invariant* o no— la contesta una sola tabla, la de §3.7):
 
 | Condición | ¿Business Rule? | Dónde va |
 | --- | --- | --- |
 | El precio es mayor a cero | Sí: vale en papel y por cualquier entrada; en esta tienda, además, vale desde el alta (§0.4) | `Producto.Create` (§3.3); en la variante del §3.7, `AsignarPrecio` |
-| No se vende un producto sin precio | Sí, pero vale antes de vender, no siempre | `Producto.PrecioDeVenta`, en la variante del §3.7 |
 | No se suman montos de monedas distintas | Sí, y habla de un valor, no de un producto | `Dinero.Sumar` (§3.3) |
-| Un pedido confirmado no se modifica | Sí; aparece con los pedidos (§0.4) | La *Entity* `Pedido` (§4.10) |
 | El nombre admite hasta 40 caracteres porque es lo que entra en la etiqueta de la góndola | Sí: la pide el negocio | `Producto.Create` |
 | El nombre admite hasta 200 caracteres porque la columna es `nvarchar(200)` | No: la impone la base | Configuración de EF Core (Infrastructure) |
 | El precio llega como número en el JSON | No: la impone el formato del transporte | WebAPI; `[ApiController]` responde 400 (§5.6, L19) |
@@ -638,7 +636,7 @@ public record Dinero(decimal Monto, string Moneda)
 
 El movimiento que llevó hasta acá se ve en dos líneas: el «antes» es `public Producto(string nombre, decimal precio)`, que cualquiera invoca con `new` y que no puede rechazar ni elegir qué devolver; el «después» es el par `private Producto() { }` + `public static Producto Create(...)` del bloque de arriba, que es *Replace Constructor with Factory Function* (§3.1) aplicado. El constructor privado sin parámetros no es un segundo camino de alta: no sabe recibir datos. Es el camino del ORM (§5.4), y `Create` lo usa por inicializador de objeto. Si alguna vez hay dos constructores, el que tiene parámetros es el de constitución y el sin parámetros sigue siendo el del motor de datos.
 
-`Dinero` es el núcleo del patrón *Money* de PoEAA: un *Value Object* con moneda cuya suma rechaza monedas distintas (el patrón completo también multiplica y reparte) ([Fowler, 2002](#ref-fowler-2002), `money.html`). Lo que distingue al *Value Object* de la *Entity* —la igualdad por datos— y la *Postcondition* de `Create` —el producto queda activo, con el precio dado— no se ven en `Producto.cs` ni en `Dinero.cs`: están escritas como pruebas, que es lo que Evans indica cuando el lenguaje no tiene cláusulas para las aserciones (§3.6):
+`Dinero` es el núcleo del patrón *Money* de PoEAA: un *Value Object* con moneda cuya suma rechaza monedas distintas (el patrón completo también multiplica y reparte) ([Fowler, 2002](#ref-fowler-2002), `money.html`). Lo que distingue al *Value Object* de la *Entity* —la igualdad por datos— y la *Postcondition* de `Create` —el producto queda activo, con el precio dado— no se ven en `Producto.cs` ni en `Dinero.cs`: están escritas como pruebas, que es lo que Evans indica cuando el lenguaje no tiene cláusulas para las aserciones: «If assertions cannot be coded directly in your programming language, write automated unit tests for them» ([Evans, 2015](#ref-evans-2015)). Qué implica: una *Postcondition* sin cláusula no se documenta en un comentario, se escribe como prueba y se la ve fallar (§4.6):
 
 **[Compilado: `MyProject/tests/Backend/MyProject.Domain.Tests/ProductoTests.cs`, l. 12–23]**
 
@@ -710,7 +708,7 @@ Build FAILED.
 
 **Respuesta: entonces no hay Invariant que proteger, y una clase con propiedades públicas es honesta.**
 
-Una Entity sin reglas —un catálogo de rubros con código y descripción, por ejemplo— no gana nada con constructor privado y Factory Method. Fowler llama *Domain Model* al objeto que reúne datos y comportamiento, y *Transaction Script* a organizar la lógica como procedimientos, uno por cada petición ([Fowler, 2002](#ref-fowler-2002)); los dos son legítimos, y el segundo es la opción natural cuando el comportamiento es poco (escenario E-A). La señal para pasar de uno a otro es que la misma validación empiece a escribirse en más de un lugar: Fowler nombra esa duplicación entre transacciones como un problema típico del *Transaction Script* y avisa que el punto de corte no se puede cuantificar ([Fowler, 2002, p. 111](#ref-fowler-2002)); la señal es observable y el umbral lo fija cada equipo (**Criterio de esta guía**).
+Una Entity sin reglas —un catálogo de rubros con código y descripción, por ejemplo— no gana nada con constructor privado y Factory Method. Fowler llama *Domain Model* al objeto que reúne datos y comportamiento, y *Transaction Script* a organizar la lógica como procedimientos, uno por cada petición ([Fowler, 2002](#ref-fowler-2002)); los dos son legítimos, y el segundo es la opción natural cuando el comportamiento es poco (escenario E-A). Lo que no es legítimo es quedarse a mitad de camino, y Evans dice por dónde se escapa la lógica: «Domain logic moves into queries and application layer code, and the entities and value objects become mere data containers» ([Evans, 2015](#ref-evans-2015), *Repositories*, p. 17). Qué implica para quien diseña: la señal no es «la clase tiene setters», es que las reglas aparecen escritas en las consultas y en los handlers; el `Producto` de §3.3 está del otro lado porque `Create` y `Desactivar` son suyos. La señal para pasar de uno a otro es que la misma validación empiece a escribirse en más de un lugar: Fowler nombra esa duplicación entre transacciones como un problema típico del *Transaction Script* y avisa que el punto de corte no se puede cuantificar ([Fowler, 2002, p. 111](#ref-fowler-2002)); la señal es observable y el umbral lo fija cada equipo (**Criterio de esta guía**).
 
 ### 3.6 ¿Dónde vive una Business Rule en un programa orientado a objetos?
 
@@ -748,6 +746,29 @@ Una *Invariant* no se sostiene con una guarda sino con tres piezas que trabajan 
 | *Authorization* | ¿Depende de quién pide? | Antes de la acción | *Use Case* o borde, que conocen al usuario | Hipotético: solo quien administra el catálogo da de alta |
 | *Derivation* | ¿Se calcula o se infiere de otros datos? | Cada vez que se pide | Método o propiedad sin setter; no se guarda | `Pedido.Total` (§4.10) |
 
+Esta tabla dice **de qué tipo** es una regla; si además es una *Invariant* y en qué método vive, lo decide la clasificación del §3.7, que es la única de la guía que clasifica reglas una por una. Los tres tipos del BRG se ven juntos en cuatro líneas de código ya compilado:
+
+**[Compilado: `Variantes/ProductoSinPrecio/Domain/Productos/Producto.cs`, l. 11 y 28–31, y `Variantes/Pedidos/Domain/Pedidos/Pedido.cs`, l. 15]**
+
+```csharp
+    public decimal? Precio { get; private set; }   // Structural Assertion: el precio puede faltar
+
+    public void AsignarPrecio(decimal precio)
+    {
+        if (precio <= 0)
+            throw new DomainException("El precio debe ser mayor a cero.");
+
+    public decimal Total => _items.Sum(i => i.Subtotal);    // Derivation: se calcula, no se guarda
+```
+
+| Línea o miembro | Concepto | Dónde se define |
+| --- | --- | --- |
+| `decimal? Precio { get; private set; }` | *Structural Assertion*: afirma que el precio **puede** existir; en objetos, estructura | §3.6 |
+| `if (precio <= 0) throw …` dentro de `AsignarPrecio` | *Action Assertion*, en su forma *integrity constraint*: restringe el comportamiento que cambia el estado | §3.6 |
+| `Total => _items.Sum(...)` | *Derivation*: se obtiene por cálculo y no se guarda, así que no puede contradecir a los ítems | §3.6, §4.10 |
+
+Los comentarios son del fuente, no de la página: el laboratorio nombra los tres tipos en el código, que es lo que el informe del BRG pide cuando dice que las *Structural Assertions* «describe possibilities» y las *Action Assertions* «impose constraints».
+
 Un *Domain Model*, en el que datos y comportamiento viven juntos ([Fowler, 2002](#ref-fowler-2002)), es un modelo donde las *Action Assertions* y las *Derivations* viven en los objetos que conocen los datos. Si las clases tienen solo la estructura y las reglas están en los servicios, el resultado es lo que Fowler llama *Anemic Domain Model* ([Fowler, 2003](#ref-fowler-2003)); el §9.6 muestra la señal que lo delata.
 
 | | |
@@ -759,23 +780,19 @@ Un *Domain Model*, en el que datos y comportamiento viven juntos ([Fowler, 2002]
 
 **Respuesta: si vale siempre, es una Invariant de la Entity; si vale solo antes de una acción, es la Precondition de esa acción, y ponerla en la creación del objeto bloquea casos legítimos.**
 
-El ejemplo de la guía trata «el precio es mayor a cero» como *Invariant* de `Producto` desde el alta, porque así lo decidió la tienda del §0.4. Otra tienda puede objetarlo: la mercadería llega a veces sin el manifiesto de precios, y hay que registrarla igual. La objeción no invalida la prueba del papel —el cuaderno del depósito anota la yerba sin precio— sino que muestra que la regla del laboratorio junta dos:
+El ejemplo de la guía trata «el precio es mayor a cero» como *Invariant* de `Producto` desde el alta, porque así lo decidió la tienda del §0.4. Otra tienda puede objetarlo: la mercadería llega a veces sin el manifiesto de precios, y hay que registrarla igual. La objeción no invalida la prueba del papel —el cuaderno del depósito anota la yerba sin precio— sino que muestra que la regla del laboratorio junta dos: una que vale siempre y otra que vale antes de vender.
 
-| Regla | Cuándo vale | Tipo |
-| --- | --- | --- |
-| El producto puede no tener precio todavía | Siempre | *Structural Assertion* |
-| Si tiene precio, es mayor a cero | Siempre | *Invariant* de la *Entity* |
-| No se vende un producto sin precio | Antes de vender | *Precondition* del acto de vender |
-
-Las dos primeras condiciones del §3.1 se usan como filtro —la tercera, «si se rompe, el objeto no debería existir», es la consecuencia de que las dos se cumplan—. Basta que falle una para que la regla no sea *Invariant*, y entonces la guía ya dice dónde va:
+Esta es **la** clasificación de la guía: §3.2 decide si la regla es del negocio y §3.6 de qué tipo es; acá se decide si es una *Invariant* y dónde va. Las dos primeras condiciones del §3.1 se usan como filtro —la tercera, «si se rompe, el objeto no debería existir», es la consecuencia de que las dos se cumplan—. Basta que falle una para que la regla no sea *Invariant*, y entonces la guía ya dice dónde va:
 
 | Regla | ¿Toda la vida del objeto? | ¿Mirando ese objeto solo? | ¿Es *Invariant*? | Dónde va |
 | --- | --- | --- | --- | --- |
-| Si hay precio, es mayor a cero | Sí | Sí | **Sí** | `Producto.Create` y `AsignarPrecio` (§3.7) |
+| El producto puede no tener precio todavía | Sí | Sí | No: es una *Structural Assertion*, no una restricción | `decimal? Precio` en la *Entity* (abajo) |
+| Si hay precio, es mayor a cero | Sí | Sí | **Sí** | `Producto.Create` y `AsignarPrecio` (abajo) |
 | Un pedido confirmado se pide con al menos un ítem | Sí, desde que se confirma | Sí: el pedido conoce sus ítems | **Sí**, del *Aggregate* | `Pedido.Confirmar` (§4.10) |
 | El DNI tiene entre 7 y 8 dígitos | Sí | Sí | **Sí** | `Persona.Create` (§9.6, paso 4) |
 | No hay dos personas con el mismo DNI | Sí | **No**: hay que mirar a las demás | No | *Use Case* con *Repository*, con índice único de respaldo (§9.6, pasos 3 y 7) |
-| No se vende un producto sin precio | **No**: solo antes de vender | Sí | No: es *Precondition* | `Producto.PrecioDeVenta` (§3.7) |
+| No se vende un producto sin precio | **No**: solo antes de vender | Sí | No: es *Precondition* del acto de vender | `Producto.PrecioDeVenta` (abajo) |
+| Un pedido confirmado no se modifica | Sí, desde que se confirma | Sí | **Sí**, es una *Condition* del *Aggregate* | `Pedido.AgregarItem` (§4.10) |
 | El nombre admite hasta 200 caracteres porque la columna lo impone | Sí | Sí | No: no pasa la prueba del papel (§3.2) | `HasMaxLength(200)` en la configuración de EF Core (§5.4) |
 | Solo quien administra el catálogo da de alta | No: depende de quién pide | No: hay que mirar al usuario | No: es *authorization* | *Use Case* o borde (§3.6) |
 
@@ -882,11 +899,11 @@ public static DomainResult<ProductoQueDevuelve> Create(string? nombre, decimal p
 | `Rechazar("NOMBRE_REQUERIDO")` | Código del vocabulario del dominio, sin texto de presentación | §7.2 d |
 | `TryGetValue` con `[NotNullWhen]` | Sin él, el compilador no sabe que `Aplicado` implica `Value != null` y el llamador escribe `Value!`; dentro de `Rechazar`, en cambio, un código vacío sí se lanza: las dos formas conviven | §3.8, §3.3 |
 
-El laboratorio mide el par sobre un millón de rechazos, en Release: `por excepción: 4,357.0 ms / 296.0 bytes por rechazo` contra `por resultado: 30.6 ms / 0.0 bytes`, **factor 142x a favor del resultado**, mientras que un millón de altas **válidas** cuesta del mismo orden por los dos caminos (`765,3 ms` contra `824,9 ms`, con el camino del resultado construyendo además un *Value Object*) (*salida registrada: `Variantes/capturas/V06-rechazos.txt`, SDK 10.0.400*). El número solo manda cuando el rechazo es masivo —validar un lote, interpretar un archivo con cientos de ítems—; en una API con un rechazo por petición, 4,3 µs no deciden nada y la elección es de diseño. La misma captura muestra el costo del otro lado: la línea que descarta un `DomainResult` **compila sin un solo aviso**, incluso con el catálogo de análisis completo activado (V04: `CA1806/IDE0058 = 0`), mientras que el rechazo por excepción sin `try/catch` corta el proceso con código 134. Un resultado se puede ignorar; una excepción, no.
+El laboratorio mide el par sobre un millón de rechazos, en Release: `por excepción: 4,559.2 ms / 296.0 bytes por rechazo` contra `por resultado: 30.8 ms / 0.0 bytes`, **factor 148x a favor del resultado**, mientras que un millón de altas **válidas** cuesta del mismo orden por los dos caminos (`764,2 ms` contra `848,1 ms`, con el camino del resultado construyendo además un *Value Object*) (*salida registrada: `Variantes/capturas/V06-rechazos.txt`, SDK 10.0.400*). El número solo manda cuando el rechazo es masivo —validar un lote, interpretar un archivo con cientos de ítems—; en una API con un rechazo por petición, 4,6 µs no deciden nada y la elección es de diseño. La misma captura muestra el costo del otro lado: la línea que descarta un `DomainResult` **compila sin un solo aviso**, incluso con el catálogo de análisis completo activado (V04: `CA1806/IDE0058 = 0`), mientras que el rechazo por excepción sin `try/catch` corta el proceso con código 134. Un resultado se puede ignorar; una excepción, no.
 
 **Un motivo no es una *Notification*.** `DomainResult` lleva **un** código: alcanza para una operación de una sola decisión (publicar, confirmar, despachar) y se queda corto en un alta de cinco campos, donde la persona corrige de a uno. La forma correcta ahí es la *Notification* de Fowler: un objeto que junta **todos** los motivos y «use error codes rather than strings» ([Fowler, 2004b](#ref-fowler-2004b)). El laboratorio no la construye; lo que hay que saber es cuándo falta.
 
-**La consulta que contesta sin hacer nada.** Una tercera forma, que no rechaza sino que informa: un método que pregunta si el acto sería admisible y devuelve el motivo, sin mutar nada. Es una *Query* en el sentido de la *Command-Query Separation* (§4.7) y una *Side-Effect-Free Function* en el de Evans, y es exactamente lo que predica §3.7 al pedir `isValidForCheckIn` en lugar de `isValid`: la validez se pregunta respecto de una acción. No es una *Specification*, que es un objeto-criterio con un `isSatisfiedBy(candidato)` ([Evans y Fowler, 1997](#ref-evans-fowler-1997)), ni un *Guard Clause*, que nombra una transformación del control de flujo dentro de un método —*Replace Nested Conditional with Guard Clauses*, del mismo catálogo que la refactorización de §3.1 ([Fowler, s. f.](#ref-fowler-refactoring))—, no un tipo.
+**La consulta que contesta sin hacer nada.** Una tercera forma, que no rechaza sino que informa: un método que pregunta si el acto sería admisible y devuelve el motivo, sin mutar nada. Es una *Query* en el sentido de la *Command-Query Separation* (§4.7) y una *Side-Effect-Free Function* en el de Evans, y es exactamente lo que predica §3.7 al pedir `isValidForCheckIn` en lugar de `isValid`: la validez se pregunta respecto de una acción. La señal para sacar el predicado del objeto es otra: que el mismo criterio tenga que valer en memoria **y** en la base, porque un método no lo puede traducir el motor de datos y termina copiado en la consulta —ahí es donde aparece la *Specification*—. No es una *Specification*, que es un objeto-criterio con un `isSatisfiedBy(candidato)` ([Evans y Fowler, 1997](#ref-evans-fowler-1997)), ni un *Guard Clause*, que nombra una transformación del control de flujo dentro de un método —*Replace Nested Conditional with Guard Clauses*, del mismo catálogo que la refactorización de §3.1 ([Fowler, s. f.](#ref-fowler-refactoring))—, no un tipo.
 
 ### 3.9 Pregunta de cierre
 
@@ -926,15 +943,15 @@ La última línea es el contraste: un `record` posicional sin regla, con constru
 
 ### 4.1 Definiciones
 
-Todos estos términos se ven en los bloques de §4.5 (`CrearProductoCommand.cs`, `CrearProductoHandler.cs`, `ProductoDto.cs`) y de §4.10 (`Pedido.cs`, `ItemPedido.cs`, `IUnitOfWork.cs`); cada viñeta remite a la línea que lo materializa.
+Todos estos términos se ven en los bloques de §4.5 (`CrearProductoCommand.cs`, `CrearProductoHandler.cs`, `ProductoDto.cs`) y de §4.10 y §4.11 (`Pedido.cs`, `ItemPedido.cs`, `IUnitOfWork.cs`); cada viñeta remite a la línea que lo materializa.
 
-- **Use Case.** Una intención concreta del usuario o del sistema —crear un producto, listar el catálogo— implementada como una unidad de código. Orquesta: obtiene *Entities*, les pide que apliquen sus reglas y guarda el resultado. **No decide reglas**; esas viven en el dominio. En PoEAA es el *Service Layer* en su forma *operation script*: clases que «directly implement application logic but delegate to encapsulated domain object classes for domain logic» ([Stafford, en Fowler, 2002, p. 133 y 135](#ref-fowler-2002)). El §4.2 muestra cómo se pasa de un método de servicio a un *Use Case* con Command y Handler. → §4.5, `CrearProductoHandler.cs`, `Handle(...)`: `Producto.Create` → `AddAsync` → `return producto.Id`.
+- **Use Case.** Una intención concreta del usuario o del sistema —crear un producto, listar el catálogo— implementada como una unidad de código. Orquesta: obtiene *Entities*, les pide que apliquen sus reglas y guarda el resultado. **No decide reglas**; esas viven en el dominio. En PoEAA es el *Service Layer* —patrón que firma **Randy Stafford**— en su forma *operation script*: la capa «Defines an application's boundary with a layer of services that establishes a set of available operations and coordinates the application's response in each operation» ([Stafford, en Fowler, 2002, p. 133](#ref-fowler-2002)), y el *operation script* es el que «directly implement[s] application logic but delegate[s] to encapsulated domain object classes for domain logic» (p. 135). Lo que en esta guía fija ese límite es el conjunto de handlers. El §4.2 muestra cómo se pasa de un método de servicio a un *Use Case* con Command y Handler. → §4.5, `CrearProductoHandler.cs`, `Handle(...)`: `Producto.Create` → `AddAsync` → `return producto.Id`.
 - **Mensaje.** Objeto que transporta los datos de una intención. Un **Command** pide cambiar algo (`CrearProductoCommand`); una **Query** pide datos sin cambiar nada (`ObtenerProductosQuery`). → §4.5, `public record CrearProductoCommand(string Nombre, decimal Precio);` y `public record ObtenerProductosQuery;`.
 - **Handler.** Clase que recibe un mensaje y ejecuta el *Use Case* (`CrearProductoHandler`). Poner cada operación en su propia clase es la segunda forma que PoEAA da de organizar los *Transaction Scripts*, «each Transaction Script in its own class […] using the Command pattern» ([Fowler, 2002, p. 111](#ref-fowler-2002)). El §4.3 da las señales para reconocer uno y otro. → §4.5, `CrearProductoHandler.cs`: constructor con `IProductoRepository` y un solo método `Handle`.
 - **Modelo de lectura.** Objeto plano que devuelve una Query (`ProductoDto`). Se construye a partir de la Entity con una copia campo a campo, escrita a mano. Fowler desaconseja los DTO dentro del mismo proceso ([Fowler, 2004](#ref-fowler-2004)); la guía conserva un modelo de lectura para que el controller no reciba la *Entity* y el sufijo `Dto` del laboratorio se usa en ese sentido amplio, no en el de §5.1. **Criterio de esta guía.** → §4.5, `ProductoDto.cs`, `From(Producto producto)`.
-- **Repository.** Objeto que media entre el dominio y la capa de mapeo a datos con una interfaz parecida a una colección en memoria ([Fowler, 2002](#ref-fowler-2002)). Su interfaz, `IProductoRepository`, vive en `Domain`; su implementación, en `Infrastructure`. El §4.4 da el criterio para reconocerlo. → §3.3, `IProductoRepository.cs`; §4.6, `FakeProductoRepository.cs`; §5.5, `ProductoRepository.cs`.
+- **Repository.** Objeto que media entre el dominio y la capa de mapeo a datos con una interfaz parecida a una colección en memoria; el patrón lo firman Edward Hieatt y Rob Mee en PoEAA ([Fowler, 2002](#ref-fowler-2002)). Su interfaz, `IProductoRepository`, vive en `Domain`; su implementación, en `Infrastructure`. El §4.4 da el criterio para reconocerlo. → §3.3, `IProductoRepository.cs`; §4.6, `FakeProductoRepository.cs`; §5.5, `ProductoRepository.cs`.
 - **Aggregate y Aggregate Root.** Grupo de *Entities* y *Value Objects* que se modifica como una unidad, con una *Entity* raíz que es la única que se referencia desde afuera y que hace cumplir las reglas del conjunto ([Evans, 2015](#ref-evans-2015)). `Pedido` y sus `ItemPedido` son un *Aggregate*; `Pedido` es su raíz (§4.10). → §4.10, `Pedido.cs`, `private readonly List<ItemPedido> _items` + `IReadOnlyList<ItemPedido> Items => _items`; `ItemPedido.cs`, el constructor `internal`.
-- **Interfaz de servicio técnico.** Declaración, en `Application`, de una capacidad técnica que el Use Case necesita y que no es del negocio; la implementa `Infrastructure`. En el laboratorio hay una: `IUnitOfWork`, que confirma los cambios. Otras que una solución real suele tener —enviar un correo (`IEmailService`), saber qué usuario está conectado (`ICurrentUserService`)— son ejemplos hipotéticos: no existen en el código de la guía. → §4.10, `IUnitOfWork.cs`, `Task<int> SaveChangesAsync(CancellationToken ct = default)`.
+- **Interfaz de servicio técnico.** Declaración, en `Application`, de una capacidad técnica que el Use Case necesita y que no es del negocio; la implementa `Infrastructure`. En el laboratorio hay una: `IUnitOfWork`, que confirma los cambios (§4.11). Otras que una solución real suele tener —enviar un correo (`IEmailService`), saber qué usuario está conectado (`ICurrentUserService`)— son ejemplos hipotéticos: no existen en el código de la guía. → §4.11, `IUnitOfWork.cs`, `Task<int> SaveChangesAsync(CancellationToken ct = default)`.
 - **`async` / `await` y `Task`.** Forma de C# de escribir operaciones que esperan (base de datos, red) sin bloquear el hilo. Un método `async Task<Guid>` devuelve, cuando termina, un `Guid`. → §4.5, `CrearProductoHandler.cs`, `public async Task<Guid> Handle(...)` y `await _repository.AddAsync(producto, ct)`.
 
 ### 4.2 ¿Cómo se pasa de un Use Case a un Command y un Handler?
@@ -1051,7 +1068,7 @@ Con qué se confunde:
 | Se confunde | Con | Diferencia |
 | --- | --- | --- |
 | Command | Request DTO (`CrearProductoRequest`) | El Request es el contrato HTTP público y el único de los dos que es un DTO en el sentido de Fowler (§5.1); el Command es la intención interna, un mensaje que no sale del proceso. El controller traduce uno en otro (§7.2 c, §7.2 d); el §7.4 traduce el vocabulario |
-| Handler | Servicio de aplicación (`VentasService`) | El servicio agrupa muchas operaciones; el Handler es una sola: **un Handler es un método del servicio convertido en clase** (§4.2; §9.6, paso 7). Los dos son *Service Layer* en PoEAA: varios scripts en una clase, o uno por clase ([Fowler, 2002, p. 111](#ref-fowler-2002)) |
+| Handler | Servicio de aplicación (`VentasService`) | El servicio agrupa muchas operaciones; el Handler es una sola: **un Handler es un método del servicio convertido en clase** (§4.2; §9.6, paso 7). Los dos son *Service Layer* (Stafford, en PoEAA): varios scripts en una clase, o uno por clase ([Fowler, 2002, p. 111 y 133](#ref-fowler-2002)) |
 | Handler | Método de la *Entity* (`Producto.Create`) | La *Entity* aplica la regla; el Handler la invoca. Si el Handler tiene el `if` del precio, la regla está en el lugar equivocado (§3.4) |
 
 La última fila, en código, para tenerla al lado del `Handle` compilado de §4.5:
@@ -1150,7 +1167,7 @@ public record ProductoDto(Guid Id, string Nombre, decimal Precio, bool Activo)
 | Línea o miembro | Concepto | Dónde se define |
 | --- | --- | --- |
 | `public record ObtenerProductosQuery;` | Query: pide datos sin cambiar nada; un `record` sin parámetros compila | §4.1, §4.7 |
-| `productos.Select(ProductoDto.From)` | El Handler de lectura trabaja: convierte cada *Entity* en modelo de lectura (contrastar con §4.11) | §4.1 |
+| `productos.Select(ProductoDto.From)` | El Handler de lectura trabaja: convierte cada *Entity* en modelo de lectura (contrastar con §4.12) | §4.1 |
 | `record ProductoDto(...)` + `From(Producto producto)` | Modelo de lectura: la copia campo a campo, escrita a mano (§9.4 la opone a AutoMapper) | §4.1 |
 
 `ObtenerProductoPorIdHandler` recibe `ObtenerProductoPorIdQuery(Id)`, llama a `GetByIdAsync` y devuelve `ProductoDto?` (nulo si no existe); es la que usa la API para responder la consulta de un producto por su `Id` (§5.2). Las carpetas siguen el concepto del negocio y después el tipo de mensaje: `Productos/Commands/CrearProducto/`, `Productos/Queries/ObtenerProductos/`.
@@ -1235,6 +1252,19 @@ La *Command-Query Separation* (CQS) divide los métodos de un objeto en dos cate
 
 El otro sentido de *Command* es el patrón del catálogo de [Gamma et al. (1994)](#ref-gamma-1994): una petición encapsulada como objeto, que conoce a su receptor y se ejecuta con un método `Execute`; es el `ICommand` de WPF y MAUI. En esta guía ese objeto se parte en dos: los datos en el `record` y la ejecución en el Handler, con dependencias inyectadas. Por la forma se parece más al *Command Message* de Hohpe y Woolf, «simply a regular message that happens to contain a command» ([Hohpe y Woolf, 2003](#ref-hohpe-2003)), aunque sin mensajería: es una llamada dentro del mismo proceso. De Gamma et al. queda que una intención convertida en objeto se puede envolver con un decorador (§4.9).
 
+Las dos categorías están en el dominio del laboratorio, una al lado de la otra:
+
+**[Compilado: `Variantes/ProductoSinPrecio/Domain/Productos/Producto.cs`, l. 36–39]**
+
+```csharp
+    public decimal PrecioDeVenta() =>
+        Precio ?? throw new DomainException($"'{Nombre}' no tiene precio: no se puede vender.");
+
+    public void Desactivar() => Activo = false;
+```
+
+Qué implica la distinción para quien diseña: `PrecioDeVenta()` devuelve un resultado y no cambia nada —es una *query* de Meyer, y se puede llamar dos veces sin consecuencias—; `Desactivar()` cambia el estado y no devuelve nada —es un *command*, o un *modifier* si se prefiere el término de Fowler—. La guía rompe la separación en un solo lugar y a propósito: `CrearProductoHandler.Handle` cambia el estado **y** devuelve el `Id` del producto creado (§4.5), que es el «pop» de la pila del que habla Fowler.
+
 CQS habla de métodos; CQRS, de modelos. Usar mensajes Command y Query sobre el mismo modelo no es CQRS (§4.8).
 
 ### 4.8 ¿Esto es CQRS?
@@ -1253,7 +1283,7 @@ Fowler describe CQRS (*Command Query Responsibility Segregation*) como el uso de
 
 **Respuesta: no. Un handler es una clase que el contenedor de dependencias inyecta; una biblioteca mediadora es opcional.**
 
-MediatR es una biblioteca que interpone un objeto mediador entre quien envía el mensaje y el handler que lo atiende. Su aporte real es poder envolver todos los handlers con comportamiento común —validación, registro de actividad— sin repetirlo. Ese mismo efecto se obtiene con un **decorador**: una clase que implementa la misma interfaz que el handler (para eso el handler tiene que declarar una, cosa que este ejemplo no necesita), hace su trabajo adicional y delega en el handler original. Desde la versión 13.0.0 MediatR se distribuye con licencia dual (RPL-1.5 o comercial), y la última versión con licencia Apache-2.0 es la 12.5.0 ([Bogard, 2025](#ref-bogard-2025); datos en el Anexo C). La guía no la usa: **Criterio de esta guía**, porque el ejemplo no necesita comportamiento transversal y cada dependencia agregada se evalúa con las preguntas del §9.4.
+MediatR es una biblioteca que interpone un objeto mediador entre quien envía el mensaje y el handler que lo atiende. Su aporte real es poder envolver todos los handlers con comportamiento común —validación, registro de actividad— sin repetirlo. Ese mismo efecto se obtiene con un **decorador** —el *Decorator* del catálogo de [Gamma et al. (1994)](#ref-gamma-1994)—: una clase que implementa la misma interfaz que el handler (para eso el handler tiene que declarar una, cosa que este ejemplo no necesita), hace su trabajo adicional y delega en el handler original. Desde la versión 13.0.0 MediatR se distribuye con licencia dual (RPL-1.5 o comercial), y la última versión con licencia Apache-2.0 es la 12.5.0 ([Bogard, 2025](#ref-bogard-2025); datos en el Anexo C). La guía no la usa: **Criterio de esta guía**, porque el ejemplo no necesita comportamiento transversal y cada dependencia agregada se evalúa con las preguntas del §9.4.
 
 ### 4.10 Un Use Case con dos Entities: RegistrarPedido
 
@@ -1275,7 +1305,7 @@ Martin separa las dos clases de regla por capa: «Entities encapsulate Enterpris
 
 Si la tienda también facturara, aparecería otra *Entity* (`Factura`) y otro *Use Case* (`FacturarPedido`).
 
-**El enunciado.** Para Cockburn, «A use case captures a contract between the stakeholders of a system about its behavior»; el *Main Success Scenario* es el caso en que nada sale mal, y cada *Extension* se numera con el paso donde se detecta la situación (2a, 3a, 3b) ([Cockburn, 2001](#ref-cockburn-2001)). En formato completo:
+**El enunciado.** Para Cockburn, «A use case captures a contract between the stakeholders of a system about its behavior»; el *Main Success Scenario* es el caso en que nada sale mal, y cada *Extension* se numera con el paso donde se detecta la situación (2a, 3a, 3b) ([Cockburn, 2001](#ref-cockburn-2001)). El enunciado está escrito al nivel que el mismo autor recomienda mostrar —«Show only use cases at user goal level and higher»—, y por eso dice «el vendedor indica los productos» y no «el sistema abre una transacción»: los pasos técnicos son del Handler, no del contrato. En formato completo:
 
 ```text
 Use Case: Registrar pedido
@@ -1410,7 +1440,7 @@ Escenario principal: registrado, total 21000
 
 *Salida registrada: `Variantes/capturas/V02-registrar-pedido.txt`, SDK 10.0.400; compilación con 0 advertencias en `Variantes/capturas/V02-build-pedidos.txt`.* Cómo leerla: cada extensión termina en `DomainException` y los dos contadores no se mueven, que es la *Minimal Guarantee* del enunciado; el caso 2a rechaza el pedido aunque el primer ítem fuera válido. «Confirmaciones» cuenta llamadas a `SaveChangesAsync` hechas por este *Use Case* (un interceptor de EF Core las observa), no pedidos con `Confirmado = true`: el estado del negocio y el *commit* técnico son dos cosas y la salida cuenta la segunda. La última línea muestra la variante del §3.7 en funcionamiento: la bombilla llegó sin precio, no se pudo vender, y se vende en cuanto `CambiarPrecioProductoHandler` (§5.5) le asigna uno.
 
-**¿Cuándo `SaveChanges` sube del Repository al Handler?**
+### 4.11 ¿Cuándo `SaveChanges` sube del Repository al Handler?
 
 **Respuesta: cuando un Use Case modifica más de un Aggregate, o más de una instancia, que deben quedar guardados juntos; con una sola escritura, el Repository puede confirmar. Criterio de esta guía:** la *Unit of Work* de PoEAA no se define por cantidad de escrituras.
 
@@ -1464,7 +1494,7 @@ public class AppDbContext : DbContext, IUnitOfWork
 
 El composition root de la variante (`Variantes/Pedidos/Demo/Program.cs`) registra `AppDbContext`, `IUnitOfWork` —como el mismo `AppDbContext` del *scope*—, los dos Repositories y los Handlers con ciclo de vida *Scoped* (§2.5), y abre un *scope* por *Use Case*, como hace la API por cada petición. Queda abierta, para una próxima regla, la del stock: «no se vende más de lo que hay» cruza dos *Aggregates*, y la pregunta del §3.7 decide si vale al registrar el pedido o al despacharlo; el §9.7 la deja como ejercicio.
 
-### 4.11 Pregunta de cierre
+### 4.12 Pregunta de cierre
 
 **¿Cuándo no hace falta un handler por Use Case?** Cuando la operación es una lectura o escritura directa sin reglas ni orquestación, como en el escenario E-A: ahí el handler solo reenvía la llamada al Repository, y una capa que solo reenvía es costo sin beneficio. Así se ve la señal, al lado del `ObtenerProductosHandler` de §4.5, que sí trabaja (convierte a `ProductoDto`):
 
@@ -1496,9 +1526,9 @@ Todos estos términos se ven en los bloques de §5.2 (`ProductosController.cs`),
 - **Middleware.** Componente por el que pasa cada petición, en cadena, antes y después del controller: registro, autenticación, manejo de errores. → §5.6, `DomainExceptionHandler.cs`, registrado con `app.UseExceptionHandler()` (`Program.cs`, l. 24).
 - **OpenAPI.** Documento JSON que describe los recursos y operaciones de la API. La plantilla de .NET 10 lo genera en `/openapi/v1.json`; no incluye una página web interactiva para explorarla ([Microsoft, 2026d](#ref-microsoft-2026d)). → §5.2, `GET /openapi/v1.json` (L15); `Program.cs`, `AddOpenApi()` y `MapOpenApi()`.
 - **ORM y micro-ORM.** Un **ORM** (*object-relational mapper*) traduce objetos a filas y al revés, y además **sigue los cambios** de los objetos que entregó para confirmarlos juntos: EF Core es el de esta guía. Un **micro-ORM** hace sólo la mitad: recibe el SQL escrito a mano, ejecuta y materializa los objetos del resultado; no arma la consulta, no sigue nada y no confirma nada. **Dapper** es el micro-ORM más usado en .NET. La diferencia no es de tamaño sino de responsabilidad: con EF Core el `DbContext` **es** el Repository y la Unit of Work (§5.5); con Dapper esas dos piezas hay que escribirlas. → §5.4, la tabla de materializadores.
-- **EF Core y `DbContext`.** Entity Framework Core es la biblioteca de Microsoft que traduce objetos a filas de una base relacional. `DbContext` representa una sesión con la base: registra los cambios y los confirma todos juntos con `SaveChanges`. Una **base relacional** guarda los datos en tablas con columnas fijas; SQLite es una base relacional contenida en un archivo. → §4.10, `AppDbContext.cs`, `DbSet<Producto> Productos => Set<Producto>();`; §5.5, `_db.Productos.Add(producto)`.
+- **EF Core y `DbContext`.** Entity Framework Core es la biblioteca de Microsoft que traduce objetos a filas de una base relacional. `DbContext` representa una sesión con la base: registra los cambios y los confirma todos juntos con `SaveChanges`. Una **base relacional** guarda los datos en tablas con columnas fijas; SQLite es una base relacional contenida en un archivo. → §4.11, `AppDbContext.cs`, `DbSet<Producto> Productos => Set<Producto>();`; §5.5, `_db.Productos.Add(producto)`.
 - **Configuración Fluent API.** Clase que le indica a EF Core cómo mapear una Entity (tabla, clave, longitudes) sin modificar la Entity. → §5.4, `ProductoConfiguration.cs`, `builder.ToTable("Productos")`.
-- **Unit of Work.** Conjunto de cambios que se confirman en una sola transacción; en EF Core la implementa el `DbContext` con `SaveChanges` ([Microsoft, 2018](#ref-microsoft-2018)). → §5.5, `await _db.SaveChangesAsync(ct)`; §4.10, `class AppDbContext : DbContext, IUnitOfWork`.
+- **Unit of Work.** Conjunto de cambios que se confirman en una sola transacción; en EF Core la implementa el `DbContext` con `SaveChanges` ([Microsoft, 2018](#ref-microsoft-2018)). → §5.5, `await _db.SaveChangesAsync(ct)`; §4.11, `class AppDbContext : DbContext, IUnitOfWork`.
 - **ProblemDetails.** Formato estándar de cuerpo JSON para describir un error de una API HTTP (RFC 9457), con `type`, `title`, `status` y `detail` ([Microsoft, 2026e](#ref-microsoft-2026e)). → §5.6, `DomainExceptionHandler.cs`, `Title = "Regla de negocio incumplida"`, `Detail = exception.Message`.
 
 ### 5.2 La API en marcha con un Repository en memoria (L13–L15)
@@ -1636,7 +1666,7 @@ public class ProductoConfiguration : IEntityTypeConfiguration<Producto>
 | `ToTable`, `HasKey` | Lo que `[Table]` y `[Key]` dirían dentro de la *Entity*, sin atarla al almacenamiento | §5.4, §7.4 |
 | `HasMaxLength(200)` | Restricción técnica de la columna, no *Business Rule*: vive en la capa que la impone | §3.2 |
 
-`Producto` no tiene atributos de base de datos ni setters públicos, y EF Core la guarda y la recupera igual (L17): usa el constructor privado y asigna las propiedades por su cuenta. Poner `[Table("Productos")]` y `[Key]` en la Entity no obligaría a referenciar EF Core —esos atributos viven en la biblioteca base—, pero ataría igual el dominio a decisiones de almacenamiento; `[Index]`, que sí es de la familia de EF Core, haría además que `Domain` referencie un paquete de esa familia (`Microsoft.EntityFrameworkCore.Abstractions`, que existe justamente para eso), y con él el vocabulario del ORM. El §7.4 desarrolla ese caso, que es el más frecuente al venir de una clase plana con anotaciones. Un modelo de persistencia separado solo hace falta cuando el esquema no se puede adaptar (escenario E-C, §7.2 g). `HasPrecision(18, 2)` documenta la intención y rige en proveedores con tipo decimal nativo (SQL Server, PostgreSQL); en SQLite la columna se crea como `TEXT` y la base no aplica precisión ni escala ([Microsoft, 2026j](#ref-microsoft-2026j)), por eso en L17 el precio vuelve con un solo decimal y no con dos.
+`ProductoConfiguration` + EF Core son el *Data Mapper* de PoEAA: «A layer of Mappers that moves data between objects and a database while keeping them independent of each other and the mapper itself» ([Fowler, 2002](#ref-fowler-2002), `dataMapper.html`). Qué implica el nombre: el lector lo va a reconocer en EF Core, en NHibernate y —en versión pobre, sin seguimiento ni configuración— en Dapper; y la independencia que el patrón promete es exactamente lo que el bloque de arriba demuestra, porque `Producto` no nombra ni la tabla ni el mapeador. `Producto` no tiene atributos de base de datos ni setters públicos, y EF Core la guarda y la recupera igual (L17): usa el constructor privado y asigna las propiedades por su cuenta. Poner `[Table("Productos")]` y `[Key]` en la Entity no obligaría a referenciar EF Core —esos atributos viven en la biblioteca base—, pero ataría igual el dominio a decisiones de almacenamiento; `[Index]`, que sí es de la familia de EF Core, haría además que `Domain` referencie un paquete de esa familia (`Microsoft.EntityFrameworkCore.Abstractions`, que existe justamente para eso), y con él el vocabulario del ORM. El §7.4 desarrolla ese caso, que es el más frecuente al venir de una clase plana con anotaciones. Un modelo de persistencia separado solo hace falta cuando el esquema no se puede adaptar (escenario E-C, §7.2 g). `HasPrecision(18, 2)` documenta la intención y rige en proveedores con tipo decimal nativo (SQL Server, PostgreSQL); en SQLite la columna se crea como `TEXT` y la base no aplica precisión ni escala ([Microsoft, 2026j](#ref-microsoft-2026j)), por eso en L17 el precio vuelve con un solo decimal y no con dos.
 
 **El constructor privado es la costura del ORM.** Que EF Core use ese constructor no es una suposición: «When EF Core creates instances of these types, such as for the results of a query, it will first call the default parameterless constructor and then set each property to the value from the database», y «the constructor can be public, private, or have any other accessibility» ([Microsoft, 2026m](#ref-microsoft-2026m)). La variante lo mide sobre el mismo patrón de §3.3, contando las veces que corre:
 
@@ -1671,7 +1701,7 @@ La salida confirma las tres piezas: `Constructor que EF Core eligió para materi
 
 Dapper aporta dos avisos que EF Core no tiene: si la columna no se llama como la propiedad **no avisa** —`materializada: Nombre = '', Precio = 0 — y NO lanzó`—, y sin seguimiento de cambios modificar el objeto no cambia la base (`en memoria = Publicado …, en la base = Borrador`), así que el *Repository* y la *Unit of Work* del §5.5 vuelven a ser código propio (*salida registrada: `Variantes/capturas/V09-materializadores.txt`, SDK 10.0.400*).
 
-**Ese camino no valida, y es deliberado. Criterio de esta guía**, porque ninguna fuente lo manda: (1) la fila ya fue constituida por la fábrica y la regla se ejerció entonces; (2) los setters privados impidieron que se rompiera después (§3.4); (3) validar al materializar convierte un dato viejo inválido en una consulta rota: como el constructor corre al **leer** cada fila, la excepción no aparece en el alta que escribió el dato sino en medio de una consulta posterior, lejos de su causa. Evans deja las aserciones del lado de los modificadores —«assertions define contracts of services and entity modifiers»—, y rehidratar no modifica. Cuando la base **sí** puede tener filas inválidas —esquema heredado, escenario E-C— la comprobación existe, pero vive en el adaptador que traduce (§7.2 g), que es quien puede descartar, marcar o reportar.
+**Ese camino no valida, y es deliberado. Criterio de esta guía**, porque ninguna fuente lo manda: (1) la fila ya fue constituida por la fábrica y la regla se ejerció entonces; (2) los setters privados impidieron que se rompiera después (§3.4); (3) validar al materializar convierte un dato viejo inválido en una consulta rota: como el constructor corre al **leer** cada fila, la excepción no aparece en el alta que escribió el dato sino en medio de una consulta posterior, lejos de su causa. Evans deja las aserciones del lado de los modificadores —«assertions define contracts of services and entity modifiers»—, y rehidratar no modifica. Wirfs-Brock le da nombre al lugar: una *trust region*, «an area where trusted collaborations occur», donde «objects deep inside a trust region can be designed to not check for» lo que ya se verificó, mientras que «objects at the "borders" may take on extra responsibilities» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Qué implica: el constructor de materialización está adentro de esa región —lee lo que la fábrica ya validó— y el adaptador del escenario E-C está en el borde, que es donde la comprobación sí corresponde. Cuando la base **sí** puede tener filas inválidas —esquema heredado, escenario E-C— la comprobación existe, pero vive en el adaptador que traduce (§7.2 g), que es quien puede descartar, marcar o reportar.
 
 **Un `enum` guardado como entero no está cerrado.** Por convención EF Core lo persiste como número: una fila escrita con un valor que este binario no declara se relee como `Estado = 9, IsDefined = False, y NO lanzó`. Con `HasConversion<string>` la columna es texto y un valor desconocido falla fuerte: `Cannot convert string value 'Archivado' from the database to any value in the mapped 'EstadoProducto' enum` (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`*). De ahí la regla: texto, o entero con valores explícitos (`Borrador = 1`) para que reordenar los nombres no reinterprete las filas ya escritas; nunca entero sin valores explícitos. El §3.9 muestra la tercera forma, la que tampoco admite un valor imposible en memoria.
 
@@ -1702,7 +1732,7 @@ public async Task AddAsync(Producto producto, CancellationToken ct = default)
 | Línea o miembro | Concepto | Dónde se define |
 | --- | --- | --- |
 | `_db.Productos.Add(producto)` | El *Repository* habla de `Producto`, no de filas; `Add` solo marca | §4.4 |
-| `await _db.SaveChangesAsync(ct)` | *Unit of Work* del `DbContext`: aquí la confirma el *Repository* en cada alta | §5.1, §4.10 |
+| `await _db.SaveChangesAsync(ct)` | *Unit of Work* del `DbContext`: aquí la confirma el *Repository* en cada alta | §5.1, §4.11 |
 | `AsNoTracking()` | La *Entity* vuelve sin seguimiento: sirve a una Query, no a un Command que la modifica | §5.5, abajo |
 
 L18 reemplaza la llamada a `SaveChangesAsync` por un `await Task.CompletedTask` que no confirma nada, y deja `_db.Productos.Add(producto)` como única operación sobre la base:
@@ -1740,7 +1770,7 @@ public async Task<int> Handle(CambiarPrecioProductoCommand command, Cancellation
 | --- | --- | --- |
 | `FirstOrDefaultAsync` sin `AsNoTracking` | La *Entity* entra en la lista que la *Unit of Work* vigila | §5.1 |
 | `Add` + `return Task.CompletedTask` | El *Repository* marca y no confirma: la ilusión de colección de Evans | §4.4 |
-| `GetByIdAsync` → `AsignarPrecio` → `SaveChangesAsync` | *Use Case* de modificación: obtener, cambiar en la *Entity*, confirmar una vez; devuelve las filas afectadas | §4.1, §4.10 |
+| `GetByIdAsync` → `AsignarPrecio` → `SaveChangesAsync` | *Use Case* de modificación: obtener, cambiar en la *Entity*, confirmar una vez; devuelve las filas afectadas | §4.1, §4.11 |
 
 El Demo ejecuta el mismo Handler dos veces sobre SQLite: con este Repository y con `ProductoRepositorySinSeguimiento`, una copia que agrega `AsNoTracking()` como en `MyProject/`:
 
@@ -1804,6 +1834,14 @@ public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception e
 | `TryHandleAsync` (de `IExceptionHandler`, en la WebAPI) | Middleware de errores: la traducción vive en el borde, no en `Domain` | §5.1 |
 | `if (exception is not DomainException) return false;` | La excepción de dominio se distingue del error técnico; lo demás sigue como `500` | §3.1 |
 | `Status400BadRequest` + `Title`/`Detail` | Código de estado y cuerpo ProblemDetails (RFC 9457) | §5.1 |
+
+Este es el cuerpo que L21 devuelve, medido:
+
+```text
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1","title":"Regla de negocio incumplida","status":400,"detail":"El precio debe ser mayor a cero.","traceId":"00-024c2f9dcf12895776e8da5ded6d9e08-79928bdc81734fef-00"}
+```
+
+*Salida registrada: `capturas/L21-regla-traducida.txt`, SDK 10.0.400.* Cómo leerla: lo único que el cliente puede usar para decidir es `status`; `detail` es la cadena que escribió quien programó la *Entity*. Un dominio que devuelve resultado agrega un miembro de extensión con el código —`"code":"PRECIO_NO_POSITIVO"`— y ahí el cliente ya puede ramificar sin leer prosa, que es lo que Fowler pide con «error codes rather than strings» ([Fowler, 2004b](#ref-fowler-2004b)).
 
 Con un dominio que devuelve resultado en lugar de lanzar (§3.8) no hay excepción que traducir: el handler devuelve el código de condición, el controller lo mapea a estado (400, 404, 409) y el `IExceptionHandler` queda solo para lo técnico. Y cambia qué viaja: con excepción, el borde publica el **mensaje** que escribió quien programó la *Entity*; con resultado publica el **código**, en un miembro de extensión del `ProblemDetails`, y el texto de presentación deja de vivir en `Domain` —se puede traducir, y el cliente puede reaccionar distinto según el motivo (§7.2 d)—.
 
@@ -1909,6 +1947,8 @@ a6e64956-3cb2-4b6b-805a-4d383060111e  Mate de calabaza        12000.0
 
 *Salida registrada: `capturas/L22-cliente-consola.txt`, SDK 10.0.400.* El cliente crea y lista productos sin conocer `Producto`, los handlers ni EF Core. **Qué puede cambiar en tu equipo:** el `Guid`, y el separador decimal del número (`12000.0` o `12000,0`) según la cultura regional del equipo; el dígito decimal viene de SQLite (§5.3).
 
+`GetFromJsonAsync<List<ProductoResponse>>` es el tercer materializador de §5.4 trabajando: `System.Text.Json` reconstruye cada `ProductoResponse` —un `record` posicional— **por su constructor**, sin tocar un setter, que es el caso positivo que V09 mide. Lo que EF Core hace con una fila, el serializador lo hace con el JSON.
+
 Este cliente hace lo que el ❌ de §6.2 prohíbe a una página: crea el `HttpClient` y escribe `"api/productos"` en su propio código. Está exento porque no tiene pantalla que probar, es un solo archivo y no necesita dobles; deja de estarlo con la primera prueba del cliente o la segunda pantalla, cuando un `IProductoApiService` que solo reenviara dejaría de ser una capa sin trabajo (§6.6, §9.3) y pasaría a ser la que se prueba.
 
 ### 6.4 Si el Blazor corre en el servidor y es el único cliente, ¿por qué no llamar directamente a Application?
@@ -1972,7 +2012,7 @@ Las clases que viajan entre capas se parecen mucho al principio —tienen los mi
 | --- | --- | --- | --- | --- | --- |
 | **Entity** | `Producto` | ¿Qué es verdad en el negocio? | Domain | cambian las reglas del negocio | hay reglas que proteger (§3.5) |
 | **Value Object** | `Dinero` | ¿Qué valor tiene sentido por sí mismo, sin identidad? | Domain | cambia el concepto | el valor tiene comportamiento o reglas propias (umbral propio, más estricto que las fuentes: §3.9) |
-| **Command / Query** | `CrearProductoCommand`, `ObtenerProductosQuery` | ¿Qué quiere hacer el usuario? | Application | cambia el Use Case | hay un Use Case que orquestar (§4.11) |
+| **Command / Query** | `CrearProductoCommand`, `ObtenerProductosQuery` | ¿Qué quiere hacer el usuario? | Application | cambia el Use Case | hay un Use Case que orquestar (§4.12) |
 | **Response DTO** | `ProductoResponse` | ¿Qué se le promete al consumidor de la API? | Contracts | cambia el contrato, con cuidado porque rompe a los clientes | hay una API consumida por otro proceso (E-B) |
 | **ViewModel** | `ProductoListItemViewModel` | ¿Qué necesita mostrar esta pantalla? | Cliente | cambia el diseño de la pantalla | la pantalla muestra algo distinto de lo que recibe |
 | **Form model** | `ProductoFormModel` | ¿Qué edita el usuario en el formulario? | Cliente | cambia el formulario | hay un formulario con enlace de datos |
@@ -2030,13 +2070,15 @@ Dos `Dinero(10, "ARS")` son el mismo valor (prueba de L11), y sumar pesos con d�
 | ❌ | Devolver la Entity: cualquier campo nuevo de la tabla (un costo interno) llega al cliente sin que nadie lo decida |
 | ❌ | Publicar el `Message` de la excepción como si fuera un contrato estable: es prosa, cambia cuando alguien corrige una redacción y el cliente no puede ramificar con ella |
 
+El par de mensajes tiene nombre en la misma fuente que §4.7 usa para el Command: «Whereas a *Command Message* tells the receiver to invoke certain behavior, a *Document Message* just passes data and lets the receiver decide what, if anything, to do with the data» ([Hohpe y Woolf, 2003](#ref-hohpe-2003), *Document Message*). Qué implica: `CrearProductoRequest` pide un acto y `ProductoResponse` no pide nada —sólo lleva datos—, y por eso el contrato de salida se diseña por lo que promete, no por lo que el servidor tenga a mano (§6.3, `ProductoResponse.cs`).
+
 **El contrato de error también es contrato.** Lo que el cliente consume programáticamente cuando algo se rechaza es el código, no el texto: por eso los códigos salen del vocabulario del dominio y no llevan presentación —«error codes rather than strings», y «designed around the vocabulary of the domain model itself» ([Fowler, 2004b](#ref-fowler-2004b))—. Si ese catálogo se escribe como `const string` y `Domain` viaja como paquete NuGet, cambiar un valor no alcanza: «because compilers propagate constants, other code compiled with your libraries needs to be recompiled to see the changes» ([Microsoft, 2026n](#ref-microsoft-2026n)). Dos binarios pueden quedar hablando vocabularios distintos sin que nada falle. Mientras todo se compile junto no pasa nada; en cuanto cruza la frontera de un paquete, los códigos se renombran con una versión mayor o se declaran `static readonly`.
 
 #### e. ViewModel: ¿qué necesita mostrar esta pantalla?
 
 **Respuesta: los datos ya preparados para la vista, incluido lo que solo existe para la pantalla.**
 
-Una lista puede necesitar `PrecioFormateado` («$ 4.500,00») o la clase de estilo de una etiqueta «Inactivo»; nada de eso pertenece al contrato ni al dominio. El ViewModel cambia cuando cambia el diseño. Es uno de los tres objetos de la tabla que el laboratorio no construye (con el form model y el persistence model): el cliente de consola de L22 imprime `ProductoResponse` directamente porque no tiene pantalla, y muestra la necesidad: el precio sale como `12000.0`, y presentarlo como «$ 12.000,00» es trabajo de la pantalla, no del contrato. El ViewModel aparece con el cliente Blazor de §6.5, que es ilustrativo:
+El ViewModel tiene padre conocido: es el *Presentation Model* de Fowler, «Represent the state and behavior of the presentation independently of the GUI controls used in the interface» ([Fowler, 2004c](#ref-fowler-2004c)). Qué implica: lo que define al objeto no es que sea «del cliente», es que modela la pantalla sin depender del control que la dibuja, y por eso sobrevive a un cambio de grilla o de framework. Una lista puede necesitar `PrecioFormateado` («$ 4.500,00») o la clase de estilo de una etiqueta «Inactivo»; nada de eso pertenece al contrato ni al dominio. El ViewModel cambia cuando cambia el diseño. Es uno de los tres objetos de la tabla que el laboratorio no construye (con el form model y el persistence model): el cliente de consola de L22 imprime `ProductoResponse` directamente porque no tiene pantalla, y muestra la necesidad: el precio sale como `12000.0`, y presentarlo como «$ 12.000,00» es trabajo de la pantalla, no del contrato. El ViewModel aparece con el cliente Blazor de §6.5, que es ilustrativo:
 
 **[Fragmento ilustrativo: cliente Blazor no construido en el laboratorio; no compilado.]**
 
@@ -2334,6 +2376,7 @@ flowchart LR
 | La misma validación aparece en dos pantallas | Falta una Entity con comportamiento (escalón 2); si las reglas son muchas y se repiten en varios Use Cases (E-D), escalón 3 |
 | Se quiere probar una regla y hace falta levantar la base | Falta una Entity que contenga la regla y se pruebe sola (escalón 2: `Producto.Create` se prueba sin base, como en L11); si además hace falta que el compilador impida que la regla dependa de EF Core (§2.3), falta separar `Domain` (escalón 3) |
 | Otra aplicación necesita los mismos datos | Falta una API y un contrato (escalón 4) |
+| El borde necesita distinguir motivos de rechazo, o hay que mostrar varios a la vez | La excepción informa uno solo y sin código: se pasa al resultado tipado (§3.8) |
 | Un handler solo llama al Repository y devuelve | Capa sin trabajo: sobra en ese Use Case |
 | Un mapeo copia campo a campo entre dos clases que siempre cambian juntas | Una de las dos clases sobra |
 | Se agregó un Repository encima de EF Core «por las dudas» | Microsoft aclara que los Repositories no son obligatorios; se justifican por las pruebas y por aislar el dominio ([Microsoft, 2018](#ref-microsoft-2018)) |
@@ -2416,6 +2459,18 @@ public void CambiarDni(int dni)
 }
 public record CrearPersonaRequest(int DNI, string Nombre);   // la API deja de recibir la Entity
 
+// Paso 5. Para probar «DNI no repetido» sin SQLite: la interfaz en Domain y el doble en el proyecto de pruebas.
+public interface IPersonaRepository { void Add(Persona persona); bool ExisteDni(int dni); }
+public class FakePersonaRepository : IPersonaRepository
+{
+    public List<Persona> Guardados { get; } = new();
+    public void Add(Persona persona) => Guardados.Add(persona);
+    public bool ExisteDni(int dni) => Guardados.Any(p => p.DNI == dni);
+}
+
+// Paso 6. Otro programa necesita los datos: el Request se muda a Contracts y el cliente habla HTTP.
+var respuesta = await http.PostAsJsonAsync("api/personas", new CrearPersonaRequest(30111222, "Ana"));
+
 // Paso 7. Cada método del servicio se convierte en un Handler (§4.2).
 public record CrearPersonaCommand(int DNI, string Nombre);
 public int Handle(CrearPersonaCommand command)
@@ -2434,9 +2489,9 @@ public int Handle(CrearPersonaCommand command)
 
 **Paso 4: la segunda copia del `if` es la señal.** Con la regla repartida en los servicios, el modelo se vuelve lo que Fowler llama *Anemic Domain Model*: objetos que son «little more than bags of getters and setters» y servicios que «capture all the domain logic»; su diagnóstico: «In essence the problem with anemic domain models is that they incur all of the costs of a domain model, without yielding any of the benefits» ([Fowler, 2003](#ref-fowler-2003)). El paso 2 no era anémico: sin reglas, un *Transaction Script* es legítimo, y el mismo artículo admite que «Domain Models aren't always the best tool». Lo que no conviene es la versión a medias: *Entities*, *Repositories* y handlers con todas las reglas en los handlers, que cuesta como un *Domain Model* y rinde como un *Transaction Script*. Ver §3.4 y §3.5.
 
-**Pasos 5 y 6.** La interfaz de *Repository* y su doble de prueba aparecen para probar «DNI no repetido» sin SQLite, con el mismo mecanismo del §4.6; la confirmación sigue siendo `SaveChanges` (§5.5). Cuando un cliente de escritorio o móvil necesita los datos, no puede inyectar el servicio —el `DbContext` y la cadena de conexión no viajan al equipo del usuario, ni deben—, y nacen `Contracts` y un cliente HTTP (§6.3, §8.5). Fowler lo anticipa: «as soon as you envision a second kind of client, or a second transactional resource in use case responses, it pays to design in a Service Layer from the beginning» ([Stafford, en Fowler, 2002, p. 137](#ref-fowler-2002)).
+**Pasos 5 y 6.** Las dos piezas del bloque son las que el paso 7 va a usar: `ExisteDni` es lo que el Handler consulta, y `CrearPersonaRequest` lo que el cliente envía. La interfaz de *Repository* y su doble de prueba aparecen para probar «DNI no repetido» sin SQLite, con el mismo mecanismo del §4.6; la confirmación sigue siendo `SaveChanges` (§5.5). Cuando un cliente de escritorio o móvil necesita los datos, no puede inyectar el servicio —el `DbContext` y la cadena de conexión no viajan al equipo del usuario, ni deben—, y nacen `Contracts` y un cliente HTTP (§6.3, §8.5). Fowler lo anticipa: «as soon as you envision a second kind of client, or a second transactional resource in use case responses, it pays to design in a Service Layer from the beginning» ([Stafford, en Fowler, 2002, p. 137](#ref-fowler-2002)).
 
-**Paso 7: el servicio se parte en handlers.** Los parámetros de `Add` se vuelven un Command y el cuerpo, su `Handle` (§4.2, §4.3); `IPersonasService` no desaparece, cambia de forma: el conjunto de handlers pasa a ser el límite de la aplicación, que es lo que PoEAA llama *Service Layer*, ahora con cada *operation script* en su propia clase ([Fowler, 2002, p. 111 y 135](#ref-fowler-2002)). Cuando un *Use Case* toca varias *Entities*, `SaveChanges` sube al handler como *Unit of Work* (§4.10); con una clave `int` generada por la base, `persona.Id` vale `0` hasta ese `SaveChanges`, y por eso el paso 7 lo devuelve después de que `_repository.Add` confirmó. La capa queda delgada, como la describe Evans: «This layer is kept thin. It does not contain business rules or knowledge, but only coordinates tasks and delegates work to collaborations of domain objects» ([Evans, 2003](#ref-evans-2003), citado en [Fowler, 2003](#ref-fowler-2003)). De dónde vienen los nombres y por qué no es CQRS: §4.7 y §4.8.
+**Paso 7: el servicio se parte en handlers.** Los parámetros de `Add` se vuelven un Command y el cuerpo, su `Handle` (§4.2, §4.3); `IPersonasService` no desaparece, cambia de forma: el conjunto de handlers pasa a ser el límite de la aplicación, que es lo que PoEAA llama *Service Layer* —de Randy Stafford, p. 133—, ahora con cada *operation script* en su propia clase ([Fowler, 2002, p. 111 y 135](#ref-fowler-2002)). Cuando un *Use Case* toca varias *Entities*, `SaveChanges` sube al handler como *Unit of Work* (§4.10); con una clave `int` generada por la base, `persona.Id` vale `0` hasta ese `SaveChanges`, y por eso el paso 7 lo devuelve después de que `_repository.Add` confirmó. La capa queda delgada porque lo que no es regla de negocio no le pertenece: Evans manda «Isolate the expression of the domain model and the business logic, and eliminate any dependency on infrastructure, user interface, or even application logic that is not business logic» ([Evans, 2015](#ref-evans-2015), *Layered Architecture*, p. 10). Qué implica para quien diseña: el handler puede pedir, componer y confirmar, y nada más; en el momento en que aparece un `if` del negocio adentro, la regla se fue de la *Entity*. El `Handle` de §4.10 lo muestra compilado —`RegistrarPedidoHandler.cs` l. 19–33 busca los productos, delega en `Pedido.AgregarItem` y `Pedido.Confirmar`, marca y confirma—: las cuatro reglas del enunciado están en el dominio y ninguna en la capa. De dónde vienen los nombres y por qué no es CQRS: §4.7 y §4.8.
 
 ### 9.7 Ejercicios de transferencia
 
@@ -2454,7 +2509,7 @@ Hasta acá la guía resolvió todo: la tienda en §9.5 y las personas en §9.6. 
 
 *Ejercicio 1.* Hoy es E-A —una aplicación, dos roles, pocas reglas—; la frase sobre el celular es la señal de E-B, igual que «otras aplicaciones» en §9.5, y decide si se construye el escalón 4 desde el inicio o se deja la API para cuando llegue el cliente (sin el celular alcanza el escalón 2, con `Turno` como *Entity*; §8.5). La regla pasa la prueba del papel (la agenda de papel tampoco admite dos turnos a la misma hora) y es una *integrity constraint* sobre varias instancias: un `Turno` no conoce a los demás, así que la decide el *Use Case* `ReservarTurno` preguntando al *Repository* (`ExisteSuperpuesto(medicoId, desde, hasta)`), con una restricción en la base como respaldo, como «DNI no repetido» en §9.6; lo que sí es *Invariant* del `Turno` es «termina después de que empieza». Desde el día uno existen la *Entity*, el mensaje y el modelo de lectura; el contrato y el ViewModel aparecen con el celular.
 
-*Ejercicio 2.* En (a) el dato lo conoce el stock del `Producto` y la regla es la *Precondition* de reservar: `RegistrarPedido` toca dos *Aggregates* —el pedido que crea y los productos cuyo stock descuenta— y por eso hay **un** `SaveChangesAsync`, en el Handler, detrás de `IUnitOfWork` (§4.10): si el descuento falla, el pedido no se guarda (*Minimal Guarantee*). En (b) registrar no mira el stock; la regla es la *Precondition* de despachar, en otro *Use Case* (`DespacharPedido`), y un pedido puede quedar registrado y no despachable. Ninguna es *Invariant*: el stock puede ser cero sin que el `Producto` esté inválido. Cuál conviene lo decide el negocio —si se vende lo que hay en depósito o se toma pedido y se repone—, y por eso §4.10 la dejó abierta.
+*Ejercicio 2.* En (a) el dato lo conoce el stock del `Producto` y la regla es la *Precondition* de reservar: `RegistrarPedido` toca dos *Aggregates* —el pedido que crea y los productos cuyo stock descuenta— y por eso hay **un** `SaveChangesAsync`, en el Handler, detrás de `IUnitOfWork` (§4.11): si el descuento falla, el pedido no se guarda (*Minimal Guarantee*). En (b) registrar no mira el stock; la regla es la *Precondition* de despachar, en otro *Use Case* (`DespacharPedido`), y un pedido puede quedar registrado y no despachable. Ninguna es *Invariant*: el stock puede ser cero sin que el `Producto` esté inválido. Cuál conviene lo decide el negocio —si se vende lo que hay en depósito o se toma pedido y se repone—, y por eso §4.10 la dejó abierta.
 
 ### 9.8 El criterio, en una línea
 
@@ -2494,9 +2549,11 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 | L23 | 8.1 | `dotnet sln list` | La estructura física | `L23-estructura` |
 | L24 | 9.4 | En un proyecto descartable: `dotnet add package AutoMapper --version 14.0.0`; `dotnet list package --vulnerable`; `curl -s https://api.nuget.org/v3-flatcontainer/<paquete>/<versión>/<paquete>.nuspec` | Evaluar una dependencia antes de adoptarla | `L24-evaluar-dependencia` |
 
+Dos cosas que el laboratorio **no** construye, por decisión y no por olvido: un segundo ABM compilado para los pasos 5 y 6 de §9.6 —las dos piezas ya están compiladas con `Producto`, y el bloque de esa sección alcanza para ver el delta— y una variante de cliente con `IProductoApiService` y sus modelos de pantalla —el cliente de consola de L22 está compilado y capturado, y los objetos que faltan son los tres que §7.1 declara fuera del laboratorio—.
+
 **Qué puede cambiar en tu equipo en todos los pasos:** rutas absolutas, identificadores `Guid`, fechas, duraciones, el valor de la huella SHA-256 de L16 y el número de parche del SDK. Lo que no cambia —códigos de error, códigos de estado HTTP, códigos de salida— es lo que verifica `aserciones.log`. El registro incluye una aserción que falla a propósito, para demostrar que el mecanismo detecta.
 
-**Variantes.** Tres programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas; `FabricaYResultado/` compara las dos formas de rechazar, las dos formas de cerrar un conjunto de valores y los cuatro materializadores, y produce seis; es el único proyecto del laboratorio con un paquete de terceros (Dapper, Anexo C). V06 no se regenera junto con las demás: §3.8 cita cinco números suyos, y volver a correrla obliga a actualizarlos.
+**Variantes.** Tres programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas; `FabricaYResultado/` compara las dos formas de rechazar, las dos formas de cerrar un conjunto de valores y los cuatro materializadores, y produce seis; es el único proyecto del laboratorio con un paquete de terceros (Dapper, Anexo C). Las seis capturas se regeneran juntas: los números que §3.8 cita de V06 salen de la última corrida.
 
 | Paso | § | Comando | Qué confirma | Captura |
 | --- | --- | --- | --- | --- |
@@ -2505,7 +2562,7 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 | V03 | 5.5 | `dotnet run --no-build --project Pedidos/Demo -- cambiar-precio` | Con seguimiento, el cambio de precio llega a la base (1 fila); con `AsNoTracking`, no (0 filas) | `V03-cambiar-precio` |
 | V04 | 3.8 | `dotnet build FabricaYResultado/Demo` (Debug y Release) y la compilación con `AnalysisMode=All` | Las dos estrategias compilan con 0 advertencias; descartar un resultado no produce ni un aviso (`CA1806/IDE0058 = 0`) | `V04-build-fabrica-y-resultado` |
 | V05 | 5.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- ciclo` | EF Core elige el constructor privado, lo ejecuta al releer y escribe los setters privados | `V05-ciclo-efcore` |
-| V06 | 3.8 | `dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos` | Las mismas dos reglas rechazadas de las dos maneras; 4.357,0 ms/296,0 B contra 30,6 ms/0,0 B, y la excepción sin atrapar corta el proceso | `V06-rechazos` |
+| V06 | 3.8 | `dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos` | Las mismas dos reglas rechazadas de las dos maneras; 4.559,2 ms/296,0 B contra 30,8 ms/0,0 B, y la excepción sin atrapar corta el proceso | `V06-rechazos` |
 | V07 | 5.4, 3.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor` | Sin constructor utilizable, `InvalidOperationException` en ejecución; con `{ get; }`, la propiedad desaparece del modelo | `V07-sin-ctor-privado` |
 | V08 | 3.9, 5.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- valores` | El `enum` admite valores que no declara; el *Value Object* con fábrica, no | `V08-enum-y-valor` |
 | V09 | 5.4, 7.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- materializadores` | Dapper materializa la *Entity* cerrada y falla en silencio si la columna no coincide; el serializador necesita un constructor que alcance | `V09-materializadores` |
@@ -2525,6 +2582,9 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 | 7 | ¿Cada paquete de terceros pasó las cinco preguntas del §9.4? | Adoptarlo; si no, alternativa nativa | §9.4 |
 | 8 | ¿Algún cliente referencia `Infrastructure`? | Corregir: rompe la Invariant | §8.3 |
 | 9 | ¿Hay una prueba que se vio fallar por cada regla importante? | — | §4.6 |
+| 10 | ¿Cómo rechaza el dominio: lanzando o devolviendo? ¿Hay que mostrar más de un motivo a la vez? | Resultado tipado con código de condición; si son varios motivos, *Notification* | §3.8 |
+| 11 | ¿El catálogo de códigos de rechazo se versiona como parte del contrato? | Códigos del vocabulario del dominio, sin texto de presentación | §7.2 d |
+| 12 | ¿Cada *Entity* tiene un camino de materialización que el ORM alcance, y un conjunto cerrado que de verdad cierre? | Constructor sin parámetros + setters privados; *Value Object* con fábrica donde haya regla | §5.4, §3.9 |
 
 ---
 
@@ -2576,7 +2636,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | CRUD | alta, baja, modificación y consulta | Las cuatro operaciones básicas sobre datos (*create, read, update, delete*) | 0.4, 9.1 | — |
 | `curl` | — | Programa de línea de comandos que envía peticiones HTTP y muestra la respuesta | 5.1 | — |
 | DAO | *Data Access Object* | Objeto de acceso a datos que expone filas o SQL; no es un Repository | 4.4 | — |
-| DbContext | — | Clase de EF Core que representa una sesión con la base y confirma los cambios con `SaveChanges` | 5.1 | §4.10, `AppDbContext.cs` |
+| DbContext | — | Clase de EF Core que representa una sesión con la base y confirma los cambios con `SaveChanges` | 5.1 | §4.11, `AppDbContext.cs` |
 | Decorador | *decorator* | Clase que implementa la misma interfaz que otra, agrega un trabajo y delega en la original | 4.9 | — |
 | `DelegatingHandler` | — | Eslabón de la cadena por la que pasa cada petición de `HttpClient` antes de salir | 6.5 | §6.5, `ApiTokenHandler` (ilustrativo) |
 | Dependencia | *dependency* | Relación en la que un código no compila o no funciona sin otro | 2.1 | §1.2 |
@@ -2599,7 +2659,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Handler | manejador | Clase que recibe un mensaje y ejecuta su Use Case: dependencias por constructor y un solo método `Handle` | 4.1, 4.3 | §4.5, `CrearProductoHandler.cs`; §4.10, `RegistrarPedidoHandler.cs` |
 | `HttpClient` | — | Clase de .NET que envía peticiones HTTP | 6.2, 6.3 | §6.3, `MyProject.ConsoleClient/Program.cs` |
 | Interfaz | *interface* | Tipo de C# que declara métodos sin implementarlos | 2.1 | §3.3, `IProductoRepository.cs` |
-| Interfaz de servicio técnico | — | Declaración, en `Application`, de una capacidad técnica que `Infrastructure` implementa (`IUnitOfWork`; correo y usuario actual son ejemplos hipotéticos) | 4.1, 4.10 | §4.10, `IUnitOfWork.cs` |
+| Interfaz de servicio técnico | — | Declaración, en `Application`, de una capacidad técnica que `Infrastructure` implementa (`IUnitOfWork`; correo y usuario actual son ejemplos hipotéticos) | 4.1, 4.11 | §4.11, `IUnitOfWork.cs` |
 | `internal` | — | Modificador de C#: el miembro es visible solo dentro de su proyecto (ensamblado) | 4.10 | §4.10, `ItemPedido.cs` |
 | Invariant | invariante; *Class Invariant* | Business Rule que vale toda la vida del objeto, se verifica mirando ese objeto solo y, si se rompe, el objeto no debería existir; cuando abarca a un Aggregate, la hace cumplir la raíz | 3.1, 3.6, 4.10 | §3.3, `Producto.cs`; §3.7 |
 | Inversión de dependencias | *dependency inversion* | Declarar la interfaz adentro e implementarla afuera | 2.1, 2.2 | §2.2, paso 1; §3.3, `IProductoRepository.cs` |
@@ -2646,7 +2706,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Structural Assertion | — | Business Rule que afirma que algo existe o se relaciona con otra cosa | 3.6, 3.7 | §3.7, `Precio decimal?` |
 | Table Data Gateway | — | Patrón de PoEAA: un objeto que es la puerta a una tabla; lo que suele llamarse DAO | 4.4 | — |
 | Transaction Script | — | Organización de la lógica en procedimientos, uno por petición | 3.5, 9.6 | §9.6, pasos 2–3 |
-| Unit of Work | unidad de trabajo | Grupo de cambios que se confirman juntos; en EF Core, `SaveChanges`; sube al Handler cuando el Use Case modifica más de una cosa que debe guardarse junta | 4.10, 5.1, 5.5 | §4.10, `IUnitOfWork.cs`, `AppDbContext.cs`; §5.5 |
+| Unit of Work | unidad de trabajo | Grupo de cambios que se confirman juntos; en EF Core, `SaveChanges`; sube al Handler cuando el Use Case modifica más de una cosa que debe guardarse junta | 4.11, 5.1, 5.5 | §4.11, `IUnitOfWork.cs`, `AppDbContext.cs`; §5.5 |
 | Use Case | caso de uso | Intención del usuario o del sistema implementada como una unidad de código que orquesta el dominio; su firma es un Command y su cuerpo, un Handler | 4.1, 4.2 | §4.5, `CrearProductoHandler.cs`; §5.5, `CambiarPrecioProductoHandler.cs` |
 | Validación contextual | *contextual validation* | Validar respecto de una acción (vender, guardar) y no la validez del objeto en abstracto | 3.7 | §3.7, `PrecioDeVenta` |
 | Value Object | objeto de valor | Objeto sin identidad que se compara por su contenido; `Dinero` es el patrón *Money* de Fowler (2002) | 3.1, 3.3 | §3.3, `Dinero.cs`, `ProductoTests.cs` |
@@ -2672,8 +2732,6 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 
 <a id="ref-eiffel-sf"></a>Eiffel Software. (s. f.). *Design by Contract: Introduction*. https://www.eiffel.com/values/design-by-contract/introduction/ (consultado el 2026-09-19).
 
-<a id="ref-evans-2003"></a>Evans, E. (2003). *Domain-Driven Design: Tackling Complexity in the Heart of Software*. Addison-Wesley. Citado en Fowler (2003).
-
 <a id="ref-evans-2015"></a>Evans, E. (2015). *Domain-Driven Design Reference: Definitions and Pattern Summaries*. Domain Language. https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf (consultado el 2026-09-19).
 
 <a id="ref-fowler-2002"></a>Fowler, M. (2002). *Patterns of Enterprise Application Architecture*. Addison-Wesley. Las citas con página son del libro, cap. 9 «Domain Logic Patterns» (pp. 110–141; *Service Layer* lo firma Randy Stafford, p. 133; extracto del editor: http://media.techtarget.com/tss/static/articles/content/FowlerPatterns/Fowler_ch09.pdf, consultado el 2026-09-19). El catálogo en línea, https://martinfowler.com/eaaCatalog/ (consultado el 2026-09-18), publica solo la frase de intención y un resumen de cada patrón (`transactionScript.html`, `domainModel.html`, `serviceLayer.html`, `repository.html`, `unitOfWork.html`, `dataTransferObject.html`, `valueObject.html`, `money.html`, `tableDataGateway.html`); las citas sin página son de ahí.
@@ -2685,6 +2743,8 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (en la 1.ª ed., 1999, *Replace Constructor with Factory Method*; renombrada en la 2.ª ed., 2018), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, y *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html (consultados el 2026-09-20).
 
 <a id="ref-evans-fowler-1997"></a>Evans, E. y Fowler, M. (1997). *Specifications*. https://martinfowler.com/apsupp/spec.pdf (consultado el 2026-09-20).
+
+<a id="ref-fowler-2004c"></a>Fowler, M. (2004, 19 de julio). *Presentation Model*. https://martinfowler.com/eaaDev/PresentationModel.html (consultado el 2026-09-21).
 
 <a id="ref-fowler-2004"></a>Fowler, M. (2004, 21 de octubre). *LocalDTO*. https://martinfowler.com/bliki/LocalDTO.html (consultado el 2026-09-19).
 
@@ -2747,6 +2807,8 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-microsoft-2026m"></a>Microsoft. (2026m). *Entity types with constructors* (EF Core). https://learn.microsoft.com/en-us/ef/core/modeling/constructors (consultado el 2026-09-20).
 
 <a id="ref-microsoft-2026l"></a>Microsoft. (2026l). *What's new in ASP.NET Core in .NET 7*, sección «Parameter binding with DI in API controllers». https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0 (consultado el 2026-09-19).
+
+<a id="ref-seemann-2011"></a>Seemann, M. (2011, 28 de julio). *Composition Root*. https://blog.ploeh.dk/2011/07/28/CompositionRoot/ (consultado el 2026-09-21). El término aparece también en *Dependency Injection in .NET* (Manning, 2011).
 
 <a id="ref-wirfsbrock-2006"></a>Wirfs-Brock, R. (2006). *A Brief Tour of Responsibility-Driven Design* [diapositivas]. https://www.wirfs-brock.com/PDFs/A_Brief-Tour-of-RDD.pdf (consultado el 2026-09-19).
 

@@ -4,7 +4,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 ## 2026-09-19 (mesa de editores)
 
-### Guides/Arquitectura/Dot-NET-Arquitectura-Guide.md — v2.1.0
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.1.0
 
 Reedición por la mesa de editores (editor, pedagogía, Fowler, .NET, refutador; bitácora de la mesa en el repositorio de documentación del laboratorio). Objetivo: que cada concepto tenga definición, explicación, código y la asociación explícita entre los dos. `MyProject/`, `lab.sh`, `Conceptos-DI/` y las capturas L00–L24 no cambian.
 
@@ -25,11 +25,11 @@ Reedición por la mesa de editores (editor, pedagogía, Fowler, .NET, refutador;
 
 ## 2026-09-19
 
-### Guides/Arquitectura/Dot-NET-Arquitectura-Guide.md — v2.0.2
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.0.2
 
 #### Cambiado
 
-- El laboratorio pasa de `Guides/Arquitectura/Dot-NET-Arquitectura-Lab/` a `Guides/Arquitectura/Examples/Dot-NET-Arquitectura-Lab/`; la guía actualiza sus cinco referencias (convenciones de §0, L00 y anexo A). `lab.sh` no depende de su ubicación y las capturas quedan como se registraron.
+- El laboratorio pasa de `Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Lab/` a `Guides/Dot-NET-Arquitectura-Guide/Examples/Dot-NET-Arquitectura-Lab/`; la guía actualiza sus cinco referencias (convenciones de §0, L00 y anexo A). `lab.sh` no depende de su ubicación y las capturas quedan como se registraron.
 - Terminología: los términos de la literatura se escriben en inglés y sin traducir, en cursiva la primera vez (*Entity*, *Value Object*, *Business Rule*, *Invariant*, *Precondition*, *Factory Method*, *Use Case*, *Repository*, *Unit of Work*, *Aggregate*…). Se aplica en §3.1 y §4.1 (definiciones), en los títulos de §3.2, §3.5, §4.9, §5.2, §5.4 y §5.5 (con sus anclas y remisiones), en el resto de la prosa técnica, en el diagrama 6 y en el glosario, cuyas entradas pasan a ser el término en inglés con su equivalente en castellano.
 - §0.4: «el precio no puede ser cero ni negativo» se presenta como decisión de esta tienda para el laboratorio («un producto se da de alta con su precio»), y anuncia la variante de §3.7. El laboratorio no se regenera: L09–L21 siguen valiendo.
 - §3.2: la prueba del papel se corrige (el cuaderno del depósito sí anota mercadería sin precio; lo que el mostrador no hace es venderla); se agrega la pregunta «¿vale siempre o solo antes de una acción?» (ahora son cuatro) y la fila «no se vende un producto sin precio». §3.1 separa los ejemplos de *Business Rule* e *Invariant* y define *Precondition* y *Postcondition*.
@@ -55,7 +55,7 @@ Reedición por la mesa de editores (editor, pedagogía, Fowler, .NET, refutador;
 
 ## 2026-09-18 (reedición)
 
-### Guides/Arquitectura/Dot-NET-Arquitectura-Guide.md — v2.0.1
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.0.1
 
 #### Cambiado
 
@@ -68,11 +68,11 @@ Reedición por la mesa de editores (editor, pedagogía, Fowler, .NET, refutador;
 
 #### Añadido
 
-- `Guides/Arquitectura/Dot-NET-Arquitectura-Lab/`: `lab.sh` (25 pasos L00–L24 en `mcr.microsoft.com/dotnet/sdk:10.0`), `capturas/` (salidas literales con encabezado de fecha, imagen, digest y SDK), `aserciones.log` (74 PASS, 1 FAIL provocado a propósito) y `MyProject/` (la solución final que compila con cero advertencias).
+- `Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Lab/`: `lab.sh` (25 pasos L00–L24 en `mcr.microsoft.com/dotnet/sdk:10.0`), `capturas/` (salidas literales con encabezado de fecha, imagen, digest y SDK), `aserciones.log` (74 PASS, 1 FAIL provocado a propósito) y `MyProject/` (la solución final que compila con cero advertencias).
 
 ## 2026-09-18
 
-### Guides/Arquitectura/Dot-NET-Arquitectura-Guide.md
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md
 
 #### Añadido
 
@@ -94,4 +94,4 @@ Reedición por la mesa de editores (editor, pedagogía, Fowler, .NET, refutador;
 
 #### Eliminado
 
-- `guia-arquitectura-.net.md`, `guia-arquitectura-microservicios.md` y `guia-manejo-recursos.md`: eran copias idénticas de `Guides/Arquitectura/Dot-NET-Arquitectura-Guide.md`, `Microservicios-Guide.md` y `Manejo-Archivos-Guide.md`.
+- `guia-arquitectura-.net.md`, `guia-arquitectura-microservicios.md` y `guia-manejo-recursos.md`: eran copias idénticas de `Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md`, `Microservicios-Guide.md` y `Manejo-Archivos-Guide.md`.

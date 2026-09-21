@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Variantes de la guía de arquitectura .NET (§3.7, §4.10 y §5.5): programas aparte, fuera de lab.sh y de MyProject/.
+# Variantes de la guía de arquitectura .NET (§3.7, §4.10, §5.5 y §3.3/§5.4): programas aparte, fuera de lab.sh y de MyProject/.
 # Se ejecuta dentro de mcr.microsoft.com/dotnet/sdk:10.0 con esta carpeta montada en /variantes:
 #   docker run --rm --user "$(id -u):$(id -g)" -e IMAGEN=... -e DIGEST=... \
 #     -v "$PWD":/variantes -w /variantes mcr.microsoft.com/dotnet/sdk:10.0 bash variantes.sh
@@ -34,4 +34,9 @@ cap V01 producto-sin-precio "dotnet run --no-build --project ProductoSinPrecio/D
 cap V02 build-pedidos "dotnet build Pedidos/Demo"
 cap V02 registrar-pedido "dotnet run --no-build --project Pedidos/Demo"
 cap V03 cambiar-precio "dotnet run --no-build --project Pedidos/Demo -- cambiar-precio"
+cap V04 build-fabrica-y-resultado "dotnet build FabricaYResultado/Demo && dotnet build FabricaYResultado/Demo -c Release && echo && echo '# avisos por ignorar el resultado de un metodo (CA1806/IDE0058), con el catalogo completo de analisis activado:' && dotnet build FabricaYResultado/Demo -p:AnalysisMode=All -p:EnforceCodeStyleInBuild=true --no-incremental 2>&1 | grep -E 'CA1806|IDE0058' | wc -l"
+cap V05 ciclo-efcore "dotnet run --no-build --project FabricaYResultado/Demo -- ciclo"
+cap V06 rechazos "ulimit -c 0; dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos"   # ulimit: el escenario termina con una excepción no atrapada y no debe dejar un volcado
+cap V07 sin-ctor-privado "dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor"
+cap V08 enum-y-valor "dotnet run --no-build --project FabricaYResultado/Demo -- valores"
 find . -name bin -o -name obj | xargs rm -rf

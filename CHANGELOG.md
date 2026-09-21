@@ -2,6 +2,29 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-09-20 (mesa de editores, ciclo 2)
+
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.2.0
+
+Segundo ciclo de la mesa (comisiones Fowler y .NET), sobre el pedido del Product Owner acerca de las fábricas estáticas con constructor privado, las guardas, los resultados tipados y los valores. `MyProject/`, `lab.sh`, `Conceptos-DI/` y las capturas L00–L24 siguen sin cambios; la guía crece 147 líneas y 3 bloques de código, dentro del tope del ciclo.
+
+#### Añadido
+
+- **§3.8 «¿Se rechaza lanzando o devolviendo?»** (sección nueva; la pregunta de cierre del capítulo pasa a §3.9). Las dos formas de rechazar con criterio para elegir: tabla de cuatro preguntas, las dos citas de Fowler (2014) —lo esperable no va por excepción; el contexto decide—, el bloque compilado de `Create` devolviendo `DomainResult<T>` con `TryGetValue`, y las dos mediciones que forman el par: 4.357,0 ms/296,0 B contra 30,6 ms/0,0 B por millón de rechazos (**142x**, V06) y el resultado que se puede descartar sin un solo aviso ni siquiera con `AnalysisMode=All` (V04), frente a la excepción que corta el proceso. Se nombra la *Notification* de Fowler (2004b) como la forma que junta **todos** los motivos —un resultado de un solo código no lo es— y la consulta sin efecto que informa el motivo sin mutar (CQS y *Side-Effect-Free Function*), que es el `isValidForCheckIn` que §3.7 ya predica; no es *Specification* ni *Guard Clause*.
+- **§3.9**: el conjunto cerrado que de verdad está cerrado. El `enum` admite `(EstadoProducto)99`, se relee desde una columna entera con `IsDefined = False` sin lanzar y viaja como número en JSON; el *Value Object* con constructor privado y fábrica no admite un valor imposible (bloque compilado de `Moneda`, con `MonedaSinRegla` como contraste y V08 como medición). El umbral «un valor se vuelve tipo cuando tiene una regla» se declara más estricto que Evans y que PoEAA, y §7.1 remite a esa marca en lugar de afirmarlo en seco.
+- **§4.2**: la línea de pensamiento entidad → intención → hecho consumado, con el **Diagrama 4.1** (mermaid) y las dos preguntas que la cruzan sin ser etapas: «¿qué valores admite?» y «¿qué contesta cuando no puede?». El hecho consumado se distingue en sus dos formas: *Domain Event* si lo que importa es que ocurrió, *Entity* si tiene identidad y ciclo de vida (Evans, 2015). §7.1 remite al diagrama.
+- **§5.4**: el constructor privado como **costura del ORM**, con la documentación de EF Core que lo respalda (Microsoft, 2026m) y la medición del ciclo completo (constructor elegido, dos ejecuciones —alta y relectura—, setters privados escritos igual; V05); qué pasa sin ese constructor (`InvalidOperationException: No suitable constructor was found`, V07); por qué el camino de materialización **no valida**, con sus tres razones y el desvío para el escenario E-C, declarado **Criterio de esta guía**; y cómo se persiste un `enum` (texto, o entero con valores explícitos; nunca entero sin ellos).
+- **§7.2 d**: el contrato de error también es contrato —códigos del vocabulario del dominio, sin texto de presentación (Fowler, 2004b)—, con dos filas nuevas del cuadro ✅/❌ y la advertencia sobre el `const string`: los compiladores propagan las constantes, así que cambiar un código obliga a recompilar a quien lo consume (Microsoft, 2026n).
+- **`Examples/Dot-NET-Arquitectura-Lab/Variantes/FabricaYResultado/`** (especialista .NET): el mismo `Producto` con las dos estrategias de rechazo, `DomainResult`/`DomainResult<T>` como `readonly record struct` con `TryGetValue`, el `enum` con valores explícitos, `Moneda` como *Value Object* con fábrica, las dos entidades de contraste que EF Core no puede materializar y el mapeo desde afuera con `HasConversion`. Compila en Debug y Release con 0 advertencias; capturas **V04–V08**, listadas en el Anexo A.
+- Anexo E: Fowler (2014) *Replacing Throwing Exceptions with Notification in Validations*, Fowler (2004b) *Notification*, Fowler (s. f.) catálogo de *Refactoring* (*Replace Constructor with Factory Function* y *Replace Nested Conditional with Guard Clauses*), Evans y Fowler (1997) *Specifications*, Microsoft (2026m) *Entity types with constructors* y Microsoft (2026n) *The `const` keyword*. Anexo D: cinco entradas nuevas (conjunto cerrado, *Domain Event*, *Factory Function*, *Notification*, resultado de dominio).
+
+#### Cambiado
+
+- **§3.1**: la viñeta *Factory Method* dice «único camino **desde afuera de la clase**» —adentro, `Create` usa el constructor privado por inicializador— y admite más de una fábrica, una por acto de constitución; se cita el «Therefore» completo de Evans, con la frontera a partir de la cual la fábrica se muda a un objeto aparte (colaboradores, varias piezas, clases concretas), y se nombra la refactorización catalogada. La viñeta *Value Object* enumera lo que **no** es el patrón aunque viva en una carpeta `Values/`: el `enum`, el catálogo de constantes y la función de normalización.
+- **§3.3**: una nota aclara que el constructor privado sin parámetros no es un segundo camino de alta —no sabe recibir datos—, sino el camino del motor de datos; si alguna vez hay dos constructores, el de parámetros es el de constitución.
+- **§3.4**: fila nueva ❌ con la segunda razón del setter privado, medida: una propiedad `{ get; }` compila, no avisa y **desaparece del modelo**, así que el dato no se guarda ni se relee (V07).
+- **§5.6**: qué cambia en el borde cuando el dominio devuelve resultado en lugar de lanzar —no hay excepción que traducir, el código de condición se mapea a estado y viaja en un miembro de extensión del `ProblemDetails`, y el texto de presentación deja de vivir en `Domain`—.
+
 ## 2026-09-19 (mesa de editores)
 
 ### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.1.0

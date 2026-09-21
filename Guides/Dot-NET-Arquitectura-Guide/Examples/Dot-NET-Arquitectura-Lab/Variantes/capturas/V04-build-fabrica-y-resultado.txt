@@ -1,0 +1,38 @@
+# V04 — build-fabrica-y-resultado
+# fecha: 2026-09-21T02:23:51Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet build FabricaYResultado/Demo && dotnet build FabricaYResultado/Demo -c Release && echo && echo '# avisos por ignorar el resultado de un metodo (CA1806/IDE0058), con el catalogo completo de analisis activado:' && dotnet build FabricaYResultado/Demo -p:AnalysisMode=All -p:EnforceCodeStyleInBuild=true --no-incremental 2>&1 | grep -E 'CA1806|IDE0058' | wc -l
+# ---
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+  Determining projects to restore...
+  Restored /variantes/FabricaYResultado/Domain/FabricaYResultado.Domain.csproj (in 120 ms).
+  Restored /variantes/FabricaYResultado/Infrastructure/FabricaYResultado.Infrastructure.csproj (in 5.43 sec).
+  Restored /variantes/FabricaYResultado/Demo/FabricaYResultado.Demo.csproj (in 5.43 sec).
+  FabricaYResultado.Domain -> /variantes/FabricaYResultado/Domain/bin/Debug/net10.0/FabricaYResultado.Domain.dll
+  FabricaYResultado.Infrastructure -> /variantes/FabricaYResultado/Infrastructure/bin/Debug/net10.0/FabricaYResultado.Infrastructure.dll
+  FabricaYResultado.Demo -> /variantes/FabricaYResultado/Demo/bin/Debug/net10.0/FabricaYResultado.Demo.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:11.04
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  FabricaYResultado.Domain -> /variantes/FabricaYResultado/Domain/bin/Release/net10.0/FabricaYResultado.Domain.dll
+  FabricaYResultado.Infrastructure -> /variantes/FabricaYResultado/Infrastructure/bin/Release/net10.0/FabricaYResultado.Infrastructure.dll
+  FabricaYResultado.Demo -> /variantes/FabricaYResultado/Demo/bin/Release/net10.0/FabricaYResultado.Demo.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.31
+
+# avisos por ignorar el resultado de un metodo (CA1806/IDE0058), con el catalogo completo de analisis activado:
+0
+
+# --- código de salida: 0

@@ -1,0 +1,23 @@
+# V07 — sin-ctor-privado
+# fecha: 2026-09-21T02:24:20Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor
+# ---
+A. Entity sin constructor sin parámetros y con nombres que no coinciden
+   InvalidOperationException: No suitable constructor was found for the type 'ProductoSinCtorPrivado'. The following constructors had parameters that could not be bound to properties of the type: 
+    Cannot bind 'textoLibre', 'importe' in 'ProductoSinCtorPrivado(string textoLibre, decimal importe)'
+Note that only mapped properties can be bound to constructor parameters. Navigations to related entities, including references to owned types, cannot be bound.
+
+B. La misma Entity con `{ get; }` en lugar de setter privado: compila, no avisa y la propiedad se va
+   propiedades mapeadas: Id, Precio
+   `Nombre` está en el modelo: False
+   tabla creada:
+   CREATE TABLE "Filas" (
+       "Id" TEXT NOT NULL CONSTRAINT "PK_Filas" PRIMARY KEY,
+       "Precio" TEXT NOT NULL
+   );
+
+# --- código de salida: 0

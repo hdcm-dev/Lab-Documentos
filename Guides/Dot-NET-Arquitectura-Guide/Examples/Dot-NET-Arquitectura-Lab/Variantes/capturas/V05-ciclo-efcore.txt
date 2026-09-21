@@ -1,0 +1,18 @@
+# V05 — ciclo-efcore
+# fecha: 2026-09-21T02:24:10Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project FabricaYResultado/Demo -- ciclo
+# ---
+1. Constructor que EF Core eligió para materializar: private ProductoQueDevuelve()
+2. Propiedades mapeadas: Id, Estado, Moneda, Nombre, Precio
+3. Precio: campo de respaldo = <Precio>k__BackingField
+4. Alta guardada: Mate 3500 ARS Borrador
+5. Veces que corrió el constructor privado hasta acá: 1 (la del alta)
+6. Releído desde la base: Mate 3500 ARS Borrador
+7. Veces que corrió el constructor privado: 2 (la del alta + la de la relectura)
+8. Los setters siguen siendo privados y EF Core los escribió igual: Estado = Borrador
+
+# --- código de salida: 0

@@ -39,4 +39,5 @@ cap V05 ciclo-efcore "dotnet run --no-build --project FabricaYResultado/Demo -- 
 cap V06 rechazos "ulimit -c 0; dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos"   # ulimit: el escenario termina con una excepción no atrapada y no debe dejar un volcado
 cap V07 sin-ctor-privado "dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor"
 cap V08 enum-y-valor "dotnet run --no-build --project FabricaYResultado/Demo -- valores"
+cap V09 materializadores "dotnet run --no-build --project FabricaYResultado/Demo -- materializadores"
 find . -name bin -o -name obj | xargs rm -rf

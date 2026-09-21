@@ -19,6 +19,33 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **`Examples/Prueba-Ayuda-Por-Rol/`**: la prueba de concepto, en devcontainer reproducible (`dotnet:1-10.0`, puerto 5190). `Consola/` es el motor aislado —catálogo, filtro por papel, `llms.txt` y validador— y termina con `Validador: 3 fallas` y `[exit=1]` **a propósito**: dos defectos plantados y un tercero que encontró el validador por su cuenta. `Web/` es un panel Blazor .NET 10 con ingreso simulado por papel, ayuda contextual, `404` por rol que no filtra el título en el HTML, fuente `.md` servido, `llms.txt` recortado a la sesión y dos idiomas. El contenido deriva de los casos de uso CU-00022, CU-00023, CU-00024, CU-00026, CU-00028 y CU-00029 (v1.1) de Lab-Geometria, declarados en `traces`. Siete capturas del 2026-09-19.
 - **`Examples/Lanzar-Example.md`**: tool-prompt para levantar la prueba, exponerla por un túnel de Cloudflare y entregar la URL, con las variantes `--bajar` y `--estado`.
 
+## 2026-09-21 (mesa de editores, ciclo 4)
+
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.4.0
+
+Ciclo abierto por una instrucción del Product Owner: «no dudes en incluir citas … y si podés explicaciones de esas citas, con algún snippet de código que materialice esa idea». Norma que queda escrita en §0.5: **toda cita de un mecanismo viene con el texto de la fuente, qué implica para quien diseña y el código que lo materializa**; una cita va sola sólo cuando habla del método de la guía. Ninguna fuente se recorta por presupuesto: lo que cede es prosa propia.
+
+#### Corregido
+
+- **Atribuciones.** *Service Layer* es de **Randy Stafford** (PoEAA **p. 133**, no 135) y así se lo nombra en §4.1, §4.3 y §9.6; *Repository*, de **Edward Hieatt y Rob Mee** (§4.1 lo dice ahora, como ya hacía §4.4); el **decorador** de §4.9 remite a Gamma et al.; «composition root» se atribuye a **Mark Seemann**, con su definición textual y entrada nueva en el Anexo E.
+- **§9.6 paso 7**: se reemplaza la cita de Evans 2003 de segunda mano por el «Therefore» de *Layered Architecture* (Evans, 2015, p. 10), que además manda lo que la sección necesita —aislar el dominio de la lógica de aplicación—, y se materializa con el `Handle` compilado de §4.10. La entrada `ref-evans-2003` se retira: ya no se cita nada de ese libro.
+- **§3.8 y Anexo A**: V06 regenerada. Los cinco números pasan a 4.559,2 ms / 296,0 B contra 30,8 ms / 0,0 B, factor **148x**, y 764,2 contra 848,1 ms en las altas válidas; la derivada «4,3 µs» pasa a 4,6 µs. La deuda declarada de V06 queda saldada: las seis capturas se regeneran juntas.
+- **§0.3** deja de prometer una plantilla que tres secciones no cumplen; **§7.2 e** nombra al *Presentation Model* como padre del ViewModel.
+
+#### Cambiado
+
+- **Una sola clasificación de reglas.** La misma regla se clasificaba en cuatro tablas (§3.2, §3.6 y dos en §3.7). Ahora §3.7 es la única que clasifica reglas una por una —con las tres del producto sin precio absorbidas—, §3.2 decide si la regla es del negocio y §3.6 de qué tipo es; las dos remiten.
+- **§4.10 se parte en dos**: el *Use Case* con dos *Entities* queda en §4.10 y «¿Cuándo `SaveChanges` sube del Repository al Handler?» pasa a ser §4.11, con la pregunta de cierre en §4.12. Trece remisiones actualizadas.
+
+#### Añadido
+
+- **Citas que faltaban, con su explicación y su código**: Evans, *Layered Architecture* p. 10, para la regla de dependencia (§2.1, materializada con `IProductoRepository`/`ProductoRepository` y el CS0234 de L07); Evans, *Repositories* p. 17 («the entities and value objects become mere data containers») para el *Anemic Domain Model* (§3.5); la definición de *Service Layer* de Stafford (§4.1); *Data Mapper* como el nombre de lo que §5.4 describe; la *trust region* de Wirfs-Brock como respaldo conceptual del criterio de no validar al materializar (§5.4); *Document Message* de Hohpe y Woolf para el Response DTO (§7.2 d); *Presentation Model* (§7.2 e); y los niveles de objetivo de Cockburn en el enunciado de §4.10.
+- **Dos secciones que citaban sin mostrar código**: §3.6, con las nueve citas del Business Rules Group, recibe un bloque compilado donde se ven los tres tipos —*Structural Assertion*, *Action Assertion*, *Derivation*— con su tabla «línea → concepto»; §4.7, con las cinco de CQS, contrasta `PrecioDeVenta()` contra `Desactivar()` y nombra la excepción consciente de `Handle`.
+- **§5.6**: el cuerpo `ProblemDetails` **medido** de L21, y el contraste en una línea con el `code` que agregaría un dominio por resultado. **§3.8**: la señal de cuándo el predicado se saca del objeto (el criterio que tiene que valer en memoria y en la base). **§6.3**: se nombra al serializador materializando el `record` posicional por su constructor, que §5.4 afirma y L22 ya tenía capturado.
+- **§9.6**: los pasos 5 y 6 de la escalera pasan a tener código (interfaz, doble de prueba y el `PostAsJsonAsync` del cliente), cerrando PE-08 del ciclo 1. **Anexo B**: tres preguntas nuevas (cómo rechaza el dominio, el catálogo de códigos como contrato, el camino de materialización y los conjuntos cerrados). **§9.3**: la señal «el borde necesita distinguir motivos de rechazo».
+- **Anexo A**: queda dicho qué **no** construye el laboratorio por decisión —un segundo ABM compilado y una variante de cliente—, con su fundamento.
+- Anexo E: Seemann (2011) y Fowler (2004c) *Presentation Model*.
+
 ## 2026-09-21 (mesa de editores, ciclo 3)
 
 ### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.3.0
@@ -45,7 +72,7 @@ Tercer ciclo de la mesa, sobre las tres preguntas del Product Owner: quién prop
 
 #### Deuda declarada
 
-- **V06 no se regeneró** al ampliar la variante: §3.8 cita cinco números suyos (milisegundos, bytes y el factor 142x). Si alguna vez se vuelve a correr, esos cinco números hay que actualizarlos en §3.8. Queda dicho en el Anexo A.
+- **V06 no se regeneró** al ampliar la variante y §3.8 quedó citando cinco números de una corrida anterior. *(Saldada en v2.4.0: V06 se regeneró y los números se actualizaron.)*
 
 ## 2026-09-20 (mesa de editores, ciclo 2)
 

@@ -1,5 +1,5 @@
 # V06 — rechazos
-# fecha: 2026-09-21T02:24:13Z
+# fecha: 2026-09-21T13:44:40Z
 # imagen: mcr.microsoft.com/dotnet/sdk:10.0
 # digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
 # sdk: 10.0.400
@@ -16,10 +16,10 @@ A. Las dos reglas del producto, rechazadas de las dos maneras
    Create("Mate", 3500, "XYZ") por resultado: Aplicado = False, Codigo = MONEDA_NO_ADMITIDA
 
 B. Costo de un millón de rechazos (Release, mismo escenario, misma máquina)
-   por excepción:    4,357.0 ms     296.0 bytes por rechazo
-   por resultado:       30.6 ms       0.0 bytes por rechazo
-   factor: 142x a favor del resultado
-   un millón de altas VÁLIDAS:      765.3 ms contra      824.9 ms
+   por excepción:    4,559.2 ms     296.0 bytes por rechazo
+   por resultado:       30.8 ms       0.0 bytes por rechazo
+   factor: 148x a favor del resultado
+   un millón de altas VÁLIDAS:      764.2 ms contra      848.1 ms
    (el mismo orden de magnitud: elegir resultado no acelera nada cuando no hay rechazos, y el camino B además construye el Value Object)
 
 C. El resultado se puede ignorar; la excepción no
@@ -27,8 +27,8 @@ C. El resultado se puede ignorar; la excepción no
    la línea de abajo hace el mismo rechazo por excepción, sin try/catch:
 Unhandled exception. MyProject.Domain.Common.DomainException: El nombre es obligatorio.
    at MyProject.Domain.Productos.ProductoQueLanza.Create(String nombre, Decimal precio) in /variantes/FabricaYResultado/Domain/Productos/ProductoQueLanza.cs:line 21
-   at Program.<<Main>$>g__Rechazos|0_1() in /variantes/FabricaYResultado/Demo/Program.cs:line 112
-   at Program.<Main>$(String[] args) in /variantes/FabricaYResultado/Demo/Program.cs:line 16
+   at Program.<<Main>$>g__Rechazos|0_1() in /variantes/FabricaYResultado/Demo/Program.cs:line 115
+   at Program.<Main>$(String[] args) in /variantes/FabricaYResultado/Demo/Program.cs:line 18
    at Program.<Main>(String[] args)
 
 # --- código de salida: 134

@@ -1,0 +1,35 @@
+# V08 — enum-y-valor
+# fecha: 2026-09-21T02:24:22Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project FabricaYResultado/Demo -- valores
+# ---
+A. El enum por convención: columna entera
+   tipo de columna de Estado: INTEGER
+   valor guardado en la base: '1'
+   fila con Estado = 9 releída: Estado = 9, IsDefined = False, y NO lanzó
+
+B. El mismo enum con HasConversion<string>: columna de texto
+   tipo de columna de Estado: TEXT
+   valor guardado en la base: 'Borrador'
+   fila con Estado = 'Archivado': InvalidOperationException: Cannot convert string value 'Archivado' from the database to any value in the mapped 'EstadoProducto' enum.
+
+C. El enum, fuera de la base, tampoco está cerrado
+   (EstadoProducto)99 compila y no lanza: ToString() = '99', IsDefined = False
+   JSON por defecto: {"Estado":2} (número, no nombre)
+   JSON con JsonStringEnumConverter: {"Estado":"Publicado"}
+   y deserializa un 99 sin quejarse: 99
+   por eso el switch necesita un brazo defensivo: publicado / valor fuera del catálogo (99)
+
+D. El Value Object con regla es el único que no admite un valor imposible
+   Moneda.Create("ars") → Aplicado = True, ARS
+   Moneda.Create("XYZ") → Aplicado = False, MONEDA_NO_ADMITIDA
+   Moneda.Create("") → Aplicado = False, MONEDA_REQUERIDA
+   new MonedaSinRegla("XYZ") se construye sin quejas: MonedaSinRegla { Codigo = XYZ }
+   y `with` la cambia sin pasar por ninguna regla: MonedaSinRegla { Codigo = @@@ }
+   constructores públicos: Moneda = 0, MonedaSinRegla = 1
+   igualdad por datos en las dos: True / True
+
+# --- código de salida: 0

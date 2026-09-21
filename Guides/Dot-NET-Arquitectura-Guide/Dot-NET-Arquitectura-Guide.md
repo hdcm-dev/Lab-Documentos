@@ -2,12 +2,12 @@
 doc_id: GUIA-NET-ARQ
 doc_type: study-guide
 title: Arquitectura de soluciones .NET — guía de estudio y de criterios
-version: 2.1.0
+version: 2.2.0
 status: vigente
 origin: ai-assisted
 confidence: alta en lo capturado en laboratorio; media en lo rotulado como criterio de esta guía
 owner: fernandofilipuzzi
-last_review: 2026-09-19
+last_review: 2026-09-20
 audience: [personas que se inician en arquitectura .NET, quien diseña una solución .NET desde cero]
 prerequisites: ["C# básico (clases, métodos, propiedades)", "uso de una terminal"]
 sdk_validado: ".NET SDK 10.0.400, runtime 10.0.11, imagen mcr.microsoft.com/dotnet/sdk:10.0@sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c"
@@ -26,7 +26,7 @@ Guía de estudio para construir, capa por capa, una solución .NET organizada se
 - **[1. Qué se está armando: solución, proyecto, referencia y paquete](#1-qué-se-está-armando-solución-proyecto-referencia-y-paquete)**: las piezas físicas de .NET y por qué una referencia tiene dirección.
 - **[2. La regla de dependencia](#2-la-regla-de-dependencia)**: Clean Architecture, inversión e inyección de dependencias, y el esqueleto de cuatro proyectos.
 - ***Parte II — Construcción: el ejemplo crece capítulo a capítulo***
-- **[3. Domain: lo que es verdad en el negocio](#3-domain-lo-que-es-verdad-en-el-negocio)**: *Entities*, *Value Objects*, *Business Rules* e *Invariants*; dónde vive cada tipo de regla y cuándo una regla es una *Precondition*.
+- **[3. Domain: lo que es verdad en el negocio](#3-domain-lo-que-es-verdad-en-el-negocio)**: *Entities*, *Value Objects*, *Business Rules* e *Invariants*; dónde vive cada tipo de regla, cuándo una regla es una *Precondition* y si el rechazo se lanza o se devuelve.
 - **[4. Application: lo que quiere hacer el usuario](#4-application-lo-que-quiere-hacer-el-usuario)**: *Use Cases*, Command, Handler y *Repository*, pruebas sin base de datos y un *Use Case* con dos *Entities*.
 - **[5. Infrastructure y WebAPI: el borde con el mundo](#5-infrastructure-y-webapi-el-borde-con-el-mundo)**: la API en marcha, el cambio de almacenamiento y los errores HTTP.
 - **[6. Los clientes](#6-los-clientes)**: cómo consume la API una aplicación .NET y dónde nace `Contracts`.
@@ -542,8 +542,8 @@ Todos estos términos se ven en los tres bloques de §3.3 (`Producto.cs`, `Diner
 - **Business Rule.** Condición o procedimiento que el negocio impone por sus propias razones y que valdría aunque no hubiera software que lo ejecute ([Martin, 2017](#ref-martin-2017)): «no se vende un producto sin precio». El §3.2 da el criterio para reconocerla y el §3.6 la clasifica. → §3.3, `Producto.cs`: `if (precio <= 0) throw new DomainException(...)`.
 - **Invariant.** *Business Rule* que se verifica mirando un solo objeto y que tiene que cumplirse **siempre**, desde que el objeto se crea: en el laboratorio, «el precio es mayor a cero». → §3.3, `Producto.cs`, la misma guarda dentro de `Create`; §3.7, `AsignarPrecio`.
 - **Precondition y Postcondition.** Lo que tiene que ser cierto antes de ejecutar un método y lo que el método garantiza al terminar ([Meyer, 1988](#ref-meyer-1988)). Una regla que vale solo antes de una acción —«no se vende sin precio»— es la *Precondition* de esa acción, no una *Invariant* (§3.7). → §3.7, `PrecioDeVenta()`; la *Postcondition* de `Create` está escrita como prueba: §3.3, `ProductoTests.cs`, `Assert.True(producto.Activo)`.
-- **Factory Method.** Método `static` que crea instancias y es el único camino para hacerlo, porque el constructor es privado. Evans describe la *Factory* como la operación que crea el objeto o el agregado entero haciendo cumplir sus *Invariants* ([Evans, 2015](#ref-evans-2015)), que es lo que hace `Create` con un método estático en lugar del constructor. (En el catálogo de [Gamma et al., 1994](#ref-gamma-1994) *Factory Method* designa otro patrón, basado en subclases.) → §3.3, `Producto.cs`: `private Producto() { }` + `public static Producto Create(string nombre, decimal precio)`.
-- **Value Object.** Objeto **sin identidad**: dos *Value Objects* con los mismos datos son el mismo valor, «like money or a date range, whose equality isn't based on identity» ([Fowler, 2002](#ref-fowler-2002); [Evans, 2015](#ref-evans-2015)). `Dinero(10, "ARS")` es igual a otro `Dinero(10, "ARS")`. En C# se modelan bien con `record`, un tipo cuya igualdad compara los datos miembro a miembro en lugar de la referencia. → §3.3, `Dinero.cs`: `public record Dinero(decimal Monto, string Moneda)`; la igualdad, en `ProductoTests.cs`.
+- **Factory Method.** Método `static` que crea instancias y es el único camino para hacerlo **desde afuera de la clase**: adentro, `Create` sigue usando el constructor privado con un inicializador de objeto, y puede haber una fábrica por acto de constitución, no una sola. Evans manda «shift the responsibility for creating instances of complex objects and aggregates to a separate object» y, en el mismo «Therefore», «create an entire aggregate as a piece, enforcing its invariants» ([Evans, 2015](#ref-evans-2015)): el método estático en la propia *Entity* es el caso liviano de esa familia, y la fábrica se muda a un objeto aparte cuando necesita colaboradores, arma varias piezas o obligaría al cliente a nombrar clases concretas. El movimiento del constructor público al método estático está catalogado como *Replace Constructor with Factory Function* (alias *Replace Constructor with Factory Method*, [Fowler, s. f.](#ref-fowler-refactoring)); su motivo es que un constructor no puede elegir qué devolver ni llevar el nombre del acto. (En el catálogo de [Gamma et al., 1994](#ref-gamma-1994) *Factory Method* designa otro patrón, basado en subclases.) → §3.3, `Producto.cs`: `private Producto() { }` + `public static Producto Create(string nombre, decimal precio)`; el constructor privado, además, es la costura por la que EF Core materializa cada fila (§5.4).
+- **Value Object.** Objeto **sin identidad**: dos *Value Objects* con los mismos datos son el mismo valor, «like money or a date range, whose equality isn't based on identity» ([Fowler, 2002](#ref-fowler-2002); [Evans, 2015](#ref-evans-2015)). `Dinero(10, "ARS")` es igual a otro `Dinero(10, "ARS")`. En C# se modelan bien con `record`, un tipo cuya igualdad compara los datos miembro a miembro en lugar de la referencia. Tres cosas que suelen vivir en una carpeta `Values/` y **no** son este patrón: el `enum` que enumera un conjunto cerrado (es vocabulario, no comportamiento), el catálogo de constantes de error (es contrato, §7.2 d) y la función auxiliar que normaliza un dato (es una función). El patrón pide, además de la igualdad por datos, «give it related functionality» ([Evans, 2015](#ref-evans-2015)). → §3.3, `Dinero.cs`: `public record Dinero(decimal Monto, string Moneda)`; la igualdad, en `ProductoTests.cs`; un conjunto cerrado con regla, en §3.9.
 - **Excepción de dominio.** Tipo de excepción propio (`DomainException`) que señala que una operación violaría una regla del negocio, para distinguirla de un error técnico. → §3.3, `Producto.cs`, `throw new DomainException(...)`; §5.6, quien la traduce a HTTP.
 - **Setter privado.** `{ get; private set; }`: la propiedad se lee desde cualquier lugar y se modifica solo desde dentro de la clase. → §3.3, `Producto.cs`, `public decimal Precio { get; private set; }`; §3.4, el error CS0200 que lo prueba.
 - **`Guid`.** Identificador único global: un número de 128 bits que .NET genera con `Guid.NewGuid()` y que sirve como `Id` sin necesidad de que una base de datos lo asigne. → §3.3, `Producto.cs`, `Id = Guid.NewGuid()`.
@@ -613,7 +613,7 @@ public class Producto
 | Línea o miembro | Concepto | Dónde se define |
 | --- | --- | --- |
 | `public Guid Id { get; private set; }` + `Desactivar()` | *Entity*: identidad propia (`Guid.NewGuid()`, sin esperar a la base) y comportamiento | §3.1 |
-| `private Producto() { }` + `public static Producto Create(...)` | *Factory Method*: el constructor privado deja un solo camino de creación | §3.1 |
+| `private Producto() { }` + `public static Producto Create(...)` | *Factory Method*: el constructor privado deja un solo camino de creación desde afuera | §3.1 |
 | `if (precio <= 0) throw new DomainException(...)` | *Invariant* «el precio es mayor a cero», verificada antes de que el objeto exista; la excepción es la de dominio | §3.1, §3.2 |
 | `{ get; private set; }` | Setter privado: la *Invariant* no se rompe desde afuera (L10) | §3.1, §3.4 |
 
@@ -635,6 +635,8 @@ public record Dinero(decimal Monto, string Moneda)
 | --- | --- | --- |
 | `public record Dinero(decimal Monto, string Moneda)` | *Value Object*: `record` compara miembro a miembro, no por referencia | §3.1 |
 | `if (Moneda != otro.Moneda) throw …` | *Business Rule* sobre un valor, escrita una sola vez | §3.2, §3.6 |
+
+El movimiento que llevó hasta acá se ve en dos líneas: el «antes» es `public Producto(string nombre, decimal precio)`, que cualquiera invoca con `new` y que no puede rechazar ni elegir qué devolver; el «después» es el par `private Producto() { }` + `public static Producto Create(...)` del bloque de arriba, que es *Replace Constructor with Factory Function* (§3.1) aplicado. El constructor privado sin parámetros no es un segundo camino de alta: no sabe recibir datos. Es el camino del ORM (§5.4), y `Create` lo usa por inicializador de objeto. Si alguna vez hay dos constructores, el que tiene parámetros es el de constitución y el sin parámetros sigue siendo el del motor de datos.
 
 `Dinero` es el núcleo del patrón *Money* de PoEAA: un *Value Object* con moneda cuya suma rechaza monedas distintas (el patrón completo también multiplica y reparte) ([Fowler, 2002](#ref-fowler-2002), `money.html`). Lo que distingue al *Value Object* de la *Entity* —la igualdad por datos— y la *Postcondition* de `Create` —el producto queda activo, con el precio dado— no se ven en `Producto.cs` ni en `Dinero.cs`: están escritas como pruebas, que es lo que Evans indica cuando el lenguaje no tiene cláusulas para las aserciones (§3.6):
 
@@ -702,6 +704,7 @@ Build FAILED.
 | ✅ | `Producto.Create(nombre, precio)` valida y es el único camino; cambiar el precio requeriría un método `CambiarPrecio` que aplique la misma regla (la variante del §3.7 lo concreta con `AsignarPrecio`) |
 | ❌ | `public decimal Precio { get; set; }` con la validación en el formulario: otra pantalla, un proceso por lotes o una prueba pueden saltearla |
 | ❌ | Validar en el Use Case y dejar la Entity abierta: la regla se repite en cada Use Case que toque el precio (escenario E-D) |
+| ❌ | «Endurecer» la propiedad a `public decimal Precio { get; }`, sin setter: compila, no avisa nada y EF Core deja de mapearla —`propiedades mapeadas: Id, Precio` y `` `Nombre` está en el modelo: False `` en la variante de §5.4—, así que el dato no se guarda ni se relee (*salida registrada: `Variantes/capturas/V07-sin-ctor-privado.txt`*) |
 
 ### 3.5 ¿Y si la Entity no tiene ninguna regla?
 
@@ -725,7 +728,7 @@ El informe marca la diferencia entre los dos primeros: «Where the STRUCTURAL AS
 
 **El contrato.** El *Design by Contract* de [Meyer (1988)](#ref-meyer-1988) escribe una *Action Assertion* como *Precondition* (lo que el método exige al entrar), *Postcondition* (lo que garantiza al salir) y *Class Invariant*, «an assertion describing a property which holds of all instances of a class» ([Eiffel Software, s. f.](#ref-eiffel-sf)): quien llama asegura la *Precondition* y a cambio obtiene la *Postcondition*. C# no tiene cláusulas para eso; la *Precondition* se escribe como una guarda que lanza `DomainException` y la *Invariant* se protege cerrando los setters, que es exactamente lo que hacen `Producto.Create` y el setter privado (§3.3, §3.4). Evans usa el mismo vocabulario: «State post-conditions of operations and invariants of classes and aggregates» ([Evans, 2015](#ref-evans-2015)). Meyer prefiere no verificar dos veces una *Precondition*; la guía la verifica igual en el objeto, porque sus clientes (el controller, las pruebas, un proceso por lotes) reciben datos de afuera y no son de confianza. **Criterio de esta guía.**
 
-**Quién conoce lo necesario.** Wirfs-Brock define la *Responsibility* como «an obligation to perform a task or know information» y propone pensarla como «knowing», «doing» y «deciding» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Una regla solo puede cumplirla el objeto que conoce los datos que necesita: «el precio es mayor a cero» es de `Producto`; «no hay dos productos con el mismo nombre» no puede serlo, porque un producto no conoce a los demás, y la cumple el *Use Case* a través del *Repository*, con un índice único en la base como respaldo. Evans marca el mismo límite: los objetos «are supposed to maintain their own internal consistent state, but they can be blindsided by changes in other objects» ([Evans, 2015](#ref-evans-2015)). Si la misma regla aparece en varias clases, le falta una clase propia: es el caso del *Value Object* (§3.8).
+**Quién conoce lo necesario.** Wirfs-Brock define la *Responsibility* como «an obligation to perform a task or know information» y propone pensarla como «knowing», «doing» y «deciding» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Una regla solo puede cumplirla el objeto que conoce los datos que necesita: «el precio es mayor a cero» es de `Producto`; «no hay dos productos con el mismo nombre» no puede serlo, porque un producto no conoce a los demás, y la cumple el *Use Case* a través del *Repository*, con un índice único en la base como respaldo. Evans marca el mismo límite: los objetos «are supposed to maintain their own internal consistent state, but they can be blindsided by changes in other objects» ([Evans, 2015](#ref-evans-2015)). Si la misma regla aparece en varias clases, le falta una clase propia: es el caso del *Value Object* (§3.9).
 
 | Tipo de regla | Pregunta que la reconoce | ¿Cuándo vale? | Dónde vive | Ejemplo en la tienda |
 | --- | --- | --- | --- | --- |
@@ -809,9 +812,89 @@ Quien vende —la *Entity* `Pedido` del §4.10 o cualquier *Use Case* de venta�
 | ❌ | «El precio es obligatorio» en `Create` cuando el negocio registra mercadería sin precio: la regla bloquea un caso legítimo |
 | ❌ | Precio `0` como marca de «sin precio»: un valor inventado con el que la venta sale a precio cero sin que nada lo impida |
 
-### 3.8 Pregunta de cierre
+### 3.8 ¿Se rechaza lanzando o devolviendo?
 
-**¿Cuándo no conviene el Value Object?** Cuando el valor no tiene comportamiento ni reglas propias. `Dinero` se justifica porque sumar montos de monedas distintas es un error de negocio; un `Nombre` que solo es texto no necesita un tipo propio. En el escenario E-A, con pocas reglas, un Value Object rara vez tiene comportamiento que proteger; en E-D es el lugar donde una regla sobre un valor se escribe una sola vez. **Criterio de esta guía.**
+**Respuesta: si el rechazo es esperable por la entrada que llega, se devuelve como valor; si señala un defecto de programación del llamador, se lanza. Criterio de esta guía**, construido sobre Fowler (2014).
+
+Hasta acá toda regla incumplida termina en `DomainException` (§3.3) y el borde la traduce a 400 (§5.6). Es una elección, no la única forma. Fowler la discute de frente: «if you're running some checks on outside input, this is because you expect some messages to fail - and if a failure is expected behavior, then you shouldn't be using exceptions», con dos salvedades que importan tanto como la regla: la excepción sigue siendo apropiada «where you have data that you expect to have already been validated earlier in processing», y «whether to use exceptions for a particular task is dependent on the context» ([Fowler, 2014](#ref-fowler-2014)).
+
+Cuatro preguntas para decidir, en el formato de §3.2:
+
+| # | Pregunta | Si es sí |
+| --- | --- | --- |
+| 1 | ¿El rechazo es esperable por la entrada que llega de afuera? | Resultado; la excepción quedaría para lo que no debería pasar |
+| 2 | ¿La persona necesita ver todos los motivos a la vez? | Resultado, y con una colección de motivos: una excepción informa uno solo |
+| 3 | ¿El llamador hace algo distinto según el motivo, o solo aborta? | Resultado: el código de condición es lo que le permite ramificar |
+| 4 | ¿El motivo tiene que cruzar un borde (HTTP, pantalla, otro proceso) sin texto de presentación? | Resultado; el código viaja, el mensaje no (§5.6, §7.2 d) |
+
+Dos o más síes inclinan la balanza al resultado; un defecto de programación —un identificador nulo que el contrato ya exigía— se lanza aunque todas den que no; sin razones fuertes, la excepción es menos ceremonia y está bien. La variante `Variantes/FabricaYResultado/` compila el mismo `Producto` con las dos estrategias, regla por regla:
+
+**[Compilado: `Variantes/FabricaYResultado/Domain/Productos/ProductoQueDevuelve.cs`, l. 22–31, y `Variantes/FabricaYResultado/Domain/Common/DomainResult.cs`, l. 58–64]**
+
+```csharp
+// — ProductoQueDevuelve.cs —
+public static DomainResult<ProductoQueDevuelve> Create(string? nombre, decimal precio, string? moneda)
+{
+    if (string.IsNullOrWhiteSpace(nombre))
+        return DomainResult<ProductoQueDevuelve>.Rechazar("NOMBRE_REQUERIDO");
+    if (precio <= 0)
+        return DomainResult<ProductoQueDevuelve>.Rechazar("PRECIO_NO_POSITIVO");
+
+    var monedaElegida = Moneda.Create(moneda);
+    if (!monedaElegida.TryGetValue(out var valor, out var codigo))
+        return DomainResult<ProductoQueDevuelve>.Rechazar(codigo);
+
+// — DomainResult.cs —
+    // [NotNullWhen] le enseña al análisis de nulabilidad lo que Aplicado por sí solo no le dice.
+    public bool TryGetValue([NotNullWhen(true)] out TValue? value, [NotNullWhen(false)] out string? codigo)
+    {
+        value = Value;
+        codigo = Codigo;
+        return Aplicado;
+    }
+```
+
+| Línea o miembro | Concepto | Dónde se define |
+| --- | --- | --- |
+| `Create` devuelve `DomainResult<T>` | El rechazo es un valor que el llamador recibe, no un salto de control | §3.8 |
+| `Rechazar("NOMBRE_REQUERIDO")` | Código del vocabulario del dominio, sin texto de presentación | §7.2 d |
+| `TryGetValue` con `[NotNullWhen]` | Sin él, el compilador no sabe que `Aplicado` implica `Value != null` y el llamador escribe `Value!`; dentro de `Rechazar`, en cambio, un código vacío sí se lanza: las dos formas conviven | §3.8, §3.3 |
+
+El laboratorio mide el par sobre un millón de rechazos, en Release: `por excepción: 4,357.0 ms / 296.0 bytes por rechazo` contra `por resultado: 30.6 ms / 0.0 bytes`, **factor 142x a favor del resultado**, mientras que un millón de altas **válidas** cuesta del mismo orden por los dos caminos (`765,3 ms` contra `824,9 ms`, con el camino del resultado construyendo además un *Value Object*) (*salida registrada: `Variantes/capturas/V06-rechazos.txt`, SDK 10.0.400*). El número solo manda cuando el rechazo es masivo —validar un lote, interpretar un archivo con cientos de ítems—; en una API con un rechazo por petición, 4,3 µs no deciden nada y la elección es de diseño. La misma captura muestra el costo del otro lado: la línea que descarta un `DomainResult` **compila sin un solo aviso**, incluso con el catálogo de análisis completo activado (V04: `CA1806/IDE0058 = 0`), mientras que el rechazo por excepción sin `try/catch` corta el proceso con código 134. Un resultado se puede ignorar; una excepción, no.
+
+**Un motivo no es una *Notification*.** `DomainResult` lleva **un** código: alcanza para una operación de una sola decisión (publicar, confirmar, despachar) y se queda corto en un alta de cinco campos, donde la persona corrige de a uno. La forma correcta ahí es la *Notification* de Fowler: un objeto que junta **todos** los motivos y «use error codes rather than strings» ([Fowler, 2004b](#ref-fowler-2004b)). El laboratorio no la construye; lo que hay que saber es cuándo falta.
+
+**La consulta que contesta sin hacer nada.** Una tercera forma, que no rechaza sino que informa: un método que pregunta si el acto sería admisible y devuelve el motivo, sin mutar nada. Es una *Query* en el sentido de la *Command-Query Separation* (§4.7) y una *Side-Effect-Free Function* en el de Evans, y es exactamente lo que predica §3.7 al pedir `isValidForCheckIn` en lugar de `isValid`: la validez se pregunta respecto de una acción. No es una *Specification*, que es un objeto-criterio con un `isSatisfiedBy(candidato)` ([Evans y Fowler, 1997](#ref-evans-fowler-1997)), ni un *Guard Clause*, que nombra una transformación del control de flujo dentro de un método —*Replace Nested Conditional with Guard Clauses*, del mismo catálogo que la refactorización de §3.1 ([Fowler, s. f.](#ref-fowler-refactoring))—, no un tipo.
+
+### 3.9 Pregunta de cierre
+
+**¿Cuándo no conviene el Value Object?** Cuando el valor no tiene comportamiento ni reglas propias. `Dinero` se justifica porque sumar montos de monedas distintas es un error de negocio; un `Nombre` que solo es texto no necesita un tipo propio. En el escenario E-A, con pocas reglas, un Value Object rara vez tiene comportamiento que proteger; en E-D es el lugar donde una regla sobre un valor se escribe una sola vez. **Criterio de esta guía**, y más estricto que las fuentes: Evans dispara el patrón por la pregunta conceptual —«when you care only about the attributes and logic of an element of the model»— y PoEAA por la igualdad, no por la regla; un `Punto(2, 3)` es un *Value Object* de manual y no protege nada.
+
+**Un conjunto cerrado que de verdad esté cerrado.** Cuando el valor además enumera opciones, hay tres formas y solo una impide un valor imposible. El `enum` es la barata y no cierra nada: `(EstadoProducto)99` compila, no lanza, `IsDefined` da `False` y el JSON por defecto sale como número; una fila escrita con un valor que este binario no declara se relee como `Estado = 9` **sin excepción** si la columna es entera, y falla fuerte si es texto (§5.4). La cadena constante cierra todavía menos. La tercera es la mecánica de la *Entity* aplicada a un valor:
+
+**[Compilado: `Variantes/FabricaYResultado/Domain/Productos/Moneda.cs`, l. 12–26 y 37]**
+
+```csharp
+private Moneda(string codigo) => Codigo = codigo;
+
+public string Codigo { get; }
+
+// Camino de constitución: valida.
+public static DomainResult<Moneda> Create(string? codigo)
+{
+    if (string.IsNullOrWhiteSpace(codigo))
+        return DomainResult<Moneda>.Rechazar("MONEDA_REQUERIDA");
+
+    var normalizado = codigo.Trim().ToUpperInvariant();
+    return Admitidas.Contains(normalizado)
+        ? DomainResult<Moneda>.Aplicar(new Moneda(normalizado))
+        : DomainResult<Moneda>.Rechazar("MONEDA_NO_ADMITIDA");
+}
+
+public record MonedaSinRegla(string Codigo);
+```
+
+La última línea es el contraste: un `record` posicional sin regla, con constructor público. Medido: `Moneda.Create("XYZ") → Aplicado = False, MONEDA_NO_ADMITIDA` frente a `new MonedaSinRegla("XYZ") se construye sin quejas`, con `constructores públicos: Moneda = 0, MonedaSinRegla = 1` y la igualdad por datos intacta en los dos (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`, SDK 10.0.400*). El precio es el mismo que paga la *Entity*: un camino de constitución que valida y otro de materialización que no (§5.4). El `Dinero` de §3.3 no lo paga —su constructor es público y `with` cambia la moneda sin pasar por regla alguna— y por eso ilustra la igualdad por datos, no el cierre del conjunto.
 
 ---
 
@@ -880,6 +963,22 @@ En el orden en que conviene pensarlo:
 3. **Encontrar y guardar.** ¿De dónde sale el producto y adónde va el resultado? Eso es el *Repository* (§4.4).
 4. **El registro del acto.** Si hay que recordar la venta, aparece `Pedido` con sus `ItemPedido` (§4.10).
 5. **Las reglas.** Cada regla va en la *Entity* que conoce los datos (§3.6); el Handler la invoca, no la escribe.
+
+```mermaid
+flowchart LR
+    E1["Entity<br/>lo que es verdad"] --> UC["Command + Handler<br/>lo que se quiere"]
+    UC --> E2["Entity del hecho<br/>lo que quedó registrado"]
+    V["¿Qué valores admite?<br/>(Value Objects, conjuntos cerrados)"] -.-> E1
+    V -.-> UC
+    V -.-> E2
+    G["¿Qué contesta cuando no puede?<br/>(excepción o resultado)"] -.-> E1
+    G -.-> UC
+    G -.-> E2
+```
+
+*Diagrama 4.1. La línea de pensamiento y las dos preguntas que la cruzan. Línea continua = el paso siguiente; punteada = pregunta que se le hace a cada pieza, no una fase aparte.*
+
+Las dos preguntas punteadas no son estaciones de la línea. **«¿Qué valores admite?»** se la hacen la *Entity* y también el Command: los valores describen a otro objeto, no viven por su cuenta (§3.1, §3.9). **«¿Qué contesta cuando no puede?»** es una propiedad de la interfaz de toda operación —fábrica, modificador o consulta—, no un momento del flujo: su respuesta es la excepción o el resultado del §3.8. Y el hecho consumado del paso 4 tiene dos formas: si hay que recordar que **ocurrió**, es un *Domain Event* —«something happened that domain experts care about» ([Evans, 2015](#ref-evans-2015))—; si tiene identidad y ciclo de vida propios, porque se consulta, se modifica o se cancela, es una *Entity*. `Pedido` es lo segundo.
 
 ### 4.3 ¿Cómo se reconoce un Command y un Handler?
 
@@ -1516,6 +1615,25 @@ public class ProductoConfiguration : IEntityTypeConfiguration<Producto>
 
 `Producto` no tiene atributos de base de datos ni setters públicos, y EF Core la guarda y la recupera igual (L17): usa el constructor privado y asigna las propiedades por su cuenta. Poner `[Table("Productos")]` y `[Key]` en la Entity no obligaría a referenciar EF Core —esos atributos viven en la biblioteca base—, pero ataría igual el dominio a decisiones de almacenamiento; `[Index]`, que sí es de la familia de EF Core, haría además que `Domain` referencie un paquete de esa familia (`Microsoft.EntityFrameworkCore.Abstractions`, que existe justamente para eso), y con él el vocabulario del ORM. El §7.4 desarrolla ese caso, que es el más frecuente al venir de una clase plana con anotaciones. Un modelo de persistencia separado solo hace falta cuando el esquema no se puede adaptar (escenario E-C, §7.2 g). `HasPrecision(18, 2)` documenta la intención y rige en proveedores con tipo decimal nativo (SQL Server, PostgreSQL); en SQLite la columna se crea como `TEXT` y la base no aplica precisión ni escala ([Microsoft, 2026j](#ref-microsoft-2026j)), por eso en L17 el precio vuelve con un solo decimal y no con dos.
 
+**El constructor privado es la costura del ORM.** Que EF Core use ese constructor no es una suposición: «When EF Core creates instances of these types, such as for the results of a query, it will first call the default parameterless constructor and then set each property to the value from the database», y «the constructor can be public, private, or have any other accessibility» ([Microsoft, 2026m](#ref-microsoft-2026m)). La variante lo mide sobre el mismo patrón de §3.3, contando las veces que corre:
+
+**[Compilado: `Variantes/FabricaYResultado/Domain/Productos/ProductoQueDevuelve.cs`, l. 15–20]**
+
+```csharp
+// Testigo de la demostración, no parte del patrón: cuenta las veces que se ejecutó el constructor.
+public static int VecesQueCorrioElConstructorPrivado { get; private set; }
+
+// La costura del ORM: EF Core llama a este constructor al leer cada fila y después asigna las
+// propiedades por su cuenta, aunque los setters sean privados. No valida nada, a propósito.
+private ProductoQueDevuelve() => VecesQueCorrioElConstructorPrivado++;
+```
+
+La salida confirma las tres piezas: `Constructor que EF Core eligió para materializar: private ProductoQueDevuelve()`, `Veces que corrió el constructor privado: 2 (la del alta + la de la relectura)` y `Los setters siguen siendo privados y EF Core los escribió igual` (*salida registrada: `Variantes/capturas/V05-ciclo-efcore.txt`, SDK 10.0.400*). Si la *Entity* no tiene ese constructor, EF Core busca uno con parámetros cuyos nombres y tipos coincidan con propiedades mapeadas; si no lo encuentra, el modelo no se construye y el programa falla **en ejecución**, con `InvalidOperationException: No suitable constructor was found for the type 'ProductoSinCtorPrivado'` (V07). Es el error más frecuente al pasar de `Create(nombre, precio)` a una fábrica con parámetros del negocio que no son columnas.
+
+**Ese camino no valida, y es deliberado. Criterio de esta guía**, porque ninguna fuente lo manda: (1) la fila ya fue constituida por la fábrica y la regla se ejerció entonces; (2) los setters privados impidieron que se rompiera después (§3.4); (3) validar al materializar convierte un dato viejo inválido en una consulta rota: como el constructor corre al **leer** cada fila, la excepción no aparece en el alta que escribió el dato sino en medio de una consulta posterior, lejos de su causa. Evans deja las aserciones del lado de los modificadores —«assertions define contracts of services and entity modifiers»—, y rehidratar no modifica. Cuando la base **sí** puede tener filas inválidas —esquema heredado, escenario E-C— la comprobación existe, pero vive en el adaptador que traduce (§7.2 g), que es quien puede descartar, marcar o reportar.
+
+**Un `enum` guardado como entero no está cerrado.** Por convención EF Core lo persiste como número: una fila escrita con un valor que este binario no declara se relee como `Estado = 9, IsDefined = False, y NO lanzó`. Con `HasConversion<string>` la columna es texto y un valor desconocido falla fuerte: `Cannot convert string value 'Archivado' from the database to any value in the mapped 'EstadoProducto' enum` (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`*). De ahí la regla: texto, o entero con valores explícitos (`Borrador = 1`) para que reordenar los nombres no reinterprete las filas ya escritas; nunca entero sin valores explícitos. El §3.9 muestra la tercera forma, la que tampoco admite un valor imposible en memoria.
+
 ### 5.5 ¿Dónde se confirma la escritura, y hace falta un Repository si ya está EF Core? (L18)
 
 **Respuesta: la escritura se confirma con `SaveChangesAsync`; el Repository es opcional y se justifica por las pruebas y por aislar el dominio.**
@@ -1645,6 +1763,8 @@ public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception e
 | `TryHandleAsync` (de `IExceptionHandler`, en la WebAPI) | Middleware de errores: la traducción vive en el borde, no en `Domain` | §5.1 |
 | `if (exception is not DomainException) return false;` | La excepción de dominio se distingue del error técnico; lo demás sigue como `500` | §3.1 |
 | `Status400BadRequest` + `Title`/`Detail` | Código de estado y cuerpo ProblemDetails (RFC 9457) | §5.1 |
+
+Con un dominio que devuelve resultado en lugar de lanzar (§3.8) no hay excepción que traducir: el handler devuelve el código de condición, el controller lo mapea a estado (400, 404, 409) y el `IExceptionHandler` queda solo para lo técnico. Y cambia qué viaja: con excepción, el borde publica el **mensaje** que escribió quien programó la *Entity*; con resultado publica el **código**, en un miembro de extensión del `ProblemDetails`, y el texto de presentación deja de vivir en `Domain` —se puede traducir, y el cliente puede reaccionar distinto según el motivo (§7.2 d)—.
 
 Se registra en `Program.cs` con `AddProblemDetails()`, `AddExceptionHandler<DomainExceptionHandler>()` y `app.UseExceptionHandler()`. Usar 400 para las dos clases de error, distinguidas por el cuerpo, es **Criterio de esta guía**; responder `422 Unprocessable Content` (definido en RFC 9110, §15.5.21, [IETF, 2022](#ref-ietf-2022)) a las Business Rules es otra convención posible.
 
@@ -1809,12 +1929,14 @@ Las clases que viajan entre capas se parecen mucho al principio —tienen los mi
 | Objeto | Ejemplo | Pregunta que responde | Dónde vive | Cambia cuando… | Existe solo si… |
 | --- | --- | --- | --- | --- | --- |
 | **Entity** | `Producto` | ¿Qué es verdad en el negocio? | Domain | cambian las reglas del negocio | hay reglas que proteger (§3.5) |
-| **Value Object** | `Dinero` | ¿Qué valor tiene sentido por sí mismo, sin identidad? | Domain | cambia el concepto | el valor tiene comportamiento o reglas propias |
+| **Value Object** | `Dinero` | ¿Qué valor tiene sentido por sí mismo, sin identidad? | Domain | cambia el concepto | el valor tiene comportamiento o reglas propias (umbral propio, más estricto que las fuentes: §3.9) |
 | **Command / Query** | `CrearProductoCommand`, `ObtenerProductosQuery` | ¿Qué quiere hacer el usuario? | Application | cambia el Use Case | hay un Use Case que orquestar (§4.11) |
 | **Response DTO** | `ProductoResponse` | ¿Qué se le promete al consumidor de la API? | Contracts | cambia el contrato, con cuidado porque rompe a los clientes | hay una API consumida por otro proceso (E-B) |
 | **ViewModel** | `ProductoListItemViewModel` | ¿Qué necesita mostrar esta pantalla? | Cliente | cambia el diseño de la pantalla | la pantalla muestra algo distinto de lo que recibe |
 | **Form model** | `ProductoFormModel` | ¿Qué edita el usuario en el formulario? | Cliente | cambia el formulario | hay un formulario con enlace de datos |
 | **Persistence model** | `ProductoDbModel` | ¿Qué forma tiene la tabla? | Infrastructure | cambia el esquema | el esquema no se puede adaptar a la Entity (E-C) |
+
+La tabla contesta dónde vive cada objeto; el Diagrama 4.1 contesta en qué orden se piensan.
 
 ### 7.2 Las siete preguntas, respondidas
 
@@ -1862,7 +1984,11 @@ Dos `Dinero(10, "ARS")` son el mismo valor (prueba de L11), y sumar pesos con d�
 | | |
 | --- | --- |
 | ✅ | El controller traduce `ProductoDto` a `ProductoResponse` y decide qué se publica |
+| ✅ | El catálogo de códigos de rechazo, tratado como parte del contrato: se versiona con el mismo cuidado que un campo |
 | ❌ | Devolver la Entity: cualquier campo nuevo de la tabla (un costo interno) llega al cliente sin que nadie lo decida |
+| ❌ | Publicar el `Message` de la excepción como si fuera un contrato estable: es prosa, cambia cuando alguien corrige una redacción y el cliente no puede ramificar con ella |
+
+**El contrato de error también es contrato.** Lo que el cliente consume programáticamente cuando algo se rechaza es el código, no el texto: por eso los códigos salen del vocabulario del dominio y no llevan presentación —«error codes rather than strings», y «designed around the vocabulary of the domain model itself» ([Fowler, 2004b](#ref-fowler-2004b))—. Si ese catálogo se escribe como `const string` y `Domain` viaja como paquete NuGet, cambiar un valor no alcanza: «because compilers propagate constants, other code compiled with your libraries needs to be recompiled to see the changes» ([Microsoft, 2026n](#ref-microsoft-2026n)). Dos binarios pueden quedar hablando vocabularios distintos sin que nada falle. Mientras todo se compile junto no pasa nada; en cuanto cruza la frontera de un paquete, los códigos se renombran con una versión mayor o se declaran `static readonly`.
 
 #### e. ViewModel: ¿qué necesita mostrar esta pantalla?
 
@@ -2319,13 +2445,18 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 
 **Qué puede cambiar en tu equipo en todos los pasos:** rutas absolutas, identificadores `Guid`, fechas, duraciones, el valor de la huella SHA-256 de L16 y el número de parche del SDK. Lo que no cambia —códigos de error, códigos de estado HTTP, códigos de salida— es lo que verifica `aserciones.log`. El registro incluye una aserción que falla a propósito, para demostrar que el mecanismo detecta.
 
-**Variantes.** Dos programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas.
+**Variantes.** Tres programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas; `FabricaYResultado/` compara las dos formas de rechazar y las dos formas de cerrar un conjunto de valores, y produce cinco.
 
 | Paso | § | Comando | Qué confirma | Captura |
 | --- | --- | --- | --- | --- |
 | V01 | 3.7 | `dotnet build ProductoSinPrecio/Demo`; `dotnet run --no-build --project ProductoSinPrecio/Demo` | Un producto sin precio se registra pero no se vende; la *Invariant* del precio sigue en pie | `V01-build-producto-sin-precio`, `V01-producto-sin-precio` |
 | V02 | 4.10 | `dotnet build Pedidos/Demo`; `dotnet run --no-build --project Pedidos/Demo` | Cada extensión del *Use Case* se rechaza sin guardar nada; el escenario principal confirma una sola vez, con `AppDbContext` como *Unit of Work* | `V02-build-pedidos`, `V02-registrar-pedido` |
 | V03 | 5.5 | `dotnet run --no-build --project Pedidos/Demo -- cambiar-precio` | Con seguimiento, el cambio de precio llega a la base (1 fila); con `AsNoTracking`, no (0 filas) | `V03-cambiar-precio` |
+| V04 | 3.8 | `dotnet build FabricaYResultado/Demo` (Debug y Release) y la compilación con `AnalysisMode=All` | Las dos estrategias compilan con 0 advertencias; descartar un resultado no produce ni un aviso (`CA1806/IDE0058 = 0`) | `V04-build-fabrica-y-resultado` |
+| V05 | 5.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- ciclo` | EF Core elige el constructor privado, lo ejecuta al releer y escribe los setters privados | `V05-ciclo-efcore` |
+| V06 | 3.8 | `dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos` | Las mismas dos reglas rechazadas de las dos maneras; 4.357,0 ms/296,0 B contra 30,6 ms/0,0 B, y la excepción sin atrapar corta el proceso | `V06-rechazos` |
+| V07 | 5.4, 3.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor` | Sin constructor utilizable, `InvalidOperationException` en ejecución; con `{ get; }`, la propiedad desaparece del modelo | `V07-sin-ctor-privado` |
+| V08 | 3.9, 5.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- valores` | El `enum` admite valores que no declara; el *Value Object* con fábrica, no | `V08-enum-y-valor` |
 
 ---
 
@@ -2385,6 +2516,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Command-Query Separation | CQS | Separar los métodos que cambian el estado de los que lo leen | 4.7 | — |
 | Composition root | raíz de composición | Único lugar que registra qué implementación corresponde a cada interfaz | 2.1, 2.2, 2.5 | §2.5, `Program.cs` |
 | Configuración Fluent API | *Fluent API configuration* | Clase que indica a EF Core cómo mapear una Entity sin modificarla | 5.1 | §5.4, `ProductoConfiguration.cs` |
+| Conjunto cerrado | *closed set* | Grupo finito de valores del dominio: `enum` si no tiene regla, Value Object con fábrica si la tiene; el `enum` admite valores que no declara | 3.9, 5.4 | §3.9, `Moneda.cs` |
 | Contrato | *contract* | Tipos de petición y respuesta de la API HTTP, en el proyecto `Contracts` | 5.1, 8.5 | §6.3, `MyProject.Contracts/` |
 | Controller | controlador | Clase que recibe peticiones HTTP de una ruta y devuelve respuestas | 5.1 | §5.2, `ProductosController.cs` |
 | CQRS | *Command Query Responsibility Segregation* | Separar el modelo de escritura del de lectura; no es lo que hace este ejemplo | 4.8 | — |
@@ -2398,6 +2530,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Derivation | derivación | Business Rule que calcula o infiere un dato a partir de otros (`Pedido.Total`) | 3.6 | §4.10, `Pedido.cs`, `Total` |
 | Design by Contract | diseño por contrato | Especificar cada método con Precondition, Postcondition e Invariant | 3.6 | — |
 | Doble de prueba | *test double*, *fake* | Implementación falsa escrita para las pruebas, como `FakeProductoRepository` | 4.6, 6.2 | §4.6, `FakeProductoRepository.cs` |
+| Domain Event | evento de dominio | Registro de que algo que al negocio le importa ocurrió; la otra forma del hecho consumado, frente a la Entity con ciclo de vida | 4.2 | — |
 | Domain Model | modelo de dominio | Modelo de objetos que reúne datos y comportamiento | 3.5, 3.6 | §9.6, paso 4 |
 | DTO | *Data Transfer Object* | Objeto sin comportamiento que transporta datos entre procesos (`CrearProductoRequest`, `ProductoResponse`); dentro del proceso la guía habla de mensaje y de modelo de lectura | 5.1 | §6.3, `CrearProductoRequest.cs`, `ProductoResponse.cs` |
 | EF Core | Entity Framework Core | Biblioteca de Microsoft que traduce objetos a filas de una base relacional | 2.1, 5.1 | — |
@@ -2407,6 +2540,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Excepción de dominio | *domain exception* | Excepción propia (`DomainException`) que señala una Business Rule incumplida | 3.1 | §3.3, `Producto.cs`; §5.6, `DomainExceptionHandler.cs` |
 | Extension (Use Case) | extensión | Lo que puede pasar distinto en un paso del escenario principal; se numera con ese paso (2a, 3b) | 4.10 | §4.10, `RegistrarPedidoHandler.cs`, `// 2a` |
 | Factory Method | método de fábrica | Método `static` que es el único camino para crear instancias y verifica las Invariants; la *Factory* de Evans (2015), no el patrón por subclases de Gamma et al. (1994) | 3.1 | §3.3, `Producto.cs`, `Create` |
+| Factory Function | *Replace Constructor with Factory Function* | Nombre catalogado del movimiento de constructor público a método estático de fábrica | 3.1 | §3.3, `Producto.cs` |
 | Form model | modelo de formulario | Objeto mutable que enlaza un formulario | 6.1, 7.2 f | §7.2 f (ilustrativo) |
 | `Guid` | *globally unique identifier* | Identificador único de 128 bits que .NET genera con `Guid.NewGuid()` | 3.1 | §3.3, `Producto.cs` |
 | Handler | manejador | Clase que recibe un mensaje y ejecuta su Use Case: dependencias por constructor y un solo método `Handle` | 4.1, 4.3 | §4.5, `CrearProductoHandler.cs`; §4.10, `RegistrarPedidoHandler.cs` |
@@ -2426,6 +2560,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Minimal Guarantee | garantía mínima | Lo que el Use Case garantiza aunque falle: aquí, no guardar nada; es una Postcondition | 4.10 | §4.10, la salida V02; §4.6, `Assert.Empty(repository.Guardados)` |
 | Modelo de lectura | *read model* | Objeto plano que devuelve una Query (`ProductoDto`) | 4.1 | §4.5, `ProductoDto.cs` |
 | Money | — | Patrón de PoEAA: Value Object con monto y moneda cuya suma rechaza monedas distintas | 3.3 | §3.3, `Dinero.cs` |
+| Notification | notificación | Objeto que junta todos los motivos de rechazo, con códigos y no con texto; un resultado de un solo código no lo es | 3.8, 7.2 d | — |
 | OpenAPI | — | Documento que describe los recursos y operaciones de una API HTTP | 5.1 | — |
 | Paquete NuGet | *NuGet package* | Código de terceros distribuido desde nuget.org | 1.1 | — |
 | Persistence model | modelo de persistencia | Clase con la forma de una tabla, separada de la Entity | 7.2 g | — |
@@ -2445,6 +2580,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Referencia de proyecto | `ProjectReference` | Declaración de que un proyecto puede usar los tipos públicos de otro | 1.1 | §1.2 |
 | Regla de dependencia | *Dependency Rule* | Las dependencias del código apuntan solo hacia adentro | 2.1, 2.2 | §2.3 (L07); §2.7 |
 | Repository | repositorio | Objeto que media entre el dominio y la capa de mapeo a datos como si fuera una colección de Entities en memoria; uno por Aggregate Root | 4.1, 4.4 | §3.3, `IProductoRepository.cs`; §5.5, `ProductoRepository.cs` |
+| Resultado de dominio | *result type*, `DomainResult` | Rechazo devuelto como valor en lugar de lanzado: lleva un código del vocabulario del dominio | 3.8 | §3.8, `DomainResult.cs` |
 | Responsibility | responsabilidad | Obligación de un objeto de hacer algo o conocer algo; la regla va en el objeto que conoce los datos | 3.6 | — |
 | SDK | *software development kit* | Herramientas para crear, compilar, probar y ejecutar código .NET | 1.1 | — |
 | Service Layer | capa de servicios | Capa que fija el conjunto de operaciones de la aplicación y coordina cada una; los handlers de esta guía son su forma *operation script*, uno por clase | 4.1, 4.3, 9.6 | §4.5; §9.6 |
@@ -2481,6 +2617,14 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-evans-2015"></a>Evans, E. (2015). *Domain-Driven Design Reference: Definitions and Pattern Summaries*. Domain Language. https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf (consultado el 2026-09-19).
 
 <a id="ref-fowler-2002"></a>Fowler, M. (2002). *Patterns of Enterprise Application Architecture*. Addison-Wesley. Las citas con página son del libro, cap. 9 «Domain Logic Patterns» (pp. 110–141; *Service Layer* lo firma Randy Stafford, p. 133; extracto del editor: http://media.techtarget.com/tss/static/articles/content/FowlerPatterns/Fowler_ch09.pdf, consultado el 2026-09-19). El catálogo en línea, https://martinfowler.com/eaaCatalog/ (consultado el 2026-09-18), publica solo la frase de intención y un resumen de cada patrón (`transactionScript.html`, `domainModel.html`, `serviceLayer.html`, `repository.html`, `unitOfWork.html`, `dataTransferObject.html`, `valueObject.html`, `money.html`, `tableDataGateway.html`); las citas sin página son de ahí.
+
+<a id="ref-fowler-2004b"></a>Fowler, M. (2004, 9 de agosto). *Notification*. https://martinfowler.com/eaaDev/Notification.html (consultado el 2026-09-20).
+
+<a id="ref-fowler-2014"></a>Fowler, M. (2014, 9 de diciembre). *Replacing Throwing Exceptions with Notification in Validations*. https://martinfowler.com/articles/replaceThrowWithNotification.html (consultado el 2026-09-20).
+
+<a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (alias *Replace Constructor with Factory Method*), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, y *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html (consultados el 2026-09-20).
+
+<a id="ref-evans-fowler-1997"></a>Evans, E. y Fowler, M. (1997). *Specifications*. https://martinfowler.com/apsupp/spec.pdf (consultado el 2026-09-20).
 
 <a id="ref-fowler-2004"></a>Fowler, M. (2004, 21 de octubre). *LocalDTO*. https://martinfowler.com/bliki/LocalDTO.html (consultado el 2026-09-19).
 
@@ -2535,6 +2679,10 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-microsoft-2026j"></a>Microsoft. (2026j). *Data types — Microsoft.Data.Sqlite*. https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/types (consultado el 2026-09-18).
 
 <a id="ref-microsoft-2026k"></a>Microsoft. (2026k). *global.json overview* (sección «rollForward»). https://learn.microsoft.com/en-us/dotnet/core/tools/global-json#rollforward (consultado el 2026-09-18).
+
+<a id="ref-microsoft-2026n"></a>Microsoft. (2026n). *The `const` keyword* (C# reference). https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/const (consultado el 2026-09-20).
+
+<a id="ref-microsoft-2026m"></a>Microsoft. (2026m). *Entity types with constructors* (EF Core). https://learn.microsoft.com/en-us/ef/core/modeling/constructors (consultado el 2026-09-20).
 
 <a id="ref-microsoft-2026l"></a>Microsoft. (2026l). *What's new in ASP.NET Core in .NET 7*, sección «Parameter binding with DI in API controllers». https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-7.0 (consultado el 2026-09-19).
 

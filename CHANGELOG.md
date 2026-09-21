@@ -2,6 +2,14 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-09-21 (reorganización)
+
+### Guides/Git-Flow-Guides/ — reubicación
+
+#### Cambiado
+
+- `Guides/GitFlow-Practice-Guide/` y `Guides/GitHubFlow-Practice-Guide/` pasan a `Guides/Git-Flow-Guides/`, que las agrupa como las dos variantes del mismo tema. Es una mudanza pura: los cuatro archivos no cambian un carácter y ningún documento del repositorio citaba las rutas viejas.
+
 ## 2026-09-21 (mesa de editores, ciclo 3)
 
 ### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.3.0

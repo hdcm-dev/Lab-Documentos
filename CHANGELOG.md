@@ -2,6 +2,34 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-09-21 (mesa de editores, ciclo 3)
+
+### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.3.0
+
+Tercer ciclo de la mesa, sobre las tres preguntas del Product Owner: quién propuso la refactorización del constructor a la fábrica, qué es exactamente una *Invariant* y qué son Dapper y el serializador. La guía crece 60 líneas y 2 bloques, el tope del ciclo; el volumen vuelve a ir al laboratorio.
+
+#### Añadido
+
+- **§3.6**: tabla de las tres piezas que sostienen una *Invariant* —el *Factory Method* la establece, el setter privado impide romperla, cada método que toca el dato la reverifica— con la columna «si falta», y el cierre como **Criterio de esta guía**.
+- **§3.7**: tabla de siete ejemplos y contraejemplos clasificados con las tres condiciones del §3.1 como filtro, incluidos los cuatro que **no** son *Invariant* (DNI repetido, precio de venta, longitud de columna, autorización) y por qué fallan.
+- **§4.10**: para qué sirve el borde del *Aggregate*, con «Define properties and invariants for the aggregate as a whole…» (Evans, 2015); «un pedido confirmado tiene al menos un ítem» como *Invariant* del agregado, que `ItemPedido` no puede verificar y `Pedido` sí.
+- **§5.4**: tabla de los cuatro materializadores —`Create`, EF Core, Dapper, `System.Text.Json`— con para qué sirve cada uno, cómo construye y qué pasa sin constructor sin parámetros, y un bloque compilado que reúne las cuatro líneas del mismo programa. Dapper aporta lo que EF Core no muestra: falla en silencio si la columna no se llama como la propiedad, y sin seguimiento de cambios el *Repository* y la *Unit of Work* vuelven a ser código propio (V09).
+- **§5.1, §6.1 y Anexo D**: definiciones de **ORM**, **micro-ORM** y **serializador** —la guía usaba «ORM» ocho veces sin expandirlo— con sus tres filas de glosario.
+- **§7.4**: bloque compilado del modo de falla medido del serializador y la medición que lo acompaña (`NO lanzó: el objeto llegó entero en su valor por omisión`); con el constructor privado lanza `NotSupportedException` y con `[JsonConstructor]` materializa sin tocar un setter.
+- **`Variantes/FabricaYResultado/`**: escenario `materializadores` (`ProductosDeMaterializacion.cs` y dos escenarios nuevos del Demo), con **Dapper 2.1.86** como primer y único paquete de terceros del laboratorio; captura **V09**, listada en el Anexo A, y fila nueva en el Anexo C con su licencia verificada en el `.nuspec`. Compila en Debug y Release con 0 advertencias. V09 cubre los dos lados del serializador: los tres modos de falla y el caso positivo —un `record` posicional y una clase de sólo lectura materializadas por constructor, con cero setters públicos disponibles—.
+- Anexo E: Bloch (2018) *Effective Java*, 3.ª ed., Dapper (2026) y Microsoft (2026o) *Use immutable types and properties*, que es la fuente de la regla del constructor que usa `System.Text.Json` (uno solo con parámetros, o `[JsonConstructor]` cuando hay varios).
+
+#### Cambiado
+
+- **§3.1**, viñeta *Factory Method*: la procedencia queda completa —catalogada desde la 1.ª edición de *Refactoring* (1999) como *Replace Constructor with Factory Method* y renombrada en la 2.ª (2018)— y Bloch entra como convergencia posterior e independiente («Consider static factory methods instead of constructors»), no como origen.
+- **§3.1**, viñeta *Invariant*, y su fila del glosario: la definición suma la tercera condición que la vuelve criterio de diseño —si se rompe, el objeto no debería existir, y por eso se verifica al construirlo—, junto con las dos que ya tenía.
+- **§7.4**: «setters públicos y constructor sin parámetros» era una condición suficiente presentada como necesaria; ahora dice «un camino de escritura que el serializador alcance: setters públicos, **o** un constructor cuyos parámetros se llamen como las propiedades».
+- No se cita la frase de Evans de 2003 sobre las invariantes «whenever data changes»: no está en la *DDD Reference* 2015, que es la fuente que la guía declara para Evans.
+
+#### Deuda declarada
+
+- **V06 no se regeneró** al ampliar la variante: §3.8 cita cinco números suyos (milisegundos, bytes y el factor 142x). Si alguna vez se vuelve a correr, esos cinco números hay que actualizarlos en §3.8. Queda dicho en el Anexo A.
+
 ## 2026-09-20 (mesa de editores, ciclo 2)
 
 ### Guides/Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md — v2.2.0

@@ -2,12 +2,12 @@
 doc_id: GUIA-NET-ARQ
 doc_type: study-guide
 title: Arquitectura de soluciones .NET — guía de estudio y de criterios
-version: 2.2.0
+version: 2.3.0
 status: vigente
 origin: ai-assisted
 confidence: alta en lo capturado en laboratorio; media en lo rotulado como criterio de esta guía
 owner: fernandofilipuzzi
-last_review: 2026-09-20
+last_review: 2026-09-21
 audience: [personas que se inician en arquitectura .NET, quien diseña una solución .NET desde cero]
 prerequisites: ["C# básico (clases, métodos, propiedades)", "uso de una terminal"]
 sdk_validado: ".NET SDK 10.0.400, runtime 10.0.11, imagen mcr.microsoft.com/dotnet/sdk:10.0@sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c"
@@ -540,9 +540,9 @@ Todos estos términos se ven en los tres bloques de §3.3 (`Producto.cs`, `Diner
 
 - **Entity.** Objeto del negocio con **identidad** propia (un `Id`) que se conserva aunque cambien sus datos, y con **comportamiento**: métodos que aplican las reglas ([Evans, 2015](#ref-evans-2015)). `Producto` es una *Entity*. Los términos de la literatura (*Entity*, *Value Object*, *Business Rule*, *Invariant*, *Use Case*…) se escriben en inglés, en cursiva la primera vez, y no se traducen; el [Anexo D](#anexo-d-glosario) da su equivalente en castellano. → §3.3, `Producto.cs`: `public Guid Id { get; private set; }` y `Desactivar()`.
 - **Business Rule.** Condición o procedimiento que el negocio impone por sus propias razones y que valdría aunque no hubiera software que lo ejecute ([Martin, 2017](#ref-martin-2017)): «no se vende un producto sin precio». El §3.2 da el criterio para reconocerla y el §3.6 la clasifica. → §3.3, `Producto.cs`: `if (precio <= 0) throw new DomainException(...)`.
-- **Invariant.** *Business Rule* que se verifica mirando un solo objeto y que tiene que cumplirse **siempre**, desde que el objeto se crea: en el laboratorio, «el precio es mayor a cero». → §3.3, `Producto.cs`, la misma guarda dentro de `Create`; §3.7, `AsignarPrecio`.
+- **Invariant.** *Business Rule* que cumple tres condiciones a la vez: **vale toda la vida del objeto**, no solo antes de una acción; **se verifica mirando ese objeto solo**, sin consultar a otros ni a la base; y **si se rompe, el objeto no debería existir**, por eso se verifica al construirlo y no después. Es la *Class Invariant* de Meyer, «an assertion describing a property which holds of all instances of a class» ([Eiffel Software, s. f.](#ref-eiffel-sf); [Meyer, 1988](#ref-meyer-1988)). En el laboratorio: «el precio es mayor a cero». → §3.3, `Producto.cs`, la misma guarda dentro de `Create`; §3.7, `AsignarPrecio`.
 - **Precondition y Postcondition.** Lo que tiene que ser cierto antes de ejecutar un método y lo que el método garantiza al terminar ([Meyer, 1988](#ref-meyer-1988)). Una regla que vale solo antes de una acción —«no se vende sin precio»— es la *Precondition* de esa acción, no una *Invariant* (§3.7). → §3.7, `PrecioDeVenta()`; la *Postcondition* de `Create` está escrita como prueba: §3.3, `ProductoTests.cs`, `Assert.True(producto.Activo)`.
-- **Factory Method.** Método `static` que crea instancias y es el único camino para hacerlo **desde afuera de la clase**: adentro, `Create` sigue usando el constructor privado con un inicializador de objeto, y puede haber una fábrica por acto de constitución, no una sola. Evans manda «shift the responsibility for creating instances of complex objects and aggregates to a separate object» y, en el mismo «Therefore», «create an entire aggregate as a piece, enforcing its invariants» ([Evans, 2015](#ref-evans-2015)): el método estático en la propia *Entity* es el caso liviano de esa familia, y la fábrica se muda a un objeto aparte cuando necesita colaboradores, arma varias piezas o obligaría al cliente a nombrar clases concretas. El movimiento del constructor público al método estático está catalogado como *Replace Constructor with Factory Function* (alias *Replace Constructor with Factory Method*, [Fowler, s. f.](#ref-fowler-refactoring)); su motivo es que un constructor no puede elegir qué devolver ni llevar el nombre del acto. (En el catálogo de [Gamma et al., 1994](#ref-gamma-1994) *Factory Method* designa otro patrón, basado en subclases.) → §3.3, `Producto.cs`: `private Producto() { }` + `public static Producto Create(string nombre, decimal precio)`; el constructor privado, además, es la costura por la que EF Core materializa cada fila (§5.4).
+- **Factory Method.** Método `static` que crea instancias y es el único camino para hacerlo **desde afuera de la clase**: adentro, `Create` sigue usando el constructor privado con un inicializador de objeto, y puede haber una fábrica por acto de constitución, no una sola. Evans manda «shift the responsibility for creating instances of complex objects and aggregates to a separate object» y, en el mismo «Therefore», «create an entire aggregate as a piece, enforcing its invariants» ([Evans, 2015](#ref-evans-2015)): el método estático en la propia *Entity* es el caso liviano de esa familia, y la fábrica se muda a un objeto aparte cuando necesita colaboradores, arma varias piezas o obligaría al cliente a nombrar clases concretas. El movimiento del constructor público al método estático está catalogado desde la primera edición de *Refactoring* (1999), donde se llamaba *Replace Constructor with Factory Method*; la segunda edición (2018) lo renombró *Replace Constructor with Factory Function* y el catálogo en línea conserva el nombre viejo como alias ([Fowler, s. f.](#ref-fowler-refactoring)). Su motivo es que un constructor no puede elegir qué devolver ni llevar el nombre del acto. Bloch formuló el mismo movimiento dos años después, de manera independiente, como consejo de diseño de API —«Consider static factory methods instead of constructors»— y enumera sus ventajas: el método tiene nombre, no está obligado a crear un objeto nuevo en cada llamada y puede devolver cualquier subtipo del tipo declarado ([Bloch, 2018, ítem 1](#ref-bloch-2018)). (En el catálogo de [Gamma et al., 1994](#ref-gamma-1994) *Factory Method* designa otro patrón, basado en subclases.) → §3.3, `Producto.cs`: `private Producto() { }` + `public static Producto Create(string nombre, decimal precio)`; el constructor privado, además, es la costura por la que EF Core materializa cada fila (§5.4).
 - **Value Object.** Objeto **sin identidad**: dos *Value Objects* con los mismos datos son el mismo valor, «like money or a date range, whose equality isn't based on identity» ([Fowler, 2002](#ref-fowler-2002); [Evans, 2015](#ref-evans-2015)). `Dinero(10, "ARS")` es igual a otro `Dinero(10, "ARS")`. En C# se modelan bien con `record`, un tipo cuya igualdad compara los datos miembro a miembro en lugar de la referencia. Tres cosas que suelen vivir en una carpeta `Values/` y **no** son este patrón: el `enum` que enumera un conjunto cerrado (es vocabulario, no comportamiento), el catálogo de constantes de error (es contrato, §7.2 d) y la función auxiliar que normaliza un dato (es una función). El patrón pide, además de la igualdad por datos, «give it related functionality» ([Evans, 2015](#ref-evans-2015)). → §3.3, `Dinero.cs`: `public record Dinero(decimal Monto, string Moneda)`; la igualdad, en `ProductoTests.cs`; un conjunto cerrado con regla, en §3.9.
 - **Excepción de dominio.** Tipo de excepción propio (`DomainException`) que señala que una operación violaría una regla del negocio, para distinguirla de un error técnico. → §3.3, `Producto.cs`, `throw new DomainException(...)`; §5.6, quien la traduce a HTTP.
 - **Setter privado.** `{ get; private set; }`: la propiedad se lee desde cualquier lugar y se modifica solo desde dentro de la clase. → §3.3, `Producto.cs`, `public decimal Precio { get; private set; }`; §3.4, el error CS0200 que lo prueba.
@@ -726,7 +726,15 @@ El informe marca la diferencia entre los dos primeros: «Where the STRUCTURAL AS
 
 **Por qué la regla va en el objeto.** Una regla sobre los valores de los atributos de un objeto es una regla sobre su estado, y solo el comportamiento puede garantizarla, porque es lo único que cambia el estado (la terna estado, comportamiento e identidad con la que se describe un objeto es de [Booch, 1994](#ref-booch-1994)). Los objetos colaboran enviándose un *Message*: Kay escribió que «The big idea is "messaging"» ([Kay, 1998](#ref-kay-1998)). Por el encapsulamiento, quien envía no toca el estado: pide, y el que recibe decide si acepta; **ese es el momento en que se aplica la regla**. En C#, `producto.Precio = -1m` también es un mensaje (el compilador lo traduce a una llamada al setter), y un setter público acepta cualquier valor: por eso el §3.4 lo cierra.
 
-**El contrato.** El *Design by Contract* de [Meyer (1988)](#ref-meyer-1988) escribe una *Action Assertion* como *Precondition* (lo que el método exige al entrar), *Postcondition* (lo que garantiza al salir) y *Class Invariant*, «an assertion describing a property which holds of all instances of a class» ([Eiffel Software, s. f.](#ref-eiffel-sf)): quien llama asegura la *Precondition* y a cambio obtiene la *Postcondition*. C# no tiene cláusulas para eso; la *Precondition* se escribe como una guarda que lanza `DomainException` y la *Invariant* se protege cerrando los setters, que es exactamente lo que hacen `Producto.Create` y el setter privado (§3.3, §3.4). Evans usa el mismo vocabulario: «State post-conditions of operations and invariants of classes and aggregates» ([Evans, 2015](#ref-evans-2015)). Meyer prefiere no verificar dos veces una *Precondition*; la guía la verifica igual en el objeto, porque sus clientes (el controller, las pruebas, un proceso por lotes) reciben datos de afuera y no son de confianza. **Criterio de esta guía.**
+**El contrato.** El *Design by Contract* de [Meyer (1988)](#ref-meyer-1988) escribe una *Action Assertion* como *Precondition* (lo que el método exige al entrar), *Postcondition* (lo que garantiza al salir) y *Class Invariant*, «an assertion describing a property which holds of all instances of a class» ([Eiffel Software, s. f.](#ref-eiffel-sf)): quien llama asegura la *Precondition* y a cambio obtiene la *Postcondition*. C# no tiene cláusulas para eso; la *Precondition* se escribe como una guarda que lanza `DomainException` y la *Invariant* se protege cerrando los setters, que es exactamente lo que hacen `Producto.Create` y el setter privado (§3.3, §3.4).
+
+Una *Invariant* no se sostiene con una guarda sino con tres piezas que trabajan juntas —la misma decisión vista desde tres lados: el estado solo cambia por comportamiento, y todo el comportamiento que lo cambia verifica—; si falta una, la regla es una intención, no una garantía. **Criterio de esta guía.**
+
+| Pieza | Qué hace | Dónde está | Si falta |
+| --- | --- | --- | --- |
+| El *Factory Method* | La **establece**: ningún objeto nace incumpliéndola | §3.3, `Producto.Create` | Nace un objeto inválido y la regla se verifica tarde, cuando ya hay datos guardados |
+| El setter privado | **Impide romperla desde afuera**: el compilador la protege, no la disciplina | §3.4, error CS0200 | Cualquier `producto.Precio = -1m` la saltea, venga de una pantalla, de un lote o de una prueba |
+| Cada método que toca el dato | La **vuelve a verificar** al cambiar el estado | §3.7, `AsignarPrecio` | El objeto nace bien y se rompe después: la regla vale en el alta y no en la modificación |
 
 **Quién conoce lo necesario.** Wirfs-Brock define la *Responsibility* como «an obligation to perform a task or know information» y propone pensarla como «knowing», «doing» y «deciding» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Una regla solo puede cumplirla el objeto que conoce los datos que necesita: «el precio es mayor a cero» es de `Producto`; «no hay dos productos con el mismo nombre» no puede serlo, porque un producto no conoce a los demás, y la cumple el *Use Case* a través del *Repository*, con un índice único en la base como respaldo. Evans marca el mismo límite: los objetos «are supposed to maintain their own internal consistent state, but they can be blindsided by changes in other objects» ([Evans, 2015](#ref-evans-2015)). Si la misma regla aparece en varias clases, le falta una clase propia: es el caso del *Value Object* (§3.9).
 
@@ -758,6 +766,20 @@ El ejemplo de la guía trata «el precio es mayor a cero» como *Invariant* de `
 | El producto puede no tener precio todavía | Siempre | *Structural Assertion* |
 | Si tiene precio, es mayor a cero | Siempre | *Invariant* de la *Entity* |
 | No se vende un producto sin precio | Antes de vender | *Precondition* del acto de vender |
+
+Las dos primeras condiciones del §3.1 se usan como filtro —la tercera, «si se rompe, el objeto no debería existir», es la consecuencia de que las dos se cumplan—. Basta que falle una para que la regla no sea *Invariant*, y entonces la guía ya dice dónde va:
+
+| Regla | ¿Toda la vida del objeto? | ¿Mirando ese objeto solo? | ¿Es *Invariant*? | Dónde va |
+| --- | --- | --- | --- | --- |
+| Si hay precio, es mayor a cero | Sí | Sí | **Sí** | `Producto.Create` y `AsignarPrecio` (§3.7) |
+| Un pedido confirmado se pide con al menos un ítem | Sí, desde que se confirma | Sí: el pedido conoce sus ítems | **Sí**, del *Aggregate* | `Pedido.Confirmar` (§4.10) |
+| El DNI tiene entre 7 y 8 dígitos | Sí | Sí | **Sí** | `Persona.Create` (§9.6, paso 4) |
+| No hay dos personas con el mismo DNI | Sí | **No**: hay que mirar a las demás | No | *Use Case* con *Repository*, con índice único de respaldo (§9.6, pasos 3 y 7) |
+| No se vende un producto sin precio | **No**: solo antes de vender | Sí | No: es *Precondition* | `Producto.PrecioDeVenta` (§3.7) |
+| El nombre admite hasta 200 caracteres porque la columna lo impone | Sí | Sí | No: no pasa la prueba del papel (§3.2) | `HasMaxLength(200)` en la configuración de EF Core (§5.4) |
+| Solo quien administra el catálogo da de alta | No: depende de quién pide | No: hay que mirar al usuario | No: es *authorization* | *Use Case* o borde (§3.6) |
+
+Las dos últimas filas son deliberadas: una regla puede pasar las dos primeras preguntas y seguir sin ser *Invariant* del dominio, porque falla la del §3.2 —¿es del negocio?— o la de Wirfs-Brock —¿quién conoce el dato?—.
 
 Fowler plantea el mismo problema, la *validación contextual*: lo que confunde es pensar la validez de un objeto sin contexto, como sugiere un método `isValid`. Su propuesta: «I think it's much more useful to think of validation as something that's bound to a context - typically an action that you want to do [...] So rather than have methods like isValid have methods like isValidForCheckIn». Guardar también es una acción, y cada verificación tiene que pasar la pregunta «should failing this test prevent saving?» ([Fowler, 2005b](#ref-fowler-2005b)). Aquí, no: el producto sin precio se tiene que poder registrar.
 
@@ -1237,7 +1259,7 @@ MediatR es una biblioteca que interpone un objeto mediador entre quien envía el
 
 Los pedidos que anuncia el §0.4 traen el primer *Use Case* que toca más de una *Entity*. El ejemplo es un programa aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/Pedidos/`, que usa el `Producto` de la variante del §3.7 y llega hasta `Infrastructure` con EF Core sobre SQLite.
 
-**¿Producto y Pedido son Entities?** Sí: los dos tienen identidad y reglas propias. `Pedido` tiene además ítems (`ItemPedido`) que no existen fuera de él. Evans llama *Aggregate* a ese conjunto: «Choose one entity to be the root of each aggregate, and allow external objects to hold references to the root only» ([Evans, 2015](#ref-evans-2015)). `Pedido` es el *Aggregate Root*: los ítems se agregan y se leen solo a través de él, y el constructor de `ItemPedido` es `internal` —visible solo dentro del proyecto `Domain`— para que nadie de afuera lo invoque; el bloque de `ItemPedido`, más abajo, lo muestra.
+**¿Producto y Pedido son Entities?** Sí: los dos tienen identidad y reglas propias. `Pedido` tiene además ítems (`ItemPedido`) que no existen fuera de él. Evans llama *Aggregate* a ese conjunto: «Choose one entity to be the root of each aggregate, and allow external objects to hold references to the root only» ([Evans, 2015](#ref-evans-2015)). `Pedido` es el *Aggregate Root*: los ítems se agregan y se leen solo a través de él, y el constructor de `ItemPedido` es `internal` —visible solo dentro del proyecto `Domain`— para que nadie de afuera lo invoque; el bloque de `ItemPedido`, más abajo, lo muestra. El borde no está para ordenar el código: está para que alguien pueda hacer cumplir una regla que ningún objeto suelto alcanza a verificar, y Evans lo pide en el mismo «Therefore»: «Define properties and invariants for the aggregate as a whole and give enforcement responsibility to the root or some designated framework mechanism» ([Evans, 2015](#ref-evans-2015)). «Un pedido confirmado tiene al menos un ítem» es una *Invariant* del *Aggregate*, no de una *Entity* suelta: `ItemPedido` no puede verificarla y `Pedido` sí, porque los ítems están dentro de su borde. Por eso la extensión 4a del enunciado nombra a `Pedido.Confirmar`, y por eso el constructor de `ItemPedido` es `internal`: si los ítems pudieran crearse por fuera, la raíz no tendría nada que hacer cumplir.
 
 **¿Hay una Entity para el acto de vender?**
 
@@ -1473,6 +1495,7 @@ Todos estos términos se ven en los bloques de §5.2 (`ProductosController.cs`),
 - **Controller.** Clase que recibe peticiones HTTP de una ruta y devuelve respuestas. En esta guía es delgado: traduce entre contrato y mensajes, y delega en los handlers. → §5.2, `ProductosController.cs`, `Create(...)`: `new CrearProductoCommand(request.Nombre, request.Precio)`.
 - **Middleware.** Componente por el que pasa cada petición, en cadena, antes y después del controller: registro, autenticación, manejo de errores. → §5.6, `DomainExceptionHandler.cs`, registrado con `app.UseExceptionHandler()` (`Program.cs`, l. 24).
 - **OpenAPI.** Documento JSON que describe los recursos y operaciones de la API. La plantilla de .NET 10 lo genera en `/openapi/v1.json`; no incluye una página web interactiva para explorarla ([Microsoft, 2026d](#ref-microsoft-2026d)). → §5.2, `GET /openapi/v1.json` (L15); `Program.cs`, `AddOpenApi()` y `MapOpenApi()`.
+- **ORM y micro-ORM.** Un **ORM** (*object-relational mapper*) traduce objetos a filas y al revés, y además **sigue los cambios** de los objetos que entregó para confirmarlos juntos: EF Core es el de esta guía. Un **micro-ORM** hace sólo la mitad: recibe el SQL escrito a mano, ejecuta y materializa los objetos del resultado; no arma la consulta, no sigue nada y no confirma nada. **Dapper** es el micro-ORM más usado en .NET. La diferencia no es de tamaño sino de responsabilidad: con EF Core el `DbContext` **es** el Repository y la Unit of Work (§5.5); con Dapper esas dos piezas hay que escribirlas. → §5.4, la tabla de materializadores.
 - **EF Core y `DbContext`.** Entity Framework Core es la biblioteca de Microsoft que traduce objetos a filas de una base relacional. `DbContext` representa una sesión con la base: registra los cambios y los confirma todos juntos con `SaveChanges`. Una **base relacional** guarda los datos en tablas con columnas fijas; SQLite es una base relacional contenida en un archivo. → §4.10, `AppDbContext.cs`, `DbSet<Producto> Productos => Set<Producto>();`; §5.5, `_db.Productos.Add(producto)`.
 - **Configuración Fluent API.** Clase que le indica a EF Core cómo mapear una Entity (tabla, clave, longitudes) sin modificar la Entity. → §5.4, `ProductoConfiguration.cs`, `builder.ToTable("Productos")`.
 - **Unit of Work.** Conjunto de cambios que se confirman en una sola transacción; en EF Core la implementa el `DbContext` con `SaveChanges` ([Microsoft, 2018](#ref-microsoft-2018)). → §5.5, `await _db.SaveChangesAsync(ct)`; §4.10, `class AppDbContext : DbContext, IUnitOfWork`.
@@ -1628,7 +1651,25 @@ public static int VecesQueCorrioElConstructorPrivado { get; private set; }
 private ProductoQueDevuelve() => VecesQueCorrioElConstructorPrivado++;
 ```
 
-La salida confirma las tres piezas: `Constructor que EF Core eligió para materializar: private ProductoQueDevuelve()`, `Veces que corrió el constructor privado: 2 (la del alta + la de la relectura)` y `Los setters siguen siendo privados y EF Core los escribió igual` (*salida registrada: `Variantes/capturas/V05-ciclo-efcore.txt`, SDK 10.0.400*). Si la *Entity* no tiene ese constructor, EF Core busca uno con parámetros cuyos nombres y tipos coincidan con propiedades mapeadas; si no lo encuentra, el modelo no se construye y el programa falla **en ejecución**, con `InvalidOperationException: No suitable constructor was found for the type 'ProductoSinCtorPrivado'` (V07). Es el error más frecuente al pasar de `Create(nombre, precio)` a una fábrica con parámetros del negocio que no son columnas.
+La salida confirma las tres piezas: `Constructor que EF Core eligió para materializar: private ProductoQueDevuelve()`, `Veces que corrió el constructor privado: 2 (la del alta + la de la relectura)` y `Los setters siguen siendo privados y EF Core los escribió igual` (*salida registrada: `Variantes/capturas/V05-ciclo-efcore.txt`, SDK 10.0.400*). Si la *Entity* no tiene ese constructor, EF Core busca uno con parámetros cuyos nombres y tipos coincidan con propiedades mapeadas; si no lo encuentra, el modelo no se construye y el programa falla **en ejecución**, con `InvalidOperationException: No suitable constructor was found for the type 'ProductoSinCtorPrivado'` (V07). Es el error más frecuente al pasar de `Create(nombre, precio)` a una fábrica con parámetros del negocio que no son columnas. **Y el ORM no es el único que construye esa misma `Entity`: son cuatro, y sólo uno la valida.**
+
+| Quién construye | Para qué | Cómo construye | Si no hay constructor sin parámetros |
+| --- | --- | --- | --- |
+| `Create` (§3.3) | Constituir un producto nuevo | Verifica las reglas y usa el constructor privado por inicializador | No aplica: la fábrica es la dueña del constructor |
+| EF Core (ORM) | Materializar una fila ya guardada | Llama al constructor sin parámetros y escribe los setters privados (V05) | Busca uno con parámetros que coincidan con propiedades mapeadas; si no, `InvalidOperationException` (V07) |
+| Dapper (micro-ORM) | Materializar el resultado de un `SELECT` escrito a mano | Igual que EF Core, sin abrirle nada a la *Entity*: una sola llamada al constructor privado (V09) | Exige nombre **y tipo** de columna: `A parameterless default constructor or one matching signature … is required` |
+| `System.Text.Json` | Reconstruir lo que llega por HTTP | Por constructor, no por setters: con el privado **lanza** `NotSupportedException` (V09) | Con `[JsonConstructor]` o, si es el **único** constructor de la clase, con uno público que coincida, materializa sin tocar un setter —medido sobre un `record` posicional y sobre una clase de sólo lectura: «los dos por el constructor: setters públicos que el serializador pudiera usar = 0» (V09)—; con varios constructores hace falta el atributo ([Microsoft, 2026o](#ref-microsoft-2026o)) |
+
+**[Compilado: `Variantes/FabricaYResultado/Demo/Program.cs`, l. 45, 62, 261 y 303 — las cuatro líneas, reunidas]**
+
+```csharp
+        var alta = ProductoQueDevuelve.Create("Mate", 3500m, "ARS");
+        var releido = await db.Productos.AsNoTracking().SingleAsync(p => p.Id == id);
+        var fila = conexion.Query<ProductoQueDevuelve>("SELECT Id, Nombre, Precio, Estado FROM Productos").Single();
+        var producto = JsonSerializer.Deserialize<ProductoQueDevuelve>(json)!;
+```
+
+Dapper aporta dos avisos que EF Core no tiene: si la columna no se llama como la propiedad **no avisa** —`materializada: Nombre = '', Precio = 0 — y NO lanzó`—, y sin seguimiento de cambios modificar el objeto no cambia la base (`en memoria = Publicado …, en la base = Borrador`), así que el *Repository* y la *Unit of Work* del §5.5 vuelven a ser código propio (*salida registrada: `Variantes/capturas/V09-materializadores.txt`, SDK 10.0.400*).
 
 **Ese camino no valida, y es deliberado. Criterio de esta guía**, porque ninguna fuente lo manda: (1) la fila ya fue constituida por la fábrica y la regla se ejerció entonces; (2) los setters privados impidieron que se rompiera después (§3.4); (3) validar al materializar convierte un dato viejo inválido en una consulta rota: como el constructor corre al **leer** cada fila, la excepción no aparece en el alta que escribió el dato sino en medio de una consulta posterior, lejos de su causa. Evans deja las aserciones del lado de los modificadores —«assertions define contracts of services and entity modifiers»—, y rehidratar no modifica. Cuando la base **sí** puede tener filas inválidas —esquema heredado, escenario E-C— la comprobación existe, pero vive en el adaptador que traduce (§7.2 g), que es quien puede descartar, marcar o reportar.
 
@@ -1787,6 +1828,7 @@ De estos términos, solo *Cliente* tiene código compilado en el laboratorio (§
 - **MAUI Blazor Hybrid.** Aplicación nativa de escritorio o móvil hecha con .NET MAUI en la que los componentes Razor corren de forma nativa en el dispositivo y se dibujan en un control *Web View* incrustado; no corren en el navegador ni usan WebAssembly ([Microsoft, 2026g](#ref-microsoft-2026g)). → §6.5, `MyProject.Maui` (ilustrativo).
 - **Razor Class Library (RCL).** Proyecto que empaqueta componentes `.razor`, estilos y recursos para reutilizarlos en varias aplicaciones Blazor y MAUI. → §6.5, `Shared.UI` (ilustrativo); §8.1, `MyProject.Shared.UI/`.
 - **Servicio de API del cliente.** Clase del cliente que encapsula las llamadas HTTP a la API detrás de una interfaz (`IProductoApiService`). → §6.2, `interface IProductoApiService` (ilustrativo); §6.5, `ApiTokenHandler`, el eslabón que sus peticiones atraviesan.
+- **Serializador.** Componente que convierte un objeto en texto para que salga del proceso y lo reconstruye del otro lado. En .NET es `System.Text.Json`: la API lo usa para escribir la respuesta y el cliente, dentro de `GetFromJsonAsync`, para volver a armar los `ProductoResponse` (§6.3). Es el tercer materializador de la guía y el único que trabaja **en el borde**: por eso lo que él necesita poder escribir es el contrato, no la *Entity* (§7.4).
 - **ViewModel y form model.** Objetos del cliente preparados para una pantalla y para un formulario (§7.2 e y f). → §7.2 e, `ProductoListItemViewModel` con `PrecioFormateado`; §7.2 f, `ProductoFormModel` con `{ get; set; }` (ilustrativos).
 
 ### 6.2 ¿Por qué la página no llama a `HttpClient` directamente?
@@ -2086,11 +2128,20 @@ Quien viene de organizar una solución con clases planas en `Models/`, un servic
 
 | Papel | Qué le pide a la clase | Mientras no hay reglas |
 | --- | --- | --- |
-| Transporte | Setters públicos y constructor sin parámetros, para que el JSON o el formulario la llenen | No molesta |
+| Transporte | Un camino de escritura que el serializador alcance: setters públicos, **o** un constructor cuyos parámetros se llamen como las propiedades —lo que da un `record` posicional; si la clase tiene varios constructores hace falta `[JsonConstructor]` ([Microsoft, 2026o](#ref-microsoft-2026o))— | No molesta |
 | Modelo de la tabla | Propiedades que el ORM sepa mapear | No molesta |
 | Objeto del negocio | Nada, porque no hay nada que proteger | No molesta |
 
-Con la primera regla los papeles chocan, y es el choque del §7.5: el transporte necesita setters públicos y la regla los necesita cerrados; además, recibir la Entity entera deja que el cliente decida campos que no le corresponden (`Id`, `Activo`). La salida es sacar el papel de transporte a otra clase: **la clase plana se partió en dos**, y la mitad que viaja se llama Request en el borde y Command adentro. Es el paso 4 del §9.6.
+Cerrar los setters sin cerrar el constructor no protege nada:
+
+**[Compilado: `Variantes/FabricaYResultado/Demo/Program.cs`, l. 309 y 311]**
+
+```csharp
+        var producto = JsonSerializer.Deserialize<ProductoConSettersPrivados>(json)!;
+        Console.WriteLine("      NO lanzó: el objeto llegó entero en su valor por omisión");
+```
+
+La salida es `Nombre = '', Precio = 0, Id = Guid.Empty` y `NO lanzó`: el objeto llega entero en su valor por omisión y el programa sigue. Con el constructor **privado** sí lanza `NotSupportedException`; con `[JsonConstructor]` materializa «sin tocar un solo setter»; y con un único constructor público que coincida —el `record` posicional del contrato (§6.3) y una clase de sólo lectura— también, con «setters públicos que el serializador pudiera usar = 0» (*salida registrada: `Variantes/capturas/V09-materializadores.txt`, l. 31–42, SDK 10.0.400*). Por eso lo que viaja es el contrato: se deja escribir por constructor sin abrir un solo setter, y la *Entity* no. Con la primera regla los papeles chocan, y es el choque del §7.5: el transporte necesita un camino de escritura abierto y la regla lo necesita cerrado; además, recibir la Entity entera deja que el cliente decida campos que no le corresponden (`Id`, `Activo`). La salida es sacar el papel de transporte a otra clase: **la clase plana se partió en dos**, y la mitad que viaja se llama Request en el borde y Command adentro. Es el paso 4 del §9.6.
 
 **[Fragmento ilustrativo: no compilado; el antes y el después de la partición por transporte.]**
 
@@ -2445,7 +2496,7 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 
 **Qué puede cambiar en tu equipo en todos los pasos:** rutas absolutas, identificadores `Guid`, fechas, duraciones, el valor de la huella SHA-256 de L16 y el número de parche del SDK. Lo que no cambia —códigos de error, códigos de estado HTTP, códigos de salida— es lo que verifica `aserciones.log`. El registro incluye una aserción que falla a propósito, para demostrar que el mecanismo detecta.
 
-**Variantes.** Tres programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas; `FabricaYResultado/` compara las dos formas de rechazar y las dos formas de cerrar un conjunto de valores, y produce cinco.
+**Variantes.** Tres programas aparte, en `Examples/Dot-NET-Arquitectura-Lab/Variantes/`, muestran alternativas al laboratorio sin modificarlo; no los ejecuta `lab.sh` sino `variantes.sh`, con la misma imagen y el mismo formato de captura, desde la carpeta `Variantes/`. `Pedidos/` llega hasta `Infrastructure` (EF Core sobre SQLite en memoria) y produce dos capturas; `FabricaYResultado/` compara las dos formas de rechazar, las dos formas de cerrar un conjunto de valores y los cuatro materializadores, y produce seis; es el único proyecto del laboratorio con un paquete de terceros (Dapper, Anexo C). V06 no se regenera junto con las demás: §3.8 cita cinco números suyos, y volver a correrla obliga a actualizarlos.
 
 | Paso | § | Comando | Qué confirma | Captura |
 | --- | --- | --- | --- | --- |
@@ -2457,6 +2508,7 @@ El guion `Examples/Dot-NET-Arquitectura-Lab/lab.sh` ejecuta todos los pasos dent
 | V06 | 3.8 | `dotnet run --no-build -c Release --project FabricaYResultado/Demo -- rechazos` | Las mismas dos reglas rechazadas de las dos maneras; 4.357,0 ms/296,0 B contra 30,6 ms/0,0 B, y la excepción sin atrapar corta el proceso | `V06-rechazos` |
 | V07 | 5.4, 3.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- sin-ctor` | Sin constructor utilizable, `InvalidOperationException` en ejecución; con `{ get; }`, la propiedad desaparece del modelo | `V07-sin-ctor-privado` |
 | V08 | 3.9, 5.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- valores` | El `enum` admite valores que no declara; el *Value Object* con fábrica, no | `V08-enum-y-valor` |
+| V09 | 5.4, 7.4 | `dotnet run --no-build --project FabricaYResultado/Demo -- materializadores` | Dapper materializa la *Entity* cerrada y falla en silencio si la columna no coincide; el serializador necesita un constructor que alcance | `V09-materializadores` |
 
 ---
 
@@ -2490,6 +2542,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | MediatR | 12.5.0 Apache-2.0; desde 13.0.0 RPL-1.5 o comercial | [Bogard, 2025](#ref-bogard-2025); L24 (la licencia pasa de expresión `Apache-2.0` a archivo `LICENSE.md`) |
 | AutoMapper | 14.0.0 es la última MIT; GHSA-rvv3-g6hj-g44x (CVE-2026-32933, alta, denegación de servicio) afecta a < 15.1.1 y a 16.0.0–16.1.0, corregida en 15.1.1 y 16.1.1; desde 15.0.0 RPL-1.5 o comercial | [Bogard, 2025](#ref-bogard-2025); [GitHub, 2026](#ref-github-2026); L24 (la licencia pasa de expresión `MIT` a archivo `LICENSE.md`) |
 | Licencia comunitaria de Lucky Penny Software (documento v2.0) | Gratuita para personas y para organizaciones con ingresos brutos anuales menores a USD 5 millones (§4.2.g.3.1) que nunca recibieron más de USD 10 millones de capital externo (§4.2.g.3.2). No disponible para agencias de gobierno ni cuasi gubernamentales (§4.2.g.1) ni para universidades en software institucional u operativo; estudiantes y docentes pueden usarla con fines educativos (§4.2.g.3.3) | [Lucky Penny Software, 2025](#ref-luckypenny-2025) |
+| Dapper | 2.1.86, Apache-2.0 (expresión de licencia declarada en el `.nuspec` del paquete); micro-ORM, único paquete de terceros del laboratorio; se usa en la variante `materializadores` (V09) | [Dapper, 2026](#ref-dapper-2026); `dapper.nuspec` 2.1.86; V09 |
 | Refit | MIT; genera la implementación con generadores de código; versiones < 7.2.22 con vulnerabilidad crítica GHSA-3hxg-fxwm-8gf7 (CVE-2024-51501, inyección CRLF en encabezados), corregida en 7.2.22 | [ReactiveUI, 2026](#ref-reactiveui-2026); [GitHub, 2024](#ref-github-2024) |
 
 ---
@@ -2548,7 +2601,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Interfaz | *interface* | Tipo de C# que declara métodos sin implementarlos | 2.1 | §3.3, `IProductoRepository.cs` |
 | Interfaz de servicio técnico | — | Declaración, en `Application`, de una capacidad técnica que `Infrastructure` implementa (`IUnitOfWork`; correo y usuario actual son ejemplos hipotéticos) | 4.1, 4.10 | §4.10, `IUnitOfWork.cs` |
 | `internal` | — | Modificador de C#: el miembro es visible solo dentro de su proyecto (ensamblado) | 4.10 | §4.10, `ItemPedido.cs` |
-| Invariant | invariante; *Class Invariant* | Business Rule que un objeto cumple siempre, desde que se crea | 3.1, 3.6 | §3.3, `Producto.cs`; §3.7 |
+| Invariant | invariante; *Class Invariant* | Business Rule que vale toda la vida del objeto, se verifica mirando ese objeto solo y, si se rompe, el objeto no debería existir; cuando abarca a un Aggregate, la hace cumplir la raíz | 3.1, 3.6, 4.10 | §3.3, `Producto.cs`; §3.7 |
 | Inversión de dependencias | *dependency inversion* | Declarar la interfaz adentro e implementarla afuera | 2.1, 2.2 | §2.2, paso 1; §3.3, `IProductoRepository.cs` |
 | Inyección de dependencias | DI, *dependency injection* | Mecanismo que entrega implementaciones a quien pide interfaces | 2.1, 2.2 | §2.2, paso 2; §2.5, `Program.cs` |
 | JSON | *JavaScript Object Notation* | Formato de texto para datos estructurados que usan las API HTTP | 5.1 | — |
@@ -2556,12 +2609,14 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | MAUI Blazor Hybrid | — | Aplicación nativa .NET MAUI cuyos componentes Razor corren en el dispositivo y se dibujan en un *Web View* incrustado | 6.1 | — |
 | Mensaje | *message* | Objeto que transporta los datos de una intención: un Command o una Query | 4.1 | §4.5, `CrearProductoCommand.cs` |
 | Message (objetos) | mensaje | Pedido que un objeto envía a otro; el receptor decide si acepta, y ahí se aplica la regla. No confundir con el mensaje Command o Query | 3.6 | — |
+| Micro-ORM | Dapper | Biblioteca que toma el resultado de un SQL **escrito a mano** y lo convierte en objetos, y nada más: no arma la consulta, no sigue los cambios de los objetos que devolvió y no confirma una unidad de trabajo | 5.1, 5.4 | — |
 | Middleware | — | Componente que procesa cada petición HTTP en cadena | 5.1 | §5.6, `DomainExceptionHandler.cs` |
 | Minimal Guarantee | garantía mínima | Lo que el Use Case garantiza aunque falle: aquí, no guardar nada; es una Postcondition | 4.10 | §4.10, la salida V02; §4.6, `Assert.Empty(repository.Guardados)` |
 | Modelo de lectura | *read model* | Objeto plano que devuelve una Query (`ProductoDto`) | 4.1 | §4.5, `ProductoDto.cs` |
 | Money | — | Patrón de PoEAA: Value Object con monto y moneda cuya suma rechaza monedas distintas | 3.3 | §3.3, `Dinero.cs` |
 | Notification | notificación | Objeto que junta todos los motivos de rechazo, con códigos y no con texto; un resultado de un solo código no lo es | 3.8, 7.2 d | — |
 | OpenAPI | — | Documento que describe los recursos y operaciones de una API HTTP | 5.1 | — |
+| ORM | *object-relational mapper*, mapeador objeto-relacional | Biblioteca que traduce objetos de C# a filas de una base relacional y al revés, y que además sigue los cambios de los objetos que entregó para confirmarlos juntos; EF Core es el de esta guía | 5.1, 5.4 | §5.4, `ProductoConfiguration.cs` |
 | Paquete NuGet | *NuGet package* | Código de terceros distribuido desde nuget.org | 1.1 | — |
 | Persistence model | modelo de persistencia | Clase con la forma de una tabla, separada de la Entity | 7.2 g | — |
 | Petición HTTP | *HTTP request* | Mensaje de un cliente a un servidor con verbo, ruta, encabezados y, a veces, cuerpo | 5.1 | — |
@@ -2583,6 +2638,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Resultado de dominio | *result type*, `DomainResult` | Rechazo devuelto como valor en lugar de lanzado: lleva un código del vocabulario del dominio | 3.8 | §3.8, `DomainResult.cs` |
 | Responsibility | responsabilidad | Obligación de un objeto de hacer algo o conocer algo; la regla va en el objeto que conoce los datos | 3.6 | — |
 | SDK | *software development kit* | Herramientas para crear, compilar, probar y ejecutar código .NET | 1.1 | — |
+| Serializador | *serializer*; `System.Text.Json` | Componente que convierte un objeto en texto (JSON) para que salga del proceso, y reconstruye el objeto a partir de ese texto del otro lado; lo usan la API al responder y el cliente al leer | 5.1, 6.1 | §6.3, `GetFromJsonAsync<List<ProductoResponse>>` |
 | Service Layer | capa de servicios | Capa que fija el conjunto de operaciones de la aplicación y coordina cada una; los handlers de esta guía son su forma *operation script*, uno por clase | 4.1, 4.3, 9.6 | §4.5; §9.6 |
 | Servicio de API del cliente | — | Clase del cliente que encapsula las llamadas HTTP a la API detrás de una interfaz | 6.1 | §6.2 (ilustrativo) |
 | Setter privado | `private set` | Propiedad que se lee desde cualquier lugar y se modifica solo dentro de la clase | 3.1 | §3.3, `Producto.cs` |
@@ -2600,6 +2656,8 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 
 ## Anexo E. Referencias
 
+<a id="ref-bloch-2018"></a>Bloch, J. (2018). *Effective Java* (3.ª ed.). Addison-Wesley. Cap. 2, ítem 1, «Consider static factory methods instead of constructors»; ítem verificado en la tabla de contenidos del editor, https://www.pearson.de/media/muster/toc/toc_9780134686073.pdf (consultado el 2026-09-21). La primera edición es de 2001, posterior a *Refactoring* (1999).
+
 <a id="ref-bogard-2025"></a>Bogard, J. (2025, 2 de julio). *AutoMapper and MediatR commercial editions launch today*. https://www.jimmybogard.com/automapper-and-mediatr-commercial-editions-launch-today/ (consultado el 2026-09-18).
 
 <a id="ref-booch-1994"></a>Booch, G. (1994). *Object-Oriented Analysis and Design with Applications* (2.ª ed.). Benjamin/Cummings.
@@ -2609,6 +2667,8 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-cockburn-2001"></a>Cockburn, A. (2001). *Writing Effective Use Cases*. Addison-Wesley. Cap. 1 consultado en el borrador previo a la publicación (#3, 2000-02-21): https://www.ifi.uzh.ch/dam/jcr:00000000-25a0-3d08-0000-00000ce96422/weuc_extract.pdf (consultado el 2026-09-19).
 
 <a id="ref-cwalina-2008"></a>Cwalina, K. y Abrams, B. (2008). *Framework Design Guidelines* (2.ª ed.). Addison-Wesley. Capítulo «Capitalization conventions», reproducido en https://learn.microsoft.com/en-us/dotnet/standard/design-guidelines/capitalization-conventions (consultado el 2026-09-18).
+
+<a id="ref-dapper-2026"></a>Dapper. (2026). *Dapper — a simple object mapper for .NET*. https://dapperlib.dev/ (consultado el 2026-09-21); licencia verificada en `dapper.nuspec` de la versión 2.1.86.
 
 <a id="ref-eiffel-sf"></a>Eiffel Software. (s. f.). *Design by Contract: Introduction*. https://www.eiffel.com/values/design-by-contract/introduction/ (consultado el 2026-09-19).
 
@@ -2622,7 +2682,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 
 <a id="ref-fowler-2014"></a>Fowler, M. (2014, 9 de diciembre). *Replacing Throwing Exceptions with Notification in Validations*. https://martinfowler.com/articles/replaceThrowWithNotification.html (consultado el 2026-09-20).
 
-<a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (alias *Replace Constructor with Factory Method*), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, y *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html (consultados el 2026-09-20).
+<a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (en la 1.ª ed., 1999, *Replace Constructor with Factory Method*; renombrada en la 2.ª ed., 2018), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, y *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html (consultados el 2026-09-20).
 
 <a id="ref-evans-fowler-1997"></a>Evans, E. y Fowler, M. (1997). *Specifications*. https://martinfowler.com/apsupp/spec.pdf (consultado el 2026-09-20).
 
@@ -2679,6 +2739,8 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 <a id="ref-microsoft-2026j"></a>Microsoft. (2026j). *Data types — Microsoft.Data.Sqlite*. https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/types (consultado el 2026-09-18).
 
 <a id="ref-microsoft-2026k"></a>Microsoft. (2026k). *global.json overview* (sección «rollForward»). https://learn.microsoft.com/en-us/dotnet/core/tools/global-json#rollforward (consultado el 2026-09-18).
+
+<a id="ref-microsoft-2026o"></a>Microsoft. (2026o). *Use immutable types and properties* (`System.Text.Json`; `JsonConstructorAttribute`). https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/immutability (consultado el 2026-09-21): «For a class, if the only constructor is a parameterized one, that constructor will be used»; «For a struct, or a class with multiple constructors, specify the one to use by applying the `[JsonConstructor]` attribute».
 
 <a id="ref-microsoft-2026n"></a>Microsoft. (2026n). *The `const` keyword* (C# reference). https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/const (consultado el 2026-09-20).
 

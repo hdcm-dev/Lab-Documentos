@@ -1,0 +1,47 @@
+# V09 — materializadores
+# fecha: 2026-09-21T13:02:50Z
+# imagen: mcr.microsoft.com/dotnet/sdk:10.0
+# digest: sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+# sdk: 10.0.400
+# directorio: /variantes
+# comando: dotnet run --no-build --project FabricaYResultado/Demo -- materializadores
+# ---
+1. DAPPER — la misma fila, leída por el micro-ORM
+   (EF Core ya la materializó en V05; el constructor privado va en 1)
+   a. Sin conversor registrado: la propiedad es Guid y la columna es texto
+      DataException: Error parsing column 0 (Id=98B05967-62FB-45D7-AB04-F1F240CEB2F1 - String)
+   b. Entity con constructor privado sin parámetros y setters privados
+      materializada: Mate 3500 Borrador, Id asignado = True
+      veces que corrió el constructor privado en esta consulta: 1
+      los setters siguen siendo privados y Dapper los escribió igual: Estado = Borrador
+   c. Sin constructor sin parámetros: los nombres coinciden y el tipo de la columna no
+      InvalidOperationException: A parameterless default constructor or one matching signature (System.String Nombre, System.Double Precio) is required for MyProject.Domain.Productos.ProductoConCtorDeNombres materialization
+   d. Sin constructor sin parámetros: coinciden el nombre Y el tipo de la columna
+      materializada: Mate 3500
+      veces que corrió el constructor con parámetros: 1
+   e. La columna no se llama como la propiedad
+      materializada: Nombre = '', Precio = 0 — y NO lanzó
+   f. Sin seguimiento de cambios: se modifica el objeto y se vuelve a leer
+      en memoria = Publicado (Publicar aplicado = True), en la base = Borrador
+      nadie confirmó nada: no hay seguimiento de cambios ni Unit of Work que confirmar
+
+2. SERIALIZADOR (System.Text.Json) — el materializador del borde HTTP
+   JSON de entrada: {"Id":"11111111-1111-1111-1111-111111111111","Nombre":"Mate","Precio":3500}
+   a. La Entity con constructor privado sin parámetros y setters privados
+      NotSupportedException: Deserialization of types without a parameterless constructor, a singular parameterized constructor, or a parameterized constructor annotated with 'JsonConstructorAttribute' is not supported. Type 'MyProject.Domain.Productos.ProductoQueDevuelve'. Path: $ | LineNumber: 0 | BytePositionInLine: 1.
+   b. Constructor público sin parámetros y setters privados
+      Nombre = '', Precio = 0, Id = Guid.Empty
+      NO lanzó: el objeto llegó entero en su valor por omisión
+   c. Constructor privado con parámetros, anotado con [JsonConstructor]
+      Nombre = 'Mate', Precio = 3500 — sin tocar un solo setter
+   d. Un único constructor público con parámetros que NO coinciden
+      InvalidOperationException: Each parameter in the deserialization constructor on type 'MyProject.Domain.Productos.ProductoSinCtorPrivado' must bind to an object property or field on deserialization. Each parameter name and type must match with a property or field on the object. Fields are only considered when 'JsonSerializerOptions.IncludeFields' is enabled. The name match can be case-insensitive.
+   e. Un único constructor público con parámetros que coinciden (lo que viaja: §6.3)
+      record posicional: Id = 11111111-1111-1111-1111-111111111111, Nombre = 'Mate', Precio = 3500
+      clase con propiedades de sólo lectura: Id = 11111111-1111-1111-1111-111111111111, Nombre = 'Mate', Precio = 3500
+      los dos por el constructor: setters públicos que el serializador pudiera usar = 0
+   f. Al salir: ¿se publican las propiedades que ningún JSON puede escribir?
+      la Entity con setters privados: {"Id":"e99699c9-b3bb-4ed4-9e4f-501a0b4e8b84","Nombre":"Mate","Precio":3500,"Estado":1,"Moneda":{"Codigo":"ARS"}}
+      sólo lectura y calculada:       {"Nombre":"Mate","Precio":3500,"Creado":"2026-09-21","PrecioConIva":4235.00}
+
+# --- código de salida: 0

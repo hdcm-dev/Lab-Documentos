@@ -1,7 +1,9 @@
+using System.Data;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Dapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -9,14 +11,15 @@ using MyProject.Domain.Common;
 using MyProject.Domain.Productos;
 using MyProject.Infrastructure.Persistence;
 
-// Cuatro escenarios, uno por captura. El argumento elige cuál corre.
+// Cinco escenarios, uno por captura. El argumento elige cuál corre.
 switch (args is [var escenario, ..] ? escenario : "ciclo")
 {
     case "ciclo": await Ciclo(); break;
     case "rechazos": Rechazos(); break;
     case "sin-ctor": SinCtor(); break;
     case "valores": Valores(); break;
-    default: Console.WriteLine("Escenarios: ciclo | rechazos | sin-ctor | valores"); break;
+    case "materializadores": await Materializadores(); break;
+    default: Console.WriteLine("Escenarios: ciclo | rechazos | sin-ctor | valores | materializadores"); break;
 }
 
 // ---------------------------------------------------------------------------------------------------
@@ -217,6 +220,126 @@ void Valores()
     Console.WriteLine($"   igualdad por datos en las dos: {Moneda.Create("ARS").Value! == Moneda.Create("ars").Value!} / {new MonedaSinRegla("XYZ") == new MonedaSinRegla("XYZ")}");
 }
 
+// ---------------------------------------------------------------------------------------------------
+// V09 — Los tres materializadores contra la MISMA Entity de §3.3: constructor privado sin parámetros y
+// setters privados. EF Core no se vuelve a medir acá: su medición es V05, y esta empieza donde aquella
+// termina, sobre la fila que EF Core escribió.
+// ---------------------------------------------------------------------------------------------------
+async Task Materializadores()
+{
+    await using var conexion = new SqliteConnection("Data Source=:memory:");
+    await conexion.OpenAsync();
+
+    // La fila la escribe EF Core, por el único camino de alta que existe: la Factory Function (V05).
+    await using (var db = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>().UseSqlite(conexion).Options))
+    {
+        await db.Database.EnsureCreatedAsync();
+        db.Add(ProductoQueDevuelve.Create("Mate", 3500m, "ARS").Value!);
+        await db.SaveChangesAsync();
+
+        // Una segunda tabla, escrita con SQL a mano, para las variantes de constructor: acá el tipo de la
+        // columna lo elige el SQL (`real`) y no el conversor de EF Core (que guarda el decimal como texto).
+        await db.Database.ExecuteSqlRawAsync("CREATE TABLE Renglones (Nombre text not null, Precio real not null)");
+        await db.Database.ExecuteSqlRawAsync("INSERT INTO Renglones (Nombre, Precio) VALUES ('Mate', 3500)");
+    }
+
+    Console.WriteLine("1. DAPPER — la misma fila, leída por el micro-ORM");
+    Console.WriteLine($"   (EF Core ya la materializó en V05; el constructor privado va en {ProductoQueDevuelve.VecesQueCorrioElConstructorPrivado})");
+
+    Intentar("   a. Sin conversor registrado: la propiedad es Guid y la columna es texto", () =>
+    {
+        var fila = conexion.Query<ProductoQueDevuelve>("SELECT Id, Nombre, Precio FROM Productos").Single();
+        Console.WriteLine($"      materializada: {fila.Nombre} (no debería llegar acá)");
+    });
+
+    // Un micro-ORM no convierte por convención: la traducción texto → Guid se registra a mano.
+    SqlMapper.AddTypeHandler(new GuidDesdeTexto());
+
+    Intentar("   b. Entity con constructor privado sin parámetros y setters privados", () =>
+    {
+        var antes = ProductoQueDevuelve.VecesQueCorrioElConstructorPrivado;
+        var fila = conexion.Query<ProductoQueDevuelve>("SELECT Id, Nombre, Precio, Estado FROM Productos").Single();
+        Console.WriteLine($"      materializada: {fila.Nombre} {fila.Precio:G29} {fila.Estado}, Id asignado = {fila.Id != Guid.Empty}");
+        Console.WriteLine($"      veces que corrió el constructor privado en esta consulta: {ProductoQueDevuelve.VecesQueCorrioElConstructorPrivado - antes}");
+        Console.WriteLine($"      los setters siguen siendo privados y Dapper los escribió igual: Estado = {fila.Estado}");
+    });
+
+    Intentar("   c. Sin constructor sin parámetros: los nombres coinciden y el tipo de la columna no", () =>
+    {
+        var fila = conexion.Query<ProductoConCtorDeNombres>("SELECT Nombre, Precio FROM Renglones").Single();
+        Console.WriteLine($"      materializada: {fila.Nombre} (no debería llegar acá)");
+    });
+
+    Intentar("   d. Sin constructor sin parámetros: coinciden el nombre Y el tipo de la columna", () =>
+    {
+        var fila = conexion.Query<ProductoConCtorDeNombresYTipos>("SELECT Nombre, Precio FROM Renglones").Single();
+        Console.WriteLine($"      materializada: {fila.Nombre} {fila.Precio:G29}");
+        Console.WriteLine($"      veces que corrió el constructor con parámetros: {ProductoConCtorDeNombresYTipos.VecesQueCorrioElConstructorConParametros}");
+    });
+
+    Intentar("   e. La columna no se llama como la propiedad", () =>
+    {
+        var fila = conexion.Query<ProductoQueDevuelve>(
+            "SELECT Nombre AS nombre_producto, Precio AS precio_unitario FROM Renglones").Single();
+        Console.WriteLine($"      materializada: Nombre = '{fila.Nombre}', Precio = {fila.Precio:G29} — y NO lanzó");
+    });
+
+    Intentar("   f. Sin seguimiento de cambios: se modifica el objeto y se vuelve a leer", () =>
+    {
+        var fila = conexion.Query<ProductoQueDevuelve>("SELECT Id, Nombre, Precio, Estado FROM Productos").Single();
+        var publicar = fila.Publicar();
+        var releida = conexion.Query<ProductoQueDevuelve>("SELECT Id, Nombre, Precio, Estado FROM Productos").Single();
+        Console.WriteLine($"      en memoria = {fila.Estado} (Publicar aplicado = {publicar.Aplicado}), en la base = {releida.Estado}");
+        Console.WriteLine("      nadie confirmó nada: no hay seguimiento de cambios ni Unit of Work que confirmar");
+    });
+
+    Console.WriteLine();
+    Console.WriteLine("2. SERIALIZADOR (System.Text.Json) — el materializador del borde HTTP");
+    const string json = """{"Id":"11111111-1111-1111-1111-111111111111","Nombre":"Mate","Precio":3500}""";
+    Console.WriteLine($"   JSON de entrada: {json}");
+
+    Intentar("   a. La Entity con constructor privado sin parámetros y setters privados", () =>
+    {
+        var producto = JsonSerializer.Deserialize<ProductoQueDevuelve>(json)!;
+        Console.WriteLine($"      materializada: {producto.Nombre} (no debería llegar acá)");
+    });
+
+    Intentar("   b. Constructor público sin parámetros y setters privados", () =>
+    {
+        var producto = JsonSerializer.Deserialize<ProductoConSettersPrivados>(json)!;
+        Console.WriteLine($"      Nombre = '{producto.Nombre}', Precio = {producto.Precio:G29}, Id = {(producto.Id == Guid.Empty ? "Guid.Empty" : "asignado")}");
+        Console.WriteLine("      NO lanzó: el objeto llegó entero en su valor por omisión");
+    });
+
+    Intentar("   c. Constructor privado con parámetros, anotado con [JsonConstructor]", () =>
+    {
+        var producto = JsonSerializer.Deserialize<ProductoConJsonConstructor>(json)!;
+        Console.WriteLine($"      Nombre = '{producto.Nombre}', Precio = {producto.Precio:G29} — sin tocar un solo setter");
+    });
+
+    Intentar("   d. Un único constructor público con parámetros que NO coinciden", () =>
+    {
+        var producto = JsonSerializer.Deserialize<ProductoSinCtorPrivado>(json)!;
+        Console.WriteLine($"      Nombre = '{producto.Nombre}' (no debería llegar acá)");
+    });
+
+    Intentar("   e. Un único constructor público con parámetros que coinciden (lo que viaja: §6.3)", () =>
+    {
+        var respuesta = JsonSerializer.Deserialize<ProductoResponse>(json)!;
+        var contrato = JsonSerializer.Deserialize<ProductoDeContrato>(json)!;
+        Console.WriteLine($"      record posicional: Id = {respuesta.Id}, Nombre = '{respuesta.Nombre}', Precio = {respuesta.Precio:G29}");
+        Console.WriteLine($"      clase con propiedades de sólo lectura: Id = {contrato.Id}, Nombre = '{contrato.Nombre}', Precio = {contrato.Precio:G29}");
+        Console.WriteLine($"      los dos por el constructor: setters públicos que el serializador pudiera usar = {typeof(ProductoDeContrato).GetProperties().Count(p => p.SetMethod is { IsPublic: true })}");
+    });
+
+    Intentar("   f. Al salir: ¿se publican las propiedades que ningún JSON puede escribir?", () =>
+    {
+        Console.WriteLine($"      la Entity con setters privados: {JsonSerializer.Serialize(ProductoQueDevuelve.Create("Mate", 3500m, "ARS").Value!)}");
+        Console.WriteLine($"      sólo lectura y calculada:       {JsonSerializer.Serialize(new ProductoDeSalida())}");
+    });
+}
+
+
 // --------------------------------------------------- auxiliares de la demostración -----------------
 
 static string Describir(EstadoProducto estado) => estado switch
@@ -249,6 +372,19 @@ static string Firma(IEntityType tipo)
     return $"{visibilidad} {tipo.ClrType.Name}({parametros})";
 }
 
+static void Intentar(string titulo, Action cuerpo)
+{
+    Console.WriteLine(titulo);
+    try
+    {
+        cuerpo();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"      {ex.GetType().Name}: {ex.Message.Replace("\n", "\n      ")}");
+    }
+}
+
 static (double ms, long bytes) Medir(Action cuerpo, int n)
 {
     for (var i = 0; i < 1_000; i++) cuerpo();                 // calentamiento: que el JIT ya haya compilado
@@ -258,4 +394,12 @@ static (double ms, long bytes) Medir(Action cuerpo, int n)
     for (var i = 0; i < n; i++) cuerpo();
     reloj.Stop();
     return (reloj.Elapsed.TotalMilliseconds, GC.GetAllocatedBytesForCurrentThread() - antes);
+}
+
+// Conversor que un ORM trae por convención y un micro-ORM no: la clave es Guid y la columna, texto.
+public class GuidDesdeTexto : SqlMapper.TypeHandler<Guid>
+{
+    public override Guid Parse(object value) => Guid.Parse((string)value);
+
+    public override void SetValue(IDbDataParameter parametro, Guid valor) => parametro.Value = valor.ToString();
 }

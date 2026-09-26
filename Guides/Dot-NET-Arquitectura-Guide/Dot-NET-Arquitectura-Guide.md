@@ -2,12 +2,12 @@
 doc_id: GUIA-NET-ARQ
 doc_type: study-guide
 title: Arquitectura de soluciones .NET — guía de estudio y de criterios
-version: 2.4.0
+version: 2.5.0
 status: vigente
 origin: ai-assisted
 confidence: alta en lo capturado en laboratorio; media en lo rotulado como criterio de esta guía
 owner: fernandofilipuzzi
-last_review: 2026-09-21
+last_review: 2026-09-24
 audience: [personas que se inician en arquitectura .NET, quien diseña una solución .NET desde cero]
 prerequisites: ["C# básico (clases, métodos, propiedades)", "uso de una terminal"]
 sdk_validado: ".NET SDK 10.0.400, runtime 10.0.11, imagen mcr.microsoft.com/dotnet/sdk:10.0@sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c"
@@ -26,14 +26,14 @@ Guía de estudio para construir, capa por capa, una solución .NET organizada se
 - **[1. Qué se está armando: solución, proyecto, referencia y paquete](#1-qué-se-está-armando-solución-proyecto-referencia-y-paquete)**: las piezas físicas de .NET y por qué una referencia tiene dirección.
 - **[2. La regla de dependencia](#2-la-regla-de-dependencia)**: Clean Architecture, inversión e inyección de dependencias, y el esqueleto de cuatro proyectos.
 - ***Parte II — Construcción: el ejemplo crece capítulo a capítulo***
-- **[3. Domain: lo que es verdad en el negocio](#3-domain-lo-que-es-verdad-en-el-negocio)**: *Entities*, *Value Objects*, *Business Rules* e *Invariants*; dónde vive cada tipo de regla, cuándo una regla es una *Precondition* y si el rechazo se lanza o se devuelve.
+- **[3. Domain: lo que es verdad en el negocio](#3-domain-lo-que-es-verdad-en-el-negocio)**: *Entities*, *Value Objects*, *Business Rules* e *Invariants*; dónde vive cada tipo de regla, cuándo una regla es una *Precondition*, si el rechazo se lanza o se devuelve y cuándo una jerarquía de tipos es la respuesta.
 - **[4. Application: lo que quiere hacer el usuario](#4-application-lo-que-quiere-hacer-el-usuario)**: *Use Cases*, Command, Handler y *Repository*, pruebas sin base de datos y un *Use Case* con dos *Entities*.
 - **[5. Infrastructure y WebAPI: el borde con el mundo](#5-infrastructure-y-webapi-el-borde-con-el-mundo)**: la API en marcha, el cambio de almacenamiento y los errores HTTP.
 - **[6. Los clientes](#6-los-clientes)**: cómo consume la API una aplicación .NET y dónde nace `Contracts`.
 - ***Parte III — Criterio: se puede abrir directamente***
-- **[7. Cada objeto responde una pregunta](#7-cada-objeto-responde-una-pregunta)**: los siete tipos de objeto, cuándo existe cada uno, cómo se traduce el vocabulario de las clases planas de siempre y por qué no alcanza una sola clase.
+- **[7. Cada objeto responde una pregunta](#7-cada-objeto-responde-una-pregunta)**: los siete tipos de objeto y la jerarquía de tipos, cuándo existe cada uno, cómo se traduce el vocabulario de las clases planas de siempre y por qué no alcanza una sola clase.
 - **[8. La estructura física y los nombres](#8-la-estructura-física-y-los-nombres)**: el árbol de la solución, las referencias permitidas y la convención de nombres.
-- **[9. Del problema a la estructura](#9-del-problema-a-la-estructura-criterios-para-una-solución-real)**: mapa de entrada por escenario, escalera de opciones, evaluación de dependencias, la escalera en código, del dato a los *Use Cases*, y dos ejercicios de transferencia con respuesta diferida.
+- **[9. Del problema a la estructura](#9-del-problema-a-la-estructura-criterios-para-una-solución-real)**: mapa de entrada por escenario, escalera de opciones, evaluación de dependencias, la escalera en código, del dato a los *Use Cases*, y tres ejercicios de transferencia con respuesta diferida.
 - **[Anexo A. Hoja de ruta del laboratorio](#anexo-a-hoja-de-ruta-del-laboratorio)**: los 25 pasos con su sección, su comando, lo que confirman y su captura, y las tres corridas de las variantes.
 - **[Anexo B. Lista de verificación](#anexo-b-lista-de-verificación-para-diseñar-una-solución-nueva)**: las preguntas de §9 como plantilla para una solución nueva.
 - **[Anexo C. Versiones, soporte y licencias](#anexo-c-versiones-soporte-y-licencias-verificadas)**: datos volátiles con fuente y fecha de consulta.
@@ -261,10 +261,12 @@ Martin describe cuatro círculos. Su correspondencia con los proyectos de la gu�
 
 | Círculo ([Martin, 2012](#ref-martin-2012)) | Proyecto | Contiene |
 | --- | --- | --- |
-| Entities | `MyProject.Domain` | Entities, Value Objects, reglas, interfaces de Repository |
+| Entities | `MyProject.Domain` | Entities, Value Objects, reglas, interfaces de Repository (con la salvedad de abajo) |
 | Use Cases | `MyProject.Application` | Use Cases, mensajes, modelos de lectura |
 | Interface Adapters | `MyProject.Infrastructure`, controllers de `MyProject.WebAPI` | Repositories, configuración de EF Core, controllers |
 | Frameworks & Drivers | Bibliotecas externas: ASP.NET Core, EF Core, SQLite | Lo que se usa, no se escribe |
+
+> **Una salvedad sobre la primera fila.** Martin ubica las interfaces de acceso a datos —lo que un caso de uso usa para pedir y guardar— en el círculo de los *Use Cases*, no en el de las *Entities* ([Martin, 2017](#ref-martin-2017)); esta guía las declara en `Domain`, y lo hace a sabiendas. La razón es la que el §2.2 enseña en su paso 1: **la interfaz la declara quien la necesita**, y acá quien necesita no saber cómo se guarda es el dominio. Evans le pide al *Repository* exactamente eso, y desde adentro del dominio: dar «the illusion of an in-memory collection of all objects of that aggregate's root type» ([Evans, 2015](#ref-evans-2015)); es la misma frase con la que §4.4 lo reconoce. Conviene ver qué **no** cambia con la elección: las dos ubicaciones dejan el mismo grafo de referencias —`Domain` sin ninguna, `Application → Domain`—, que es lo que L08 mide; **la regla de dependencia no desempata acá**. Lo que decide es qué se quiere enseñar, y esta guía enseña que una capa declara lo que le falta en lugar de esperar que se lo den. **Criterio de esta guía**, declarado para que quien venga del libro de 2017 sepa que hay una elección y no un descuido. → §3.3 (`IProductoRepository.cs`, en `Domain`), §4.4.
 
 Los términos de la columna «Contiene» se definen en el capítulo de su proyecto: Entity y Value Object en §3.1; Use Case, mensaje, modelo de lectura y Repository en §4.1; controller y EF Core en §5.1. Por ahora alcanza con saber que **EF Core** es la biblioteca de Microsoft que guarda objetos de C# en una base de datos, y que **ASP.NET Core** es el marco de Microsoft para construir aplicaciones web y API HTTP en .NET.
 
@@ -522,7 +524,7 @@ flowchart BT
 
 *Diagrama 2.3. Grafo de referencias de L08. Línea continua = `ProjectReference`. Ninguna flecha sale de `Domain`.*
 
-`Infrastructure` referencia también a `Application` para poder implementar las interfaces de servicios técnicos (§4.1) que una solución real declara en esa capa; la variante de §4.10 tiene una, `IUnitOfWork`, y su `AppDbContext` la implementa. En el laboratorio esa referencia queda declarada pero sin uso: ningún archivo de `Infrastructure` nombra un tipo de `Application` (se comprueba con `grep -rn Application src/Backend/MyProject.Infrastructure --include=*.cs`, que no devuelve nada), porque el ejemplo no llega a necesitar un servicio técnico. Con el criterio del §9.8, en una solución real esa flecha se agrega cuando aparece la primera interfaz que la necesita. Las referencias de .NET son **transitivas**: la WebAPI puede usar tipos de `Domain` sin referenciarlo, porque lo alcanza a través de `Application`. El §8.2 explica cómo cortarlo si hiciera falta.
+`Infrastructure` referencia también a `Application` para poder implementar las interfaces de servicios técnicos (§4.1) que una solución real declara en esa capa; la variante de §4.10 tiene una, `IUnitOfWork`, y su `AppDbContext` la implementa. En el laboratorio esa referencia queda declarada pero sin uso: ningún archivo de `Infrastructure` nombra un tipo de `Application` (se comprueba con `grep -rn Application src/Backend/MyProject.Infrastructure --include=*.cs`, que no devuelve nada), porque el ejemplo no llega a necesitar un servicio técnico. **Apartamiento declarado**: la flecha se agrega acá **antes** de que aparezca la señal que la justifica, para que el esqueleto sea el de una solución real y no haya que rehacerlo al llegar a §4.10; con el criterio del §9.8 —cada capa y cada referencia se agregan cuando aparece la señal— en un proyecto propio esta flecha se agrega **recién con la primera interfaz de `Application` que `Infrastructure` tenga que implementar**. Queda escrito para que el lector no lea el esqueleto como si el criterio no rigiera: rige, y esto es la excepción, declarada. La tabla de §8.3 no cambia por esto: esa tabla dice lo que cada proyecto **puede** referenciar, y el grafo de L08 dice lo que **hay**. Las referencias de .NET son **transitivas**: la WebAPI puede usar tipos de `Domain` sin referenciarlo, porque lo alcanza a través de `Application`. El §8.2 explica cómo cortarlo si hiciera falta.
 
 ### 2.8 Pregunta de cierre
 
@@ -543,7 +545,7 @@ Todos estos términos se ven en los tres bloques de §3.3 (`Producto.cs`, `Diner
 - **Invariant.** *Business Rule* que cumple tres condiciones a la vez: **vale toda la vida del objeto**, no solo antes de una acción; **se verifica mirando ese objeto solo**, sin consultar a otros ni a la base; y **si se rompe, el objeto no debería existir**, por eso se verifica al construirlo y no después. Es la *Class Invariant* de Meyer, «an assertion describing a property which holds of all instances of a class» ([Eiffel Software, s. f.](#ref-eiffel-sf); [Meyer, 1988](#ref-meyer-1988)). En el laboratorio: «el precio es mayor a cero». → §3.3, `Producto.cs`, la misma guarda dentro de `Create`; §3.7, `AsignarPrecio`.
 - **Precondition y Postcondition.** Lo que tiene que ser cierto antes de ejecutar un método y lo que el método garantiza al terminar ([Meyer, 1988](#ref-meyer-1988)). Una regla que vale solo antes de una acción —«no se vende sin precio»— es la *Precondition* de esa acción, no una *Invariant* (§3.7). → §3.7, `PrecioDeVenta()`; la *Postcondition* de `Create` está escrita como prueba: §3.3, `ProductoTests.cs`, `Assert.True(producto.Activo)`.
 - **Factory Method.** Método `static` que crea instancias y es el único camino para hacerlo **desde afuera de la clase**: adentro, `Create` sigue usando el constructor privado con un inicializador de objeto, y puede haber una fábrica por acto de constitución, no una sola. Evans manda «shift the responsibility for creating instances of complex objects and aggregates to a separate object» y, en el mismo «Therefore», «create an entire aggregate as a piece, enforcing its invariants» ([Evans, 2015](#ref-evans-2015)): el método estático en la propia *Entity* es el caso liviano de esa familia, y la fábrica se muda a un objeto aparte cuando necesita colaboradores, arma varias piezas o obligaría al cliente a nombrar clases concretas. El movimiento del constructor público al método estático está catalogado desde la primera edición de *Refactoring* (1999), donde se llamaba *Replace Constructor with Factory Method*; la segunda edición (2018) lo renombró *Replace Constructor with Factory Function* y el catálogo en línea conserva el nombre viejo como alias ([Fowler, s. f.](#ref-fowler-refactoring)). Su motivo es que un constructor no puede elegir qué devolver ni llevar el nombre del acto. Bloch formuló el mismo movimiento dos años después, de manera independiente, como consejo de diseño de API —«Consider static factory methods instead of constructors»— y enumera sus ventajas: el método tiene nombre, no está obligado a crear un objeto nuevo en cada llamada y puede devolver cualquier subtipo del tipo declarado ([Bloch, 2018, ítem 1](#ref-bloch-2018)). (En el catálogo de [Gamma et al., 1994](#ref-gamma-1994) *Factory Method* designa otro patrón, basado en subclases.) → §3.3, `Producto.cs`: `private Producto() { }` + `public static Producto Create(string nombre, decimal precio)`; el constructor privado, además, es la costura por la que EF Core materializa cada fila (§5.4).
-- **Value Object.** Objeto **sin identidad**: dos *Value Objects* con los mismos datos son el mismo valor, «like money or a date range, whose equality isn't based on identity» ([Fowler, 2002](#ref-fowler-2002); [Evans, 2015](#ref-evans-2015)). `Dinero(10, "ARS")` es igual a otro `Dinero(10, "ARS")`. En C# se modelan bien con `record`, un tipo cuya igualdad compara los datos miembro a miembro en lugar de la referencia. Tres cosas que suelen vivir en una carpeta `Values/` y **no** son este patrón: el `enum` que enumera un conjunto cerrado (es vocabulario, no comportamiento), el catálogo de constantes de error (es contrato, §7.2 d) y la función auxiliar que normaliza un dato (es una función). El patrón pide, además de la igualdad por datos, «give it related functionality» ([Evans, 2015](#ref-evans-2015)). → §3.3, `Dinero.cs`: `public record Dinero(decimal Monto, string Moneda)`; la igualdad, en `ProductoTests.cs`; un conjunto cerrado con regla, en §3.9.
+- **Value Object.** Objeto **sin identidad**: dos *Value Objects* con los mismos datos son el mismo valor, «like money or a date range, whose equality isn't based on identity» ([Fowler, 2002](#ref-fowler-2002); [Evans, 2015](#ref-evans-2015)). `Dinero(10, "ARS")` es igual a otro `Dinero(10, "ARS")`. En C# se modelan bien con `record`, un tipo cuya igualdad compara los datos miembro a miembro en lugar de la referencia. Tres cosas que suelen vivir en una carpeta `Values/` y **no** son este patrón: el `enum` que enumera un conjunto cerrado (es vocabulario, no comportamiento), el catálogo de constantes de error (es contrato, §7.2 d) y la función auxiliar que normaliza un dato (es una función). El patrón pide, además de la igualdad por datos, «give it related functionality» ([Evans, 2015](#ref-evans-2015)). → §3.3, `Dinero.cs`: `public record Dinero(decimal Monto, string Moneda)`; la igualdad, en `ProductoTests.cs`; un conjunto cerrado con regla, en §3.10.
 - **Excepción de dominio.** Tipo de excepción propio (`DomainException`) que señala que una operación violaría una regla del negocio, para distinguirla de un error técnico. → §3.3, `Producto.cs`, `throw new DomainException(...)`; §5.6, quien la traduce a HTTP.
 - **Setter privado.** `{ get; private set; }`: la propiedad se lee desde cualquier lugar y se modifica solo desde dentro de la clase. → §3.3, `Producto.cs`, `public decimal Precio { get; private set; }`; §3.4, el error CS0200 que lo prueba.
 - **`Guid`.** Identificador único global: un número de 128 bits que .NET genera con `Guid.NewGuid()` y que sirve como `Id` sin necesidad de que una base de datos lo asigne. → §3.3, `Producto.cs`, `Id = Guid.NewGuid()`.
@@ -734,7 +736,7 @@ Una *Invariant* no se sostiene con una guarda sino con tres piezas que trabajan 
 | El setter privado | **Impide romperla desde afuera**: el compilador la protege, no la disciplina | §3.4, error CS0200 | Cualquier `producto.Precio = -1m` la saltea, venga de una pantalla, de un lote o de una prueba |
 | Cada método que toca el dato | La **vuelve a verificar** al cambiar el estado | §3.7, `AsignarPrecio` | El objeto nace bien y se rompe después: la regla vale en el alta y no en la modificación |
 
-**Quién conoce lo necesario.** Wirfs-Brock define la *Responsibility* como «an obligation to perform a task or know information» y propone pensarla como «knowing», «doing» y «deciding» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Una regla solo puede cumplirla el objeto que conoce los datos que necesita: «el precio es mayor a cero» es de `Producto`; «no hay dos productos con el mismo nombre» no puede serlo, porque un producto no conoce a los demás, y la cumple el *Use Case* a través del *Repository*, con un índice único en la base como respaldo. Evans marca el mismo límite: los objetos «are supposed to maintain their own internal consistent state, but they can be blindsided by changes in other objects» ([Evans, 2015](#ref-evans-2015)). Si la misma regla aparece en varias clases, le falta una clase propia: es el caso del *Value Object* (§3.9).
+**Quién conoce lo necesario.** Wirfs-Brock define la *Responsibility* como «an obligation to perform a task or know information» y propone pensarla como «knowing», «doing» y «deciding» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Una regla solo puede cumplirla el objeto que conoce los datos que necesita: «el precio es mayor a cero» es de `Producto`; «no hay dos productos con el mismo nombre» no puede serlo, porque un producto no conoce a los demás, y la cumple el *Use Case* a través del *Repository*, con un índice único en la base como respaldo. Evans marca el mismo límite: los objetos «are supposed to maintain their own internal consistent state, but they can be blindsided by changes in other objects» ([Evans, 2015](#ref-evans-2015)). Si la misma regla aparece en varias clases, le falta una clase propia: es el caso del *Value Object* (§3.11).
 
 | Tipo de regla | Pregunta que la reconoce | ¿Cuándo vale? | Dónde vive | Ejemplo en la tienda |
 | --- | --- | --- | --- | --- |
@@ -905,11 +907,90 @@ El laboratorio mide el par sobre un millón de rechazos, en Release: `por excepc
 
 **La consulta que contesta sin hacer nada.** Una tercera forma, que no rechaza sino que informa: un método que pregunta si el acto sería admisible y devuelve el motivo, sin mutar nada. Es una *Query* en el sentido de la *Command-Query Separation* (§4.7) y una *Side-Effect-Free Function* en el de Evans, y es exactamente lo que predica §3.7 al pedir `isValidForCheckIn` en lugar de `isValid`: la validez se pregunta respecto de una acción. La señal para sacar el predicado del objeto es otra: que el mismo criterio tenga que valer en memoria **y** en la base, porque un método no lo puede traducir el motor de datos y termina copiado en la consulta —ahí es donde aparece la *Specification*—. No es una *Specification*, que es un objeto-criterio con un `isSatisfiedBy(candidato)` ([Evans y Fowler, 1997](#ref-evans-fowler-1997)), ni un *Guard Clause*, que nombra una transformación del control de flujo dentro de un método —*Replace Nested Conditional with Guard Clauses*, del mismo catálogo que la refactorización de §3.1 ([Fowler, s. f.](#ref-fowler-refactoring))—, no un tipo.
 
-### 3.9 Pregunta de cierre
+### 3.9 ¿Cuándo una jerarquía de tipos es la respuesta?
 
-**¿Cuándo no conviene el Value Object?** Cuando el valor no tiene comportamiento ni reglas propias. `Dinero` se justifica porque sumar montos de monedas distintas es un error de negocio; un `Nombre` que solo es texto no necesita un tipo propio. En el escenario E-A, con pocas reglas, un Value Object rara vez tiene comportamiento que proteger; en E-D es el lugar donde una regla sobre un valor se escribe una sola vez. **Criterio de esta guía**, y más estricto que las fuentes: Evans dispara el patrón por la pregunta conceptual —«when you care only about the attributes and logic of an element of the model»— y PoEAA por la igualdad, no por la regla; un `Punto(2, 3)` es un *Value Object* de manual y no protege nada.
+**Respuesta: cuando los subtipos se diferencian por comportamiento que el negocio nombra, no por los datos que guardan; y sólo si todo lo que vale para el tipo base sigue valiendo para cada subtipo.**
 
-**Un conjunto cerrado que de verdad esté cerrado.** Cuando el valor además enumera opciones, hay tres formas y solo una impide un valor imposible. El `enum` es la barata y no cierra nada: `(EstadoProducto)99` compila, no lanza, `IsDefined` da `False` y el JSON por defecto sale como número; una fila escrita con un valor que este binario no declara se relee como `Estado = 9` **sin excepción** si la columna es entera, y falla fuerte si es texto (§5.4). La cadena constante cierra todavía menos. La tercera es la mecánica de la *Entity* aplicada a un valor:
+Hasta acá el capítulo trató un solo tipo de objeto por concepto. El caso siguiente es el del concepto que el negocio nombra de varias maneras —una actividad productiva que puede ser agrícola o de cría, un comprobante que puede ser factura o nota de crédito— y la pregunta es si eso pide una jerarquía de clases, un campo que distinga variantes, o una pieza inyectada.
+
+> **Criterio de esta guía — jerarquía o composición, en tres preguntas.**
+>
+> **Condición previa: la diferencia tiene que ser de comportamiento que el negocio nombra.** Si los subtipos sólo agregan campos y el cálculo vive en un `switch` de afuera, la jerarquía no está resolviendo nada: es el *Anemic Domain Model* con una capa más ([Fowler, 2003](#ref-fowler-2003)).
+>
+> 1. **¿Un objeto puede cambiar de variante durante su vida sin dejar de ser el mismo objeto?** Si puede, lo que varía no es *qué es* sino *cómo hace una parte de su trabajo*, y eso es **composición**. Una actividad agrícola no pasa a ser de cría; una tarifa sí puede cambiar de fórmula.
+> 2. **¿Cuántos ejes varían a la vez?** Un eje admite jerarquía. Dos ejes independientes la hacen explotar —cuatro tipos por tres formas de valorizar son doce clases—, y ahí lo que varía se **inyecta**.
+> 3. **¿Todo lo que vale para la base sigue valiendo para cada hoja?** Es el criterio de legitimidad, y no lo inventó esta guía.
+
+Liskov lo formuló como una propiedad de sustitución: «What is wanted here is something like the following **substitution property**: If for each object o1 of type S there is an object o2 of type T such that for all programs P defined in terms of T, the behavior of P is unchanged when o1 is substituted for o2, then S is a subtype of T» ([Liskov, 1987](#ref-liskov-1987)). **Qué implica para quien diseña**: la jerarquía no se valida mirando las clases sino mirando **los programas escritos contra la base**. Si hay un solo lugar donde el código que usa el tipo base tiene que preguntar de qué subtipo se trata para hacer bien su trabajo, ese lugar es la refutación de la jerarquía.
+
+**El puente con lo que §3.1 ya definió. Criterio de esta guía**: la tercera pregunta se responde con las *Invariants* de la base. Todo lo que la base promete como verdadero siempre —y todo lo que sus métodos garantizan al terminar (§3.7)— tiene que seguir siendo verdadero en cada hoja; una hoja que afloja una de esas promesas no es un subtipo del negocio aunque el compilador la acepte. Se rotula como criterio propio a propósito: la formulación académica que ata el subtipado a los invariantes no se pudo cotejar contra su edición original en esta revisión, y esta guía no cita lo que no verificó (§0.5).
+
+**[Fragmento ilustrativo: la solución donde este dominio se compila todavía no existe; el código no pasó por el compilador]**
+
+```csharp
+public abstract class ActividadProductiva
+{
+    public string Descripcion { get; private set; }
+
+    // Lo que es igual para todas vive acá, una sola vez.
+    public decimal SuperficieOcupada() => _parcelas.Sum(p => p.Hectareas);
+
+    // Lo que varía por tipo, con la misma firma para todos:
+    public abstract Dinero Produccion();
+    public abstract Rendimiento CalcularRendimiento();
+}
+
+public sealed class Agricola : ActividadProductiva
+{
+    public override Dinero Produccion() => PrecioTonelada * ToneladasCosechadas;
+    public override Rendimiento CalcularRendimiento() =>
+        Rendimiento.PorHectarea(ToneladasCosechadas, SuperficieOcupada());
+}
+
+public sealed class Cria : ActividadProductiva
+{
+    public override Dinero Produccion() => PrecioTernero * TernerosDestetados;
+    public override Rendimiento CalcularRendimiento() =>
+        Rendimiento.PorCienVacas(TernerosDestetados, VacasMadres);
+}
+```
+
+El programa que suma no pregunta nada, y ése es el resultado de la prueba de sustitución, no una elegancia:
+
+```csharp
+// El informe de todo el establecimiento, sin una sola pregunta por el tipo.
+Dinero total = actividades.Aggregate(Dinero.Cero, (acc, a) => acc + a.Produccion());
+```
+
+El contraejemplo es la misma cuenta escrita del otro lado:
+
+**[Fragmento ilustrativo: contraejemplo]**
+
+```csharp
+decimal produccion = tipo switch
+{
+    1 => toneladas * precioTonelada,
+    2 => terneros * precioTernero,
+    3 => (kilosFinales - kilosIniciales) * precioKilo,
+    4 => kilosLogrados * precioKilo,
+    _ => 0m                       // el tipo nuevo produce 0 y nadie se entera
+};
+```
+
+La operación que lleva del segundo al primero tiene nombre en el catálogo que esta guía ya cita: *Replace Conditional with Polymorphism* ([Fowler, s. f.](#ref-fowler-refactoring)). **Qué implica**: el `switch` no es un estilo, es un síntoma —dice que el dato que decide y el código que actúa están en objetos distintos—, y la refactorización consiste en mudar cada rama al tipo que la contesta, que es exactamente el bloque de arriba.
+
+| | |
+| --- | --- |
+| ✅ | Jerarquía cuando cada hoja **responde distinto la misma pregunta** y el negocio le puso nombre a cada una |
+| ❌ | Jerarquía **para compartir código**: heredar para no repetir un método ata dos cosas que el negocio no ató, y la que cambia primero rompe a la otra |
+| ❌ | Subtipos que **sólo agregan campos** y un `switch` afuera que decide: es el *Anemic Domain Model* en su forma más visible —el subtipo existe y no hace nada— ([Fowler, 2003](#ref-fowler-2003)) |
+| ❌ | Un subtipo que **rompe lo que la base prometía** (devuelve `0` donde la base promete un importe, o lanza donde la base promete responder): ahí el que se equivocó no es el que llama, es la jerarquía |
+
+Los dos mecanismos que esta decisión arrastra están donde corresponde y no acá: cómo la persiste EF Core, en §5.4; cómo la publica un contrato JSON, en §7.2 d. La jerarquía se decide con el negocio; los dos mecanismos dependen del stack.
+
+### 3.10 Un conjunto cerrado que de verdad esté cerrado
+
+Cuando el valor además enumera opciones, hay tres formas y solo una impide un valor imposible. El `enum` es la barata y no cierra nada: `(EstadoProducto)99` compila, no lanza, `IsDefined` da `False` y el JSON por defecto sale como número; una fila escrita con un valor que este binario no declara se relee como `Estado = 9` **sin excepción** si la columna es entera, y falla fuerte si es texto (§5.4). La cadena constante cierra todavía menos. La tercera es la mecánica de la *Entity* aplicada a un valor:
 
 **[Compilado: `Variantes/FabricaYResultado/Domain/Productos/Moneda.cs`, l. 12–26 y 37]**
 
@@ -934,6 +1015,10 @@ public record MonedaSinRegla(string Codigo);
 ```
 
 La última línea es el contraste: un `record` posicional sin regla, con constructor público. Medido: `Moneda.Create("XYZ") → Aplicado = False, MONEDA_NO_ADMITIDA` frente a `new MonedaSinRegla("XYZ") se construye sin quejas`, con `constructores públicos: Moneda = 0, MonedaSinRegla = 1` y la igualdad por datos intacta en los dos (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`, SDK 10.0.400*). El precio es el mismo que paga la *Entity*: un camino de constitución que valida y otro de materialización que no (§5.4). El `Dinero` de §3.3 no lo paga —su constructor es público y `with` cambia la moneda sin pasar por regla alguna— y por eso ilustra la igualdad por datos, no el cierre del conjunto.
+
+### 3.11 Pregunta de cierre
+
+**¿Cuándo no conviene el Value Object?** Cuando el valor no tiene comportamiento ni reglas propias. `Dinero` se justifica porque sumar montos de monedas distintas es un error de negocio; un `Nombre` que solo es texto no necesita un tipo propio. En el escenario E-A, con pocas reglas, un Value Object rara vez tiene comportamiento que proteger; en E-D es el lugar donde una regla sobre un valor se escribe una sola vez. **Criterio de esta guía**, y más estricto que las fuentes: Evans dispara el patrón por la pregunta conceptual —«when you care only about the attributes and logic of an element of the model»— y PoEAA por la igualdad, no por la regla; un `Punto(2, 3)` es un *Value Object* de manual y no protege nada.
 
 ---
 
@@ -1017,7 +1102,7 @@ flowchart LR
 
 *Diagrama 4.1. La línea de pensamiento y las dos preguntas que la cruzan. Línea continua = el paso siguiente; punteada = pregunta que se le hace a cada pieza, no una fase aparte.*
 
-Las dos preguntas punteadas no son estaciones de la línea. **«¿Qué valores admite?»** se la hacen la *Entity* y también el Command: los valores describen a otro objeto, no viven por su cuenta (§3.1, §3.9). **«¿Qué contesta cuando no puede?»** es una propiedad de la interfaz de toda operación —fábrica, modificador o consulta—, no un momento del flujo: su respuesta es la excepción o el resultado del §3.8. Y el hecho consumado del paso 4 tiene dos formas: si hay que recordar que **ocurrió**, es un *Domain Event* —«something happened that domain experts care about» ([Evans, 2015](#ref-evans-2015))—; si tiene identidad y ciclo de vida propios, porque se consulta, se modifica o se cancela, es una *Entity*. `Pedido` es lo segundo.
+Las dos preguntas punteadas no son estaciones de la línea. **«¿Qué valores admite?»** se la hacen la *Entity* y también el Command: los valores describen a otro objeto, no viven por su cuenta (§3.1, §3.11). **«¿Qué contesta cuando no puede?»** es una propiedad de la interfaz de toda operación —fábrica, modificador o consulta—, no un momento del flujo: su respuesta es la excepción o el resultado del §3.8. Y el hecho consumado del paso 4 tiene dos formas: si hay que recordar que **ocurrió**, es un *Domain Event* —«something happened that domain experts care about» ([Evans, 2015](#ref-evans-2015))—; si tiene identidad y ciclo de vida propios, porque se consulta, se modifica o se cancela, es una *Entity*. `Pedido` es lo segundo.
 
 ### 4.3 ¿Cómo se reconoce un Command y un Handler?
 
@@ -1098,7 +1183,7 @@ Fowler lo define como el objeto que «Mediates between the domain and data mappi
 | --- | --- | --- |
 | ¿Habla de objetos del negocio o de tablas? | De objetos: recibe y devuelve `Producto`, no filas ni SQL | Un objeto que expone filas o sentencias SQL es otro patrón: un DAO, o en el catálogo de Fowler un *Table Data Gateway*, «An object that acts as a gateway to a database table» ([Fowler, 2002](#ref-fowler-2002)) |
 | ¿Hay uno por *Entity*? | No: uno por *Aggregate Root* | `IPedidoRepository` guarda el `Pedido` con sus ítems; `ItemPedido` no tiene *Repository* propio, porque solo existe dentro del pedido. Evans: «Provide repositories only for aggregate roots that actually need direct access» ([Evans, 2015](#ref-evans-2015)) |
-| ¿Dónde vive? | La interfaz en `Domain`, la implementación en `Infrastructure` | Es la inversión de dependencias del §2.4: el dominio declara lo que necesita sin nombrar EF Core |
+| ¿Dónde vive? | La interfaz en `Domain`, la implementación en `Infrastructure` | Es la inversión de dependencias del §2.4: el dominio declara lo que necesita sin nombrar EF Core. Martin la ubicaría en el círculo de los *Use Cases*; la divergencia está declarada en §2.1 |
 | ¿Tiene reglas? | No | Puede responder una pregunta que una regla necesita (¿existe otro producto con este nombre?), pero la decisión la toma el *Use Case* o la *Entity* (§3.6) |
 | ¿Hace falta si ya está EF Core? | No siempre | `DbSet` ya es un *Repository*; el propio se justifica por las pruebas sin base y por aislar el dominio (§5.5) |
 
@@ -1703,7 +1788,11 @@ Dapper aporta dos avisos que EF Core no tiene: si la columna no se llama como la
 
 **Ese camino no valida, y es deliberado. Criterio de esta guía**, porque ninguna fuente lo manda: (1) la fila ya fue constituida por la fábrica y la regla se ejerció entonces; (2) los setters privados impidieron que se rompiera después (§3.4); (3) validar al materializar convierte un dato viejo inválido en una consulta rota: como el constructor corre al **leer** cada fila, la excepción no aparece en el alta que escribió el dato sino en medio de una consulta posterior, lejos de su causa. Evans deja las aserciones del lado de los modificadores —«assertions define contracts of services and entity modifiers»—, y rehidratar no modifica. Wirfs-Brock le da nombre al lugar: una *trust region*, «an area where trusted collaborations occur», donde «objects deep inside a trust region can be designed to not check for» lo que ya se verificó, mientras que «objects at the "borders" may take on extra responsibilities» ([Wirfs-Brock, 2006](#ref-wirfsbrock-2006)). Qué implica: el constructor de materialización está adentro de esa región —lee lo que la fábrica ya validó— y el adaptador del escenario E-C está en el borde, que es donde la comprobación sí corresponde. Cuando la base **sí** puede tener filas inválidas —esquema heredado, escenario E-C— la comprobación existe, pero vive en el adaptador que traduce (§7.2 g), que es quien puede descartar, marcar o reportar.
 
-**Un `enum` guardado como entero no está cerrado.** Por convención EF Core lo persiste como número: una fila escrita con un valor que este binario no declara se relee como `Estado = 9, IsDefined = False, y NO lanzó`. Con `HasConversion<string>` la columna es texto y un valor desconocido falla fuerte: `Cannot convert string value 'Archivado' from the database to any value in the mapped 'EstadoProducto' enum` (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`*). De ahí la regla: texto, o entero con valores explícitos (`Borrador = 1`) para que reordenar los nombres no reinterprete las filas ya escritas; nunca entero sin valores explícitos. El §3.9 muestra la tercera forma, la que tampoco admite un valor imposible en memoria.
+**Un `enum` guardado como entero no está cerrado.** Por convención EF Core lo persiste como número: una fila escrita con un valor que este binario no declara se relee como `Estado = 9, IsDefined = False, y NO lanzó`. Con `HasConversion<string>` la columna es texto y un valor desconocido falla fuerte: `Cannot convert string value 'Archivado' from the database to any value in the mapped 'EstadoProducto' enum` (*salida registrada: `Variantes/capturas/V08-enum-y-valor.txt`*). De ahí la regla: texto, o entero con valores explícitos (`Borrador = 1`) para que reordenar los nombres no reinterprete las filas ya escritas; nunca entero sin valores explícitos. El §3.10 muestra la tercera forma, la que tampoco admite un valor imposible en memoria.
+
+**Y si el dominio tiene una jerarquía de tipos (§3.9), el mapeo se declara dos veces.** EF Core 10 no descubre los subtipos solo: con un `DbSet<Base>` y nada más, el modelo **no valida** —`InvalidOperationException: The entity type 'Actividad' cannot be instantiated because its corresponding CLR type is abstract and there is no derived entity type in the model`—; hay que registrarlos. Registrados, la estrategia por defecto es *table-per-hierarchy* (**TPH**): una sola tabla, una columna `Discriminator TEXT NOT NULL` y **las columnas propias de cada subtipo NULL-ables**, aunque el subtipo las exija (`"Toneladas" TEXT NULL`). Con `UseTptMappingStrategy()` —*table-per-type*, **TPT**— hay una tabla por tipo, sin discriminador, las columnas propias vuelven a ser `NOT NULL` y cada tabla de hoja lleva una clave foránea a la base. *Corrida de contraste sobre SQLite registrada fuera de este laboratorio, en el acta de mesa del 2026-09-24, §7.2; esta guía no tiene todavía una variante que mapee una jerarquía, y cuando la tenga la salida se versiona como `Variantes/capturas/Vnn-jerarquia-efcore.txt`.*
+
+**Criterio de esta guía**: la elección entre las dos no es de rendimiento antes que nada, es **de quién respalda las reglas del subtipo**. Con TPH la base no puede sostener «una actividad agrícola tiene toneladas», porque esa columna tiene que admitir `NULL` para las filas de cría: la *Invariant* se queda entera en la fábrica del dominio (§3.6) y el esquema no la respalda. Con TPT sí la respalda, y se paga con una tabla por tipo y una unión por consulta. Dicho en una línea: **cuanto más rica es la jerarquía, menos puede la base respaldar sus reglas, y el respaldo se pierde de a una columna.** Lo que no cambia con ninguna de las dos es dónde se declara el mapeo: afuera del dominio, en la configuración, igual que `ProductoConfiguration`.
 
 ### 5.5 ¿Dónde se confirma la escritura, y hace falta un Repository si ya está EF Core? (L18)
 
@@ -1800,11 +1889,26 @@ Hay dos clases de error del cliente y la API las trata distinto:
 
 | Paso | Petición | Respuesta | Quién la produce |
 | --- | --- | --- | --- |
-| L19 ⚠ | `{"nombre":"Mate","precio":}` (JSON mal formado) | `400`, `application/problem+json`, con `"errors"` | `[ApiController]`, automáticamente |
+| L19 ⚠ | `{"nombre":"Mate","precio":}` (JSON mal formado) | `400`, `application/problem+json`, con `"errors"` | El enlace de parámetros produce el `400`; `[ApiController]` agrega el diccionario `"errors"` |
 | L20 ⚠ | `{"nombre":"Mate","precio":-5}`, sin traductor | `500` con la traza de `DomainException: El precio debe ser mayor a cero.` | Nadie tradujo la regla |
 | L21 | La misma petición, con el manejador | `400`, `"title":"Regla de negocio incumplida"`, `"detail":"El precio debe ser mayor a cero."` | `DomainExceptionHandler` |
 
-*Salidas registradas: `capturas/L19-json-mal-formado.txt`, `capturas/L20-regla-sin-traducir.txt`, `capturas/L21-regla-traducida.txt`, SDK 10.0.400.* El 500 de L20 trae la traza completa porque la produce la *página de excepciones del desarrollador* (`DeveloperExceptionPageMiddleware`), que `WebApplication.CreateBuilder` activa por sí sola cuando la variable de entorno `ASPNETCORE_ENVIRONMENT` vale `Development`; el `Program.cs` del laboratorio no la nombra, y la receta de §5.2 arranca la API con ese valor (L13: `Hosting environment: Development`). Esa traza expone rutas del sistema de archivos, nombres de clases internas y, según el caso, encabezados y cookies de la petición, por lo que no debe estar activa fuera de `Development`: alcanza con no fijar ese valor en producción, y Microsoft indica no compartir públicamente el detalle de las excepciones ([Microsoft, 2026e](#ref-microsoft-2026e)). Con el manejador de L21 la excepción del dominio ya no llega a esa página. La traducción vive en el borde, en la WebAPI:
+*Salidas registradas: `capturas/L19-json-mal-formado.txt`, `capturas/L20-regla-sin-traducir.txt`, `capturas/L21-regla-traducida.txt`, SDK 10.0.400.* El 500 de L20 trae la traza completa porque la produce la *página de excepciones del desarrollador* (`DeveloperExceptionPageMiddleware`), que `WebApplication.CreateBuilder` activa por sí sola cuando la variable de entorno `ASPNETCORE_ENVIRONMENT` vale `Development`; el `Program.cs` del laboratorio no la nombra, y la receta de §5.2 arranca la API con ese valor (L13: `Hosting environment: Development`). Esa traza expone rutas del sistema de archivos, nombres de clases internas y, según el caso, encabezados y cookies de la petición, por lo que no debe estar activa fuera de `Development`: alcanza con no fijar ese valor en producción, y Microsoft indica no compartir públicamente el detalle de las excepciones ([Microsoft, 2026e](#ref-microsoft-2026e)). Con el manejador de L21 la excepción del dominio ya no llega a esa página.
+
+**Dos precisiones sobre ese `400`, medidas.** La primera: **no lo produce `[ApiController]`, lo produce el enlace de parámetros**. Una corrida de contraste sobre una *minimal API* sin ningún controller devuelve igual `400 Bad Request` con `Content-Type: application/problem+json` ante el mismo JSON mal formado; lo que `[ApiController]` agrega es el diccionario `"errors"` por campo, no el código de estado. Y sin `AddProblemDetails()` registrado, ese mismo `400` vuelve con `Content-Length: 0`: el borde no dice por qué. La segunda: en `Development`, con `AddProblemDetails()`, **la traza completa viaja adentro del cuerpo `problem+json`**, no sólo en la página del desarrollador —en un miembro `"exception"` con los detalles, los encabezados y la ruta—. *Corrida registrada fuera de este laboratorio, en el acta de mesa del 2026-09-24, §7.3; extracto:*
+
+```text
+HTTP/1.1 400 Bad Request
+Content-Type: application/problem+json
+
+{"type":"https://tools.ietf.org/html/rfc9110#section-15.5.1",
+ "title":"Microsoft.AspNetCore.Http.BadHttpRequestException","status":400,
+ "detail":"Failed to read parameter \"CrearProductoCommand cmd\" from the request body as JSON.",
+ "exception":{"details":"…System.Text.Json.JsonException: '}' is an invalid start of a value…",
+ "headers":{…},"path":"/api/productos"}, "traceId":"…"}
+```
+
+Qué implica para quien diseña: la advertencia del párrafo anterior **no alcanza con apagar la página**. Lo que no debe salir de `Development` no es sólo una pantalla de error, es el cuerpo de la respuesta, que es lo que cualquier cliente guarda en su registro. La traducción vive en el borde, en la WebAPI:
 
 **[Compilado: `MyProject/src/Backend/MyProject.WebAPI/ExceptionHandlers/DomainExceptionHandler.cs`, l. 13–30]**
 
@@ -2006,19 +2110,20 @@ public class ApiTokenHandler : DelegatingHandler
 
 Las clases que viajan entre capas se parecen mucho al principio —tienen los mismos campos— y por eso parecen duplicadas. Se separan porque cada una responde una pregunta distinta y cambia por un motivo distinto. Cuando dos de ellas cambiarían siempre juntas y por el mismo motivo, sobra una.
 
-### 7.1 Los siete objetos y su pregunta
+### 7.1 Los objetos y su pregunta
 
 | Objeto | Ejemplo | Pregunta que responde | Dónde vive | Cambia cuando… | Existe solo si… |
 | --- | --- | --- | --- | --- | --- |
 | **Entity** | `Producto` | ¿Qué es verdad en el negocio? | Domain | cambian las reglas del negocio | hay reglas que proteger (§3.5) |
-| **Value Object** | `Dinero` | ¿Qué valor tiene sentido por sí mismo, sin identidad? | Domain | cambia el concepto | el valor tiene comportamiento o reglas propias (umbral propio, más estricto que las fuentes: §3.9) |
+| **Value Object** | `Dinero` | ¿Qué valor tiene sentido por sí mismo, sin identidad? | Domain | cambia el concepto | el valor tiene comportamiento o reglas propias (umbral propio, más estricto que las fuentes: §3.11) |
 | **Command / Query** | `CrearProductoCommand`, `ObtenerProductosQuery` | ¿Qué quiere hacer el usuario? | Application | cambia el Use Case | hay un Use Case que orquestar (§4.12) |
 | **Response DTO** | `ProductoResponse` | ¿Qué se le promete al consumidor de la API? | Contracts | cambia el contrato, con cuidado porque rompe a los clientes | hay una API consumida por otro proceso (E-B) |
 | **ViewModel** | `ProductoListItemViewModel` | ¿Qué necesita mostrar esta pantalla? | Cliente | cambia el diseño de la pantalla | la pantalla muestra algo distinto de lo que recibe |
 | **Form model** | `ProductoFormModel` | ¿Qué edita el usuario en el formulario? | Cliente | cambia el formulario | hay un formulario con enlace de datos |
 | **Persistence model** | `ProductoDbModel` | ¿Qué forma tiene la tabla? | Infrastructure | cambia el esquema | el esquema no se puede adaptar a la Entity (E-C) |
+| **Jerarquía de tipos** | `ActividadProductiva` → `Agricola`, `Ganadera` | ¿Qué varía según el tipo, y qué vale para todos? | Domain | cambia el conjunto de tipos, o una hoja empieza a responder distinto | hay comportamiento que difiere por tipo y el negocio le puso nombre a cada uno (§3.9) |
 
-La tabla contesta dónde vive cada objeto; el Diagrama 4.1 contesta en qué orden se piensan.
+La última fila no es un objeto más del reparto: es una forma que puede tomar la *Entity* o el *Value Object* de la primera y la segunda fila, y por eso §7.2 sigue respondiendo siete preguntas y la octava se responde en §3.9. La tabla contesta dónde vive cada objeto; el Diagrama 4.1 contesta en qué orden se piensan.
 
 ### 7.2 Las siete preguntas, respondidas
 
@@ -2073,6 +2178,14 @@ Dos `Dinero(10, "ARS")` son el mismo valor (prueba de L11), y sumar pesos con d�
 El par de mensajes tiene nombre en la misma fuente que §4.7 usa para el Command: «Whereas a *Command Message* tells the receiver to invoke certain behavior, a *Document Message* just passes data and lets the receiver decide what, if anything, to do with the data» ([Hohpe y Woolf, 2003](#ref-hohpe-2003), *Document Message*). Qué implica: `CrearProductoRequest` pide un acto y `ProductoResponse` no pide nada —sólo lleva datos—, y por eso el contrato de salida se diseña por lo que promete, no por lo que el servidor tenga a mano (§6.3, `ProductoResponse.cs`).
 
 **El contrato de error también es contrato.** Lo que el cliente consume programáticamente cuando algo se rechaza es el código, no el texto: por eso los códigos salen del vocabulario del dominio y no llevan presentación —«error codes rather than strings», y «designed around the vocabulary of the domain model itself» ([Fowler, 2004b](#ref-fowler-2004b))—. Si ese catálogo se escribe como `const string` y `Domain` viaja como paquete NuGet, cambiar un valor no alcanza: «because compilers propagate constants, other code compiled with your libraries needs to be recompiled to see the changes» ([Microsoft, 2026n](#ref-microsoft-2026n)). Dos binarios pueden quedar hablando vocabularios distintos sin que nada falle. Mientras todo se compile junto no pasa nada; en cuanto cruza la frontera de un paquete, los códigos se renombran con una versión mayor o se declaran `static readonly`.
+
+**Y si lo que se publica es una jerarquía de tipos (§3.9), el polimorfismo no viaja.** Lo que viaja es un **discriminador** —un campo común que nombra la variante— y un **registro cerrado de subtipos declarado en el tipo base**. `System.Text.Json` serializa `{"tipo":"agricola", …}` y reconstruye el subtipo correcto al leer, pero un cuerpo **sin** discriminador falla con `NotSupportedException: The JSON payload for polymorphic interface or abstract type … must specify a type discriminator`, y un cuerpo con un discriminador **no registrado** falla con `JsonException: Read unrecognized type discriminator id 'forestal'`. *Corrida de contraste registrada fuera de este laboratorio, en el acta de mesa del 2026-09-24, §7.1.*
+
+De ahí salen tres consecuencias para el contrato:
+
+1. **El registro es una lista paralela y el compilador no la exige.** Agregar un subtipo y olvidarse de registrarlo no es un error de compilación: es una excepción en ejecución, del lado del servidor, que nombra el discriminador desconocido. ✅ **Criterio de esta guía**: cuando una lista paralela es inevitable, se elige la que **falla ruidoso** —y se la cubre con una prueba que recorra los subtipos por reflexión—; una lista paralela silenciosa, como un desplegable cuyo orden es parte del contrato, es un defecto esperando a la próxima entrega.
+2. **La jerarquía del contrato no es la del dominio.** El registro de subtipos va sobre los DTO de `Contracts`, nunca sobre la *Entity*: ponerlo en `Domain` mete el serializador y una decisión de contrato adentro (§7.4). Y el discriminador es un **nombre público**: cambiarlo rompe clientes, igual que cualquier campo de esta sección.
+3. **Dónde queda el único `switch` legítimo.** ✅ **Criterio de esta guía**: una cadena de `is` sobre una jerarquía propia es un método que falta en la clase base —salvo en el borde donde el objeto se construye desde afuera. Ahí el `switch` no es una omisión: es la materialización del contrato, y su lugar es el serializador, una sola vez. Si el borde ya consumió el discriminador para construir el objeto, de ahí para adentro el polimorfismo hace todo el trabajo y el *Use Case* no vuelve a preguntar.
 
 #### e. ViewModel: ¿qué necesita mostrar esta pantalla?
 
@@ -2355,17 +2468,20 @@ Los nombres de arquitecturas, capas y patrones marcados por un estándar se escr
 | Una API cuyos clientes no son .NET (navegador con JavaScript, móvil nativo, otro equipo) | La de E-B sin `Contracts`: el contrato es el documento OpenAPI que publica la API | Entity, mensaje, modelo de lectura, DTOs de la WebAPI | §5, §8.5 | Aparece el primer cliente .NET: nace `Contracts` (§6.3) |
 | **E-C** base heredada con esquema fijo | La de E-A o E-B + persistence model en Infrastructure | + `…DbModel` | §7.2 g | — |
 | **E-D** Business Rules ricas y repetidas | Domain y Application separados, aunque haya un solo cliente | Entity con comportamiento + mensajes | §3, §4 | — |
+| **E-E** una aplicación que corre en la máquina del usuario (escritorio o móvil), con su modelo en memoria y sin servidor | Un proyecto: pantalla → modelo; el almacenamiento, si aparece, es un archivo o una base local | 1, y el modelo puede tener comportamiento desde el primer día | §9.2, §9.3, §6.4 | Aparece un segundo consumidor de las mismas reglas —otra máquina, un proceso por lotes, una API—: lo que la pantalla decidía no viaja (§2.3) |
 
 ### 9.2 La escalera de opciones
 
 ```mermaid
 flowchart LR
-    S1["1. Página → EF Core<br/>un proyecto"] -->|"una regla se repite<br/>o se necesita probarla"| S2["2. Término medio<br/>Entity + form model"]
+    S1["1. Un proyecto<br/>pantalla → servicio → almacenamiento"] -->|"una regla se repite<br/>o se necesita probarla"| S2["2. Término medio<br/>Entity + form model"]
     S2 -->|"reglas ricas (E-D)"| S3["3. Domain + Application<br/>Use Cases"]
     S3 -->|"segundo cliente (E-B)"| S4["4. + WebAPI + Contracts<br/>clientes remotos"]
 ```
 
 *Diagrama 9.1. Cada flecha es una señal observable, no una fecha. Se sube un escalón cuando aparece la señal, y no antes.* **Criterio de esta guía**, construido sobre la distinción entre Transaction Script y Domain Model ([Fowler, 2002](#ref-fowler-2002)) y la regla de dependencia ([Martin, 2012](#ref-martin-2012)).
+
+> **Qué cuenta la escalera, y qué no. Criterio de esta guía**: los peldaños cuentan **piezas separadas**, no tecnología. El almacenamiento es un eje aparte —un escalón 1 puede no tener base de datos— y dónde corre el proceso es un tercero: una aplicación que corre en la máquina del usuario puede estar parada en cualquiera de los cuatro escalones, y eso se decide en el mapa del §9.1, no acá. De ahí se sigue algo que conviene decir porque el reflejo empuja al revés: **tener un modelo con comportamiento no obliga a subir de escalón.** Se sube cuando una regla se repite, cuando no cabe en ningún objeto, o cuando aparece un segundo consumidor; no por tener buenas clases.
 
 ### 9.3 ¿Cuándo subir un escalón y cuándo es sobreingeniería?
 
@@ -2495,7 +2611,7 @@ public int Handle(CrearPersonaCommand command)
 
 ### 9.7 Ejercicios de transferencia
 
-Hasta acá la guía resolvió todo: la tienda en §9.5 y las personas en §9.6. Estos dos problemas quedan para el lector; conviene escribir la respuesta antes de leer la que cierra la sección.
+Hasta acá la guía resolvió todo: la tienda en §9.5 y las personas en §9.6. Estos tres problemas quedan para el lector; conviene escribir la respuesta antes de leer la que cierra la sección.
 
 **Ejercicio 1 — Turnos de un consultorio.** Una recepcionista carga turnos (médico, paciente, fecha y hora) y un médico consulta los suyos del día. «Más adelante los pacientes van a sacar turno desde el celular.» Regla del negocio: no se superponen dos turnos del mismo médico. Con el Anexo B en la mano:
 
@@ -2505,11 +2621,15 @@ Hasta acá la guía resolvió todo: la tienda en §9.5 y las personas en §9.6. 
 
 **Ejercicio 2 — El stock que §4.10 dejó abierto.** «No se vende más de lo que hay» cruza dos *Aggregates*: `Pedido` y el stock de cada `Producto`. Dos diseños posibles: (a) reservar el stock al registrar el pedido; (b) verificar el stock al despacharlo. Para cada uno: ¿qué *Aggregate* conoce el dato que la regla necesita? ¿Es *Invariant* de alguno de los dos, o *Precondition* de un acto (§3.7)? ¿Cuántos `SaveChangesAsync` hay en el *Use Case*, y quién lo llama (§4.10)?
 
+**Ejercicio 3 — El enunciado que se contradice.** Un enunciado de un sistema para una estancia —un establecimiento agropecuario— dice, en el mismo párrafo, que «cada actividad … al menos tiene asignado un lote» y que «cada actividad productiva se agrega a la estancia indicando su periodo de vigencia y descripción; luego se le asignan los lotes». Más adelante agrega que una actividad sin lotes no se puede cerrar. **¿«Al menos un lote» es una *Invariant*, es una *Precondition*, o sobra?** Escribí la respuesta antes de seguir.
+
 **Respuestas.**
 
 *Ejercicio 1.* Hoy es E-A —una aplicación, dos roles, pocas reglas—; la frase sobre el celular es la señal de E-B, igual que «otras aplicaciones» en §9.5, y decide si se construye el escalón 4 desde el inicio o se deja la API para cuando llegue el cliente (sin el celular alcanza el escalón 2, con `Turno` como *Entity*; §8.5). La regla pasa la prueba del papel (la agenda de papel tampoco admite dos turnos a la misma hora) y es una *integrity constraint* sobre varias instancias: un `Turno` no conoce a los demás, así que la decide el *Use Case* `ReservarTurno` preguntando al *Repository* (`ExisteSuperpuesto(medicoId, desde, hasta)`), con una restricción en la base como respaldo, como «DNI no repetido» en §9.6; lo que sí es *Invariant* del `Turno` es «termina después de que empieza». Desde el día uno existen la *Entity*, el mensaje y el modelo de lectura; el contrato y el ViewModel aparecen con el celular.
 
 *Ejercicio 2.* En (a) el dato lo conoce el stock del `Producto` y la regla es la *Precondition* de reservar: `RegistrarPedido` toca dos *Aggregates* —el pedido que crea y los productos cuyo stock descuenta— y por eso hay **un** `SaveChangesAsync`, en el Handler, detrás de `IUnitOfWork` (§4.11): si el descuento falla, el pedido no se guarda (*Minimal Guarantee*). En (b) registrar no mira el stock; la regla es la *Precondition* de despachar, en otro *Use Case* (`DespacharPedido`), y un pedido puede quedar registrado y no despachable. Ninguna es *Invariant*: el stock puede ser cero sin que el `Producto` esté inválido. Cuál conviene lo decide el negocio —si se vende lo que hay en depósito o se toma pedido y se repone—, y por eso §4.10 la dejó abierta.
+
+*Ejercicio 3.* Con la tabla del §3.7: la primera pregunta —¿vale toda la vida del objeto?— se responde **no**, porque el propio enunciado describe un instante, el del alta, en el que la actividad existe y no tiene lotes. Falla la primera condición, así que **no es una *Invariant***; es la *Precondition* del acto de cerrar, y la regla que ya la dice es «una actividad sin lotes no se puede cerrar». Hacerla cumplir en la creación bloquearía un caso de uso que el enunciado ordena. **Y el desenlace real importa más que la clasificación**: este enunciado existe, la contradicción se le señaló a su autor y el autor reescribió el párrafo. Cuando un documento se contradice a sí mismo, la respuesta no siempre es elegir una de las dos lecturas: muchas veces es **devolver la pregunta a quien puede corregir el documento**, con la contradicción señalada por escrito.
 
 ### 9.8 El criterio, en una línea
 
@@ -2584,7 +2704,7 @@ Dos cosas que el laboratorio **no** construye, por decisión y no por olvido: un
 | 9 | ¿Hay una prueba que se vio fallar por cada regla importante? | — | §4.6 |
 | 10 | ¿Cómo rechaza el dominio: lanzando o devolviendo? ¿Hay que mostrar más de un motivo a la vez? | Resultado tipado con código de condición; si son varios motivos, *Notification* | §3.8 |
 | 11 | ¿El catálogo de códigos de rechazo se versiona como parte del contrato? | Códigos del vocabulario del dominio, sin texto de presentación | §7.2 d |
-| 12 | ¿Cada *Entity* tiene un camino de materialización que el ORM alcance, y un conjunto cerrado que de verdad cierre? | Constructor sin parámetros + setters privados; *Value Object* con fábrica donde haya regla | §5.4, §3.9 |
+| 12 | ¿Cada *Entity* tiene un camino de materialización que el ORM alcance, y un conjunto cerrado que de verdad cierre? | Constructor sin parámetros + setters privados; *Value Object* con fábrica donde haya regla | §5.4, §3.10 |
 
 ---
 
@@ -2629,7 +2749,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Command-Query Separation | CQS | Separar los métodos que cambian el estado de los que lo leen | 4.7 | — |
 | Composition root | raíz de composición | Único lugar que registra qué implementación corresponde a cada interfaz | 2.1, 2.2, 2.5 | §2.5, `Program.cs` |
 | Configuración Fluent API | *Fluent API configuration* | Clase que indica a EF Core cómo mapear una Entity sin modificarla | 5.1 | §5.4, `ProductoConfiguration.cs` |
-| Conjunto cerrado | *closed set* | Grupo finito de valores del dominio: `enum` si no tiene regla, Value Object con fábrica si la tiene; el `enum` admite valores que no declara | 3.9, 5.4 | §3.9, `Moneda.cs` |
+| Conjunto cerrado | *closed set* | Grupo finito de valores del dominio: `enum` si no tiene regla, Value Object con fábrica si la tiene; el `enum` admite valores que no declara | 3.10, 5.4 | §3.10, `Moneda.cs` |
 | Contrato | *contract* | Tipos de petición y respuesta de la API HTTP, en el proyecto `Contracts` | 5.1, 8.5 | §6.3, `MyProject.Contracts/` |
 | Controller | controlador | Clase que recibe peticiones HTTP de una ruta y devuelve respuestas | 5.1 | §5.2, `ProductosController.cs` |
 | CQRS | *Command Query Responsibility Segregation* | Separar el modelo de escritura del de lectura; no es lo que hace este ejemplo | 4.8 | — |
@@ -2642,6 +2762,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Dependencia | *dependency* | Relación en la que un código no compila o no funciona sin otro | 2.1 | §1.2 |
 | Derivation | derivación | Business Rule que calcula o infiere un dato a partir de otros (`Pedido.Total`) | 3.6 | §4.10, `Pedido.cs`, `Total` |
 | Design by Contract | diseño por contrato | Especificar cada método con Precondition, Postcondition e Invariant | 3.6 | — |
+| Discriminador | *type discriminator* | Campo común de una jerarquía que nombra la variante, para que el serializador o el ORM sepan qué subtipo construir; es un nombre público del contrato y un registro que el compilador no exige | 3.9, 5.4, 7.2 d | — |
 | Doble de prueba | *test double*, *fake* | Implementación falsa escrita para las pruebas, como `FakeProductoRepository` | 4.6, 6.2 | §4.6, `FakeProductoRepository.cs` |
 | Domain Event | evento de dominio | Registro de que algo que al negocio le importa ocurrió; la otra forma del hecho consumado, frente a la Entity con ciclo de vida | 4.2 | — |
 | Domain Model | modelo de dominio | Modelo de objetos que reúne datos y comportamiento | 3.5, 3.6 | §9.6, paso 4 |
@@ -2664,6 +2785,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Invariant | invariante; *Class Invariant* | Business Rule que vale toda la vida del objeto, se verifica mirando ese objeto solo y, si se rompe, el objeto no debería existir; cuando abarca a un Aggregate, la hace cumplir la raíz | 3.1, 3.6, 4.10 | §3.3, `Producto.cs`; §3.7 |
 | Inversión de dependencias | *dependency inversion* | Declarar la interfaz adentro e implementarla afuera | 2.1, 2.2 | §2.2, paso 1; §3.3, `IProductoRepository.cs` |
 | Inyección de dependencias | DI, *dependency injection* | Mecanismo que entrega implementaciones a quien pide interfaces | 2.1, 2.2 | §2.2, paso 2; §2.5, `Program.cs` |
+| Jerarquía de tipos | *type hierarchy*; herencia, polimorfismo | Tipo base con subtipos que responden distinto la misma pregunta; se justifica por comportamiento que el negocio nombra, no por los datos que cada uno guarda | 3.9 | §3.9, `ActividadProductiva` |
 | JSON | *JavaScript Object Notation* | Formato de texto para datos estructurados que usan las API HTTP | 5.1 | — |
 | Main Success Scenario | escenario principal | Los pasos de un Use Case cuando nada sale mal (Cockburn, 2001) | 4.10 | §4.10, el enunciado |
 | MAUI Blazor Hybrid | — | Aplicación nativa .NET MAUI cuyos componentes Razor corren en el dispositivo y se dibujan en un *Web View* incrustado | 6.1 | — |
@@ -2704,7 +2826,10 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 | Setter privado | `private set` | Propiedad que se lee desde cualquier lugar y se modifica solo dentro de la clase | 3.1 | §3.3, `Producto.cs` |
 | Solución | *solution* | Archivo (`.slnx` o `.sln`) que agrupa proyectos | 1.1 | — |
 | Structural Assertion | — | Business Rule que afirma que algo existe o se relaciona con otra cosa | 3.6, 3.7 | §3.7, `Precio decimal?` |
+| Sustitución | *substitution property*, principio de Liskov | Un subtipo es legítimo si todo programa escrito contra el tipo base se sigue comportando igual cuando recibe el subtipo; es la prueba de legitimidad de una jerarquía | 3.9 | §3.9 |
 | Table Data Gateway | — | Patrón de PoEAA: un objeto que es la puerta a una tabla; lo que suele llamarse DAO | 4.4 | — |
+| TPH | *table-per-hierarchy* | Estrategia por defecto de EF Core para una jerarquía: una sola tabla con una columna discriminadora y las columnas propias de cada subtipo NULL-ables | 5.4, 3.9 | — |
+| TPT | *table-per-type* | Estrategia alternativa: una tabla por tipo, sin discriminador y con las columnas propias `NOT NULL`, al costo de una unión por consulta | 5.4, 3.9 | — |
 | Transaction Script | — | Organización de la lógica en procedimientos, uno por petición | 3.5, 9.6 | §9.6, pasos 2–3 |
 | Unit of Work | unidad de trabajo | Grupo de cambios que se confirman juntos; en EF Core, `SaveChanges`; sube al Handler cuando el Use Case modifica más de una cosa que debe guardarse junta | 4.11, 5.1, 5.5 | §4.11, `IUnitOfWork.cs`, `AppDbContext.cs`; §5.5 |
 | Use Case | caso de uso | Intención del usuario o del sistema implementada como una unidad de código que orquesta el dominio; su firma es un Command y su cuerpo, un Handler | 4.1, 4.2 | §4.5, `CrearProductoHandler.cs`; §5.5, `CambiarPrecioProductoHandler.cs` |
@@ -2740,7 +2865,7 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 
 <a id="ref-fowler-2014"></a>Fowler, M. (2014, 9 de diciembre). *Replacing Throwing Exceptions with Notification in Validations*. https://martinfowler.com/articles/replaceThrowWithNotification.html (consultado el 2026-09-20).
 
-<a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (en la 1.ª ed., 1999, *Replace Constructor with Factory Method*; renombrada en la 2.ª ed., 2018), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, y *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html (consultados el 2026-09-20).
+<a id="ref-fowler-refactoring"></a>Fowler, M. (s. f.). Catálogo de *Refactoring*: *Replace Constructor with Factory Function* (en la 1.ª ed., 1999, *Replace Constructor with Factory Method*; renombrada en la 2.ª ed., 2018), https://refactoring.com/catalog/replaceConstructorWithFactoryFunction.html, *Replace Nested Conditional with Guard Clauses*, https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html, y *Replace Conditional with Polymorphism*, https://refactoring.com/catalog/replaceConditionalWithPolymorphism.html (consultados el 2026-09-20 y el 2026-09-24). La página de esta última **no publica frase de motivación**: se la cita por su nombre y su ejemplo, no con una cita textual.
 
 <a id="ref-evans-fowler-1997"></a>Evans, E. y Fowler, M. (1997). *Specifications*. https://martinfowler.com/apsupp/spec.pdf (consultado el 2026-09-20).
 
@@ -2768,11 +2893,13 @@ Datos volátiles, consultados el 2026-09-18. Antes de usarlos en una decisión, 
 
 <a id="ref-kay-1998"></a>Kay, A. (1998, 10 de octubre). *prototypes vs classes was: Re: Sun's HotSpot* [mensaje a la lista squeak-dev]. http://lists.squeakfoundation.org/pipermail/squeak-dev/1998-October/017019.html (consultado el 2026-09-19).
 
+<a id="ref-liskov-1987"></a>Liskov, B. (1987). *Data Abstraction and Hierarchy*. Addendum to the Proceedings of OOPSLA'87 (conferencia inaugural). Cita verificada sobre el PDF con `pdftotext` (consultado el 2026-09-24).
+
 <a id="ref-luckypenny-2025"></a>Lucky Penny Software. (2025). *License agreement*. https://luckypennysoftware.com/license (consultado el 2026-09-18).
 
 <a id="ref-martin-2012"></a>Martin, R. C. (2012, 13 de agosto). *The Clean Architecture*. https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html (consultado el 2026-09-18).
 
-<a id="ref-martin-2017"></a>Martin, R. C. (2017). *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall. Cap. 20, «Business Rules».
+<a id="ref-martin-2017"></a>Martin, R. C. (2017). *Clean Architecture: A Craftsman's Guide to Software Structure and Design*. Prentice Hall. Cap. 20, «Business Rules». La ubicación de las interfaces de acceso a datos en el círculo de los *Use Cases* (§2.1) **se cita sin apartado y sin texto literal**: el ejemplar no estuvo a la vista en la corrida que la incorporó, y rige la misma política que la decisión sobre Evans (2003).
 
 <a id="ref-meyer-1988"></a>Meyer, B. (1988). *Object-Oriented Software Construction*. Prentice Hall. Origen de *Design by Contract* y de la *Command-Query Separation*; la segunda, citada a través de Fowler (2005a).
 

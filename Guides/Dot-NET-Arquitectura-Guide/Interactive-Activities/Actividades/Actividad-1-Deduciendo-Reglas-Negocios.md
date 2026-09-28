@@ -2,16 +2,137 @@
 
 # Actividad 1 - Deduciendo Reglas de negocio - RN
 
-  > Objetivo: 
-  > Identificar y Abstraer las reglas de negocios.
+  > **Objetivo**
+  > Leer un documento de requerimientos escrito en prosa y extraer de él las reglas de negocio,
+  > enunciadas de forma que se puedan verificar.
 
-  Repaso sobre el concepto de reglas de negocios
+  **Qué entra y qué sale**
 
-  > Son las reglas que viven en las entidades
-  > ¿Es del negocio o de la tecnología?
-  > ¿Describe, prohíbe o calcula?
-  > ¿Vale siempre o antes de un acto?
+  | | |
+  | --- | --- |
+  | **Entra** | un párrafo de un documento de requerimientos, en prosa |
+  | **Sale** | tres tablas —términos, actos, reglas— y una lista de preguntas para el autor |
 
+  **Lo que esta actividad NO hace todavía**: no decide clases, no decide capas, no escribe código.
+  Eso es diseño y viene en las actividades 3 y 4. Acá sólo se describe el problema.
+
+---
+
+## Introducción a reglas de negocios
+
+### Qué es una regla de negocio
+
+  Hay dos definiciones y se complementan: una dice **de dónde viene**, la otra **qué clase de cosa es**.
+
+  > **De dónde viene.** Condición o procedimiento que el negocio impone **por sus propias razones** y
+  > que valdría **aunque no hubiera software** que lo ejecute.
+
+  > **Qué clase de cosa es.** Una afirmación que **define o restringe** algún aspecto del negocio: o
+  > bien establece su estructura, o bien controla su comportamiento.
+
+  La segunda ya trae adentro la clasificación que se usa más abajo: *define* → derivación,
+  *restringe* → restricción, *establece estructura* → estructura.
+
+### Cómo se reconoce: la prueba del papel
+
+  La operación concreta, y es una sola:
+
+  > **Si el negocio se llevara en un cuaderno, ¿esto seguiría valiendo?**
+
+  - Si **sí** → es regla de negocio.
+  - Si su razón es **la base de datos, la pantalla o el protocolo** → no lo es.
+
+  Una restricción técnica es real y hay que cumplirla, pero **no es del negocio**:
+
+  | Condición | ¿Regla de negocio? |
+  | --- | --- |
+  | La superficie de un campo no puede ser cero | **Sí**: el capataz con un cuaderno tampoco anotaría un campo de cero hectáreas |
+  | El identificador admite hasta 200 caracteres porque la columna es `nvarchar(200)` | **No**: la impone la base |
+  | La superficie llega como número en el JSON | **No**: la impone el transporte |
+
+### Las cuatro preguntas, en orden
+
+  Por cada candidata, y en este orden:
+
+  | # | Pregunta | Qué decide |
+  | --- | --- | --- |
+  | 1 | ¿Seguiría valiendo **en papel**? | si es del negocio o de la tecnología |
+  | 2 | ¿**Describe, prohíbe o calcula**? | la *especie* |
+  | 3 | ¿Vale **siempre**, o **antes de un acto**? | el *momento* |
+  | 4 | ¿**Quién tiene los datos** para decidirla? | el *dueño* |
+
+  La pregunta 3 tiene una prueba que no falla: **¿vale en el instante en que el objeto nace?** Si el
+  objeto nace sin cumplirla, no es invariante.
+
+  La pregunta 4 admite **«ninguno»** como respuesta, y escribirlo es un hallazgo, no una falla: esas
+  son las reglas que no caben en ningún objeto y terminan fuera del modelo.
+
+> ⚠ **Ojo con una confusión frecuente.** «Las reglas de negocio viven en las entidades» **no es la
+> definición**: es una afirmación sobre *dónde vive una parte de ellas*, y además no siempre es
+> cierta. Dónde vive cada regla se decide en la actividad 3, con la pregunta 4. Acá no se decide.
+
+### La fórmula
+
+  La forma general de una regla de negocio:
+
+  ```
+  [momento] · sujeto · verbo · exigencia
+  ```
+
+  Ejemplo:
+  > **«Al conformarse, la estancia tiene al menos un campo.»**
+
+  **Sujeto explícito, presente del indicativo, vocabulario del negocio.** El momento entra en la oración cuando la regla está atada a un acto; si vale siempre, no se escribe.
+
+  **Una forma por especie**
+
+  Las cuatro especies no se enuncian igual, y ahí es donde se equivoca todo el mundo.
+
+  | Especie | Plantilla | Ejemplo |
+  |---|---|---|
+  | **Restricción** | *No se puede ‹acto› si ‹condición›* · o *‹sujeto› no puede ‹predicado›* | «No se puede cerrar una actividad sin parcelas asignadas.» |
+  | **Derivación** | *‹resultado› se calcula como ‹fórmula›* | «La producción de una actividad agrícola se calcula como toneladas × precio de la tonelada.» |
+  | **Estructura** | *‹todo› tiene ‹cardinalidad› ‹parte›* · o *‹A› es un ‹B›* | «Todo casco tiene un Administrador a cargo.» |
+  | **Alcance** | *‹acto› queda fuera del alcance* | «Administrar el casco queda fuera del alcance.» |
+
+  Si no sabés cuál usar, la pregunta es una: **¿podés contar la escena del rechazo?** Si sí, restricción. Si no porque calcula, derivación. Si no porque rechaza una composición, estructura.
+
+  - Las dos pruebas, antes de darla por escrita
+
+    **1. «Es falso que…»** — ponelo adelante. Si la frase se entiende, es una regla.
+
+    - *«Es falso que la estancia tenga exactamente un casco»* → se entiende ✅
+    - *«Es falso que estancia una casco»* → no se entiende ❌
+
+    **2. «¿Cómo la violo?»** — describí el intento concreto que el sistema rechaza. Si no podés describirlo, **no es restricción**: es otra especie, o no es regla.
+
+  - Lo que no puede aparecer
+
+    | ❌ | Por qué |
+    |---|---|
+    | **Telegráfico** — «campo al menos uno» | no tiene valor de verdad |
+    | **Vocabulario de implementación** — «el campo `Identificador` no puede ser `null`» | eso es diseño; la regla dice «todo campo tiene identificador» |
+    | **Dos reglas en una** — «el identificador es único y la superficie no es cero» | son dos, se parten en el «y» |
+    | **Palabras no verificables** — «coherente», «adecuado», «razonable» | no se puede escribir la prueba |
+    | **Pasiva sin agente** — «se verifica que…» | ¿quién verifica? Si no se sabe, va `⟦?⟧`, no se tapa |
+    | **Condiciones que el autor no puso** | la intención completa la gramática, no el negocio |
+
+  - Dónde vive
+
+    El enunciado va en la columna **`Intención`**. La `Letra` lleva la cita textual, que puede estar rota. Por eso son dos columnas.
+
+    ```
+    RN-nn
+      Letra:            «‹textual, entre comillas›»
+      Intención:        ‹la oración completa, con sujeto›
+      Especie:          restricción / derivación / estructura / alcance
+      Momento:          Invariant / Precondition de ‹acto› / completitud / ninguno
+      Quién verifica:   ‹acto›  ·  o  nadie
+      Dueño:            ‹objeto›  ·  o  ninguno en el dominio
+      De dónde:         ‹ancla›
+    ```
+
+---
 
 ## Extraer del parrafo siguiente las reglas de negocio
 
@@ -161,7 +282,7 @@
 
 ### Paso 3. separando las cosas de diferente naturaleza
 
-## Tabla 1 — Términos
+#### Tabla 1 — Términos
 
 | Término | Designa | Unidad | Ámbito | De dónde |
 |---|---|---|---|---|
@@ -185,7 +306,7 @@
 | rural | no central; polo de `central` | — | puesto | 02.a.8 |
 | nombre del encargado | se **registra** | — | encargado | 02.b.3 |
 
-## Tabla 2 — Actos
+#### Tabla 2 — Actos
 
 | Acto | Quién lo hace | Qué recibe | Qué cambia | De dónde |
 |---|---|---|---|---|
@@ -195,7 +316,7 @@
 
 > `se puede conocer` (02.b.2) **no abre fila**. No es algo que alguien hace en un momento: es la afirmación de que el dato está disponible. Es atributo, no acto.
 
-## Tabla 3 — Reglas
+#### Tabla 3 — Reglas
 
 | Id | Letra | Intención | Especie | Momento | Quién verifica | De dónde |
 |---|---|---|---|---|---|---|

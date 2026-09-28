@@ -1,7 +1,7 @@
 # Tool-Prompt — Lanzar el ejemplo de demostración
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-Documentos/Guides/Sistema-Documentador-Tecnico-Guide/Examples/Lanzar-Example.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Lanzar-Example.md`
 > - Variantes: `… Lanzar-Example.md --bajar` (detener todo) · `… --estado` (sólo informar)
 >
 > Overview: levanta la prueba de concepto «ayuda por rol» en su devcontainer, la expone por un túnel público y entrega la URL para compartir.

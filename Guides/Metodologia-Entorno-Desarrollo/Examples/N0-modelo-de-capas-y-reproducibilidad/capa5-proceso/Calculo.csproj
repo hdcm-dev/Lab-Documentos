@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Biblioteca mínima. No se fija nada de determinismo acá: el experimento pasa
+       Deterministic y ContinuousIntegrationBuild por línea de comandos para comparar. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+</Project>

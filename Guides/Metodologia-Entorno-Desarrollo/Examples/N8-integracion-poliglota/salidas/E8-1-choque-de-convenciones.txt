@@ -1,0 +1,88 @@
+### A. Política de referencia (UTF-8 sin BOM, LF; BOM sólo .razor/.cshtml/.sln)
+  sh: ./tools/hola.sh (shebang)                    OK
+  python: ./tools/saluda.py (shebang)              OK
+  python: uv run python gen.py                     OK
+  python: json.load(datos.json, utf-8)             OK
+  python: tomllib sobre pyproject.toml             OK
+  uv: uv sync --locked (pyproject.toml)            OK
+  uv: lee .python-version                          OK
+  node: JSON.parse(readFileSync(datos.json))       OK
+  node: require(datos.json)                        OK
+  npm: npm ci (package.json)                       OK
+  npm: npm run build (build.mjs)                   OK
+  dotnet: lee global.json                          OK
+  dotnet: restore --locked-mode (lock)             OK
+  dotnet: build (Program.cs + Datos.g.cs)          OK
+  compuerta N3: .nvmrc contra node -v              OK
+texto: OK
+
+### B. «UTF-8 con BOM para todo» (la corrección del caso C#, aplicada a ciegas)
+  sh: ./tools/hola.sh (shebang)                    OK
+  python: ./tools/saluda.py (shebang)              FALLA rc=2: ./tools/saluda.py: line 1: ﻿#!/usr/bin/env: No such file or directory
+  python: uv run python gen.py                     OK
+  python: json.load(datos.json, utf-8)             FALLA rc=1:     raise JSONDecodeError("Unexpected UTF-8 BOM (decode using utf-8-sig)",
+  python: tomllib sobre pyproject.toml             FALLA rc=1:     raise suffixed_err(src, pos, "Invalid statement")
+  uv: uv sync --locked (pyproject.toml)            OK
+  uv: lee .python-version                          OK
+  node: JSON.parse(readFileSync(datos.json))       FALLA rc=1: SyntaxError: Unexpected token '﻿', "﻿{"año": 2"... is not valid JSON
+  node: require(datos.json)                        OK
+  npm: npm ci (package.json)                       OK
+  npm: npm run build (build.mjs)                   OK
+  dotnet: lee global.json                          OK
+  dotnet: restore --locked-mode (lock)             OK
+  dotnet: build (Program.cs + Datos.g.cs)          OK
+  compuerta N3: .nvmrc contra node -v              FALLA rc=1: esperado  357 273 277 2 2 . 2 3 . 2
+texto: tools/saluda.py: BOM no permitido
+texto: web/build.mjs: BOM no permitido
+texto: web/package.json: BOM no permitido
+texto: 12 violación(es)
+
+### C. «CRLF para todo» (clon en Windows con core.autocrlf=true y sin .gitattributes)
+  sh: ./tools/hola.sh (shebang)                    FALLA rc=127: /lectores.sh: line 3: ./tools/hola.sh: cannot execute: required file not found
+  python: ./tools/saluda.py (shebang)              FALLA rc=127: /usr/bin/env: 'python3\r': No such file or directory
+  python: uv run python gen.py                     OK
+  python: json.load(datos.json, utf-8)             OK
+  python: tomllib sobre pyproject.toml             OK
+  uv: uv sync --locked (pyproject.toml)            OK
+  uv: lee .python-version                          OK
+  node: JSON.parse(readFileSync(datos.json))       OK
+  node: require(datos.json)                        OK
+  npm: npm ci (package.json)                       OK
+  npm: npm run build (build.mjs)                   OK
+  dotnet: lee global.json                          OK
+  dotnet: restore --locked-mode (lock)             OK
+  dotnet: build (Program.cs + Datos.g.cs)          OK
+  compuerta N3: .nvmrc contra node -v              OK
+texto: tools/saluda.py: tiene CR (CRLF)
+texto: web/build.mjs: tiene CR (CRLF)
+texto: web/package.json: tiene CR (CRLF)
+texto: 12 violación(es)
+
+### D. Código heredado: Program.cs y datos.json en cp1252, sin BOM (el caso disparador)
+  sh: ./tools/hola.sh (shebang)                    OK
+  python: ./tools/saluda.py (shebang)              OK
+  python: uv run python gen.py                     OK
+  python: json.load(datos.json, utf-8)             FALLA rc=1: UnicodeDecodeError: 'utf-8' codec can't decode byte 0xf1 in position 3: invalid continuation byte
+  python: tomllib sobre pyproject.toml             OK
+  uv: uv sync --locked (pyproject.toml)            OK
+  uv: lee .python-version                          OK
+  node: JSON.parse(readFileSync(datos.json))       OK
+  node: require(datos.json)                        OK
+  npm: npm ci (package.json)                       OK
+  npm: npm run build (build.mjs)                   OK
+  dotnet: lee global.json                          OK
+  dotnet: restore --locked-mode (lock)             OK
+  dotnet: build (Program.cs + Datos.g.cs)          FALLA rc=1: /w/src/Saludo/Program.cs(6,6): error CS1056: Unexpected character '�' [/w/src/Saludo/Saludo.csproj]
+  compuerta N3: .nvmrc contra node -v              OK
+texto: src/Saludo/Program.cs: no es UTF-8 (byte 0xf3 en 42)
+texto: tools/datos.json: no es UTF-8 (byte 0xf1 en 3)
+texto: 2 violación(es)
+
+### E. Detalle de dos «OK» engañosos de la tabla (rc=0 con daño)
+--- bash ejecuta ./hola.sh con BOM (el kernel no ve el shebang; bash lo interpreta por su cuenta):
+./hola.sh: line 1: ﻿#!/bin/sh: No such file or directory
+hola desde sh
+rc=0
+--- node lee un JSON en cp1252 como UTF-8 (no falla: reemplaza el byte por U+FFFD):
+{ 'a�o': 2026 }
+rc=0

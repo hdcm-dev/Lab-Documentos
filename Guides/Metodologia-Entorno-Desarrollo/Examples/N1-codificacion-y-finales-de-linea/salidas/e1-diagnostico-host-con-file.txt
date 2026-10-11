@@ -1,0 +1,21 @@
+dotnet/cp1252-lf/Mensajes.cs       sin BOM    NO es UTF-8    tiene bytes >0x7F  CR=0 | file: ISO-8859 text
+dotnet/utf8-lf/Mensajes.cs         sin BOM    UTF-8 válido  tiene bytes >0x7F  CR=0 | file: Unicode text, UTF-8 text
+dotnet/utf8bom-lf/Mensajes.cs      BOM UTF-8  UTF-8 válido  tiene bytes >0x7F  CR=0 | file: Unicode text, UTF-8 (with BOM) text
+dotnet/utf8-crlf/Mensajes.cs       sin BOM    UTF-8 válido  tiene bytes >0x7F  CR=10 | file: Unicode text, UTF-8 text, with CRLF line terminators
+dotnet/cp1252-lf/Program.cs        sin BOM    UTF-8 válido  ASCII puro         CR=0 | file: ASCII text
+== Lectura clave: 'NO es UTF-8' + 'tiene bytes >0x7F' => probablemente cp1252/Latin-1.
+   Confirmar mirando los bytes de un carácter conocido (ó: cp1252=f3, UTF-8=c3 b3):
+ 41 74 65 6e 63 69 f3 6e 0a
+== Búsqueda masiva: todo .cs/.razor/.js/.py del árbol que NO sea UTF-8 válido
+   no-UTF-8: ./dotnet/cp1252-crlf/Alarma.cs
+   no-UTF-8: ./dotnet/cp1252-crlf/Mensajes.cs
+   no-UTF-8: ./dotnet/cp1252-lf/Alarma.cs
+   no-UTF-8: ./dotnet/cp1252-lf/Mensajes.cs
+   no-UTF-8: ./node/mod-cp1252.js
+   no-UTF-8: ./python/mod_cp1252_declarado.py
+   no-UTF-8: ./python/mod_cp1252.py
+   no-UTF-8: ./razor/cp1252/Aviso.razor
+== Shell: un BOM o un CRLF rompen el shebang/los comandos
+   ./sin-bom.sh  -> hola$
+   ./con-bom.sh  -> ./con-bom.sh: 1: M-oM-;M-?#!/bin/sh: not found$
+   ./crlf.sh     -> e1-diagnostico.sh: 31: ./crlf.sh: not found$

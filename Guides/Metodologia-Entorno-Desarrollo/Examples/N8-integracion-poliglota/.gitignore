@@ -1,0 +1,7 @@
+# Artefactos de build y entornos locales: nunca se versionan
+bin/
+obj/
+node_modules/
+.venv/
+__pycache__/
+dist/

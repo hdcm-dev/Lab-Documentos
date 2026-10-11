@@ -1,0 +1,14 @@
+# E2-2, caso 11, corrido en el host con el git del host (2026-10-09)
+  SHA del squash en main: 9e524c97e18f
+  -- blame sin ignore-revs
+     9e524c97 1) class Sensor
+     9e524c97 2) {
+     9e524c97 3)     int Leer() => 42; // Atención
+     9e524c97 4) }
+     autor del commit atribuido: migrador
+  -- blame con ignore-revs del SHA del squash (PR aparte, despues de fusionar)
+     ^931abad (autora <fecha> 1) class Sensor
+     ^931abad (autora <fecha> 2) {
+     ^931abad (autora <fecha> 3)     int Leer() => 42; // Atención
+     ^931abad (autora <fecha> 4) }
+  git version 2.47.3

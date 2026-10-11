@@ -1,0 +1,7 @@
+# Imagen de compuerta para un repo Node: el runtime fijado por digest + lo que
+# la compuerta necesita (git ya viene; python3-venv para EditorConfig).
+FROM node:24@sha256:3d27e5c11e5786e309ec3e03f93ae536eb36e6e5eb3714d5eb3300a36157add0
+RUN apt-get update && apt-get install -y --no-install-recommends python3-venv \
+ && rm -rf /var/lib/apt/lists/* \
+ && python3 -m venv /opt/ec && /opt/ec/bin/pip install --no-cache-dir EditorConfig==0.17.1
+ENV PATH="/opt/ec/bin:${PATH}"

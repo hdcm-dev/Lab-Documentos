@@ -1,0 +1,46 @@
+
+===== Versiones =====
+node v22.23.2 / npm 10.9.8
+
+===== 1. npm install genera package-lock.json (lockfileVersion, resolved, integrity) =====
+added 4 packages in 2s
+lockfileVersion 3
+is-number 6.0.0 https://registry.npmjs.org/is-number/-/is-number-6.0.0.tgz
+integrity sha512-Wu1VHeILBK8KAWJUAiSZQX94GmOE45Rg6/538fKwiloUu21KncEkYGPqob2oSZ5mUT73vLGrHQjKw3KMPwfDzg==
+
+===== 2. El lock es multiplataforma: registra los binarios opcionales de TODAS las plataformas =====
+25 entradas @esbuild/* en el lock
+linux-x64 os= [ 'linux' ] cpu= [ 'x64' ] optional= true
+win32-x64 os= [ 'win32' ] cpu= [ 'x64' ] optional= true
+darwin-arm64 os= [ 'darwin' ] cpu= [ 'arm64' ] optional= true
+instalados en este Linux: linux-x64
+
+===== 3. npm ci con lock coherente: instala exactamente el lock =====
+added 4 packages in 536ms
+exit=0
+
+===== 4. Deriva: package.json pide is-odd ^2 y el lock no se regeneró =====
+npm error code EUSAGE
+npm error
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+exit=1
+
+===== 5. Con npm install el mismo cambio no falla: reescribe el lock en silencio =====
+changed 2 packages in 566ms
+exit=0
+1,2c1,2
+< node_modules/is-number 6.0.0
+< node_modules/is-odd 3.0.1
+---
+> node_modules/is-number 4.0.0
+> node_modules/is-odd 2.0.0
+
+===== 6. Integridad: se altera el integrity de is-number en el lock y se instala con caché vacía =====
+npm error code EINTEGRITY
+npm error sha512-BwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBwcHBw== integrity checksum failed when usi
+exit=1
+
+===== 7. pnpm 10.18.0: con CI=true el lock está congelado por defecto =====
+Done in 1.7s using pnpm v10.18.0
+ ERR_PNPM_OUTDATED_LOCKFILE  Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up to date with <ROOT>/package.json
+exit=1

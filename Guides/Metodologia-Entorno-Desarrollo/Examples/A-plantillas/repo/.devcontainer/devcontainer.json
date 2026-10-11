@@ -1,0 +1,15 @@
+// Anexo A.9. El devcontainer se construye con la MISMA receta que la imagen de CI (A.10):
+// sus bases van por digest y las actualiza el bot de la CI (A.13, ecosistema docker).
+// Variante sólo .NET sin receta propia (§8.5): "image": "mcr.microsoft.com/dotnet/sdk:8.0.425-bookworm-slim".
+{
+  "name": "solucion",
+  "build": {
+    "dockerfile": "../imagen/Dockerfile",
+    "context": "../imagen",
+    // Igual a tools/gen/.python-version: la compuerta compara lo instalado con el archivo.
+    "args": { "PYTHON_VERSION": "3.12.15" }
+  },
+  // Hook versionado activado una vez por clon. El contenedor corre como root: sin
+  // safe.directory, git rechaza el repo montado (dubious ownership, guía 8.2.5).
+  "postCreateCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config core.hooksPath .githooks && dotnet --version && node --version && uv --version"
+}

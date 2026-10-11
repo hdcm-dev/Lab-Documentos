@@ -1,0 +1,24 @@
+## A. Sin .gitattributes: clon en 'Windows' (autocrlf=true), montado en Linux
+$W/clon-a/build.sh: Bourne-Again shell script, ASCII text executable, with CRLF line terminators
+-- git como root sobre archivos de otro UID:
+fatal: detected dubious ownership in repository at '/w'
+To add an exception for this directory, call:
+
+-- con safe.directory declarado para /w:
+ M build.sh
+ M notas.txt
+-- ejecutar el script:
+bash: line 1: ./build.sh: Permission denied
+exit=126
+build.sh: line 2: set: pipefail^M: invalid option name
+exit=2
+/usr/bin/env: 'bash\r': No such file or directory
+/usr/bin/env: use -[v]S to pass options in shebang lines
+exit=127
+
+## B. Con política en el repo: .gitattributes (eol=lf) + bit de ejecución registrado en git
+100755 869db7b7bed87a278624fc00bddaa7c6f077ec77 0	build.sh
+$W/clon-b/build.sh:  Bourne-Again shell script, ASCII text executable
+$W/clon-b/notas.txt: ASCII text
+status: []
+build OK en Linux

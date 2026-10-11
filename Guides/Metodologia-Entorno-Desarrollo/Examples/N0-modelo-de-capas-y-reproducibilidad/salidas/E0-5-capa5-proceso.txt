@@ -1,0 +1,10 @@
+SDK 8.0.425
+(1) misma ruta, dos builds (Deterministic=true por defecto)        56abc6012297e83e  56abc6012297e83e  => IGUALES
+(2) misma ruta, Deterministic=false                                b3a7ee1619b9f581  31295b6e2f0ce5c9  => DISTINTOS
+(3) rutas distintas (/w/a vs /home/x/otra)                         56abc6012297e83e  21dab666f876238d  => DISTINTOS
+(4) rutas distintas + ContinuousIntegrationBuild, SIN git          56abc6012297e83e  21dab666f876238d  => DISTINTOS
+(5) rutas distintas + ContinuousIntegrationBuild, CON git          3875c6badec185ff  3875c6badec185ff  => IGUALES
+--- ruta del .pdb incrustada en la DLL:
+    caso (3): /home/x/otra/obj/Release/net8.0/Calculo.pdb
+    caso (4): /home/x/otra/obj/Release/net8.0/Calculo.pdb
+    caso (5): /_/obj/Release/net8.0/Calculo.pdb

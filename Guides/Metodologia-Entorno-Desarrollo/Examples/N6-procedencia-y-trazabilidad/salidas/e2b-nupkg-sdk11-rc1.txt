@@ -1,0 +1,13 @@
+imagen: mcr.microsoft.com/dotnet/sdk@sha256:78559d13d8c810bfe87f329168739ae2ee31f402b1e2c66353d3ff9744d68520
+SDK: 11.0.100-rc.1.26425.128
+(7) sin SOURCE_DATE_EPOCH
+   dll 88debceb3e00 | 88debceb3e00   nupkg 5be2303e4686 | f62a1a09d59a
+(8) con SOURCE_DATE_EPOCH=1767225600
+   dll 88debceb3e00 | 88debceb3e00   nupkg 5f9de6281c21 | 5f9de6281c21
+--- entradas del .nupkg de (8):
+   (2026, 1, 1, 0, 0, 0) _rels/.rels
+   (2026, 1, 1, 0, 0, 0) Pieza.nuspec
+   (2026, 1, 1, 0, 0, 0) lib/net8.0/Pieza.dll
+   (2026, 1, 1, 0, 0, 0) lib/net8.0/Pieza.runtimeconfig.json
+   (2026, 1, 1, 0, 0, 0) [Content_Types].xml
+   (2026, 1, 1, 0, 0, 0) package/services/metadata/core-properties/nuget.psmdcp

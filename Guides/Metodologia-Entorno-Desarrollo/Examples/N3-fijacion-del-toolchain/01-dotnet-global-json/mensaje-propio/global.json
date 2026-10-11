@@ -1,0 +1,8 @@
+{
+  // errorMessage existe desde el SDK de .NET 10.
+  "sdk": {
+    "version": "10.0.999",
+    "rollForward": "disable",
+    "errorMessage": "Este repo exige el SDK 10.0.999. Ver docs/toolchain.md para instalarlo."
+  }
+}

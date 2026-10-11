@@ -1,0 +1,4 @@
+{
+  // Sin rollForward ("patch"): la banda 3xx no salta a la 4xx.
+  "sdk": { "version": "8.0.300" }
+}

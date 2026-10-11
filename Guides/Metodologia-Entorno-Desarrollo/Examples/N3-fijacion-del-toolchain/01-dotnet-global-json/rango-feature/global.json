@@ -1,0 +1,4 @@
+{
+  // Piso 8.0.100; acepta la banda/parche más alta instalada dentro de 8.0.
+  "sdk": { "version": "8.0.100", "rollForward": "latestFeature" }
+}

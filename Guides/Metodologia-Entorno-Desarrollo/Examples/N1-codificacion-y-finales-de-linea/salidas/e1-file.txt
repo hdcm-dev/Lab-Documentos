@@ -1,0 +1,5 @@
+file-5.46
+  sin-80-9F.txt            -> ISO-8859 text
+  con-euro-0x80.txt        -> Non-ISO extended-ASCII text
+  con-comillas-0x93.txt    -> Non-ISO extended-ASCII text
+  moji.txt                 -> Unicode text, UTF-8 text

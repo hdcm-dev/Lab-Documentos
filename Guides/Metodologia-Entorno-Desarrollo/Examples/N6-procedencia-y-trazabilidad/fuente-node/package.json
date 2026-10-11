@@ -1,0 +1,11 @@
+{
+  "name": "@ejemplo-lab/pieza-node",
+  "version": "1.4.0",
+  "description": "Pieza sintética del laboratorio N6",
+  "type": "module",
+  "main": "index.js",
+  "files": ["index.js"],
+  "repository": { "type": "git", "url": "git+https://github.com/ejemplo-lab/pieza.git", "directory": "fuente-node" },
+  "dependencies": { "ms": "2.1.3" },
+  "license": "MIT"
+}

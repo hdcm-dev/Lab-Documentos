@@ -1,0 +1,28 @@
+=== imagen: sdk:8.0
+--- sin global.json: SDK elegido = 8.0.425
+--- compilador C# de ese SDK: 4.11.0-3.25569.22 (3fb752d4)
+--- global.json exacto 8.0.100 + rollForward=disable:
+      A compatible .NET SDK was not found.
+Requested SDK version: 8.0.100
+global.json file: /tmp/tmp.3n8DG7GOu9/global.json
+Installed SDKs:
+8.0.425 [/usr/share/dotnet/sdk]
+--- global.json 8.0.100 + rollForward=latestFeature (rango dentro de 8.0):
+8.0.425
+--- sha256 de Calculo.dll (net8.0, Release, ruta /w/a) compilada con este SDK: 56abc6012297e83e
+=== imagen: sdk:10.0
+--- sin global.json: SDK elegido = 10.0.400
+--- compilador C# de ese SDK: 5.9.0-1.26379.115 (14fbf8d5271c98133561eb55185fdb05b286f578)
+--- global.json exacto 8.0.100 + rollForward=disable:
+      A compatible .NET SDK was not found.
+Requested SDK version: 8.0.100
+global.json file: /tmp/tmp.aFFWkvQzNt/global.json
+Installed SDKs:
+10.0.400 [/usr/share/dotnet/sdk]
+--- global.json 8.0.100 + rollForward=latestFeature (rango dentro de 8.0):
+      A compatible .NET SDK was not found.
+Requested SDK version: 8.0.100
+global.json file: /tmp/tmp.aFFWkvQzNt/global.json
+Installed SDKs:
+10.0.400 [/usr/share/dotnet/sdk]
+--- sha256 de Calculo.dll (net8.0, Release, ruta /w/a) compilada con este SDK: 61fbcfd204091949

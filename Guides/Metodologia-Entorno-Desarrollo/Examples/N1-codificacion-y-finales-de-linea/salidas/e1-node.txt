@@ -1,0 +1,28 @@
+Node v22.23.2
+require(mod-cp1252.js) -> texto="Atenci�n: se�al recibida en �andubay" U+[FFFD 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8bom.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8-crlf.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-ident-cp1252.js) -> SyntaxError: Missing initializer in const declaration
+fs.readFileSync(utf8bom,'utf8')[0] = U+FEFF
+JSON.parse(config-utf8.json) OK
+JSON.parse(config-utf8bom.json) -> SyntaxError: Unexpected token '﻿', "﻿{"ok": true}
+require(config-utf8bom.json) OK
+TextDecoder() primer char = U+7B
+TextDecoder({ignoreBOM:true}) primer char = U+FEFF
+TextDecoder({fatal:true}) sobre cp1252 -> TypeError (ERR_ENCODING_INVALID_ENCODED_DATA)
+import(esm-utf8bom.mjs) -> texto="Atención: señal recibida en Ñandubay" primer char del literal OK=true
+Node v20.20.2
+require(mod-cp1252.js) -> texto="Atenci�n: se�al recibida en �andubay" U+[FFFD 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8bom.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-utf8-crlf.js) -> texto="Atención: señal recibida en Ñandubay" U+[00F3 006E 003A] bloque.length=7 (template literal)
+require(mod-ident-cp1252.js) -> SyntaxError: Missing initializer in const declaration
+fs.readFileSync(utf8bom,'utf8')[0] = U+FEFF
+JSON.parse(config-utf8.json) OK
+JSON.parse(config-utf8bom.json) -> SyntaxError: Unexpected token '﻿', "﻿{"ok": true}
+require(config-utf8bom.json) OK
+TextDecoder() primer char = U+7B
+TextDecoder({ignoreBOM:true}) primer char = U+FEFF
+TextDecoder({fatal:true}) sobre cp1252 -> TypeError (ERR_ENCODING_INVALID_ENCODED_DATA)
+import(esm-utf8bom.mjs) -> texto="Atención: señal recibida en Ñandubay" primer char del literal OK=true

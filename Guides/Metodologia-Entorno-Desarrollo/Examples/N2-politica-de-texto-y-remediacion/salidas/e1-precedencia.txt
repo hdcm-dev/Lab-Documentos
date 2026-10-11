@@ -1,0 +1,51 @@
+== A. Sin .gitattributes: la política la decide la máquina de cada uno
+-- dev 1 (core.autocrlf=false) commitea un archivo CRLF:
+i/crlf  w/crlf  attr/                   win.txt
+-- dev 2 (core.autocrlf=true) commitea el mismo contenido:
+i/lf    w/crlf  attr/                   win2.txt
+   => mismo archivo, distinto contenido en el repositorio según la config local
+
+== B. Con .gitattributes '* text=auto eol=lf': manda el repositorio
+warning: in the working copy of 'build.cmd', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'win.txt', CRLF will be replaced by LF the next time Git touches it
+-- índice después de add con core.autocrlf=false:
+i/lf    w/lf    attr/text eol=crlf      build.cmd
+i/lf    w/crlf  attr/text=auto eol=lf   win.txt
+-- checkout con core.autocrlf=true:
+  win.txt      CR en working tree: 0
+  build.cmd    CR en working tree: 2
+-- checkout con core.autocrlf=input:
+  win.txt      CR en working tree: 0
+  build.cmd    CR en working tree: 2
+-- checkout con core.autocrlf=false:
+  win.txt      CR en working tree: 0
+  build.cmd    CR en working tree: 2
+-- checkout con core.eol=crlf:
+  win.txt      CR en working tree: 0
+  build.cmd    CR en working tree: 2
+   => eol=lf / eol=crlf del atributo se imponen a core.autocrlf y core.eol
+
+== B2. Con '* text=auto' SIN eol (convención de dotnet/runtime): el índice es del repo, el working tree es de la máquina
+warning: in the working copy of 'win.txt', CRLF will be replaced by LF the next time Git touches it
+-- índice:
+i/lf    w/crlf  attr/text=auto          win.txt
+-- checkout con core.autocrlf=true:
+  win.txt      CR en working tree: 2
+-- checkout con core.autocrlf=false:
+  win.txt      CR en working tree: 0
+-- checkout con core.eol=crlf:
+  win.txt      CR en working tree: 2
+   => el índice queda normalizado, pero los bytes que ve el compilador dependen de cada máquina
+
+== C. .editorconfig no participa en git
+-- después de commit + checkout, unix.txt sigue con LF y sin BOM:
+i/lf    w/lf    attr/                   unix.txt
+  primeros bytes:    l   i   n
+   => .editorconfig lo aplica el editor al guardar; git no lo lee
+
+== D. Por qué importa el EOL del working tree: un literal verbatim de C#
+-- Program.cs con LF (checkout en Linux o con eol=lf):
+largo=3 bytes=61-0A-62
+-- el mismo Program.cs con CRLF (checkout en Windows con autocrlf=true y sin eol):
+largo=4 bytes=61-0D-0A-62
+   => el fin de línea del fuente entra en el binario: mismo commit, distinto programa

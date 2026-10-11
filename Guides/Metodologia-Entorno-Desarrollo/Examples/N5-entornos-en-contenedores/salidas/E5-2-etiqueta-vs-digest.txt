@@ -1,0 +1,32 @@
+## 1. ¿A qué contenido apunta la etiqueta?
+mcr.microsoft.com/dotnet/sdk:8.0 en esta máquina (bajada antes) -> sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743
+mcr.microsoft.com/dotnet/sdk:8.0 hoy en el registro            -> sha256:ec9c0a0dc5f60adc2065762050638dd5ed5facfc53716d4580a42d86027c8e80
+mcr.microsoft.com/dotnet/sdk:8.0.425 (etiqueta 'fija') hoy       -> sha256:ec9c0a0dc5f60adc2065762050638dd5ed5facfc53716d4580a42d86027c8e80
+=> la etiqueta se MOVIÓ: mismo nombre, otro contenido
+
+## 2. ¿Qué cambió? Versión de .NET declarada en la configuración de cada imagen
+local : creada 2026-09-19T00:59:02.8596403Z DOTNET_RUNNING_IN_CONTAINER=true DOTNET_VERSION=8.0.31 ASPNET_VERSION=8.0.31 DOTNET_GENERATE_ASPNET_CERTIFICATE=false DOTNET_NOLOGO=true DOTNET_SDK_VERSION=8.0.425 DOTNET_USE_POLLING_FILE_WATCHER=true 
+remota: creada 2026-10-06T05:00:22.051560164Z DOTNET_VERSION=8.0.31 ASPNET_VERSION=8.0.31 DOTNET_SDK_VERSION=8.0.425
+
+## 3. Mismo SDK, ¿mismo sistema? Paquetes del SO que difieren (requiere bajar la remota por digest)
+local : libexpat1 2.5.0-1+deb12u3
+remota: libexpat1 2.5.0-1+deb12u4
+local : libpcre2-8-0 10.42-1+deb12u1
+local : libperl5.36 5.36.0-7+deb12u3
+remota: libpcre2-8-0 10.42-1+deb12u2
+remota: libperl5.36 5.36.0-7+deb12u4
+local : libssl3 3.0.20-1~deb12u2
+remota: libssl3 3.0.22-1~deb12u1
+local : openssl 3.0.20-1~deb12u2
+remota: openssl 3.0.22-1~deb12u1
+local : perl 5.36.0-7+deb12u3
+local : perl-base 5.36.0-7+deb12u3
+local : perl-modules-5.36 5.36.0-7+deb12u3
+remota: perl 5.36.0-7+deb12u4
+remota: perl-base 5.36.0-7+deb12u4
+remota: perl-modules-5.36 5.36.0-7+deb12u4
+local : tzdata 2026b-0+deb12u1
+remota: tzdata 2026c-0+deb12u1
+
+## 4. Uso en Dockerfile / devcontainer.json (la etiqueta queda como comentario legible; manda el digest)
+FROM mcr.microsoft.com/dotnet/sdk:8.0@sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743

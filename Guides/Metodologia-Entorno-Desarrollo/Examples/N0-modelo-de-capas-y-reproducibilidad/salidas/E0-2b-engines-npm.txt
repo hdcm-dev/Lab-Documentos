@@ -1,0 +1,9 @@
+node v22.23.2 · npm 10.9.8
+--- npm install (engines pide node <1):
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE   package: 'x@1.0.0',
+    código de salida: 0
+--- npm install --engine-strict:
+npm error notsup Not compatible with your version of node/npm: x@1.0.0
+npm error notsup Required: {"node":"<1"}
+    código de salida: 1

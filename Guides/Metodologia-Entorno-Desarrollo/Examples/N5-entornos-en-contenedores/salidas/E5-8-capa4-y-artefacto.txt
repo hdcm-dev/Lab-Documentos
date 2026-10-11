@@ -1,0 +1,9 @@
+== imagen oficial sdk:8.0 | SO: Debian GNU/Linux 12 (bookworm) | glibc: 2.36 | SDK: 8.0.425 | ruta: /w/a
+   dll 9815b804e89acc33   pdb 39c56299b47eef9f
+== ubuntu:24.04 + dotnet-install | SO: Ubuntu 24.04.5 LTS | glibc: 2.39 | SDK: 8.0.425 | ruta: /home/runner/work/pieza/pieza
+   dll 9815b804e89acc33   pdb 39c56299b47eef9f
+== python:3.12-slim + dotnet-install | SO: Debian GNU/Linux 13 (trixie) | glibc: 2.41 | SDK: 8.0.425 | ruta: /srv/otra/ruta
+   dll 9815b804e89acc33   pdb 39c56299b47eef9f
+== CONTROL imagen oficial sdk:10.0 (otro SDK) | SO: Ubuntu 24.04.4 LTS | glibc: 2.39 | SDK: 10.0.400 | ruta: /w/a
+   dll 7cd2a836de83b37e   pdb bf63c38442173f34
+rc=0

@@ -1,0 +1,32 @@
+# .github/dependabot.yml — descongelamiento automático pero REVISABLE:
+# el bot sólo abre PRs; la compuerta y el revisor deciden.
+version: 2
+updates:
+  - package-ecosystem: "dotnet-sdk"      # sube sdk.version de global.json
+    directory: "/"
+    schedule: { interval: "monthly" }    # el SDK sale el "Patch Tuesday" de cada mes
+  - package-ecosystem: "nuget"           # packages.lock.json: no confirmado en la doc oficial de Dependabot (ver bitácora N7)
+    directory: "/"
+    schedule: { interval: "weekly" }
+    cooldown: { default-days: 7 }        # no adoptar una versión con menos de 7 días
+    groups:
+      parches-nuget: { update-types: ["patch"] }   # un PR para todos los parches
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule: { interval: "weekly" }
+    cooldown: { default-days: 7 }
+  - package-ecosystem: "uv"
+    directory: "/tools/py"
+    schedule: { interval: "weekly" }
+  - package-ecosystem: "docker"          # FROM ...@sha256 del Dockerfile de CI
+    directory: "/ci"
+    schedule: { interval: "weekly" }
+  - package-ecosystem: "devcontainers"   # features de devcontainer.json
+    directory: "/"
+    schedule: { interval: "monthly" }
+  - package-ecosystem: "github-actions"  # acciones fijadas por SHA
+    directory: "/"
+    schedule: { interval: "monthly" }
+  - package-ecosystem: "pre-commit"      # rev de .pre-commit-config.yaml
+    directory: "/"
+    schedule: { interval: "monthly" }

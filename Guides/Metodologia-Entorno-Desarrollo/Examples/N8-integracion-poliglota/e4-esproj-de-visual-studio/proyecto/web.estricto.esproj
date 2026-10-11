@@ -1,0 +1,13 @@
+<!-- El mismo proyecto, con instalación estricta: se apaga el `npm install` del
+     SDK (ShouldRunNpmInstall, documentada) y se engancha `npm ci` antes del
+     target interno RunNpmInstall (nombre leído en Sdk.targets 1.0.6887863: NO es
+     un contrato documentado; revisar al subir la versión del SDK de JSPS). -->
+<Project Sdk="Microsoft.VisualStudio.JavaScript.Sdk/1.0.6887863">
+  <PropertyGroup>
+    <BuildOutputFolder>$(MSBuildProjectDirectory)/dist</BuildOutputFolder>
+    <ShouldRunNpmInstall>false</ShouldRunNpmInstall>
+  </PropertyGroup>
+  <Target Name="NpmCiEstricto" BeforeTargets="RunNpmInstall">
+    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+</Project>

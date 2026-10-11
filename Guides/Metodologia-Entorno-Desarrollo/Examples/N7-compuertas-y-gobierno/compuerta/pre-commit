@@ -1,0 +1,7 @@
+#!/bin/sh
+# Hook pre-commit versionado en .githooks/ y activado con
+#   git config core.hooksPath .githooks
+# No contiene lógica propia: delega en la MISMA compuerta que corre la CI,
+# limitada a lo que está en stage. Si este archivo y el job de CI llamaran a
+# cosas distintas, local y CI dirían cosas distintas.
+exec "$(git rev-parse --show-toplevel)/tools/compuerta.sh" --staged

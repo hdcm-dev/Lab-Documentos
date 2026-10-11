@@ -1,0 +1,26 @@
+
+=== python: compuerta sobre el repo recién congelado
+COMPUERTA commit=b95ee1c alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 8 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [n/a]   toolchain .NET: no hay global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [ok]    toolchain Python: 3.12.14 cumple .python-version=3.12
+COMPUERTA [n/a]   grafo NuGet: no hay packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [ok]    grafo uv: uv.lock al día (uv lock --check)
+COMPUERTA resultado=VERDE
+   -> rc=0
+
+=== python: se cambia la dependencia declarada sin regenerar el lock
+COMPUERTA commit=395a0ad alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 8 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [n/a]   toolchain .NET: no hay global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [ok]    toolchain Python: 3.12.14 cumple .python-version=3.12
+COMPUERTA [n/a]   grafo NuGet: no hay packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+    error: The lockfile at `uv.lock` needs to be updated, but `--check` was provided.
+    hint: To update the lockfile, run `uv lock`.
+COMPUERTA [FALLA] grafo uv: uv.lock no coincide con pyproject.toml
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1

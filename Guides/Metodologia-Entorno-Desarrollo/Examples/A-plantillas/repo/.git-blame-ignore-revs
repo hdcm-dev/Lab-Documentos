@@ -1,0 +1,4 @@
+# Anexo A.15. Commits mecánicos (sólo codificación, BOM o EOL).
+# Se agrega en un commit POSTERIOR, con el SHA definitivo tras fusionar
+# (con squash, un PR por commit: el SHA es el del squash ya en main; guía 5.2.6).
+# 0123456789abcdef0123456789abcdef01234567  migración cp1252 -> UTF-8

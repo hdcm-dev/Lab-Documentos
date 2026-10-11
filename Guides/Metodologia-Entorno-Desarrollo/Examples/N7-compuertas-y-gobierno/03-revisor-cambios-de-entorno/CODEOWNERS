@@ -1,0 +1,17 @@
+# Ejemplo de CODEOWNERS para los archivos de ENTORNO (sintaxis de GitHub; GitLab
+# usa una sintaxis compatible). Gana el ÚLTIMO patrón que coincide.
+# Sólo OBLIGA a pedir esa revisión si la rama está protegida con "require review
+# from code owners" (no disponible en repos privados de planes gratuitos).
+*                         @org/desarrollo
+/.editorconfig            @org/arquitectura
+/.gitattributes           @org/arquitectura
+/global.json              @org/arquitectura @org/plataforma
+**/packages.lock.json     @org/arquitectura
+/Directory.Packages.props @org/arquitectura
+/nuget.config             @org/plataforma
+/.devcontainer/           @org/plataforma
+/Dockerfile               @org/plataforma
+/.github/                 @org/plataforma
+/tools/compuerta.sh       @org/plataforma
+/.githooks/               @org/plataforma
+/docs/adr/                @org/arquitectura

@@ -1,0 +1,39 @@
+# Política de texto del repositorio (guía §5, §11.2.2; Anexo A.1).
+# La leen los editores al guardar (Visual Studio de fábrica; VS Code con la
+# extensión EditorConfig) y la compuerta al verificar. Git NO la lee.
+# Los comentarios van siempre en línea propia: un # después de un valor
+# pasa a formar parte del valor.
+root = true
+
+# Regla general para .NET, Node.js y Python: UTF-8 sin BOM, LF.
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Excepciones que exige quien LEE el archivo. Van al final: la última gana.
+[*.{cmd,bat}]
+end_of_line = crlf
+
+# Con BOM: .razor y .cshtml, porque así los crean las plantillas y así los declaran
+# dotnet/aspnetcore y dotnet/aspire; .sln, porque dotnet sln add lo repone.
+# .slnx queda en [*]: dotnet sln add le quita el BOM (SDK 10).
+[*.{razor,cshtml,sln}]
+charset = utf-8-bom
+
+# Windows PowerShell 5.1 lee un .ps1 sin BOM como ANSI.
+[*.ps1]
+charset = utf-8-bom
+
+# Variante B (heredado YA convertido a UTF-8 con BOM, como el del caso, o elegida
+# antes de migrar): descomentar. Cubre los archivos de proyecto, que siguen la
+# convención de *.cs (5.2.3); los .props y .targets de este anexo (Directory.Build.*,
+# Directory.Packages.props) se guardan entonces con BOM. Con la variante A, cada
+# archivo que crea una plantilla del SDK, de proyecto o de ítem, llega con BOM y se
+# normaliza antes de su commit (dotnet format en los .cs; la compuerta lo señala).
+# [*.{cs,csproj,props,targets}]
+# charset = utf-8-bom
+
+# Los lock files los escribe la herramienta; NuGet no pone salto final.
+[{packages.lock.json,package-lock.json,uv.lock}]
+insert_final_newline = unset

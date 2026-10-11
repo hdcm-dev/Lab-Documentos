@@ -1,0 +1,25 @@
+== Shell: shebang precedido de BOM
+  -- invocado desde un shell (el shell reintenta leyéndolo como script propio):
+    script ok
+    ./con-bom.sh: 1: ﻿#!/bin/sh: not found
+    exit=0
+  -- invocado por execve directo, sin el reintento de la libc (os.execv de Python):
+    OSError: [Errno 8] Exec format error
+  -- como comando de un contenedor (docker run <imagen> ./con-bom.sh):
+    exec ./con-bom.sh: exec format error
+
+== Node.js v22.23.2 / npm 10.9.8
+    JSON.parse(readFileSync utf8): SyntaxError: Unexpected token '﻿', "﻿{"clave":"valor"}
+    require("./datos.json"): {"clave":"valor"}
+    npm run hola con package.json con BOM:
+      script ok
+
+== Python 3.12.14
+    json.load(encoding='utf-8'): JSONDecodeError: Unexpected UTF-8 BOM (decode using utf-8-sig): line 1 column 1 (char 0)
+    json.load(encoding='utf-8-sig'): ok
+    tomllib.load(pyproject.toml): TOMLDecodeError: Invalid statement (at line 1, column 1)
+
+== .NET 8.0.425
+    Net.csproj CON BOM; build + run:
+      JsonDocument.Parse(bytes con BOM): JsonReaderException: '0xEF' is an invalid start of a value. LineNumber: 0 | BytePositionInLine: 0.
+      JsonDocument.Parse(File.ReadAllText): ok

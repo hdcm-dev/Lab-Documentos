@@ -1,0 +1,68 @@
+
+=== 0. Repo con el entorno declarado y un remoto
+core.hooksPath tras clonar: (sin configurar: git no activa hooks al clonar)
+pre-commit
+
+=== 1. Sin activar el hook, un archivo en cp1252 entra sin que nadie lo note
+   Senal.cs: NO es UTF-8 (byte 0xf1), BOM=no, CRLF=no, salto final=sí
+   -> rc=0
+
+=== 2. Se activa el hook versionado (una vez por clon) y el mismo cambio se rechaza
+COMPUERTA commit=c782d06 alcance=--staged
+    POLITICA-TEXTO: Senal.cs: no es UTF-8 válido (byte 0xf1 en offset 37; ¿cp1252?)
+    POLITICA-TEXTO: 1 archivo(s) revisado(s), 1 violación(es)
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== 3. --no-verify saltea el hook; el push a un remoto sin protección se acepta
+   -> rc=0
+   -> rc=0
+
+=== 4. CI: clon limpio del remoto, misma compuerta, sin hook de por medio
+COMPUERTA commit=9668716 alcance=todo
+    POLITICA-TEXTO: Senal.cs: no es UTF-8 válido (byte 0xf1 en offset 37; ¿cp1252?)
+    POLITICA-TEXTO: 11 archivo(s) revisado(s), 1 violación(es)
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== 5. Corrección: el archivo pasa a UTF-8 y el ciclo se cierra en verde en los dos lados
+   Senal.cs: UTF-8 válido, BOM=no, CRLF=no, salto final=sí
+COMPUERTA commit=9668716 alcance=--staged
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 1 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0
+   -> rc=0
+COMPUERTA commit=a420523 alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 11 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0

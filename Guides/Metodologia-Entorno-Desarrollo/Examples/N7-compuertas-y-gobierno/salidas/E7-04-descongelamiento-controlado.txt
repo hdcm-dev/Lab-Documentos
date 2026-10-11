@@ -1,0 +1,101 @@
+=== A. Descongelar un paquete (imagen lab-n2-texto:local)
+
+=== A1. Se cambia la versión declarada y se intenta commitear sin regenerar el lock
+COMPUERTA commit=8966737 alcance=--staged
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 1 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+    /ex/N7-compuertas-y-gobierno/work/04a/repo/App.csproj : error NU1004: The package reference Newtonsoft.Json version has changed from [13.0.3, ) to [13.0.4, ).The packages lock file is inconsistent with the project dependencies so restore can't be run in locked mode. Disable the RestoreLockedMode MSBuild property or pass an explicit --force-evaluate option to run restore to update the lock file.
+COMPUERTA [FALLA] grafo NuGet: restore --locked-mode falló para packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== A2. Se regenera el lock con la herramienta (restore sin --locked-mode) y se commitea junto
+COMPUERTA commit=8966737 alcance=--staged
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 2 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0
+      commit bf2662b Newtonsoft.Json 13.0.3 -> 13.0.4 (manifiesto + lock)
+   
+    App.csproj         | 2 +-
+    packages.lock.json | 6 +++---
+    2 files changed, 4 insertions(+), 4 deletions(-)
+-- lo que el revisor ve:
+   # Cambios de entorno en main...HEAD
+   
+   ## lock
+   - `M packages.lock.json`
+   - [ ] ¿Lo regeneró la herramienta (no a mano)? ¿Cambian sólo los paquetes esperados? ¿Aparecen fuentes o hashes nuevos?
+   
+   ## manifiesto
+   - `M App.csproj`
+   - [ ] ¿Qué dependencia o propiedad de build cambió y por qué? ¿Hay rangos flotantes nuevos (*, ^, >=)?
+   
+   ## coherencia manifiesto ↔ lock
+   - coherente: cada lock tocado viene con su manifiesto (o ninguno cambió).
+
+=== B. Descongelar el SDK: global.json, imagen de CI y ADR en el mismo PR
+-- SDK de la imagen nueva: 10.0.400
+{
+  "sdk": {
+    "version": "10.0.400",
+    "rollForward": "disable"
+  }
+}
+   -> rc=0
+
+B1. Compuerta en la imagen VIEJA (estaciones y CI que no se movieron):
+COMPUERTA commit=02e9d8b alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 10 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [FALLA] toolchain .NET: global.json pide 10.0.400; el entorno resuelve 'ninguno'
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+    A compatible .NET SDK was not found.
+    Requested SDK version: 10.0.400
+COMPUERTA [FALLA] grafo NuGet: restore --locked-mode falló para packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (2 paso/s)
+   -> rc=1
+
+B2. Compuerta en la imagen NUEVA:
+COMPUERTA commit=02e9d8b alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 10 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 10.0.400 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0
+
+B3. Se commitean juntos global.json, la receta de la imagen de CI y el ADR (el hook corre en la imagen NUEVA):
+COMPUERTA commit=02e9d8b alcance=--staged
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 3 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 10.0.400 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   commit f68099f SDK 10.0.400: global.json + imagen de CI + ADR-0002
+
+ ci/Dockerfile           | 14 ++++++++++++++
+ docs/adr/0002-sdk-10.md | 32 ++++++++++++++++++++++++++++++++
+ global.json             |  2 +-
+ 3 files changed, 47 insertions(+), 1 deletion(-)
+   -> rc=0

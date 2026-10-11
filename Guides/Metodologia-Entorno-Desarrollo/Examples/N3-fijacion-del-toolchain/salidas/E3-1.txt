@@ -1,0 +1,17 @@
+# E3-1 — 01-dotnet-global-json — 2026-10-09
+##### mcr.microsoft.com/dotnet/sdk:8.0  (instalado: 8.0.425)
+exacto                 FALLA rc=145: Requested SDK version: 8.0.100
+defecto-misma-banda    usa 8.0.425
+defecto-otra-banda     FALLA rc=145: Requested SDK version: 8.0.300
+rango-feature          usa 8.0.425
+otra-mayor             FALLA rc=145: Requested SDK version: 9.0.100
+piso-cualquier-mayor   usa 8.0.425
+mensaje-propio         FALLA rc=145: Requested SDK version: 10.0.999
+##### mcr.microsoft.com/dotnet/sdk:10.0  (instalado: 10.0.400)
+exacto                 FALLA rc=155: Requested SDK version: 8.0.100
+defecto-misma-banda    FALLA rc=155: Requested SDK version: 8.0.400
+defecto-otra-banda     FALLA rc=155: Requested SDK version: 8.0.300
+rango-feature          FALLA rc=155: Requested SDK version: 8.0.100
+otra-mayor             FALLA rc=155: Requested SDK version: 9.0.100
+piso-cualquier-mayor   usa 10.0.400
+mensaje-propio         FALLA rc=155: Este repo exige el SDK 10.0.999. Ver docs/toolchain.md para instalarlo.

@@ -1,0 +1,36 @@
+commit: 9e618f99ed4ff43a5ecbd42299f9c38ec93fd445   buildx: v0.35.0   cosign: ghcr.io/sigstore/cosign/cosign:v3.1.3
+
+=== (1) build con procedencia SLSA (mode=max) y SBOM, exportado a un directorio
+   Pieza.dll
+   Pieza.pdb
+   provenance.json
+   sbom.spdx.json
+
+=== (2) Qué dice la procedencia
+   _type=https://in-toto.io/Statement/v1  predicateType=https://slsa.dev/provenance/v1
+   subject Pieza.dll  sha256=f31631a0f0eda05b…  coincide con el archivo: True
+   subject Pieza.pdb  sha256=845000f56f1cf019…  coincide con el archivo: True
+   buildType=https://github.com/moby/buildkit/blob/master/docs/attestations/slsa-definitions.md
+   resolvedDependency pkg:docker/docker/buildkit-syft-scanner@stable-1?platform=linux%2Famd6  sha256=ae4f3b554449e7e2…
+   resolvedDependency pkg:docker/mcr.microsoft.com/dotnet/sdk@8.0?digest=sha256:78235e09001f  sha256=78235e09001f52b6…
+   externalParameters.configSource={'path': 'Dockerfile'}
+   runDetails.builder={'id': ''}
+   runDetails.metadata: invocationId=mz15wh9d2szrpkd8gxbwqpobq startedOn=2026-10-07T14:55:54.194372425Z
+   ¿menciona el commit 9e618f99ed4f? sí, en:
+      .predicate.buildDefinition.externalParameters.request.root.request.args.vcs:revision = 9e618f99ed4ff43a5ecbd42299f9c38ec93fd445
+      .predicate.runDetails.metadata.buildkit_metadata.vcs.revision = 9e618f99ed4ff43a5ecbd42299f9c38ec93fd445
+   SBOM de la imagen: https://spdx.dev/Document - 2 paquetes
+
+=== (3) ¿Es el mismo binario que una build independiente del mismo commit? (docker run, otra ruta)
+   BuildKit : f31631a0f0eda05b
+   docker run: f31631a0f0eda05b
+
+=== (4) Procedencia SIN firma: cualquiera la edita y nada lo detecta
+   builder.id original: ''
+   builder.id editado : 'https://ci.ejemplo.invalid/runner-oficial' -> sigue siendo JSON válido; nada en el archivo delata el cambio
+
+=== (5) Firmar la procedencia (envoltorio DSSE en un bundle de Sigstore) y verificar
+   firmado: Pieza.dll.sigstore.json
+   (a) artefacto original           -> Verified OK
+   (b) artefacto con 1 byte de más  -> error during command execution: failed to verify signature: provided artifact digests do not match digests in statement
+   (c) procedencia editada en el bundle -> error during command execution: failed to verify signature: could not verify envelope: accepted signatures do not match threshold, Found: 0, Expected 1

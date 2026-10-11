@@ -1,0 +1,6 @@
+# Proyecto (no paquete) gestionado con uv: requires-python es el RANGO admitido.
+[project]
+name = "n3-app"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = []

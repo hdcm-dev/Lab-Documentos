@@ -1,0 +1,54 @@
+imagen 8.0 : mcr.microsoft.com/dotnet/sdk@sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743
+imagen 10.0: mcr.microsoft.com/dotnet/sdk@sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c
+imagen 11.0-preview: mcr.microsoft.com/dotnet/sdk@sha256:b7e3c0268942d9e80656c5ff9d0514c96741e940cf3acae9f9a8cc1fcc6991be
+SDK usados: ci_a=8.0.425 s10=10.0.400 n11=11.0.100-preview.7.26381.103
+
+(1) mismo commit, rutas y contenedores distintos, ContinuousIntegrationBuild=true
+   dll f31631a0f0ed | f31631a0f0ed   pdb 845000f56f1c | 845000f56f1c   nupkg 1244a78c9155 | d85f524589c2   => DISTINTOS
+(2) mismo commit, rutas distintas, build de desarrollador (sin CI)
+   dll 624c23775028 | 7d93be77aeef   pdb 9d8c4d0d4135 | 5f44a9c2cd5e   nupkg 9ff7314cdbd4 | 7f752c9813ff   => DISTINTOS
+(3) misma ruta, CI=true pero Deterministic=false
+   dll 88f6132453fc | 5f76edf63756   pdb 9d8c4d0d4135 | 9d8c4d0d4135   nupkg 87ca0a52a10f | 6cb78f8562e2   => DISTINTOS
+(4) rutas distintas, sin CI, PathMap explícito ruta=/_/
+   dll 3d666cfabfc6 | 3d03c33da9e9   pdb 4f1caa1d9fa6 | 9ebda90f76f7   nupkg 6bd9feeaa919 | df56f8f36180   => DISTINTOS
+(5) misma ruta y CI=true, pero SDK 8 frente a SDK 10 (sin global.json)
+   dll f31631a0f0ed | 22c518104e78   pdb 845000f56f1c | 4a6284b73360   nupkg 1244a78c9155 | fa5f6bbca174   => DISTINTOS
+(6) como (1) + SOURCE_DATE_EPOCH (SDK 8)
+   dll f31631a0f0ed | f31631a0f0ed   pdb 845000f56f1c | 845000f56f1c   nupkg 546d9f42de15 | 4dfaf5323edf   => DISTINTOS
+(7) como (1) con SDK 11 preview (pack determinista por defecto según NuGet)
+   dll ab2e246cc61b | ab2e246cc61b   pdb a2b7293dce42 | a2b7293dce42   nupkg d7184444018c | 1b7f6a38feaf   => DISTINTOS
+(8) como (7) + SOURCE_DATE_EPOCH
+   dll ab2e246cc61b | ab2e246cc61b   pdb a2b7293dce42 | a2b7293dce42   nupkg 9f7b9596c45d | 9f7b9596c45d   => IGUALES
+
+--- contenido del .nupkg de (1): hash de cada entrada, ignorando las fechas del zip
+   = Pieza.nuspec                                                 92a9bc6549b1 | 92a9bc6549b1
+   = [Content_Types].xml                                          2ec9744d29ad | 2ec9744d29ad
+   ≠ _rels/.rels                                                  7ec91d420386 | dc59b2c2edb5
+   = lib/net8.0/Pieza.dll                                         f31631a0f0ed | f31631a0f0ed
+   = lib/net8.0/Pieza.runtimeconfig.json                          97c9700542b6 | 97c9700542b6
+   ≠ package/services/metadata/core-properties/88c6cb5cf3264d8eb709ef7e4ec0235c.psmdcp f4d2d2cbd90c | (no está)
+   ≠ package/services/metadata/core-properties/a16e5c13c09540a5ac6fd67efa514215.psmdcp (no está) | f4d2d2cbd90c
+--- mapa de SourceLink en el PDB de (4): PathMap a mano no lo normaliza
+   pm_a   {"documents":{"/w/a/*":"https://raw.githubusercontent.com/ejemplo-lab/pieza/9e618f99ed4ff43a5ecbd42299f9c38ec93fd445/*"}}
+   pm_b   {"documents":{"/home/x/otra/*":"https://raw.githubusercontent.com/ejemplo-lab/pieza/9e618f99ed4ff43a5ecbd42299f9c38ec93fd445/*"}}
+
+--- ruta del PDB grabada en la DLL (lo que cambia entre (2)a y (2)b):
+   ci_a   /_/obj/Release/net8.0/Pieza.pdb
+   dev_a  /w/a/obj/Release/net8.0/Pieza.pdb
+   dev_b  /home/x/otra/obj/Release/net8.0/Pieza.pdb
+--- fechas dentro del .nupkg de ci_a (zip): primeras entradas
+   (2026, 10, 7, 14, 40, 22) _rels/.rels
+   (2026, 10, 7, 14, 40, 22) Pieza.nuspec
+   (2026, 10, 7, 14, 40, 22) lib/net8.0/Pieza.runtimeconfig.json
+--- fechas dentro del .nupkg de e8_a (zip): primeras entradas
+   (2026, 10, 7, 14, 41, 22) _rels/.rels
+   (2026, 10, 7, 14, 41, 22) Pieza.nuspec
+   (2026, 10, 7, 14, 41, 22) lib/net8.0/Pieza.runtimeconfig.json
+--- fechas dentro del .nupkg de n11_a (zip): primeras entradas
+   (2026, 10, 7, 14, 42, 38) _rels/.rels
+   (2026, 10, 7, 14, 42, 38) Pieza.nuspec
+   (2026, 10, 7, 14, 42, 38) lib/net8.0/Pieza.dll
+--- fechas dentro del .nupkg de e11_a (zip): primeras entradas
+   (2026, 1, 1, 0, 0, 0) _rels/.rels
+   (2026, 1, 1, 0, 0, 0) Pieza.nuspec
+   (2026, 1, 1, 0, 0, 0) lib/net8.0/Pieza.dll

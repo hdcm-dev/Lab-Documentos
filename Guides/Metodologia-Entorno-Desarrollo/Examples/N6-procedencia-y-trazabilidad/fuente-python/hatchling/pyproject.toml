@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling==1.32.4"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pieza-lab"
+version = "1.4.0"
+requires-python = ">=3.12"
+dependencies = ["six==1.17.0"]
+[project.urls]
+Source = "https://github.com/ejemplo-lab/pieza"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pieza"]
+# PEP 770: el SBOM viaja DENTRO de la rueda, en .dist-info/sboms/. Lo genera la build (ver experimento).
+sbom-files = ["sbom.cdx.json"]

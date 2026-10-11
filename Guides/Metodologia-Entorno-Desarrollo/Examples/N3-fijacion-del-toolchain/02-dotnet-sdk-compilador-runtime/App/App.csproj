@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- El TFM fija la superficie de API y la versión de C# por defecto; NO fija el SDK ni el compilador. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Sin LangVersion: el compilador elige la versión de C# asociada al TFM (net8.0 -> C# 12). -->
+  </PropertyGroup>
+</Project>

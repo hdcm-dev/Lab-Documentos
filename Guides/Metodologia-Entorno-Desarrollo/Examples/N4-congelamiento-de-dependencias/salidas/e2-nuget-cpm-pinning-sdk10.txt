@@ -1,0 +1,39 @@
+
+===== 1. CPM + transitive pinning: Options (transitiva) queda fijada por la versión central =====
+  Restored /tmp/w/App/App.csproj (in 4.34 sec).
+Logging   ->  "type": "Direct",  "requested": "[8.0.0, )",  "resolved": "8.0.0", 
+Options   ->  "type": "CentralTransitive",  "requested": "[8.0.2, )",  "resolved": "8.0.2", 
+Primitives->  "type": "Transitive",  "resolved": "8.0.0", 
+
+===== 2. Sin transitive pinning la misma PackageVersion NO gobierna a la transitiva =====
+  Restored /tmp/w/App/App.csproj (in 1.13 sec).
+Options   ->  "type": "CentralTransitive",  "requested": "[8.0.2, )",  "resolved": "8.0.0", 
+
+===== 3. Pinning no puede bajar una versión: Options 7.0.0 < 8.0.0 pedida por Logging =====
+error NU1109: Detected package downgrade: Microsoft.Extensions.Options from 8.0.0 to centrally defined 7.0.0. Update the centrally managed package version to a higher ver
+exit=1
+
+===== 4. Con CPM, un Version en el .csproj es un error (la versión vive en un solo lugar) =====
+error NU1008: The following PackageReference items cannot define a value for Version: Microsoft.Extensions.Logging. Projects using Central Package Management must define 
+exit=1
+
+===== 5. 'Version' es un mínimo: pinear Primitives a 8.0.2, que NO existe en nuget.org =====
+-- 5a. CON lock (RestorePackagesWithLockFile=true, el del .csproj):
+   advertencias NU1603: 0   restore rc=0
+   Primitives->  "type": "CentralTransitive",  "requested": "[8.0.2, )",  "resolved": "9.0.0", 
+-- 5b. SIN lock (-p:RestorePackagesWithLockFile=false):
+   warning NU1603: App depends on Microsoft.Extensions.Primitives (>= 8.0.2) but Microsoft.Extensions.Primitives 8.0.2 was not found. Microsoft.Extensions.Primitives 9.0.0 was resolved instead.
+   restore rc=0
+-- 5c. SIN lock y NU1603 como error (-p:WarningsAsErrors=NU1603; en el repo, la línea comentada de A.4):
+   error NU1603: Warning As Error: App depends on Microsoft.Extensions.Primitives (>= 8.0.2) but Microsoft.Extensions.Primitives 8.0.2 was not found. Microsoft.Extensions.Primitives 9.0.0 was resolved instead.
+   restore rc=1
+-- 5d. CON lock y NU1603 como error: el lock desarma el aviso
+   advertencias o errores NU1603: 0   restore rc=0
+   entrada completa de Primitives en packages.lock.json:
+         "Microsoft.Extensions.Primitives": {
+           "type": "CentralTransitive",
+           "requested": "[8.0.2, )",
+           "resolved": "9.0.0",
+           "contentHash": "N3qEBzmLMYiASUlKxxFIISP4AiwuPTHF5uCh+2CWSwwzAJiIYx0kBJsS30cp1nvhSySFAVi30jecD307jV+8Kg=="
+         }
+SDK: 10.0.400

@@ -1,0 +1,4 @@
+$ npx -y @devcontainers/cli@0.89.0 up --help | grep -E "mount-workspace-git-root|no-lockfile|frozen-lockfile"
+  --mount-workspace-git-root        Mount the workspace using its Git root.  [boolean] [default: true]
+  --no-lockfile                     Disable lockfile generation and verification.  [boolean] [default: false]
+  --frozen-lockfile                 Ensure lockfile exists and remains unchanged; fail otherwise.  [boolean] [default: false]

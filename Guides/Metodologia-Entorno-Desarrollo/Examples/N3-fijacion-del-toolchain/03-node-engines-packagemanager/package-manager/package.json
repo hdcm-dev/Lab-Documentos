@@ -1,0 +1,6 @@
+{
+  "name": "n3-package-manager",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.18.0"
+}

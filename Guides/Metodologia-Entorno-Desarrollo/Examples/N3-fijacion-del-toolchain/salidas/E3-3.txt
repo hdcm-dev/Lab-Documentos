@@ -1,0 +1,90 @@
+# E3-3 — 03-node-engines-packagemanager — 2026-10-09
+################ node:22-alpine  (node v22.23.2, npm 10.9.8)
+--- engines: npm install
+    npm warn EBADENGINE Unsupported engine {
+    npm warn EBADENGINE   package: 'n3-engines@1.0.0',
+    npm warn EBADENGINE   required: { node: '>=24 <25' },
+    npm warn EBADENGINE   current: { node: 'v22.23.2', npm: '10.9.8' }
+    npm warn EBADENGINE }
+    rc=0
+--- engines-strict: npm install
+    npm error code EBADENGINE
+    npm error engine Unsupported engine
+    npm error engine Not compatible with your version of node/npm: n3-engines@1.0.0
+    npm error notsup Not compatible with your version of node/npm: n3-engines@1.0.0
+    npm error notsup Required: {"node":">=24 <25"}
+    npm error notsup Actual:   {"npm":"10.9.8","node":"v22.23.2"}
+    npm error A complete log of this run can be found in: /tmp/.npm/_logs/2026-10-09T18_02_25_965Z-debug-0.log
+    rc=1
+--- dev-engines: npm install
+    npm error code EBADDEVENGINES
+    npm error EBADDEVENGINES The developer of this package has specified the following through devEngines
+    npm error EBADDEVENGINES Invalid devEngines.runtime
+    npm error EBADDEVENGINES Invalid semver version ">=24 <25" does not match "v22.23.2" for "runtime"
+    npm error EBADDEVENGINES {
+    npm error EBADDEVENGINES   current: { name: 'node', version: 'v22.23.2' },
+    npm error EBADDEVENGINES   required: { name: 'node', version: '>=24 <25', onFail: 'error' }
+    npm error EBADDEVENGINES }
+    npm error A complete log of this run can be found in: /tmp/.npm/_logs/2026-10-09T18_02_27_094Z-debug-0.log
+    rc=1
+--- package-manager: corepack (pide pnpm, se usa yarn)
+    This project is configured to use pnpm because /tmp/w/package.json has a "packageManager" field
+    rc=1
+    pnpm que entrega corepack: 10.18.0
+    npm install (corepack no intercepta npm por defecto): rc=0
+################ node:24-alpine  (node v24.21.0, npm 11.19.0)
+--- engines: npm install
+    rc=0
+--- engines-strict: npm install
+    rc=0
+--- dev-engines: npm install
+    rc=0
+--- package-manager: corepack (pide pnpm, se usa yarn)
+    This project is configured to use pnpm because /tmp/w/package.json has a "packageManager" field
+    rc=1
+    pnpm que entrega corepack: 10.18.0
+    npm install (corepack no intercepta npm por defecto): rc=0
+################ node:26-alpine  (node v26.10.0, npm 11.19.1)
+--- engines: npm install
+    npm warn EBADENGINE Unsupported engine {
+    npm warn EBADENGINE   package: 'n3-engines@1.0.0',
+    npm warn EBADENGINE   required: { node: '>=24 <25' },
+    npm warn EBADENGINE   current: { node: 'v26.10.0', npm: '11.19.1' }
+    npm warn EBADENGINE }
+    rc=0
+--- engines-strict: npm install
+    npm error code EBADENGINE
+    npm error engine Unsupported engine
+    npm error engine Not compatible with your version of node/npm: n3-engines@1.0.0
+    npm error notsup Not compatible with your version of node/npm: n3-engines@1.0.0
+    npm error notsup Required: {"node":">=24 <25"}
+    npm error notsup Actual:   {"node":"v26.10.0","npm":"11.19.1"}
+    npm error A complete log of this run can be found in: /tmp/.npm/_logs/2026-10-09T18_02_41_452Z-debug-0.log
+    rc=1
+--- dev-engines: npm install
+    npm error code EBADDEVENGINES
+    npm error EBADDEVENGINES The developer of this package has specified the following through devEngines
+    npm error EBADDEVENGINES Invalid devEngines.runtime
+    npm error EBADDEVENGINES Invalid semver version ">=24 <25" does not match "v26.10.0" for "runtime"
+    npm error EBADDEVENGINES {
+    npm error EBADDEVENGINES   current: { name: 'node', version: 'v26.10.0' },
+    npm error EBADDEVENGINES   required: { name: 'node', version: '>=24 <25', onFail: 'error' }
+    npm error EBADDEVENGINES }
+    npm error A complete log of this run can be found in: /tmp/.npm/_logs/2026-10-09T18_02_42_745Z-debug-0.log
+    rc=1
+--- package-manager: corepack (pide pnpm, se usa yarn)
+    corepack: no viene con esta versión de Node
+--- .nvmrc pide 24; node y npm no lo leen: npm install en node:22 con ese .nvmrc presente
+    v22.23.2
+    
+    up to date in 455ms
+    rc=0
+--- pnpm-pm-on-fail: pnpm 12.10.1 instalado con npm, SIN Corepack; el proyecto declara packageManager pnpm@10.18.0
+    pnpm global: 12.10.1
+    pnpm --version en el proyecto (pmOnFail por defecto, download):
+    10.18.0
+    rc=0
+    con --pm-on-fail=error:
+    Error: ERR_PNPM_BAD_PM_VERSION
+      × This project is configured to use 10.18.0 of pnpm. Your current pnpm is
+    rc=1

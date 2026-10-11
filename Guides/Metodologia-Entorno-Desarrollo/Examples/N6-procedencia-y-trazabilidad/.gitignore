@@ -1,0 +1,15 @@
+# Artefactos de build y entornos locales: nunca se versionan (los experimentos trabajan en directorios temporales)
+bin/
+obj/
+out/
+dist/
+drop/
+node_modules/
+.venv/
+__pycache__/
+*.nupkg
+*.snupkg
+*.tgz
+*.whl
+# Claves de firma del laboratorio: se generan y se borran en cada corrida
+cosign.key

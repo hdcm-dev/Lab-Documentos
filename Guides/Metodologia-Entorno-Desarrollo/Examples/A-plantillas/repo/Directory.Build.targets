@@ -1,0 +1,12 @@
+<Project>
+  <!-- Anexo A.4b. El lock que gobierna es el del proyecto en la punta de la cadena.
+       Va en .targets y no en .props: cuando se evalúa Directory.Build.props,
+       OutputType todavía no está definido y la condición no se cumple nunca.
+       WinExe: WinForms y WPF (el SDK cambia Exe por WinExe en esas aplicaciones).
+       Un proyecto de prueba no recibe lock por esta regla: su OutputType=Exe llega desde
+       un paquete que el restore no evalúa; si se lo quiere congelar, se declara
+       RestorePackagesWithLockFile en su .csproj. -->
+  <PropertyGroup Condition="'$(OutputType)' == 'Exe' Or '$(OutputType)' == 'WinExe'">
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+</Project>

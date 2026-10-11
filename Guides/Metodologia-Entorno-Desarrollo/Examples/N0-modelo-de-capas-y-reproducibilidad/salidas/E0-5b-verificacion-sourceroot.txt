@@ -1,0 +1,4 @@
+SDK 8.0.425
+(a) con git + CI=true + EnableSourceControlManagerQueries=false: /home/x/otra/obj/Release/net8.0/Calculo.pdb
+(b) sin git + CI=true + SourceRoot declarado a mano:            /_1/obj/Release/net8.0/Calculo.pdb
+(c) sin git + PathMap=/home/x/otra/=/_/ explícito:              /_/obj/Release/net8.0/Calculo.pdb

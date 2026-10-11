@@ -1,0 +1,4 @@
+{
+  // Sin rollForward: el default es "patch" (mismo major.minor.banda, parche más alto).
+  "sdk": { "version": "8.0.400" }
+}

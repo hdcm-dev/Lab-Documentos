@@ -1,0 +1,36 @@
+# .github/workflows/ci.yml — Anexo A.12. Ejemplo NO ejecutado en el laboratorio (requiere GitHub).
+# A.17 lee el digest de esta ruta; con otro nombre, WORKFLOW_FILE=<ruta>.
+name: compuerta
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+  packages: read          # descargar la imagen privada de GHCR (nace privada)
+jobs:
+  compuerta:
+    runs-on: ubuntu-24.04
+    # Imagen construida desde imagen/Dockerfile (A.10), la misma receta que el devcontainer (A.9),
+    # publicada en el registro de imágenes del equipo. El digest se declara sólo acá: lo lee
+    # registrar-entorno.sh (A.17) y lo mueve el PR que abre el workflow que publica la imagen.
+    container:
+      image: ghcr.io/org/imagen-ci@sha256:0000000000000000000000000000000000000000000000000000000000000000
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      # Acción fijada por SHA completo; la etiqueta va como comentario.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # Cada run: es un shell propio: la variable llega a los pasos siguientes por GITHUB_ENV.
+      - run: echo "SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)" >> "$GITHUB_ENV"
+      # bash explícito: no depende del bit de ejecución registrado en git.
+      - run: bash tools/ci/compuerta.sh --base "origin/${{ github.base_ref }}"
+        if: github.event_name == 'pull_request'
+      - run: bash tools/ci/compuerta.sh
+        if: github.event_name == 'push'
+      # 8a: construir, registrar el entorno y, aparte, el SBOM con alcance declarado (9.2.3).
+      - run: dotnet build src/App -c Release -o out
+      - run: bash tools/ci/registrar-entorno.sh out/App.dll > out/registro-entorno.txt

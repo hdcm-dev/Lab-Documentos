@@ -1,0 +1,12 @@
+== sin-bom.sh
+   dash : hola$ (exit 0)
+   bash : hola$ (exit 0)
+   execve sin shell (subprocess, shell=False): 'hola\n' exit 0
+== con-bom.sh
+   dash : ./con-bom.sh: 1: M-oM-;M-?#!/bin/sh: not found$ hola$ (exit 0)
+   bash : ./con-bom.sh: line 1: M-oM-;M-?#!/bin/sh: No such file or directory$ hola$ (exit 0)
+   execve sin shell (subprocess, shell=False): OSError 8 Exec format error
+== crlf.sh
+   dash : dash: 1: ./crlf.sh: not found$ (exit 127)
+   bash : bash: line 1: ./crlf.sh: cannot execute: required file not found$ (exit 127)
+   execve sin shell (subprocess, shell=False): FileNotFoundError 2 No such file or directory

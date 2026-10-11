@@ -1,0 +1,28 @@
+
+=== node: compuerta sobre el repo recién congelado
+COMPUERTA commit=e3f2807 alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 8 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [n/a]   toolchain .NET: no hay global.json
+COMPUERTA [ok]    toolchain Node: 24.21.0 cumple .nvmrc=24
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [n/a]   grafo NuGet: no hay packages.lock.json
+COMPUERTA [ok]    grafo npm: npm ci instaló exactamente package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0
+
+=== node: se cambia la dependencia declarada sin regenerar el lock
+COMPUERTA commit=5403a97 alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 8 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [n/a]   toolchain .NET: no hay global.json
+COMPUERTA [ok]    toolchain Node: 24.21.0 cumple .nvmrc=24
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [n/a]   grafo NuGet: no hay packages.lock.json
+    npm error code EUSAGE
+    npm error
+    npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+    npm error
+COMPUERTA [FALLA] grafo npm: package-lock.json no coincide con package.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1

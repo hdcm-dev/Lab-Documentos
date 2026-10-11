@@ -1,0 +1,16 @@
+# E3-6 — 06-dotnet-sdk-y-lock — 2026-10-09
+--- 1. Genera packages.lock.json con el SDK 8
+8.0.425
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+rc=0
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[8.0.31, )",
+        "resolved": "8.0.31",
+--- 2. Restauración estricta con el mismo SDK 8
+An issue was encountered verifying workloads. For more information, run "dotnet workload update".
+rc=0
+--- 3. Restauración estricta con el SDK 10 (mismo lock, mismo código)
+10.0.400
+/w/Lib.csproj : error NU1004: The package reference Microsoft.NET.ILLink.Tasks version has changed from [8.0.31, ) to [8.0.30, ).The packages lock file is inconsistent with the project dependencies so restore can't be run in locked mode. Disable the RestoreLockedMode MSBuild property or pass an explicit --force-evaluate option to run restore to update the lock file.
+rc=1

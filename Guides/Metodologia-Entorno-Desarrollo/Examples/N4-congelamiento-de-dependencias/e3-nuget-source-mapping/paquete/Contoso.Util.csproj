@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Paquete sintético que el script empaqueta DOS veces con el mismo Id y versión:
+       una como paquete interno legítimo y otra como impostor (simula dependency confusion
+       o un paquete republicado con otro contenido). El contenido difiere por Origen. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Contoso.Util</PackageId>
+    <Version>1.0.0</Version>
+    <Origen Condition="'$(Origen)' == ''">interno</Origen>
+    <DefineConstants Condition="'$(Origen)' == 'impostor'">$(DefineConstants);IMPOSTOR</DefineConstants>
+  </PropertyGroup>
+</Project>

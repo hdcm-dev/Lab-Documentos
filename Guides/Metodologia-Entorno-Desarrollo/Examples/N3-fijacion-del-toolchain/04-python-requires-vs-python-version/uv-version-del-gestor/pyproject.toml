@@ -1,0 +1,9 @@
+[project]
+name = "n3-app"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = []
+
+# Fija la versión del GESTOR (uv), no la del intérprete.
+[tool.uv]
+required-version = "==0.1.0"

@@ -1,0 +1,51 @@
+## 1. Patrón con llaves
+   | * text=auto eol=lf
+   | *.{cmd,bat} text eol=crlf
+-- con llaves
+   host (git version 2.47.3):
+     a.cmd: eol: lf
+     b.BAT: eol: lf
+     c.bat: eol: lf
+     d.sh: eol: lf
+   contenedor:
+     (git version 2.39.5)
+     a.cmd: eol: lf
+     b.BAT: eol: lf
+     c.bat: eol: lf
+     d.sh: eol: lf
+
+## 1b. Receta literal de code.visualstudio.com/docs/devcontainers/tips-and-tricks
+   | * text=auto eol=lf
+   | *.{cmd,[cC][mM][dD]} text eol=crlf
+   | *.{bat,[bB][aA][tT]} text eol=crlf
+-- receta de VS Code
+   host (git version 2.47.3):
+     a.cmd: eol: lf
+     b.BAT: eol: lf
+     c.bat: eol: lf
+     d.sh: eol: lf
+   contenedor:
+     (git version 2.39.5)
+     a.cmd: eol: lf
+     b.BAT: eol: lf
+     c.bat: eol: lf
+     d.sh: eol: lf
+
+## 2. Un patrón por extensión (con clases para mayúsculas)
+   | * text=auto eol=lf
+   | *.cmd text eol=crlf
+   | *.bat text eol=crlf
+   | *.[cC][mM][dD] text eol=crlf
+   | *.[bB][aA][tT] text eol=crlf
+-- sin llaves
+   host (git version 2.47.3):
+     a.cmd: eol: crlf
+     b.BAT: eol: crlf
+     c.bat: eol: crlf
+     d.sh: eol: lf
+   contenedor:
+     (git version 2.39.5)
+     a.cmd: eol: crlf
+     b.BAT: eol: crlf
+     c.bat: eol: crlf
+     d.sh: eol: lf

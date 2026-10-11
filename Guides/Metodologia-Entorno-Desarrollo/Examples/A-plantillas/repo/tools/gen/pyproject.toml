@@ -1,0 +1,13 @@
+[project]
+name = "gen"
+version = "1.0.0"
+# Contrato del paquete: lo validan pip y uv y acota la resolución del lock.
+requires-python = "==3.12.*"
+dependencies = []
+
+[tool.uv]
+# Versión del gestor que escribe uv.lock.
+required-version = "==0.12.23"
+# En CI y en la imagen: sin descargas implícitas de intérpretes.
+python-downloads = "never"
+package = false

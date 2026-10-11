@@ -1,0 +1,14 @@
+ConBom.cs:
+	wrong character encoding ("UTF-8-SIG" instead of "utf-8")
+Cp1252.cs:
+	wrong character encoding ("ISO-8859-1" instead of "utf-8")
+SinBom.razor:
+	wrong character encoding ("UTF-8" instead of "utf-8-bom")
+conbom.json:
+	wrong character encoding ("UTF-8-SIG" instead of "utf-8")
+crlf.sh:
+	not all lines have the correct end of line character
+	wrong line endings or no final newline
+
+6 errors found
+rc=1

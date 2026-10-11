@@ -1,0 +1,34 @@
+# Anexo A.13. El bot propone; la compuerta verifica; el revisor decide.
+version: 2
+updates:
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      parches-nuget:
+        update-types: ["patch"]
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+  - package-ecosystem: "uv"
+    directory: "/tools/gen"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/imagen"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

@@ -1,0 +1,12 @@
+SDK 8.0.425
+1) servidor frío, CodePage=1252:                 error CS2016 
+2) otra vez (servidor ya levantado):             error CS2016 
+3a) servidor calentado con un .cs UTF-8:         error CS2016 
+3b) servidor calentado con un .cs cp1252 (fallback): Build succeeded 
+4) sin servidor (UseSharedCompilation=false):     Build succeeded 
+SDK 10.0.400
+1) servidor frío, CodePage=1252:                 Build succeeded 
+2) otra vez (servidor ya levantado):             Build succeeded 
+3a) servidor calentado con un .cs UTF-8:         Build succeeded 
+3b) servidor calentado con un .cs cp1252 (fallback): Build succeeded 
+4) sin servidor (UseSharedCompilation=false):     Build succeeded 

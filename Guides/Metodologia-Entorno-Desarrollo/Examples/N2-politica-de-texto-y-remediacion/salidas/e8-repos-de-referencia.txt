@@ -1,0 +1,86 @@
+fecha de consulta: 2026-10-07T23:40Z
+=================== dotnet/eShop @ main dc7ea499cd35
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+* text=auto
+*.sh text eol=lf
+-- .editorconfig (secciones con charset)
+[*.{cs,csx,vb,vbx}] -> charset = utf-8-bom
+-- global.json: rollForward
+    "version": "10.0.302",
+    "rollForward": "latestFeature",
+-- packages.lock.json versionados (árbol completo de main)
+archivos=1430 truncado=False packages.lock.json=0 Directory.Packages.props=1
+=================== dotnet/roslyn @ main cb4f1f3c329f
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+* text=auto encoding=UTF-8
+*.sh text eol=lf
+-- .editorconfig (secciones con charset)
+[*.{cs,csx,vb,vbx}] -> charset = utf-8-bom
+-- global.json: rollForward
+    "version": "11.0.100-rc.1.26425.128",
+    "rollForward": "patch"
+-- packages.lock.json versionados (árbol completo de main)
+archivos=40533 truncado=False packages.lock.json=0 Directory.Packages.props=8
+=================== dotnet/aspnetcore @ main 4f8bb2b67204
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+* text=auto
+*.sh eol=lf
+gradlew eol=lf
+jquery*.js eol=lf
+jquery*.map eol=lf
+bootstrap*.js eol=lf
+-- .editorconfig (secciones con charset)
+[*] -> charset = utf-8
+[*.{razor,cshtml}] -> charset = utf-8-bom
+[*.{received,verified}.{txt,xml,json}] -> charset = "utf-8-bom"
+-- global.json: rollForward
+    "version": "11.0.100-rc.1.26420.103",
+-- packages.lock.json versionados (árbol completo de main)
+archivos=20952 truncado=False packages.lock.json=0 Directory.Packages.props=2
+=================== dotnet/runtime @ main 836764163841
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+* text=auto
+*.in text eol=lf
+*.sh text eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sln text eol=crlf
+-- .editorconfig (secciones con charset)
+[*.{csproj,locproj,nativeproj,proj,resx,slnx,vbproj}] -> charset = utf-8
+-- global.json: rollForward
+    "version": "11.0.100-rc.1.26420.103",
+    "rollForward": "major",
+-- packages.lock.json versionados (árbol completo de main)
+archivos=55013 truncado=True packages.lock.json=0 Directory.Packages.props=0
+=================== dotnet/sdk @ main 5d9d41569e0a
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+*           text=auto
+*.sln        text       eol=crlf
+*.sh        text        eol=lf
+*.verified.txt text eol=lf working-tree-encoding=UTF-8
+*.verified.xml text eol=lf working-tree-encoding=UTF-8
+*.verified.json text eol=lf working-tree-encoding=UTF-8
+-- .editorconfig (secciones con charset)
+[*.{csproj,vbproj,proj,nativeproj,locproj}] -> charset = utf-8-bom
+[*.{received,verified}.{txt,xml,json,sh,zsh,nu,fish,ps1}] -> charset = "utf-8-bom"
+-- global.json: rollForward
+    "version": "11.0.100-rc.1.26420.103",
+    "rollForward": "latestFeature"
+-- packages.lock.json versionados (árbol completo de main)
+archivos=15597 truncado=False packages.lock.json=4 Directory.Packages.props=6
+    test/TestAssets/TestPackages/TemplateEngine/test_templates/SourceWithExcludeAndWithout/With/packages.lock.json
+    test/TestAssets/TestPackages/TemplateEngine/test_templates/SourceWithExcludeAndWithout/Without/packages.lock.json
+    test/TestAssets/TestPackages/dotnet-new/test_templates/SourceWithExcludeAndWithout/With/packages.lock.json
+    test/TestAssets/TestPackages/dotnet-new/test_templates/SourceWithExcludeAndWithout/Without/packages.lock.json
+=================== dotnet/msbuild @ main a6f6bc61ea22
+-- .gitattributes (reglas globales y de eol, sin comentarios)
+* text=auto
+*.sh text eol=lf
+*.verified.txt text eol=lf working-tree-encoding=UTF-8
+-- .editorconfig (secciones con charset)
+[*.{csproj,vbproj,proj,nativeproj,locproj}] -> charset = utf-8
+-- global.json: rollForward
+    "version": "11.0.100-rc.1.26420.103",
+      "version": "18.6"
+-- packages.lock.json versionados (árbol completo de main)
+archivos=3672 truncado=False packages.lock.json=0 Directory.Packages.props=5

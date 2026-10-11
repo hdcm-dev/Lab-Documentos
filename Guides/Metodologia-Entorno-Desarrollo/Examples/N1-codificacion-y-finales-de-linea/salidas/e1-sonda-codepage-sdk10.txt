@@ -1,0 +1,5 @@
+Encoding.Default           : utf-8
+GetEncoding(0) sin provider: utf-8
+1252 sin provider: NotSupportedException
+GetEncoding(0) con provider: utf-8
+GetEncoding(1252) con provider: windows-1252

@@ -1,0 +1,8 @@
+Python 3.12.14 | Unicode 15.0.0
+  U+00C7 LATIN CAPITAL LETTER C WITH CEDILLA: categoría Lu
+  U+00F3 LATIN SMALL LETTER O WITH ACUTE: categoría Ll
+  U+FFFD REPLACEMENT CHARACTER: categoría So
+  U+FEFF ZERO WIDTH NO-BREAK SPACE: categoría Cf
+  bytes donde cp1252 != Latin-1: 32, rango 0x80-0x9f
+  en Latin-1 esos bytes son controles C1: True
+  bytes sin carácter en cp1252 (Python): 0x81 0x8d 0x8f 0x90 0x9d

@@ -1,0 +1,126 @@
+== 1. Política de texto: qué resuelve .editorconfig y qué aplica .gitattributes
+  src/App/Program.cs           editorconfig: charset=utf-8 end_of_line=lf insert_final_newline=true         gitattributes: text: auto eol: lf 
+  Pages/X.razor                editorconfig: charset=utf-8-bom end_of_line=lf insert_final_newline=true     gitattributes: text: auto eol: lf 
+  App.sln                      editorconfig: charset=utf-8-bom end_of_line=lf insert_final_newline=true     gitattributes: text: auto eol: lf 
+  tools/x.ps1                  editorconfig: charset=utf-8-bom end_of_line=lf insert_final_newline=true     gitattributes: text: auto eol: lf 
+  build.cmd                    editorconfig: charset=utf-8 end_of_line=crlf insert_final_newline=true       gitattributes: text: set eol: crlf 
+  tools/x.sh                   editorconfig: charset=utf-8 end_of_line=lf insert_final_newline=true         gitattributes: text: set eol: lf 
+  src/App/packages.lock.json   editorconfig: charset=utf-8 end_of_line=lf insert_final_newline=unset        gitattributes: text: set eol: lf 
+  web/package-lock.json        editorconfig: charset=utf-8 end_of_line=lf insert_final_newline=unset        gitattributes: text: set eol: lf 
+  tools/gen/uv.lock            editorconfig: charset=utf-8 end_of_line=lf insert_final_newline=unset        gitattributes: text: set eol: lf 
+-- compuerta de texto de N2 sobre las propias plantillas:
+POLITICA-TEXTO: 25 archivo(s) revisado(s), 0 violación(es)
+  rc=0
+== 1b. Un dotnet new console dentro del repo, con la variante A (*.cs sin BOM):
+warning: in the working copy of 'tmp/Nueva/Nueva.csproj', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tmp/Nueva/Program.cs', CRLF will be replaced by LF the next time Git touches it
+  POLITICA-TEXTO: tmp/Nueva/Nueva.csproj: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+  POLITICA-TEXTO: tmp/Nueva/Program.cs: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+  POLITICA-TEXTO: 2 archivo(s) revisado(s), 2 violación(es)
+  rc=1 (se esperan 2 violaciones: Program.cs y Nueva.csproj con BOM)
+warning: in the working copy of 'tmp/Nueva/Nueva.csproj', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'tmp/Nueva/Program.cs', CRLF will be replaced by LF the next time Git touches it
+-- normalizados (sin BOM) antes del primer commit:
+  POLITICA-TEXTO: 2 archivo(s) revisado(s), 0 violación(es)
+  rc=0
+== 1c. Variante B (A.1) sobre una solución creada por el SDK y convertida con BOM
+warning: in the working copy of 'Heredado.sln', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/App/App.csproj', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/App/Program.cs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Lib/Class1.cs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Lib/Lib.csproj', CRLF will be replaced by LF the next time Git touches it
+  POLITICA-TEXTO: Directory.Build.props: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+  POLITICA-TEXTO: Directory.Build.targets: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+  POLITICA-TEXTO: Directory.Packages.props: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+  POLITICA-TEXTO: 11 archivo(s) revisado(s), 3 violación(es)
+  rc=1 (se esperan 3: los Directory.Build.* y Directory.Packages.props sin BOM)
+  POLITICA-TEXTO: 11 archivo(s) revisado(s), 0 violación(es)
+  rc=0
+== 2. .NET: la condición de CI de Directory.Build.props
+8.0.425
+  local   (sin variable)   {"Properties":{"ContinuousIntegrationBuild":"","RestoreLockedMode":"","RestorePackagesWithLockFile":"true","LangVersion":"12.0"}}
+  github  CI=true          {"Properties":{"ContinuousIntegrationBuild":"true","RestoreLockedMode":"true","RestorePackagesWithLockFile":"true","LangVersion":"12.0"}}
+  gitlab  CI=true          {"Properties":{"ContinuousIntegrationBuild":"true","RestoreLockedMode":"true","RestorePackagesWithLockFile":"true","LangVersion":"12.0"}}
+  azure   TF_BUILD=True    {"Properties":{"ContinuousIntegrationBuild":"true","RestoreLockedMode":"true","RestorePackagesWithLockFile":"true","LangVersion":"12.0"}}
+== 2b. Lock sólo en los ejecutables (Directory.Build.targets): App (Exe) y una biblioteca Lib
+  restore local App rc=0; packages.lock.json: SI
+  restore local Lib rc=0; packages.lock.json: NO
+  último byte del lock de App: }
+  CI=true restore --locked rc=0
+error NU1004: The package reference Newtonsoft.Json version has changed from [13.0.3, ) to [13.0.1, ).The packages lock file is inconsistent
+  CI=true dotnet run: {"señal":"Atención: lectura fuera de rango"}
+== 2c. Un WinExe (WinForms) recibe lock con A.4b
+  restore local rc=0; packages.lock.json: SI
+  {"Properties":{"OutputType":"WinExe","RestorePackagesWithLockFile":"true"}}
+== 3. Node: devEngines + engine-strict
+  v24.21.0 npm 11.19.0: rc=0 
+  v22.23.2 npm 10.9.8: rc=1 EBADDEVENGINES
+== 4. Python: pyproject.toml + .python-version con uv
+  python 3.12.15 pyproject OK
+  uv lock --check rc=0
+== 5. JSON con comentarios y YAML: sintaxis y esquema de dependabot.yml
+  devcontainer.json: JSONC válido; build.dockerfile = imagen/Dockerfile existe: True | PYTHON_VERSION igual a tools/gen/.python-version: True
+  global.json: JSON válido
+  web/package.json: JSON válido
+  ci.yml: YAML válido
+  dependabot.yml contra el esquema comunitario de SchemaStore: VÁLIDO | ecosistemas: dotnet-sdk, nuget, npm, uv, docker, github-actions
+== 6. Imagen de A.10 (imagen/Dockerfile): se construye y corre la plantilla web/ adentro
+  docker build rc=0
+  node v24.21.0, npm 11.19.0, Python 3.12.15, uv 0.12.23, dotnet 8.0.425, glibc 2.36
+  web/: npm install rc=0 
+build v24.21.0
+== 7. El hook de A.11 con el esqueleto de compuerta rechaza un .cs en cp1252
+  compuerta: esqueleto sin reemplazar; copiá la compuerta completa (Anexo A.11)
+  git commit rc=1 (el esqueleto falla a propósito hasta reemplazarlo)
+== 8. La compuerta completa de A.11, dentro de la imagen de A.10, sobre las plantillas con sus locks
+-- plantillas:
+COMPUERTA commit=… alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 29 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [ok]    toolchain Node: 24.21.0 cumple .nvmrc=24.21.0
+COMPUERTA [ok]    toolchain Python: 3.12.15 cumple tools/gen/.python-version=3.12.15
+COMPUERTA [ok]    grafo NuGet: src/App/packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: src/App/packages.lock.json requested = resolved
+COMPUERTA [ok]    grafo npm: npm ci instaló exactamente web/package-lock.json
+COMPUERTA [ok]    grafo uv: tools/gen/uv.lock al día (uv lock --check)
+COMPUERTA resultado=VERDE
+  rc=0
+-- un .cs en cp1252 en src/App, con el alcance del hook:
+    POLITICA-TEXTO: src/App/Alarma.cs: no es UTF-8 válido (byte 0xc7 en offset 22; ¿cp1252?)
+COMPUERTA resultado=ROJO (1 paso/s)
+  rc=1
+-- versión central inexistente (Primitives 8.0.2), con lock:
+  restore local, líneas NU1603: 0
+COMPUERTA [ok]    grafo NuGet: src/App/packages.lock.json coincide (--locked-mode)
+    Microsoft.Extensions.Primitives pide [8.0.2, ) y resolvió 9.0.0 (net8.0)
+COMPUERTA [FALLA] grafo NuGet: src/App/packages.lock.json resolvió otra versión que la pedida (revisar la declaración)
+COMPUERTA resultado=ROJO (1 paso/s)
+  rc=1
+-- web/package.json cambiado sin regenerar su lock:
+COMPUERTA [FALLA] grafo npm: web/package-lock.json no coincide con package.json
+COMPUERTA resultado=ROJO (1 paso/s)
+  rc=1
+-- web/ y tools/gen/ versionados SIN su lock, como quedan al copiar las plantillas (límite declarado, 10.2.2):
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+  rc=0 (verde: lo detecta la revisión, no la compuerta)
+== 9. Los run: de A.12 en la misma imagen: SOURCE_DATE_EPOCH por GITHUB_ENV, build y registro del entorno (A.17)
+  dotnet build rc=0
+  commit=386d768e39fce39de4d2215705603e381eb2e175 arbol_limpio=si
+  imagen=ghcr.io/org/imagen-ci@sha256:0000000000000000000000000000000000000000000000000000000000000000
+  dotnet_sdk=8.0.425 compilador_csharp=4.11.0-3.25569.22 (3fb752d4)
+  node=v24.21.0 npm=11.19.0
+  python=3.12.15 uv=0.12.23
+  sha256 src/App/packages.lock.json=696d9560bd754ce84f4e2300300f7c1bb218db0430a1ceb8b948fd73aac40baf
+  sha256 tools/gen/uv.lock=bcf2758b2d2d690bb9607c0727b50622d6bafe64cf4772e24fab2cfe855fe760
+  sha256 web/package-lock.json=72ab32c8c90269a3b223fca3ce3f0cd095212096bda6444490aba1c19fc3a81a
+  sha256 out/App.dll=c7ab264ac14a9c1afbdd0a8b1b6a31a34358abcfa5485347e9769f6808028d14
+  rc=0
+== 9b. El workflow guardado con otro nombre: el registro falla en vez de escribir NO DECLARADA
+  registro: no existe .github/workflows/ci.yml (indicá la ruta del workflow en WORKFLOW_FILE)
+  rc=1 (se espera 1)
+  imagen=ghcr.io/org/imagen-ci@sha256:0000000000000000000000000000000000000000000000000000000000000000
+== 10. El devcontainer de A.9 con la CLI de referencia, en host Linux
+  "outcome":"success"
+  uid=0 core.hooksPath=.githooks

@@ -1,0 +1,31 @@
+git version 2.39.5
+== 1) agregar BOM: el diff muestra la primera línea cambiada, pero a la vista es idéntica
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+0000000   -   n   a   m   e   s   p   a   c   e       L   a   b   ;  \n
+0000020   + 357 273 277   n   a   m   e   s   p   a   c   e       L   a
+0000040   b   ;  \n
+== 2) pasar a CRLF: TODAS las líneas cambian; git diff lo delata sólo con ^M o --ignore-cr-at-eol
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+   con --ignore-cr-at-eol: 0 archivo(s) con diferencias reales
+i/lf    w/crlf  attr/                 	Mensajes.cs
+== 3) cp1252: git lo trata como texto (no hay NUL) y el diff muestra bytes inválidos
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+   bytes de "Atención" en el diff:  41 74 65 6e 63 69 f3 6e 0a
+   git diff no avisa nada: para git son bytes; quien interpreta es el lector
+== 4) .gitattributes '* text=auto eol=lf': un CRLF agregado se normaliza al indexar
+warning: in the working copy of 'Mensajes.cs', CRLF will be replaced by LF the next time Git touches it
+   índice vs árbol tras add:
+i/lf    w/crlf  attr/text eol=lf      	Mensajes.cs
+   ¿queda algo por commitear?: no (el CRLF no entra al repo)
+== 5) working-tree-encoding: el repo guarda UTF-8 y el árbol de trabajo se escribe en cp1252
+warning: in the working copy of 'Legado.cs', LF will be replaced by CRLF the next time Git touches it
+   en el índice (blob):  41 74 65 6e 63 69 c3 b3 6e 0a
+   en disco (checkout):  41 74 65 6e 63 69 f3 6e 0a
+== 6) core.autocrlf=true (lo que Pro Git aconseja en Windows) sin .gitattributes: el checkout escribe CRLF
+i/lf    w/crlf  attr/                 	Mensajes.cs
+   bytes en disco con CR: 10  | git status limpio: 0 cambios
+== 7) git add --renormalize: aplicar .gitattributes a lo ya commiteado con CRLF
+i/crlf  w/crlf  attr/                 	Mensajes.cs
+i/lf    w/crlf  attr/text=auto eol=lf 	Mensajes.cs
+ Mensajes.cs    | 20 ++++++++++----------
+ 2 files changed, 11 insertions(+), 10 deletions(-)

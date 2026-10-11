@@ -1,0 +1,25 @@
+### 1. Qué trae cada imagen (repo pide: SDK 8.0.425, node 22.23.2, python 3.12.15)
+imagen                             tamaño   versiones
+sdk:8.0 (oficial)                  867 MB    sdk 8.0.425 sin node sin python 
+node:22-bookworm-slim (oficial)    227 MB    node v22.23.2 npm 10.9.8
+python:3.12-slim (oficial)         127 MB    python 3.12.14 sin uv 
+lab-n8-poliglota:local (única)    1156 MB   sdk 8.0.425 node v22.23.2 python 3.12.15 uv 0.12.23
+capas compartidas entre la imagen única y sdk:8.0: 11 de 16
+
+### 2. Imagen única: build.sh (compuerta + tres pasos + .NET), repo montado en /src
+== compuerta: OK
+gen: dist/Datos.g.cs generado con python 3.12.15
+web: dist/app.js generado con node v22.23.2
+sha256 Saludo.dll=cf57904bab98e3e427b3a3f02c5258bbf6c1ba9a0e39a2b099105afb0d71efaa
+
+### 3. Una imagen por componente (py -> web -> net) con python:3.12-slim tal como está en esta máquina
+error: No interpreter found for Python 3.12.15 in search path
+0.874 error: No interpreter found for Python 3.12.15 in search path
+ERROR: failed to solve: process "/bin/sh -c uv run --locked python gen.py dist/Datos.g.cs" did not complete successfully: exit code: 2
+
+### 4. La misma, con la imagen de Python fijada al parche que pide el repo
+gen: dist/Datos.g.cs generado con python 3.12.15
+web: dist/app.js generado con node v22.23.2
+#24 [net 7/7] RUN dotnet restore src/Saludo --locked-mode  && dotnet build src/Saludo -c Release --no-restore -p:ConstruirPoliglota=false       -p:ContinuousInt
+  Saludo -> /src/src/Saludo/bin/Release/net8.0/Saludo.dll
+cf57904bab98e3e427b3a3f02c5258bbf6c1ba9a0e39a2b099105afb0d71efaa  src/Saludo/bin/Release/net8.0/Saludo.dll

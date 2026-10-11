@@ -1,0 +1,4 @@
+{
+  // Piso 9.0.100 dentro de 9.0: no acepta un SDK 8 ni un 10.
+  "sdk": { "version": "9.0.100", "rollForward": "latestFeature" }
+}

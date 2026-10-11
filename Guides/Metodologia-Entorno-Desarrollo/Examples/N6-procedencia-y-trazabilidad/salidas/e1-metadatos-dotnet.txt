@@ -1,0 +1,27 @@
+commit del repo de juguete: 9e618f99ed4ff43a5ecbd42299f9c38ec93fd445
+imagen: mcr.microsoft.com/dotnet/sdk:8.0@sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743
+
+=== (1) build + pack como en la CI (CI=true => ContinuousIntegrationBuild), con el digest de la imagen
+InformationalVersion = 1.4.0+9e618f99ed4ff43a5ecbd42299f9c38ec93fd445
+AssemblyMetadata RepositoryUrl = https://github.com/ejemplo-lab/pieza.git
+AssemblyMetadata SdkVersion = 8.0.425
+AssemblyMetadata ImagenDigest = sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743
+Calculo: área de un círculo r=2 -> 12.5664
+
+=== (2) SourceLink: el mapa ruta->URL va dentro del PDB (bloque JSON legible)
+{"documents":{"/_/*":"https://raw.githubusercontent.com/ejemplo-lab/pieza/9e618f99ed4ff43a5ecbd42299f9c38ec93fd445/*"}}
+
+=== (3) El .nuspec del paquete lleva repositorio y commit (PublishRepositoryUrl)
+Pieza.1.4.0.nupkg            <repository type="git" url="https://github.com/ejemplo-lab/pieza.git" commit="9e618f99ed4ff43a5ecbd42299f9c38ec93fd445" />
+                             contenido: lib/net8.0/Pieza.dll
+Pieza.1.4.0.snupkg           <repository type="git" url="https://github.com/ejemplo-lab/pieza.git" commit="9e618f99ed4ff43a5ecbd42299f9c38ec93fd445" />
+                             contenido: lib/net8.0/Pieza.pdb
+
+=== (4) Árbol con cambios SIN commitear: la versión informativa sigue diciendo el mismo SHA
+InformationalVersion = 1.4.0+9e618f99ed4ff43a5ecbd42299f9c38ec93fd445
+ M Program.cs
+?? bin/
+?? obj/
+?? out/
+sha256 Pieza.dll del commit limpio : ebfe369ebdb4361d
+sha256 Pieza.dll con cambio local  : c121e6aa0e22775e  => el binario cambió y el metadato no lo dice

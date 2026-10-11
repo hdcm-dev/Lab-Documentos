@@ -1,0 +1,27 @@
+<Project>
+  <!-- Anexo A.4. Una sola definición de "estoy en CI" para todo el repo.
+       CI=true lo definen GitHub Actions y GitLab; TF_BUILD=True, Azure Pipelines.
+       Las comparaciones de MSBuild no distinguen mayúsculas. -->
+  <PropertyGroup Condition="'$(CI)' == 'true' Or '$(TF_BUILD)' == 'true' Or '$(GITHUB_ACTIONS)' == 'true'">
+    <!-- Rutas normalizadas (/_/) y build totalmente determinista. -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <!-- Restauración estricta: si el lock no coincide, NU1004 en vez de reescribirlo. -->
+    <RestoreLockedMode>true</RestoreLockedMode>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NU1603 como error en las dos políticas de la guía (6.4): corta el restore de un
+         proyecto sin lock cuando NuGet aproxima una versión que no existe. Con lock no se
+         dispara (E4-2): esa aproximación la detecta la compuerta (requested = resolved). -->
+    <WarningsAsErrors>$(WarningsAsErrors);NU1603</WarningsAsErrors>
+    <!-- Capa 2: el TFM fija la versión de C#. Sólo si hace falta otra, y nunca "latest":
+    <LangVersion>12.0</LangVersion> -->
+    <!-- Capa 6: URL del repo y commit en el .nuspec; símbolos aparte. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- NO configurar PathMap a mano: no normaliza el mapa de SourceLink. -->
+    <!-- Con qué SDK e imagen se construyó va AL LADO del artefacto (registro del entorno, A.17),
+         no adentro: un dato incrustado que cambia con la imagen cambia el hash de la DLL. -->
+  </PropertyGroup>
+</Project>

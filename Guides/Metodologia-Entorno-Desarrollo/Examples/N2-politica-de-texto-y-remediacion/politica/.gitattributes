@@ -1,0 +1,20 @@
+# Política de texto del repositorio (plantilla N2). La lee GIT al hacer
+# add/commit (clean) y checkout (smudge). Gana sobre core.autocrlf/core.eol
+# de cada máquina, que sólo deciden lo que el atributo deja sin especificar.
+
+# Todo lo que git detecte como texto: LF en el índice y LF en el working tree,
+# en Windows y en Linux por igual (idénticos bytes en ESC-01..ESC-05).
+* text=auto eol=lf
+
+# Excepciones que exige el consumidor del archivo.
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sh  text eol=lf
+
+# Binarios explícitos: sin conversión ni diff de texto.
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.snk binary

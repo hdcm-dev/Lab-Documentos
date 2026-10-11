@@ -1,0 +1,16 @@
+== Python 3.12.14, LC_ALL=es_AR.ISO-8859-1 (locale existente)
+open() usa ISO-8859-1 | utf8_mode 0
+  lee: 'Atenci\xc3\xb3n: se\xc3\xb1al'
+== mismo locale, modo UTF-8 forzado (-X utf8; equivale a PYTHONUTF8=1, que -I ignora)
+open() usa utf-8 | utf8_mode 1
+  lee: 'Atenci\xf3n: se\xf1al r'
+== mismo locale, encoding='utf-8' explícito (independiente del entorno)
+  lee: 'Atenci\xf3n: se\xf1al r'
+== Python 3.14.7, LC_ALL=es_AR.ISO-8859-1 (locale existente)
+open() usa ISO-8859-1 | utf8_mode 0
+  lee: 'Atenci\xc3\xb3n: se\xc3\xb1al'
+== mismo locale, modo UTF-8 forzado (-X utf8; equivale a PYTHONUTF8=1, que -I ignora)
+open() usa utf-8 | utf8_mode 1
+  lee: 'Atenci\xf3n: se\xf1al r'
+== mismo locale, encoding='utf-8' explícito (independiente del entorno)
+  lee: 'Atenci\xf3n: se\xf1al r'

@@ -1,0 +1,67 @@
+### 1. dotnet build en la imagen oficial del SDK (sin Node ni Python)
+Build FAILED.
+/w/src/Saludo/Saludo.csproj(42,5): error MSB3073: The command "npm ci --no-audit --no-fund" exited with code 127.
+
+### 2. dotnet build en la imagen multi-runtime: MSBuild llama a npm ci y a uv
+Build succeeded.
+gen: dist/Datos.g.cs generado con python 3.12.15
+npm ci --no-audit --no-fund
+uv run --locked python gen.py dist/Datos.g.cs
+web: dist/app.js generado con node v22.23.2
+--- segunda build sin cambios (Inputs/Outputs): los targets se saltean
+Build succeeded.
+Skipping target "ConstruirWeb" because all output files are up-to-date with respect to the input files.
+Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerarDatos" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+Skipping target "_CopyOutOfDateSourceItemsToOutputDirectory" because all output files are up-to-date with respect to the input files.
+Skipping target "_CreateAppHost" because all output files are up-to-date with respect to the input files.
+--- se toca uv.lock: sólo se rehace el paso Python
+Build succeeded.
+Skipping target "ConstruirWeb" because all output files are up-to-date with respect to the input files.
+Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+gen: dist/Datos.g.cs generado con python 3.12.15
+uv run --locked python gen.py dist/Datos.g.cs
+
+### 3. ¿Qué Node usa MSBuild? El que está primero en el PATH, no el de .nvmrc
+--- a) sin devEngines en web/package.json, con engine-strict=true en web/.npmrc
+.nvmrc=22.23.2  node en PATH=v24.21.0
+/w/src/Saludo/Saludo.csproj(42,5): error MSB3073: The command "npm ci --no-audit --no-fund" exited with code 1.
+Build FAILED.
+npm error code EBADENGINE
+npm error engine Not compatible with your version of node/npm: web@1.0.0
+npm error engine Unsupported engine
+--- b) sin devEngines y sin engine-strict (engines sólo declara, no hace cumplir)
+.nvmrc=22.23.2  node en PATH=v24.21.0
+Build succeeded.
+npm warn EBADENGINE   current: { node: 'v24.21.0', npm: '10.9.8' }
+npm warn EBADENGINE   package: 'web@1.0.0',
+npm warn EBADENGINE   required: { node: '22.23.2' },
+npm warn EBADENGINE Unsupported engine {
+npm warn EBADENGINE }
+// construido con node v24.21.0
+--- c) el repo tal como está: devEngines.runtime en web/package.json y sin engine-strict (falla por defecto)
+.nvmrc=22.23.2  node en PATH=v24.21.0
+/w/src/Saludo/Saludo.csproj(42,5): error MSB3073: The command "npm ci --no-audit --no-fund" exited with code 1.
+Build FAILED.
+npm error EBADDEVENGINES   current: { name: 'node', version: 'v24.21.0' },
+npm error EBADDEVENGINES   required: { name: 'node', version: '22.23.2' }
+npm error EBADDEVENGINES Invalid devEngines.runtime
+npm error EBADDEVENGINES Invalid semver version "22.23.2" does not match "v24.21.0" for "runtime"
+
+### 4. Variante orquestador: build.sh llama a cada ecosistema una vez; MSBuild no
+== compuerta: OK
+gen: dist/Datos.g.cs generado con python 3.12.15
+web: dist/app.js generado con node v22.23.2
+dotnet-sdk=8.0.425
+node=v22.23.2
+python=3.12.15
+sha256 Saludo.dll=4dd5d90f6890f75c1ac0d9da1cc54ddbfccfde617b46a60c82f44f3ac6711c39
+--- y si alguien construye la .NET sola con ConstruirPoliglota=false sin correr build.sh
+/w/src/Saludo/Saludo.csproj(54,5): error : Faltan las salidas de Node/Python. Corré build.sh o construí con ConstruirPoliglota=true.

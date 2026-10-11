@@ -1,0 +1,22 @@
+== A. Archivo UTF-16LE (p. ej. un .ps1 o .rc que una herramienta exige así)
+-- git diff del archivo SIN atributo:
+     sin-atributo.ps1 | Bin 56 -> 68 bytes
+     1 file changed, 0 insertions(+), 0 deletions(-)
+    Binary files a/sin-atributo.ps1 and b/sin-atributo.ps1 differ
+-- git diff del archivo CON working-tree-encoding=UTF-16LE:
+    -Write-Host "Configuración"
+    +Write-Host "Configuración nueva"
+-- índice del archivo con atributo: UTF-8 válido; working tree: NO es UTF-8
+
+== B. working-tree-encoding=CP1252 sobre un .cs heredado
+-- índice: UTF-8 válido   working tree: NO es UTF-8
+-- un clon nuevo en Linux materializa el working tree otra vez en cp1252:
+   working tree del clon: NO es UTF-8
+-- build en Linux del clon:
+Program.cs(1,12): error CS1056: Unexpected character '�'
+Program.cs(1,8): error CS0116: A namespace cannot directly contain members such as fields, methods or statements
+Program.cs(2,38): error CS1056: Unexpected character '�'
+   => el compilador lee el working tree: el atributo no arregla el caso .NET; hay que convertir
+-- y un cliente sin soporte (libgit2/JGit, git anterior a marzo de 2018, según gitattributes(5)) vería el contenido del índice (UTF-8):
+   bytes del índice:       73 74 61 74 69 63 20 69 6e 74 20 c3 9a 6c 74 69 6d 61 4c 65 63 74 75 72 
+   bytes del working tree:  73 74 61 74 69 63 20 69 6e 74 20 da 6c 74 69 6d 61 4c 65 63 74 75 72 61 

@@ -1,0 +1,19 @@
+=== variante: cp1252
+--- bytes de 'ÇodigoAcción' en el archivo (od):
+ 76 61 72 20 c7 6f 64 69 67 6f 41 63 63 69 f3 6e
+ 20 3d 20 22 61 63 63 69
+--- dotnet build:
+    0 Warning(s)
+/tmp/tmp.JeVqf0L3ag/cp1252/Program.cs(3,15): error CS1056: Unexpected character '�' [/tmp/tmp.JeVqf0L3ag/cp1252/Saludo.csproj]
+/tmp/tmp.JeVqf0L3ag/cp1252/Program.cs(3,5): error CS1001: Identifier expected [/tmp/tmp.JeVqf0L3ag/cp1252/Saludo.csproj]
+/tmp/tmp.JeVqf0L3ag/cp1252/Program.cs(3,5): error CS1056: Unexpected character '�' [/tmp/tmp.JeVqf0L3ag/cp1252/Saludo.csproj]
+/tmp/tmp.JeVqf0L3ag/cp1252/Program.cs(4,36): error CS1056: Unexpected character '�' [/tmp/tmp.JeVqf0L3ag/cp1252/Saludo.csproj]
+=== variante: utf8
+--- bytes de 'ÇodigoAcción' en el archivo (od):
+ 76 61 72 20 c3 87 6f 64 69 67 6f 41 63 63 69 c3
+ b3 6e 20 3d 20 22 61 63
+--- dotnet build:
+    0 Warning(s)
+Build succeeded.
+--- ejecución:
+Texto: acción

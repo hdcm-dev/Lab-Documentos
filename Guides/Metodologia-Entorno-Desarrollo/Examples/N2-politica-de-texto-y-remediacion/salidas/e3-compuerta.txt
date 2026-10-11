@@ -1,0 +1,31 @@
+== 0. Base limpia salvo el heredado no renormalizado
+POLITICA-TEXTO: heredado.txt: i/crlf en el índice (el repositorio debe guardar LF)
+POLITICA-TEXTO: 5 archivo(s) revisado(s), 1 violación(es)
+
+== 1. Rama de PR que reintroduce los tres problemas
+-- git ls-files --eol del heredado editado (text=auto no convierte lo que ya estaba con CRLF en git):
+    i/crlf  w/crlf  attr/text=auto eol=lf 	heredado.txt
+-- compuerta en modo PR (--base main):
+POLITICA-TEXTO: heredado.txt: i/crlf en el índice (el repositorio debe guardar LF)
+POLITICA-TEXTO: scripts/run.sh: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+POLITICA-TEXTO: src/B.cs: no es UTF-8 válido (byte 0xf3 en offset 75; ¿cp1252?)
+POLITICA-TEXTO: tool.py: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+POLITICA-TEXTO: 4 archivo(s) revisado(s), 4 violación(es)
+   => exit 1: el PR se rechaza
+
+== 2. La misma compuerta como hook pre-commit
+POLITICA-TEXTO: tool.py: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+POLITICA-TEXTO: 1 archivo(s) revisado(s), 1 violación(es)
+   => commit rechazado por el hook
+-- el hook se saltea con --no-verify (por eso la CI es el árbitro, ver N7):
+   commit aceptado con --no-verify
+
+== 3. La compuerta lee la política del .editorconfig: variante B (C# con BOM)
+-- con la variante B, src/A.cs (sin BOM) pasa a violar la política:
+POLITICA-TEXTO: heredado.txt: i/crlf en el índice (el repositorio debe guardar LF)
+POLITICA-TEXTO: src/A.cs: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+POLITICA-TEXTO: 5 archivo(s) revisado(s), 2 violación(es)
+
+== 4. Arreglo del heredado: git add --renormalize (el hook revisa el commit; después, la base completa)
+POLITICA-TEXTO: 1 archivo(s) revisado(s), 0 violación(es)
+POLITICA-TEXTO: 5 archivo(s) revisado(s), 0 violación(es)

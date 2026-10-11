@@ -1,0 +1,18 @@
+# Configuración "de manual": hooks genéricos copiados de un ejemplo.
+# rev congelado al SHA de la etiqueta v6.0.0 (resuelto con git ls-remote el 2026-10-07).
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    hooks:
+      - id: fix-byte-order-marker      # quita el BOM de TODO archivo de texto
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: end-of-file-fixer
+  - repo: local
+    hooks:
+      - id: compuerta-entorno
+        name: compuerta del entorno (N7)
+        entry: tools/compuerta.sh --staged
+        language: unsupported           # antes "system"; ver pre-commit.com
+        pass_filenames: false
+        always_run: true

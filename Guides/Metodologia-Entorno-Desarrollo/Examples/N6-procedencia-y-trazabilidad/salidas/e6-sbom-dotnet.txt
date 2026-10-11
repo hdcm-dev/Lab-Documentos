@@ -1,0 +1,16 @@
+=== CycloneDX (dotnet-CycloneDX 6.2.0): specVersion=1.7
+    metadata.timestamp=2026-10-07T14:57:57Z  herramienta=['CycloneDX module for .NET']
+    componente Newtonsoft.Json@13.0.3  purl=pkg:nuget/Newtonsoft.Json@13.0.3  hashes=['SHA-512']
+    dependencias declaradas: 2
+=== SPDX (sbom-tool 4.1.13): spdxVersion=SPDX-2.2  creado=2026-10-07T14:58:00Z  creadores=['Organization: Ejemplo Lab', 'Tool: Microsoft.SBOMTool-4.1.13']
+    files (lo que hay en la carpeta de salida, con hash):
+      ./Pieza.pdb                      ['SHA256', 'SHA1']
+      ./Pieza.deps.json                ['SHA256', 'SHA1']
+      ./Newtonsoft.Json.dll            ['SHA256', 'SHA1']
+      ./Pieza                          ['SHA256', 'SHA1']
+      ./Pieza.runtimeconfig.json       ['SHA256', 'SHA1']
+      ./Pieza.dll                      ['SHA256', 'SHA1']
+    packages:
+      Newtonsoft.Json@13.0.3  purl=['pkg:nuget/Newtonsoft.Json@13.0.3']
+      pieza@1.4.0  purl=['pkg:swid/Ejemplo%20Lab/ejemplo.invalid/pieza@1.4.0?tag_id=4513d304-7864-4da9-ad2a-1faed0fb4c9f']
+    relación raíz: ['DESCRIBES', 'DEPENDS_ON'] …

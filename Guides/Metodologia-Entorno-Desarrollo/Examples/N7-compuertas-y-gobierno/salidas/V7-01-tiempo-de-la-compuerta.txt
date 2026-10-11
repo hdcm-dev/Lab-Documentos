@@ -1,0 +1,5 @@
+compuerta completa, caché NuGet tibia, corrida 1: rc=0 1.89 s
+compuerta completa, caché NuGet tibia, corrida 2: rc=0 1.64 s
+compuerta completa, caché NuGet tibia, corrida 3: rc=0 1.6 s
+compuerta completa, caché NuGet vacía (baja de nuget.org): rc=0 2.38 s
+(repo de juguete: 1 proyecto, 1 paquete; un repo real con decenas de proyectos y paquetes tarda más)

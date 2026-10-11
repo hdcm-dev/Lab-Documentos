@@ -1,0 +1,91 @@
+
+=== PR A: descongelamiento legítimo + un BOM colado + cambio de política
+-- diff de Program.cs que ve el revisor en la web:
+   diff --git a/Program.cs b/Program.cs
+   index 87743ab..f2b1fe9 100644
+   --- a/Program.cs
+   +++ b/Program.cs
+   @@ -1 +1 @@
+   -Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(new { Saludo = "Configuración" }));
+   +﻿Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(new { Saludo = "Configuración" }));
+# Cambios de entorno en main...pr-a
+
+## politica-texto
+- `M .gitattributes`
+- [ ] ¿Cambia la política para todos? ¿Viene con su commit de renormalización aparte y con registro en .git-blame-ignore-revs?
+
+## lock
+- `M packages.lock.json`
+- [ ] ¿Lo regeneró la herramienta (no a mano)? ¿Cambian sólo los paquetes esperados? ¿Aparecen fuentes o hashes nuevos?
+
+## manifiesto
+- `M App.csproj`
+- [ ] ¿Qué dependencia o propiedad de build cambió y por qué? ¿Hay rangos flotantes nuevos (*, ^, >=)?
+
+## cambios invisibles (el diff no muestra texto distinto)
+- `Program.cs: mismo texto; cambia sólo ['BOM']`
+- [ ] ¿Es el commit de normalización acordado? Si no, pedir que se revierta: es ruido que ensucia blame y el próximo merge.
+
+## coherencia manifiesto ↔ lock
+- coherente: cada lock tocado viene con su manifiesto (o ninguno cambió).
+-- y la compuerta del PR (misma de siempre):
+COMPUERTA commit=0506964 alcance=--base main
+    POLITICA-TEXTO: Program.cs: tiene BOM y .editorconfig declara charset=utf-8 (sin BOM)
+    POLITICA-TEXTO: 4 archivo(s) revisado(s), 1 violación(es)
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== PR B: lock editado a mano, sin manifiesto
+# Cambios de entorno en main...pr-b
+
+## lock
+- `M packages.lock.json`
+- [ ] ¿Lo regeneró la herramienta (no a mano)? ¿Cambian sólo los paquetes esperados? ¿Aparecen fuentes o hashes nuevos?
+
+## coherencia manifiesto ↔ lock
+- [ ] **packages.lock.json cambió sin su manifiesto**: ¿se regeneró con otra versión de la herramienta o del SDK (ver N3), o se editó a mano?
+-- la compuerta del PR:
+COMPUERTA commit=2f20d54 alcance=--base main
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 1 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+    /ex/N7-compuertas-y-gobierno/work/03/repo/App.csproj : warning NU1601: Dependency specified was Newtonsoft.Json (>= 13.0.3) but ended up with Newtonsoft.Json 13.0.4.
+    /ex/N7-compuertas-y-gobierno/work/03/repo/App.csproj : error NU1403: Package content hash validation failed for Newtonsoft.Json.13.0.4. The package is different than the last restore.
+    /ex/N7-compuertas-y-gobierno/work/03/repo/App.csproj : error NU1403: 
+COMPUERTA [FALLA] grafo NuGet: restore --locked-mode falló para packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== PR C: SDK subido en global.json sin tocar la imagen de CI
+# Cambios de entorno en main...pr-c
+
+## toolchain
+- `M global.json`
+- [ ] ¿Subió la versión a propósito? ¿La imagen de CI/devcontainer y el lock se movieron en el MISMO PR? ¿Hay ADR o nota de la decisión?
+
+## coherencia manifiesto ↔ lock
+- [ ] **manifiesto cambió y packages.lock.json no**: si cambió una dependencia, la restauración estricta debería fallar; si la CI pasó, ¿el cambio no toca dependencias o la compuerta no corre?
+-- la compuerta del PR, en la imagen de CI que sigue con 8.0.425:
+COMPUERTA commit=c46ef93 alcance=--base main
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 1 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [FALLA] toolchain .NET: global.json pide 8.0.426; el entorno resuelve 'ninguno'
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+    A compatible .NET SDK was not found.
+    Requested SDK version: 8.0.426
+COMPUERTA [FALLA] grafo NuGet: restore --locked-mode falló para packages.lock.json
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (2 paso/s)
+   -> rc=1

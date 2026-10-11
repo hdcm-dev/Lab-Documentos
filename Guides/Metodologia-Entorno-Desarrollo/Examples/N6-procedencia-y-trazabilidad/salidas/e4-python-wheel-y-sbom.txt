@@ -1,0 +1,24 @@
+imagen: python@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea
+
+(1) setuptools 84.0.0, sin SOURCE_DATE_EPOCH                               52b3789e55bc | 5a037e88f946 => DISTINTOS
+(2) setuptools 84.0.0, con SOURCE_DATE_EPOCH=1767225600                    071c0cab03b2 | 071c0cab03b2 => IGUALES
+(3) hatchling 1.32.4 (reproducible por defecto) + SBOM generado en la build 1a1cc76389fc | e959d240f7c6 => DISTINTOS
+(4) hatchling + SBOM generado con --output-reproducible                    080ac19a4ebd | 080ac19a4ebd => IGUALES
+
+--- fecha de la primera entrada (setuptools sin SDE): (2026, 10, 7, 7, 42, 42)  pieza/__init__.py
+--- fecha de la primera entrada (setuptools con SDE): (2026, 1, 1, 0, 0, 0)  pieza/__init__.py
+--- fecha de la primera entrada (hatchling): (2020, 2, 2, 0, 0, 0)  pieza/__init__.py
+--- entradas .dist-info de la rueda hatchling (PEP 770 => sboms/):
+    pieza_lab-1.4.0.dist-info/METADATA
+    pieza_lab-1.4.0.dist-info/WHEEL
+    pieza_lab-1.4.0.dist-info/sboms/sbom.cdx.json
+    pieza_lab-1.4.0.dist-info/RECORD
+--- METADATA (lo que el estándar deja grabar sobre el origen):
+    Metadata-Version: 2.5
+    Name: pieza-lab
+    Version: 1.4.0
+    Project-URL: Source, https://github.com/ejemplo-lab/pieza
+    Requires-Python: >=3.12
+    Requires-Dist: six==1.17.0
+--- WHEEL: Wheel-Version: 1.0 | Generator: hatchling 1.32.4 | Root-Is-Purelib: true
+--- SBOM embebido: specVersion=1.6 serialNumber=(omitido) timestamp=(omitido) componentes=['six@1.17.0']

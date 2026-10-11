@@ -1,0 +1,3 @@
+dependabot.yml: esquema https://json.schemastore.org/dependabot-2.0.json -> VÁLIDO
+   control negativo (ecosistema inexistente + cooldown no numérico): 2 error(es) detectado(s)
+renovate.json: esquema https://docs.renovatebot.com/renovate-schema.json -> VÁLIDO

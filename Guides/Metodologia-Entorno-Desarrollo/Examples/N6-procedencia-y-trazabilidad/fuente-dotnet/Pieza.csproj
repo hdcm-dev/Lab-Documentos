@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Pieza sintética del laboratorio N6: una consola que se describe a sí misma. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Version>1.4.0</Version>
+    <!-- Repositorio declarado para SourceLink y para el .nuspec (PublishRepositoryUrl). -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Paquete de símbolos separado (.snupkg), formato que acepta nuget.org. -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsPackable>true</IsPackable>
+    <PackAsTool>false</PackAsTool>
+  </PropertyGroup>
+  <!-- Metadatos de entorno que el SDK NO graba por su cuenta: se agregan como AssemblyMetadata.
+       NETCoreSdkVersion la define el SDK en evaluación; ImagenDigest la pasa la CI (-p:ImagenDigest=...). -->
+  <ItemGroup>
+    <AssemblyMetadata Include="SdkVersion" Value="$(NETCoreSdkVersion)" />
+    <AssemblyMetadata Include="ImagenDigest" Value="$(ImagenDigest)" Condition="'$(ImagenDigest)' != ''" />
+  </ItemGroup>
+</Project>

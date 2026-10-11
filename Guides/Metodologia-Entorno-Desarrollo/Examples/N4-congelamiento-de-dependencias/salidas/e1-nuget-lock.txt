@@ -1,0 +1,74 @@
+
+===== SDK =====
+8.0.425
+
+===== 1. Primer restore: genera packages.lock.json (grafo completo con contentHash) =====
+  Determining projects to restore...
+  Restored /tmp/w/App.csproj (in 3.53 sec).
+5:      "Microsoft.Extensions.Logging": {
+6:        "type": "Direct",
+8:        "resolved": "8.0.0",
+9:        "contentHash": "tvRkov9tAJ3xP51LCv3FJ2zINmv1P8Hi8lhhtcKGqM+ImiTCC84uOPEI4z8Cdq2C3o9e+Aa0Gw0rmrsJD77W+w==",
+17:        "type": "Transitive",
+18:        "resolved": "8.0.0",
+19:        "contentHash": "V8S3bsm50ig6JSyrbcJJ8bW2b9QLGouz+G1miK3UTaOWmMtFwNNNzUf4AleyDWUmTrWMLNnFSLEQtxmxgNQnNQ==",
+25:        "type": "Transitive",
+26:        "resolved": "8.0.0",
+27:        "contentHash": "cjWrLkJXK0rs4zofsK4bSdg+jhDLTaxrkXu4gS6Y7MAlCvRyNNgwY/lJi5RDlQOnSZweHqoyvgvbdvQsRIW+hg=="
+30:        "type": "Transitive",
+31:        "resolved": "8.0.0",
+
+===== 2. Restore en modo bloqueado con el lock coherente: pasa =====
+  Restored /tmp/w/App.csproj (in 341 ms).
+exit=0
+
+===== 3. Deriva: alguien sube la dependencia directa en el .csproj y no regenera el lock =====
+/tmp/w/App.csproj : error NU1004: The package reference Microsoft.Extensions.Logging version has changed from [8.0.0, ) to [8.0.1, ).The packages lock file is inconsistent with the project dependencies so restore can't be run in locked mode. Disable the RestoreLockedMode MSBuild property or pass an explicit --force-evaluate option to run restore to update the lock file.
+exit=1
+
+===== 4. El mismo cambio con restore común: NO falla y reescribe el lock en silencio =====
+  Restored /tmp/w/App.csproj (in 1.58 sec).
+exit=0
+2,3c2,3
+<         "requested": "[8.0.0, )",
+<         "resolved": "8.0.0",
+---
+>         "requested": "[8.0.1, )",
+>         "resolved": "8.0.1",
+5c5
+<         "resolved": "8.0.0",
+---
+>         "resolved": "8.0.1",
+7c7
+<         "resolved": "8.0.0",
+---
+>         "resolved": "8.0.2",
+9c9
+<         "resolved": "8.0.0",
+---
+>         "resolved": "8.0.2",
+11c11
+<         "resolved": "8.0.0",
+---
+>         "resolved": "8.0.2",
+
+===== 5. Integridad: se altera el contentHash de un paquete en el lock y se restaura desde cero =====
+/tmp/w/App.csproj : error NU1403: Package content hash validation failed for Microsoft.Extensions.Primitives.8.0.0. The package is different than the last restore.
+/tmp/w/App.csproj : error NU1403: 
+exit=1
+
+===== 6. Plataforma: el lock se generó sin RID; un restore para linux-x64 en modo bloqueado =====
+/tmp/w/App.csproj : error NU1004: The project's runtime identifiers have changed from. Project's runtime identifiers: linux-x64, lock file's runtime identifiers .The packages lock file is inconsistent with the project dependencies so restore can't be run in locked mode. Disable the RestoreLockedMode MSBuild property or pass an explicit --force-evaluate option to run restore to update the lock file.
+exit=1
+
+===== 7. Declarando los RID de todas las plataformas el lock tiene una sección por RID =====
+  Restored /tmp/w/App.csproj (in 12 sec).
+4:    "net8.0": {
+52:    "net8.0/linux-x64": {},
+53:    "net8.0/win-x64": {}
+-- restore bloqueado con el mismo conjunto de RID (sin -r):
+  Restored /tmp/w/App.csproj (in 408 ms).
+exit=0
+-- restore bloqueado forzando un único RID con -r (el conjunto cambia):
+/tmp/w/App.csproj : error NU1004: The project's runtime identifiers have changed from. Project's runtime identifiers: linux-x64, lock file's runtime identifiers
+exit=1

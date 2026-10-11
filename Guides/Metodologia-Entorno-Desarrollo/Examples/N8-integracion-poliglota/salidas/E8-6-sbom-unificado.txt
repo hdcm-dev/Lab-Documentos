@@ -1,0 +1,41 @@
+### 1. syft anchore/syft:v1.54.1 sobre el repositorio (lee los tres lock files)
+syft.cdx.json          CycloneDX 1.7      9 purl  {'pkg:nuget': 1, 'pkg:pypi': 2, 'pkg:npm': 3, '(sin purl)': 3}
+                        pkg:npm/is-number@6.0.0
+                        pkg:npm/is-odd@3.0.1
+                        pkg:nuget/Newtonsoft.Json@13.0.3
+                        pkg:pypi/packaging@25.0
+
+### 2. Exportador nativo por ecosistema, fusionado
+dotnet-CycloneDX rc=0
+uv.cdx.json            CycloneDX 1.5      1 purl  {'pkg:pypi': 1}
+                        pkg:pypi/packaging@25.0
+npm.cdx.json           CycloneDX 1.5      2 purl  {'pkg:npm': 2}
+                        pkg:npm/is-number@6.0.0
+                        pkg:npm/is-odd@3.0.1
+dotnet.cdx.json        CycloneDX 1.5      1 purl  {'pkg:nuget': 1}
+                        pkg:nuget/Newtonsoft.Json@13.0.3
+cyclonedx-cli merge rc=0
+fusion.cdx.json        CycloneDX 1.7      7 purl  {'(sin purl)': 2, 'pkg:pypi': 1, 'pkg:npm': 3, 'pkg:nuget': 1}
+                        pkg:npm/is-number@6.0.0
+                        pkg:npm/is-odd@3.0.1
+                        pkg:nuget/Newtonsoft.Json@13.0.3
+                        pkg:pypi/packaging@25.0
+
+### 3. BuildKit: procedencia + SBOM del build por componentes (builder docker-container)
+buildx rc=0
+archivos exportados: Newtonsoft.Json.dll provenance.json Saludo Saludo.deps.json Saludo.dll Saludo.pdb Saludo.runtimeconfig.json sbom-py.spdx.json sbom.spdx.json sbom-web.spdx.json 
+sha256 Saludo.dll = cf57904bab98e3e427b3a3f02c5258bbf6c1ba9a0e39a2b099105afb0d71efaa
+procedencia: https://in-toto.io/Statement/v1 | https://slsa.dev/provenance/v1
+buildType: https://github.com/moby/buildkit/blob/master/docs/attestations/slsa-definitions.md
+  material: pkg:docker/docker/buildkit-syft-scanner@stable-1 sha256:ae4f3b554449e7e2…
+  material: pkg:docker/node@22-bookworm-slim sha256:d649c27dae7ba013…
+  material: pkg:docker/python@3.12.15-slim sha256:05cda9777409a9c3…
+  material: pkg:docker/ghcr.io/astral-sh/uv@0.12.23 sha256:61d393e44e249f2e…
+  material: pkg:docker/mcr.microsoft.com/dotnet/sdk@8.0 sha256:78235e09001f52b6…
+sbom.spdx.json         SPDX-2.3           2 purl  {'pkg:nuget': 2}
+                        pkg:nuget/Newtonsoft.Json@13.0.3
+sbom-py.spdx.json      SPDX-2.3         603 purl  {'pkg:deb': 87, 'pkg:cargo': 512, 'pkg:pypi': 3, 'pkg:generic': 1}
+                        pkg:pypi/packaging@25.0
+sbom-web.spdx.json     SPDX-2.3         290 purl  {'pkg:npm': 201, 'pkg:deb': 88, 'pkg:generic': 1}
+                        pkg:npm/is-number@6.0.0
+                        pkg:npm/is-odd@3.0.1

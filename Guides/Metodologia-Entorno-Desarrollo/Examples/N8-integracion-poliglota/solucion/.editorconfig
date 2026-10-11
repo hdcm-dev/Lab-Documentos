@@ -1,0 +1,43 @@
+# Política de texto raíz de la solución políglota (N8, sobre la plantilla de N2).
+# La leen los editores al guardar y verificar-texto.py al verificar.
+# Git NO la lee: la normalización de finales de línea vive en .gitattributes.
+root = true
+
+# Regla general para los tres ecosistemas: UTF-8 SIN BOM y LF.
+# Sirve a C# (el compilador prueba UTF-8 primero), a Node y a Python, y es la
+# única que no rompe shebangs ni lectores de JSON/TOML estrictos (E8-1).
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+# Excepciones que exige el CONSUMIDOR del archivo, no el gusto del equipo.
+[*.{cmd,bat}]
+end_of_line = crlf
+
+# Las plantillas del SDK crean .razor/.cshtml/.sln con BOM (N2, E6).
+[*.{razor,cshtml,sln}]
+charset = utf-8-bom
+
+# Scripts de PowerShell: Windows PowerShell 5.1 lee un .ps1 sin BOM como ANSI
+# y corrompe lo no ASCII (about_Character_Encoding). Si el equipo usa 5.1, BOM.
+[*.ps1]
+charset = utf-8-bom
+
+# Indentación por ecosistema (convención de cada comunidad, no de la herramienta).
+[*.{cs,razor,csproj,props,targets}]
+indent_style = space
+indent_size = 4
+
+[*.{js,mjs,ts,json}]
+indent_style = space
+indent_size = 2
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+# Lock files: los escribe la herramienta, no el editor. NuGet escribe
+# packages.lock.json SIN salto de línea final (E8-1): no se lo exige.
+[{packages.lock.json,package-lock.json,uv.lock}]
+insert_final_newline = unset

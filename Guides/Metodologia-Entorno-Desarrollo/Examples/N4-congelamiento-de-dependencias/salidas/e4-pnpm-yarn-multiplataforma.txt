@@ -1,0 +1,16 @@
+node v24.21.0, npm 11.19.0
+pnpm 10.18.0
+pnpm install rc=0
+  '@esbuild/win32-x64@0.25.10':
+    resolution: {integrity: sha512-9KpxSVFCu0iK1owoez6aC/s/EdUQLDN3adTxGCqxMVhrPDj6bt5dbrHDXUuq+Bs2vATFBBrQS5vdQ/Ed2P+nbw==}
+    engines: {node: '>=18'}
+    cpu: [x64]
+variantes @esbuild/* distintas en pnpm-lock.yaml: 26 (cada una aparece en packages y en snapshots: 52 líneas)
+instaladas: @esbuild+linux-x64@0.25.10 
+yarn 4.10.3
+yarn install rc=0
+"@esbuild/win32-x64@npm:0.25.10":
+  resolution: "@esbuild/win32-x64@npm:0.25.10"
+  conditions: os=win32 & cpu=x64
+variantes @esbuild/* en yarn.lock: 26
+instaladas: linux-x64 

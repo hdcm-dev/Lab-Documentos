@@ -1,0 +1,43 @@
+Python 3.12.14 (main, Sep  1 2026, 00:10:07) [GCC 14.2.0] | LANG=C.UTF-8 LC_ALL=<vacío>
+mod_cp1252.py          -> SyntaxError: Non-UTF-8 code starting with '\xf3' in file /w/work/python/mod_cp1252.py on line 1, but no encoding declared; see https://peps.python.org/pep-0263/ for details
+mod_cp1252_declarado.py -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8.py            -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8bom.py         -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8_crlf.py       -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+-- open() sin encoding= sobre un archivo UTF-8, según locale y modo UTF-8
+open() usa UTF-8 | utf8_mode 0 | getpreferredencoding UTF-8
+  primera línea: texto = "Atención: señal recib
+-- con locale C/POSIX, Python activa por sí solo el modo UTF-8 (PEP 540):
+open() usa utf-8 | utf8_mode 1 | getpreferredencoding utf-8
+  primera línea: texto = "Atención: señal recib
+   (el caso de un locale no UTF-8 real está en e1-python-locale.sh)
+-- aviso de encoding implícito (PEP 597): -X warn_default_encoding
+<string>:1: EncodingWarning: 'encoding' argument not specified
+-- utf-8 vs utf-8-sig al leer un archivo con BOM
+utf-8     -> '\ufeff'
+utf-8-sig -> 't'
+-- newline: modo texto traduce CRLF->LF al leer; newline="" lo conserva
+por defecto: 'y"\n'
+newline="": '"\r\n'
+
+Python 3.14.7 (main, Aug  5 2026, 16:32:40) [GCC 14.2.0] | LANG=<vacío> LC_ALL=<vacío>
+mod_cp1252.py          -> SyntaxError: Non-UTF-8 code starting with '\xf3' in file /w/work/python/mod_cp1252.py on line 1, but no encoding declared; see https://peps.python.org/pep-0263/ for details
+mod_cp1252_declarado.py -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8.py            -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8bom.py         -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+mod_utf8_crlf.py       -> 'Atención: señal recibida en Ñandubay' 36 'uno\ndos'
+-- open() sin encoding= sobre un archivo UTF-8, según locale y modo UTF-8
+open() usa utf-8 | utf8_mode 1 | getpreferredencoding utf-8
+  primera línea: texto = "Atención: señal recib
+-- con locale C/POSIX, Python activa por sí solo el modo UTF-8 (PEP 540):
+open() usa utf-8 | utf8_mode 1 | getpreferredencoding utf-8
+  primera línea: texto = "Atención: señal recib
+   (el caso de un locale no UTF-8 real está en e1-python-locale.sh)
+-- aviso de encoding implícito (PEP 597): -X warn_default_encoding
+<string>:1: EncodingWarning: 'encoding' argument not specified
+-- utf-8 vs utf-8-sig al leer un archivo con BOM
+utf-8     -> '\ufeff'
+utf-8-sig -> 't'
+-- newline: modo texto traduce CRLF->LF al leer; newline="" lo conserva
+por defecto: 'y"\n'
+newline="": '"\r\n'

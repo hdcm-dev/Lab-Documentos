@@ -1,0 +1,20 @@
+## 1. Capas que trae la imagen (fijadas por el digest)
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+ldd (Debian GLIBC 2.36-9+deb12u14) 2.36
+SDK 8.0.425
+git version 2.39.5
+
+## 2. Capa que NO fija: los bytes del código montado
+$W/Program.cs: ISO-8859 text
+/w/Program.cs(3,7): error CS1056: Unexpected character '�' [/w/Senal.csproj]
+/w/Program.cs(4,28): error CS1056: Unexpected character '�' [/w/Senal.csproj]
+/w/Program.cs(4,29): error CS1003: Syntax error, ',' expected [/w/Senal.csproj]
+
+## 3. Capa que NO fija: la configuración de git del host
+host       -> core.autocrlf = true  (origen: $W/host.gitconfig)
+contenedor -> core.autocrlf = (no definido)
+
+## 4. Mismo contenedor, mismos bytes corregidos en el repo (UTF-8)
+$W/Program.cs: Unicode text, UTF-8 text
+Build succeeded.
+Señal recibida: ñandú, acción, pingüino

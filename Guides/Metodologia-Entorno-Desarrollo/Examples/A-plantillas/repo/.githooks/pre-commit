@@ -1,0 +1,3 @@
+#!/bin/sh
+# Anexo A.11. El hook no tiene lógica propia: delega en la compuerta única.
+exec "$(git rev-parse --show-toplevel)/tools/ci/compuerta.sh" --staged

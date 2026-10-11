@@ -1,0 +1,14 @@
+== (a) sin python3 en el PATH
+COMPUERTA [FALLA] texto: falta python3 (prerrequisito de la compuerta, no una violación)
+COMPUERTA resultado=ROJO (1 paso/s)
+rc=1
+== (b) con python3, sin check_text_policy.py junto a compuerta.sh
+COMPUERTA [FALLA] texto: falta check_text_policy.py junto a compuerta.sh (prerrequisito, no violación)
+COMPUERTA resultado=ROJO (1 paso/s)
+rc=1
+== (c) con python3 y check_text_policy.py (la política se cumple)
+(el host no tiene el paquete EditorConfig: este caso lo cubre E7-1 en su imagen)
+== (d) con python3 y check_text_policy.py, sin el paquete EditorConfig (se simula su ausencia)
+COMPUERTA [FALLA] texto: falta el paquete EditorConfig de Python (EditorConfig==0.17.1; prerrequisito, no una violación)
+COMPUERTA resultado=ROJO (1 paso/s)
+rc=1

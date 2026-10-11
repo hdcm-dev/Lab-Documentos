@@ -1,0 +1,4 @@
+{
+  // Pide exactamente 8.0.100 y prohíbe cualquier otra versión.
+  "sdk": { "version": "8.0.100", "rollForward": "disable" }
+}

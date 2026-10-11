@@ -1,0 +1,92 @@
+
+=== 0. pre-commit fijado por versión en un venv propio
+pre-commit 4.6.2
+   Pages/Index.razor: UTF-8 válido, BOM=sí, CRLF=no, salto final=sí
+COMPUERTA commit=fbd69c5 alcance=todo
+COMPUERTA [ok]    texto: POLITICA-TEXTO: 11 archivo(s) revisado(s), 0 violación(es)
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=VERDE
+   -> rc=0
+
+=== 1. Configuración ingenua: el hook genérico quita el BOM y la compuerta del repo lo reclama
+[INFO] Initializing environment for https://github.com/pre-commit/pre-commit-hooks.
+[INFO] Installing environment for https://github.com/pre-commit/pre-commit-hooks.
+[INFO] Once installed this environment will be reused.
+[INFO] This may take a few minutes...
+fix utf-8 byte order marker..............................................Failed
+- hook id: fix-byte-order-marker
+- exit code: 1
+- files were modified by this hook
+
+Pages/Index.razor: removed byte-order marker
+
+mixed line ending........................................................Passed
+fix end of files.........................................................Failed
+- hook id: end-of-file-fixer
+- exit code: 1
+- files were modified by this hook
+
+Fixing packages.lock.json
+
+compuerta del entorno (N7)...............................................Passed
+   -> rc=1
+   Pages/Index.razor: UTF-8 válido, BOM=no, CRLF=no, salto final=sí
+   packages.lock.json: UTF-8 válido, BOM=no, CRLF=no, salto final=sí
+COMPUERTA commit=fbd69c5 alcance=--staged
+    POLITICA-TEXTO: Pages/Index.razor: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+    POLITICA-TEXTO: 3 archivo(s) revisado(s), 1 violación(es)
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+   -> rc=1
+
+=== 1b. El otro arreglo del hook genérico y la herramienta que genera el lock
+-- en HEAD, tal como lo escribió NuGet:
+   /tmp/lock.head: UTF-8 válido, BOM=no, CRLF=no, salto final=no
+-- restore normal con el lock 'arreglado' por el hook (no hay cambios de dependencias):
+   packages.lock.json: UTF-8 válido, BOM=no, CRLF=no, salto final=sí
+-- restore que REGENERA el lock (--force-evaluate, como al descongelar):
+   packages.lock.json: UTF-8 válido, BOM=no, CRLF=no, salto final=no
+
+=== 2. Configuración alineada con .editorconfig: nada que corregir
+fix utf-8 byte order marker..............................................Passed
+mixed line ending........................................................Passed
+fix end of files.........................................................Passed
+compuerta del entorno (N7)...............................................Passed
+   -> rc=0
+   Pages/Index.razor: UTF-8 válido, BOM=sí, CRLF=no, salto final=sí
+
+=== 3. Un .razor nuevo sin BOM: lo ataja la compuerta, no el hook genérico
+fix utf-8 byte order marker..............................................Passed
+mixed line ending........................................................Passed
+fix end of files.........................................................Passed
+compuerta del entorno (N7)...............................................Failed
+- hook id: compuerta-entorno
+- exit code: 1
+
+COMPUERTA commit=fbd69c5 alcance=--staged
+    POLITICA-TEXTO: Pages/Nueva.razor: falta el BOM que .editorconfig declara (charset=utf-8-bom)
+    POLITICA-TEXTO: 2 archivo(s) revisado(s), 1 violación(es)
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+COMPUERTA [n/a]   toolchain Python: no hay .python-version
+COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+COMPUERTA [n/a]   grafo uv: no hay uv.lock
+COMPUERTA resultado=ROJO (1 paso/s)
+
+   -> rc=1

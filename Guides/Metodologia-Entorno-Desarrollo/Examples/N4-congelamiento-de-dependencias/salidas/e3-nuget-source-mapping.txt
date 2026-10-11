@@ -1,0 +1,31 @@
+
+===== 0. Se empaqueta Contoso.Util 1.0.0 dos veces: feed 'interno' (legítimo) y feed 'publico' (impostor) =====
+feeds/interno/Contoso.Util.1.0.0.nupkg'.
+feeds/publico/Contoso.Util.1.0.0.nupkg'.
+2356aa5c42d70f750e4231b444f63e4b1d37f7c5b3f51928b56770bcc805e2b2  feeds/interno/Contoso.Util.1.0.0.nupkg
+8e49e04ab1649d689c53bf6ea156c588812ee25e6e270762a3a606131c77acd0  feeds/publico/Contoso.Util.1.0.0.nupkg
+
+===== 1. CON mapeo (Contoso.* -> interno): la fuente queda determinada y se genera el lock =====
+  Restored /tmp/app/App.csproj (in 281 ms).
+"source": "/tmp/feeds/interno"
+Contoso.Util viene de: interno
+"contentHash": "6DOkAukC9CYqEbOC7tfVAraygCiJIgmuZGa/RLrHUwFxblHIikGLceyf5W34syodRFG6xxwroOuAb1QtlCdceg=="
+
+===== 2. Caché caliente: el paquete ya está en la carpeta global y el mapeo NO se consulta =====
+restore previo sólo con 'publico': "source": "/tmp/feeds/publico"
+  Restored /tmp/app/App.csproj (in 237 ms).
+restore con mapeo y caché caliente: "source": "/tmp/feeds/publico"
+Contoso.Util viene de: IMPOSTOR
+
+===== 3. El impostor llega con el lock legítimo commiteado y restore bloqueado: el contentHash lo delata =====
+"contentHash": "6DOkAukC9CYqEbOC7tfVAraygCiJIgmuZGa/RLrHUwFxblHIikGLceyf5W34syodRFG6xxwroOuAb1QtlCdceg=="
+error NU1403: Package content hash validation failed for Contoso.Util.1.0.0. The package is different than the last restore.
+exit=1
+
+===== 4. SIN mapeo y con ambas fuentes: la fuente elegida no está declarada en ningún lado =====
+  Restored /tmp/app/App.csproj (in 273 ms).
+"source": "/tmp/feeds/interno"
+
+===== 5. Mapeo incompleto: un paquete sin patrón que lo cubra hace fallar el restore =====
+error NU1100: Unable to resolve 'Contoso.Util (>= 1.0.0)' for 'net8.0'. PackageSourceMapping is enabled, the following source(s) were not considered: interno.
+exit=1

@@ -1,0 +1,9 @@
+<Project>
+  <!-- Versiones directas de NuGet en un solo lugar (CPM, N4). -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

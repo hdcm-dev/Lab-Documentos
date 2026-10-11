@@ -1,0 +1,37 @@
+# Política de texto del repositorio (plantilla N2).
+# La leen los EDITORES (Visual Studio de fábrica; VS Code con la extensión
+# EditorConfig) al guardar, y la compuerta tools/check_text_policy.py al
+# verificar. Git NO la lee: la normalización en git la declara .gitattributes.
+root = true
+
+[*]
+# UTF-8 sin BOM para todo lo que no diga otra cosa.
+# (Los comentarios van en línea propia: la especificación no admite comentarios al final de un valor.)
+charset = utf-8
+# LF, coherente con `* text=auto eol=lf` en .gitattributes.
+end_of_line = lf
+insert_final_newline = true
+
+# Scripts de cmd.exe: CRLF (coincide con `*.cmd text eol=crlf`).
+[*.{cmd,bat}]
+end_of_line = crlf
+
+# Vistas Razor: las plantillas del SDK (8 y 10) las crean SIEMPRE con BOM
+# (experimento E2-6) y dotnet/aspnetcore declara lo mismo. Pedir "sin BOM" acá
+# obliga a corregir cada archivo nuevo; se declara con BOM.
+[*.{razor,cshtml}]
+charset = utf-8-bom
+
+# Solución clásica .sln: `dotnet sln add` (SDK 8) le vuelve a poner BOM aunque
+# se lo hayan quitado (experimento E2-6). Declararlo evita el ida y vuelta.
+# El formato .slnx (por defecto desde el SDK 10) se respeta tal cual: sin BOM.
+[*.sln]
+charset = utf-8-bom
+
+# C#: el compilador lee UTF-8 sin BOM (intenta UTF-8 primero) y
+# `dotnet format whitespace` corrige el charset en cualquier sentido, así que
+# la regla general (sin BOM) alcanza. Variante B, sólo si el repositorio
+# heredado ya se convirtió a UTF-8 CON BOM y no se quiere un segundo commit
+# masivo para quitarlo (convención que usa, por ejemplo, dotnet/roslyn):
+# [*.cs]
+# charset = utf-8-bom

@@ -1,0 +1,20 @@
+SDK: 10.0.400  |  TF=net10.0
+== Aviso.razor en cp1252
+  build OK; C# generado: Aviso_razor.g.cs
+  "Configuraci�n"
+  Atenci�n: se�al
+  bytes: 41 74 65 6e 63 69 ef bf bd 6e 0a
+== Aviso.razor en utf8
+  build OK; C# generado: Aviso_razor.g.cs
+  "Configuración"
+  Atención: señal
+  bytes: 41 74 65 6e 63 69 c3 b3 6e 0a
+== Aviso.razor en utf8bom
+  build OK; C# generado: Aviso_razor.g.cs
+  "Configuración"
+  Atención: señal
+  bytes: 41 74 65 6e 63 69 c3 b3 6e 0a
+== Aviso.razor en cp1252-ident
+  build FALLA:
+  error CS0246: The type or namespace name 'audal' could not be found (are you missing a using directive or an assembly reference?) 
+  error RZ1005: "�" is not valid at the start of a code block.  Only identifiers, keywords, comments, "(" and "{" are valid. 

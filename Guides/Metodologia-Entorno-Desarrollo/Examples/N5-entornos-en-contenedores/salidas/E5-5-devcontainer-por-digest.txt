@@ -1,0 +1,15 @@
+## 1. up con --frozen-lockfile y el lock versionado
+[2026-10-07T14:29:01.166Z] 8.0.425
+[2026-10-07T14:29:01.176Z] v22.11.0
+{"outcome":"success","containerId":"7263e57b5f6d0d79d940f5bf1597df91c131500c044c569c28fc7fadca0244e9","remoteUser":"root","remoteWorkspaceFolder":"/workspaces/$W"
+-- versiones efectivas dentro del contenedor:
+SDK 8.0.425 | node v22.11.0 | PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+
+## 2. Alguien cambia la referencia de la feature sin regenerar el lock
+"ghcr.io/devcontainers/features/node:1.6"
+Error: Lockfile does not match.
+{"outcome":"error","message":"Lockfile does not match.","description":"An error occurred setting up the container."}
+
+## 3. ¿Hay versiones más nuevas de las features congeladas? (no modifica nada)
+Feature                              Current  Wanted  Latest
+ghcr.io/devcontainers/features/node  1.7.1    1.7.1   2.1.0

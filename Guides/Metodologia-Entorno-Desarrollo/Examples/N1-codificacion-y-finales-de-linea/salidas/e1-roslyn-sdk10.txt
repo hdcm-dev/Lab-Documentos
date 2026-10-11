@@ -1,0 +1,67 @@
+SDK: 10.0.400  |  TF=net10.0  |  LANG=<vacío>
+== cp1252-lf | sólo literal
+  build OK
+  Texto  : Atenci�n: se�al recibida en �andubay
+  Largo  : 36 (esperado 36)
+  U+     : FFFD 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== cp1252-lf | con identificador no ASCII
+  Alarma.cs(4,23): error CS1056: Unexpected character '�' [/w/work/dotnet/cp1252-lf/App.csproj]
+  Alarma.cs(4,23): error CS1519: Invalid token '�' in a member declaration [/w/work/dotnet/cp1252-lf/App.csproj]
+  Alarma.cs(4,30): error CS1519: Invalid token '=' in a member declaration [/w/work/dotnet/cp1252-lf/App.csproj]
+== utf8-lf | sólo literal
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8-lf | con identificador no ASCII
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8bom-lf | sólo literal
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8bom-lf | con identificador no ASCII
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8-crlf | sólo literal
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 8 chars (LF=7, CRLF=8) contieneCR=True
+== utf8-crlf | con identificador no ASCII
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 8 chars (LF=7, CRLF=8) contieneCR=True
+== cp1252-lf | con identificador y -p:CodePage=1252 (le dice a Roslyn la página de códigos)
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8-lf (SIN BOM) | -p:CodePage=1252: CodePage desactiva el intento UTF-8 => mojibake
+  build OK
+  Texto  : AtenciÃ³n: seÃ±al recibida en Ã‘andubay
+  Largo  : 39 (esperado 36)
+  U+     : 00C3 00B3 006E
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== utf8bom-lf (CON BOM) | -p:CodePage=1252: el BOM manda sobre CodePage
+  build OK
+  Texto  : Atención: señal recibida en Ñandubay
+  Largo  : 36 (esperado 36)
+  U+     : 00F3 006E 003A
+  Bloque : 7 chars (LF=7, CRLF=8) contieneCR=False
+== cp1252-lf | el mismo programa con una consola no UTF-8 (LC_ALL=es_AR.ISO-8859-1): U+FFFD se ve como '?'
+  Texto  : Atenci?n: se?al recibida en ?andubay

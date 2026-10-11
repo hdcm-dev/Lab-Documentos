@@ -1,0 +1,8 @@
+SDK 8.0.425
+  c/Program.cs   primeros bytes:  ef bb bf | CR: 2
+  c/c.csproj     primeros bytes:  ef bb bf | CR: 10
+  .editorconfig  charset: (no lo declara) | end_of_line: end_of_line = crlf 
+SDK 10.0.400
+  c/Program.cs   primeros bytes:  ef bb bf | CR: 0
+  c/c.csproj     primeros bytes:  ef bb bf | CR: 0
+  .editorconfig  charset: (no lo declara) | end_of_line: (no lo declara)

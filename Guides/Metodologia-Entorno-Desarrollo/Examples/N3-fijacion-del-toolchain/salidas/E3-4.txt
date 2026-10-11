@@ -1,0 +1,27 @@
+# E3-4 — 04-python-requires-vs-python-version — 2026-10-09
+## intérprete de la imagen: Python 3.12.14
+--- A. pip install . con requires-python >=3.13
+ERROR: Package 'n3pkg' requires a different Python: 3.12.14 not in '>=3.13'
+rc=1
+--- B. lo mismo con --ignore-requires-python (el metadato se puede saltear)
+rc=0
+--- C. uv: .python-version=3.13 dentro del rango (uv descarga el intérprete si falta)
+uv 0.12.23 (x86_64-unknown-linux-gnu)
+ Downloaded cpython-3.13.16-linux-x86_64-gnu (download)
+Python 3.13.16
+rc=0
+--- D. uv: .python-version=3.11 contradice requires-python >=3.13
+Downloading cpython-3.11.17-linux-x86_64-gnu (download) (29.4MiB)
+ Downloaded cpython-3.11.17-linux-x86_64-gnu (download)
+Using CPython 3.11.17
+error: The Python request from `.python-version` resolved to Python 3.11.17, which is incompatible with the project's Python requirement: `>=3.13` (from `project.requires-python`)
+Use `uv python pin` to update the `.python-version` file to a compatible version
+rc=2
+--- E. uv: .python-version=3.13 pero descargas prohibidas (UV_PYTHON_DOWNLOADS=never)
+error: No interpreter found for Python 3.13 in managed installations or search path
+
+hint: A managed Python download is available for Python 3.13, but Python downloads are set to 'never'
+rc=2
+--- F. uv: [tool.uv] required-version fija la versión del propio uv
+error: Required uv version `==0.1.0` does not match the running version `0.12.23`. Update `uv` by running `uv self update 0.1.0`.
+rc=2

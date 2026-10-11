@@ -1,0 +1,8 @@
+--- (a) Version="13.0" (mínimo inclusivo): resuelve la más baja existente >= 13.0
+    "resolved": "13.0.1",
+--- (b) Version="13.*" (flotante): resuelve la más alta 13.x
+    "resolved": "13.0.4",
+--- (c) lock congelado con Version="13.0.1"; alguien sube a 13.0.3 sin regenerar; restore --locked-mode
+    lock: "resolved": "13.0.1",
+error NU1004: The package reference Newtonsoft.Json version has changed from [13.0.1, ) to [13.0.3, ).The packages lock file is inconsistent with the project dependencies so restore can't be run in locked mode. Disable the RestoreLockedMode MSBuild property or pass an explicit --force-evaluate option to run restore to update the lock file.
+    código de salida: 1

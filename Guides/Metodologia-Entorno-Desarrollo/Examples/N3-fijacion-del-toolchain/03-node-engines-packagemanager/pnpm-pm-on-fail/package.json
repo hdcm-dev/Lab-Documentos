@@ -1,0 +1,5 @@
+{
+  "name": "n3-pnpm-pm-on-fail",
+  "private": true,
+  "packageManager": "pnpm@10.18.0"
+}

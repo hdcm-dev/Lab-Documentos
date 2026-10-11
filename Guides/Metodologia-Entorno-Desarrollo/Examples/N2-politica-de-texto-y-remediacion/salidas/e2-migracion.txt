@@ -1,0 +1,147 @@
+== 1. Diagnóstico del heredado (índice): codificación y EOL
+  .gitignore             utf-8/ascii  i/crlf
+  Pages/Panel.razor      NO utf-8     i/crlf
+  scripts/deploy.sh      utf-8/ascii  i/crlf
+  src/Heredado.csproj    utf-8/ascii  i/lf
+  src/Mensajes.cs        NO utf-8     i/crlf
+  src/Program.cs         NO utf-8     i/crlf
+  src/Sensor.cs          NO utf-8     i/crlf
+  src/Util.cs            utf-8/ascii  i/crlf
+
+== 2. Build en Linux ANTES de migrar
+Build FAILED.
+src/Program.cs(2,48): error CS1073: Unexpected token '�' [/lab/work/e2/repo/src/Heredado.csproj]
+src/Program.cs(2,55): error CS1001: Identifier expected [/lab/work/e2/repo/src/Heredado.csproj]
+src/Program.cs(2,55): error CS1056: Unexpected character '�' [/lab/work/e2/repo/src/Heredado.csproj]
+src/Sensor.cs(5,23): error CS1056: Unexpected character '�' [/lab/work/e2/repo/src/Heredado.csproj]
+src/Sensor.cs(5,23): error CS1519: Invalid token '�' in class, record, struct, or interface member declaration [/lab/work/e2/repo/src/Heredado.csproj]
+
+== 3. Commit de POLÍTICA (chico, revisable): .editorconfig + .gitattributes
+    5141d93 Política de texto: UTF-8 (BOM sólo en Razor y .sln), LF (salvo .cmd/.bat)
+  
+   .editorconfig  | 37 +++++++++++++++++++++++++++++++++++++
+   .gitattributes | 20 ++++++++++++++++++++
+   2 files changed, 57 insertions(+)
+-- git status justo después de commitear la política (nadie tocó estos archivos):
+     M scripts/deploy.sh
+
+== 4. Commit de MIGRACIÓN (mecánico): iconv + git add --renormalize
+-- sólo iconv; git status antes de renormalize (no garantiza listar los que sólo tienen CRLF):
+     M Pages/Panel.razor
+     M scripts/deploy.sh
+     M src/Mensajes.cs
+     M src/Program.cs
+     M src/Sensor.cs
+-- después de git add --renormalize . (también entran los que sólo tenían CRLF):
+warning: in the working copy of 'Pages/Panel.razor', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Mensajes.cs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Program.cs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Sensor.cs', CRLF will be replaced by LF the next time Git touches it
+    M  .gitignore
+    M  Pages/Panel.razor
+    M  scripts/deploy.sh
+    M  src/Mensajes.cs
+    M  src/Program.cs
+    M  src/Sensor.cs
+    M  src/Util.cs
+-- corrida del script completo tools/migrar-a-utf8.sh:
+warning: in the working copy of 'src/Program.cs', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'src/Sensor.cs', CRLF will be replaced by LF the next time Git touches it
+    convertido CP1252->UTF-8: Pages/Panel.razor
+    BOM agregado: Pages/Panel.razor
+    convertido CP1252->UTF-8: src/Mensajes.cs
+    convertido CP1252->UTF-8: src/Program.cs
+    convertido CP1252->UTF-8: src/Sensor.cs
+    resumen: 4 convertidos, 1 BOM agregados, 0 BOM quitados
+    M  .gitignore
+    M  Pages/Panel.razor
+    M  scripts/deploy.sh
+    M  src/Mensajes.cs
+    M  src/Program.cs
+    M  src/Sensor.cs
+    M  src/Util.cs
+    c37afe8 Normalización mecánica: cp1252->UTF-8 y CRLF->LF (sin cambios funcionales)
+  
+   .gitignore        |  4 ++--
+   Pages/Panel.razor |  2 +-
+   scripts/deploy.sh |  4 ++--
+   src/Mensajes.cs   | 12 ++++++------
+   src/Program.cs    |  6 +++---
+   src/Sensor.cs     | 12 ++++++------
+   src/Util.cs       |  4 ++--
+   7 files changed, 22 insertions(+), 22 deletions(-)
+
+== 5. Verificación objetiva de que el commit es puramente mecánico
+  mecanico   .gitignore
+  mecanico   Pages/Panel.razor
+  mecanico   scripts/deploy.sh
+  mecanico   src/Mensajes.cs
+  mecanico   src/Program.cs
+  mecanico   src/Sensor.cs
+  mecanico   src/Util.cs
+verificados 7 archivo(s); 0 con cambio de contenido; 0 alta/baja/renombre
+-- contraprueba: una migración con un cambio funcional colado
+warning: in the working copy of 'src/Sensor.cs', CRLF will be replaced by LF the next time Git touches it
+  mecanico   .gitignore
+  mecanico   Pages/Panel.razor
+  mecanico   scripts/deploy.sh
+  mecanico   src/Mensajes.cs
+  mecanico   src/Program.cs
+  CONTENIDO  src/Sensor.cs
+  mecanico   src/Util.cs
+verificados 7 archivo(s); 1 con cambio de contenido; 0 alta/baja/renombre
+  => exit 1: el commit NO es mecánico, se rechaza
+
+== 6. Refrescar el working tree (los archivos en disco siguen con CRLF hasta el próximo checkout)
+  CR en src/Util.cs antes: 2
+  CR en src/Util.cs después de 'git rm --cached -r . && git reset --hard': 0
+
+== 7. Build en Linux DESPUÉS de migrar
+    0 Warning(s)
+    0 Error(s)
+Atención: lectura fuera de rango (42)
+Señal recibida y registrada
+
+== 8. Aislar la migración de git blame
+-- git blame src/Mensajes.cs (sin ignorar):
+    c37afe87 (Migrador 2026-10-09 1) namespace Heredado;
+    c37afe87 (Migrador 2026-10-09 2) public static class Mensajes
+    c37afe87 (Migrador 2026-10-09 3) {
+    c37afe87 (Migrador 2026-10-09 4)     public const string Alerta = "Atención: lectura fuera de rango";
+    c37afe87 (Migrador 2026-10-09 5)     public const string Pie = "Señal recibida y registrada";
+    c37afe87 (Migrador 2026-10-09 6) }
+-- git blame --ignore-revs-file .git-blame-ignore-revs src/Mensajes.cs:
+    ^46c27d1 (Ana   2026-10-09 1) namespace Heredado;
+    ^46c27d1 (Ana   2026-10-09 2) public static class Mensajes
+    ^46c27d1 (Ana   2026-10-09 3) {
+    ^46c27d1 (Ana   2026-10-09 4)     public const string Alerta = "Atención: lectura fuera de rango";
+    4e3a7ef5 (Bruno 2026-10-09 5)     public const string Pie = "Señal recibida y registrada";
+    ^46c27d1 (Ana   2026-10-09 6) }
+-- con 'git config blame.ignoreRevsFile .git-blame-ignore-revs', git blame a secas ya lo ignora:
+    ^46c27d1 (Ana 2026-10-09 4)     public const string Alerta = "Atención: lectura fuera de rango";
+
+== 9. Lo que rompe el aislamiento: reescribir la historia cambia el SHA
+  SHA original de la migración: c37afe878732
+  SHA tras amend/rebase/squash:  cab786a49b3c  (ya no coincide con .git-blame-ignore-revs)
+
+== 10. Historia final
+  f05bbad Migrador: Ignorar la normalización en blame
+  c37afe8 Migrador: Normalización mecánica: cp1252->UTF-8 y CRLF->LF (sin cambios funcionales)
+  5141d93 Migrador: Política de texto: UTF-8 (BOM sólo en Razor y .sln), LF (salvo .cmd/.bat)
+  4e3a7ef Bruno: Cambio funcional: el pie informa el registro
+  46c27d1 Ana: Sistema heredado (cp1252, CRLF)
+
+== 11. Fusión por squash con un PR por commit: el SHA que se lista es el del squash ya en main
+  SHA del squash en main: 86f6857bbdc1
+  -- blame sin ignore-revs
+     86f6857b 1) class Sensor
+     86f6857b 2) {
+     86f6857b 3)     int Leer() => 42; // Atención
+     86f6857b 4) }
+     autor del commit atribuido: migrador
+  -- blame con ignore-revs del SHA del squash (PR aparte, despues de fusionar)
+     ^a96b7b8 (autora <fecha> 1) class Sensor
+     ^a96b7b8 (autora <fecha> 2) {
+     ^a96b7b8 (autora <fecha> 3)     int Leer() => 42; // Atención
+     ^a96b7b8 (autora <fecha> 4) }
+  git version 2.39.5

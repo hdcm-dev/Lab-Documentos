@@ -1,0 +1,22 @@
+# Misma configuración, alineada con la política declarada en .editorconfig:
+# los tipos que la política quiere CON BOM quedan fuera del hook que lo quita.
+minimum_pre_commit_version: "4.4.0"     # "unsupported" no existe en versiones viejas
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
+    hooks:
+      - id: fix-byte-order-marker
+        exclude: '\.(razor|cshtml|sln)$'   # .editorconfig: charset = utf-8-bom
+      - id: mixed-line-ending
+        args: [--fix=lf]
+        exclude: '\.(cmd|bat)$'            # .editorconfig: end_of_line = crlf
+      - id: end-of-file-fixer
+        exclude: 'packages\.lock\.json$'   # lo genera NuGet sin salto final
+  - repo: local
+    hooks:
+      - id: compuerta-entorno
+        name: compuerta del entorno (N7)
+        entry: tools/compuerta.sh --staged
+        language: unsupported
+        pass_filenames: false
+        always_run: true

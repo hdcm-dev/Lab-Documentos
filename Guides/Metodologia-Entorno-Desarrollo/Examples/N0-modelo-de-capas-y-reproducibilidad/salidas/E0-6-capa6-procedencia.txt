@@ -1,0 +1,39 @@
+=== manifiesto en mcr.microsoft.com/dotnet/sdk:8.0
+{
+  "capa1_fuente":      { "commit": "95e6a399ed492f6e0612ad644705110acd45a7de", "arbol_con_cambios_sin_commit": false,
+                         "gitattributes": "d60f352d0db1404c", "editorconfig": null },
+  "capa2_toolchain":   { "dotnet_sdk": "8.0.425", "node": null,
+                         "npm": null, "python": null,
+                         "uv": null, "global_json": "4fb1a1988bfd38a1" },
+  "capa3_grafo":       { "lock_files": {  } },
+  "capa4_so_imagen":   { "os": "Debian GNU/Linux 12 (bookworm)", "arquitectura": "x86_64",
+                         "imagen_ref": "mcr.microsoft.com/dotnet/sdk:8.0", "imagen_digest": "sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743" },
+  "capa5_proceso":     { "LANG": null, "TZ": null,
+                         "SOURCE_DATE_EPOCH": null, "ruta_de_trabajo": "/repo" },
+  "capa6_registro":    { "registrado_utc": "2026-10-07T14:35:56Z" }
+}
+=== manifiesto en mcr.microsoft.com/dotnet/sdk:10.0
+{
+  "capa1_fuente":      { "commit": "95e6a399ed492f6e0612ad644705110acd45a7de", "arbol_con_cambios_sin_commit": false,
+                         "gitattributes": "d60f352d0db1404c", "editorconfig": null },
+  "capa2_toolchain":   { "dotnet_sdk": "ERROR: 'dotnet --version' falló (código 155)", "node": null,
+                         "npm": null, "python": null,
+                         "uv": null, "global_json": "4fb1a1988bfd38a1" },
+  "capa3_grafo":       { "lock_files": {  } },
+  "capa4_so_imagen":   { "os": "Ubuntu 24.04.4 LTS", "arquitectura": "x86_64",
+                         "imagen_ref": "mcr.microsoft.com/dotnet/sdk:10.0", "imagen_digest": "sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c" },
+  "capa5_proceso":     { "LANG": null, "TZ": null,
+                         "SOURCE_DATE_EPOCH": null, "ruta_de_trabajo": "/repo" },
+  "capa6_registro":    { "registrado_utc": "2026-10-07T14:35:56Z" }
+}
+=== diferencias entre manifiestos (diff):
+4c4
+<   "capa2_toolchain":   { "dotnet_sdk": "8.0.425", "node": null,
+---
+>   "capa2_toolchain":   { "dotnet_sdk": "ERROR: 'dotnet --version' falló (código 155)", "node": null,
+8,9c8,9
+<   "capa4_so_imagen":   { "os": "Debian GNU/Linux 12 (bookworm)", "arquitectura": "x86_64",
+<                          "imagen_ref": "mcr.microsoft.com/dotnet/sdk:8.0", "imagen_digest": "sha256:78235e09001f52b6592c458ac010775ebac6725422e80cd0c1650590f67b2743" },
+---
+>   "capa4_so_imagen":   { "os": "Ubuntu 24.04.4 LTS", "arquitectura": "x86_64",
+>                          "imagen_ref": "mcr.microsoft.com/dotnet/sdk:10.0", "imagen_digest": "sha256:e1ffd2a92ae84c1291bc1b6887501f8af98e6331e7af6d4c8d37168c5e87a64c" },

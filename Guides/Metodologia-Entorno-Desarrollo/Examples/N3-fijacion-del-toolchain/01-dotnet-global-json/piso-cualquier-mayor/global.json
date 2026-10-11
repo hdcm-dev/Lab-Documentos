@@ -1,0 +1,4 @@
+{
+  // latestMajor: cualquier SDK >= 8.0.100, incluida otra versión mayor. Es un piso, no una fijación.
+  "sdk": { "version": "8.0.100", "rollForward": "latestMajor" }
+}

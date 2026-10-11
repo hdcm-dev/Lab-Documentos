@@ -1,0 +1,3 @@
+== sin-bom.sh (node v24.21.0, spawnSync) {"status":0,"error":null,"out":"hola\n","err":""}
+== con-bom.sh (node v24.21.0, spawnSync) {"status":0,"error":null,"out":"hola\n","err":"./con-bom.sh: 1: ﻿#!/bin/sh: not found\n"}
+== crlf.sh (node v24.21.0, spawnSync) {"status":null,"error":"ENOENT"}

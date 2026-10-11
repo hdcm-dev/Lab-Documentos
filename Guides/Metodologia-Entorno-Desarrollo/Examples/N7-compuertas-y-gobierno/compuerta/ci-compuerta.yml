@@ -1,0 +1,35 @@
+# Ejemplo de N7 (no lo lee A.17, que busca .github/workflows/ci.yml): la CI como árbitro.
+# Corre la MISMA compuerta que el hook, en la MISMA imagen que el devcontainer.
+# Acciones fijadas por SHA completo (resuelto con `git ls-remote` el 2026-10-07);
+# el comentario conserva la etiqueta para que Dependabot pueda proponer la subida.
+name: compuerta
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  compuerta:
+    runs-on: ubuntu-24.04
+    # Misma receta que .devcontainer (N5): base por digest + EditorConfig.
+    container: ghcr.io/org/imagen-ci@sha256:<digest-publicado-por-el-pipeline-de-la-imagen>
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0            # --base necesita la historia para comparar con main
+      - name: Compuerta del PR (sólo lo cambiado + todo el grafo)
+        if: github.event_name == 'pull_request'
+        run: tools/compuerta.sh --base "origin/${{ github.base_ref }}"
+      - name: Compuerta completa (main)
+        if: github.event_name == 'push'
+        run: tools/compuerta.sh
+
+# Variante SIN imagen propia: las acciones de setup leen los MISMOS archivos que
+# la compuerta verifica, así la versión no se repite en el workflow.
+#   - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+#     with: { global-json-file: global.json }
+#   - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020   # v7.0.0
+#     with: { node-version-file: .nvmrc }
+#   - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7   # v10.2.0
+#     (sin `version`: busca required-version en pyproject.toml / uv.toml)

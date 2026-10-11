@@ -1,0 +1,11 @@
+host: usuario dev uid=1000
+## 1. Contenedor como root (default de la imagen) escribe obj/ en el repo montado
+0
+root(0) $W/obj
+root(0) $W/obj/artefacto
+rm: no se puede borrar '$W/obj/artefacto': Permiso denegado
+## 2. Mismo contenedor con --user = UID/GID del host
+1000
+dev(1000) $W/obj2
+dev(1000) $W/obj2/artefacto
+limpieza OK

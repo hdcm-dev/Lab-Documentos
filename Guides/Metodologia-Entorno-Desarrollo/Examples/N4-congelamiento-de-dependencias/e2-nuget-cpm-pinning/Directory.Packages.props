@@ -1,0 +1,16 @@
+<Project>
+  <!-- E2 de N4: Central Package Management (CPM). Un único lugar para las versiones. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Transitive pinning: una PackageVersion también gobierna a la dependencia
+         cuando llega de forma transitiva (sin PackageReference explícita). -->
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Dependencia directa: el .csproj la referencia SIN Version. -->
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <!-- Dependencia transitiva de Logging (Logging pide Options >= 8.0.0); acá se la
+         sube a 8.0.2, por ejemplo para tomar un parche, sin agregarla al .csproj. -->
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+  </ItemGroup>
+</Project>

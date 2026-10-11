@@ -1,0 +1,96 @@
+# E3-2 — 02-dotnet-sdk-compilador-runtime — 2026-10-09
+## A. Mismo proyecto net8.0, dos SDK: ¿qué compilador y qué C#?
+--- mcr.microsoft.com/dotnet/sdk:8.0
+error CS8304: Compiler version: '4.11.0-3.25569.22 (3fb752d4)'. Language version: 12.0. 
+--- mcr.microsoft.com/dotnet/sdk:10.0
+error CS8304: Compiler version: '5.9.0-1.26379.115 (14fbf8d5271c98133561eb55185fdb05b286f578)'. Language version: 12.0. Compiler path: '/usr/share/dotnet/sdk/10.0.400/Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll'. 
+## B. Sintaxis de C# 14 con LangVersion por defecto y con LangVersion=latest
+--- mcr.microsoft.com/dotnet/sdk:8.0 (por defecto)
+error CS0131: The left-hand side of an assignment must be a variable, property or indexer 
+--- mcr.microsoft.com/dotnet/sdk:8.0 (LangVersion=latest)
+Program.cs(11,1): error CS0131: The left-hand side of an assignment must be a variable, property or indexer [/tmp/w/App.csproj]
+Program.cs(16,28): warning CS8602: Dereference of a possibly null reference. [/tmp/w/App.csproj]
+--- mcr.microsoft.com/dotnet/sdk:10.0 (por defecto)
+error CS9202: Feature 'null conditional assignment' is not available in C# 12.0. Please use language version 14.0 or greater. 
+--- mcr.microsoft.com/dotnet/sdk:10.0 (LangVersion=latest)
+Program.cs(16,28): warning CS8602: Dereference of a possibly null reference. [/tmp/w/App.csproj]
+Build succeeded.
+## C. Compilado con SDK 10 para net8.0: ¿con qué runtime corre?
+runtimeconfig:
+{
+  "runtimeOptions": {
+    "tfm": "net8.0",
+    "framework": {
+      "name": "Microsoft.NETCore.App",
+      "version": "8.0.0"
+    },
+    "configProperties": {
+      "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": false
+    }
+  }
+}runtimes instalados:
+Microsoft.AspNetCore.App 10.0.11
+Microsoft.NETCore.App 10.0.11
+--- dotnet out/App.dll
+You must install or update .NET to run this application.
+
+App: /tmp/w/out/App.dll
+Architecture: x64
+Framework: 'Microsoft.NETCore.App', version '8.0.0' (x64)
+.NET location: /usr/share/dotnet/
+
+The following frameworks were found:
+  10.0.11 at [/usr/share/dotnet/shared/Microsoft.NETCore.App]
+
+Learn more:
+https://aka.ms/dotnet/app-launch-failed
+
+To install missing framework, download:
+https://aka.ms/dotnet-core-applaunch?framework=Microsoft.NETCore.App&framework_version=8.0.0&arch=x64&rid=linux-x64&os=ubuntu.24.04
+rc=150
+--- con DOTNET_ROLL_FORWARD=Major
+Valor=42
+Runtime que ejecuta: .NET 10.0.11
+--- mismo build ejecutado con el SDK 8 (trae runtime 8)
+Microsoft.NETCore.App 8.0.31
+Valor=42
+Runtime que ejecuta: .NET 8.0.31
+
+# E3-2 (ampliación) — inspeccion-targets.sh
+## SDK 8: ¿hay selección automática del compilador?
+SDK 8.0.425
+-- grep RoslynCompilerType|BuildWithNetFrameworkHostedCompiler|DOTNET_HOST_PATH en Microsoft.NET.Sdk.targets:
+222:         If they do, and they also set BuildWithNetFrameworkHostedCompiler, we will have
+227:    <ItemGroup Condition="'$(BuildWithNetFrameworkHostedCompiler)' == 'true' and '$(OS)' == 'Windows_NT'">
+-- RoslynCompilerType en todo el SDK: 0 archivo(s)
+
+## SDK 10: la selección (Microsoft.NET.Sdk.BeforeCommon.targets) y el umbral de MSBuild
+SDK 10.0.400
+-- /usr/share/dotnet/sdk/10.0.400/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.Sdk.BeforeCommon.targets, desde la línea 331:
+    Use Roslyn deployed with SDK for builds of SDK-style projects (regardless of whether the initiator is `dotnet` or `msbuild`).
+    <!-- RoslynCompilerType specified by user, do not overwrite it. -->
+    <When Condition="'$(RoslynCompilerType)' != ''"></When>
+    <When Condition="'$(BuildWithNetFrameworkHostedCompiler)' == 'true'">
+    <PropertyGroup><RoslynCompilerType>FrameworkPackage</RoslynCompilerType></PropertyGroup>
+    </When>
+    <When Condition="'$(MSBuildRuntimeType)' == 'Core' or '$(DOTNET_HOST_PATH)' != '' or '$(DOTNET_EXPERIMENTAL_HOST_PATH)' != ''">
+    <PropertyGroup><RoslynCompilerType>Core</RoslynCompilerType></PropertyGroup>
+    </When>
+    <When Condition="'$(MSBuildRuntimeType)' == 'Full'
+    and '$(_IsDisjointMSBuildVersion)' == 'true'
+    <PropertyGroup><RoslynCompilerType>FrameworkPackage</RoslynCompilerType></PropertyGroup>
+    </When>
+    <!-- Otherwise we must be on full MSBuild, so choose Framework compiler type. -->
+    <Otherwise>
+    <PropertyGroup><RoslynCompilerType>Framework</RoslynCompilerType></PropertyGroup>
+    </Otherwise>
+    <!-- Warn about deprecated RoslynCompilerType=Framework -->
+    <Target Name="_CheckForDeprecatedRoslynCompilerType"
+    Condition="'$(RoslynCompilerType)' == 'Framework'">
+    <NETSdkWarning ResourceName="RoslynCompilerTypeFrameworkIsDeprecated"
+-- _IsDisjointMSBuildVersion en Microsoft.NETCoreSdk.BundledMSBuildInformation.props:
+    15:    <_IsDisjointMSBuildVersion>$([MSBuild]::VersionLessThan('$(_MSBuildVersionMajorMinor)', '18.9'))</_IsDisjointMSBuildVersion>
+
+## nuget.org: versiones de Microsoft.Net.Sdk.Compilers.Toolset
+versiones=94 primera=9.0.100-preview.7.24407.12 ultima=11.0.100-rc.1.26425.128 versiones_8.x=0
+fecha: 2026-10-09

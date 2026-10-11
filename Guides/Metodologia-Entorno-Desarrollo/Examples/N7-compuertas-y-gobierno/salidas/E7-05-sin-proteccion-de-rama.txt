@@ -1,0 +1,46 @@
+
+=== 1. Remoto SIN control del lado servidor (equivale a rama no protegida)
+   -> rc=0
+-- la CI corre DESPUÉS, sobre lo que ya está en main:
+COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+COMPUERTA resultado=ROJO (1 paso/s)
+-- main quedó en: 1fbc087 cp1252 directo a main
+
+=== 2. Control compensatorio en el acto irreversible: publicar desde main en rojo
+   COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple
+   COMPUERTA resultado=ROJO (1 paso/s)
+PUBLICAR: compuerta en ROJO sobre 1fbc08739b66bab8cc6c523e0bb431c334a96f12 -> NO se publica
+   -> rc=1
+
+=== 3. Se corrige main y se publica; un segundo intento con la misma versión se rechaza
+PUBLICAR: v1.0.0 etiquetada sobre 9ce1d3c; registro de entorno:
+   COMPUERTA commit=9ce1d3c alcance=todo
+   COMPUERTA [ok]    texto: POLITICA-TEXTO: 11 archivo(s) revisado(s), 0 violación(es)
+   COMPUERTA [ok]    toolchain .NET: SDK 8.0.425 = global.json
+   COMPUERTA [n/a]   toolchain Node: no hay .nvmrc
+   COMPUERTA [n/a]   toolchain Python: no hay .python-version
+   COMPUERTA [ok]    grafo NuGet: packages.lock.json coincide (--locked-mode)
+   COMPUERTA [ok]    grafo NuGet: packages.lock.json requested = resolved
+   COMPUERTA [n/a]   grafo npm: no hay package-lock.json
+   COMPUERTA [n/a]   grafo uv: no hay uv.lock
+   COMPUERTA resultado=VERDE
+   -> rc=0
+PUBLICAR: v1.0.0 ya existe -> NO se publica
+   -> rc=1
+
+=== 4. Remoto CON control del lado servidor (pre-receive que corre la compuerta)
+remote: [servidor]     POLITICA-TEXTO: Senal.cs: no es UTF-8 válido (byte 0xf1 en offset 37; ¿cp1252?)        
+remote: [servidor]     POLITICA-TEXTO: 11 archivo(s) revisado(s), 1 violación(es)        
+remote: [servidor] COMPUERTA [FALLA] texto: la política de .editorconfig/.gitattributes no se cumple        
+remote: [servidor] COMPUERTA resultado=ROJO (1 paso/s)        
+remote: [servidor] push a main RECHAZADO: la compuerta no dio VERDE en f51a34e        
+To /ex/N7-compuertas-y-gobierno/work/05/remoto.git
+ ! [remote rejected] main -> main (pre-receive hook declined)
+error: failed to push some refs to '/ex/N7-compuertas-y-gobierno/work/05/remoto.git'
+   -> rc=1
+-- main sigue en: 9ce1d3c Senal a UTF-8
+
+=== 4b. Control positivo: el mismo hook acepta un push que cumple
+remote: [servidor] compuerta VERDE en e47875a: push aceptado        
+   -> rc=0
+-- main quedó en: e47875a Senal2 en UTF-8

@@ -1,0 +1,12 @@
+Python 3.12.14 · uv 0.12.23 (x86_64-unknown-linux-gnu)
+--- (a) uv lock: el rango >=1.10 resuelve a la más alta disponible
+version = "1.17.0"
+--- (b) se edita el rango a six>=1.10,<1.16 y NO se regenera el lock: uv lock --locked
+Using CPython 3.12.14 interpreter at: /usr/local/bin/python3
+Resolved 2 packages in 173ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided.
+    código de salida: 1
+--- (c) uv sync --locked (la instalación también se niega)
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided.
+
+    código de salida: 1

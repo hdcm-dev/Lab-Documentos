@@ -1,0 +1,16 @@
+# Política de finales de línea (N2) + archivos generados de los tres ecosistemas.
+* text=auto eol=lf
+
+*.cmd text eol=crlf
+*.bat text eol=crlf
+*.sh  text eol=lf
+
+# Lock files: texto y LF, escriba quien los escriba (Windows o Linux).
+# NO se marcan linguist-generated: GitHub los ocultaría por defecto en el diff
+# del PR, y el revisor TIENE que verlos (N4, N7).
+packages.lock.json text eol=lf
+package-lock.json  text eol=lf
+uv.lock            text eol=lf
+
+*.png binary
+*.ico binary

@@ -1,0 +1,7 @@
+# Anexo A.18. Lo generado no se versiona: la compuerta y los revisores miran lo versionado.
+bin/
+obj/
+node_modules/
+dist/
+.venv/
+__pycache__/

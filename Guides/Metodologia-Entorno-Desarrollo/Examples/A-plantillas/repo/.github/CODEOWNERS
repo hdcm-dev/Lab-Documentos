@@ -1,0 +1,22 @@
+# Anexo A.14. Último patrón que coincide gana.
+*                          @org/desarrollo
+/.editorconfig             @org/arquitectura
+/.gitattributes            @org/arquitectura
+/global.json               @org/arquitectura @org/plataforma
+/.nvmrc                    @org/arquitectura
+**/.python-version         @org/arquitectura
+/Directory.Build.props     @org/arquitectura
+/Directory.Build.targets   @org/arquitectura
+/Directory.Packages.props  @org/arquitectura
+/nuget.config              @org/arquitectura
+**/.npmrc                  @org/arquitectura
+**/pyproject.toml          @org/arquitectura
+**/packages.lock.json      @org/arquitectura
+**/package-lock.json       @org/arquitectura
+**/uv.lock                 @org/arquitectura
+/.devcontainer/            @org/plataforma
+/imagen/                   @org/plataforma
+/.githooks/                @org/plataforma
+/.pre-commit-config.yaml   @org/plataforma
+/.github/                  @org/plataforma
+/tools/ci/                 @org/plataforma

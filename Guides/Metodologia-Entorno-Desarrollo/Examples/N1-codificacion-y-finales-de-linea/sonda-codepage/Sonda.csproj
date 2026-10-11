@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- E1-N1-02: qué devuelve Encoding.GetEncoding(0) (la "página ANSI del sistema") en Linux -->
+  <PropertyGroup>
+    <!-- El valor por defecto va ANTES de usarse: MSBuild evalúa las propiedades en orden. -->
+    <TF Condition="'$(TF)' == ''">net8.0</TF>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>$(TF)</TargetFramework>
+  </PropertyGroup>
+</Project>

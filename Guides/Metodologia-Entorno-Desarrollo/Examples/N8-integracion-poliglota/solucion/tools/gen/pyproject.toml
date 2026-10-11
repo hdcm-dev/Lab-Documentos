@@ -1,0 +1,12 @@
+[project]
+name = "gen"
+version = "1.0.0"
+requires-python = "==3.12.*"
+dependencies = ["packaging==25.0"]
+
+[tool.uv]
+# Versión del gestor que escribe uv.lock (N3).
+required-version = "==0.12.23"
+# Sin descargas implícitas de intérpretes: lo provee la imagen (N5).
+python-downloads = "never"
+package = false

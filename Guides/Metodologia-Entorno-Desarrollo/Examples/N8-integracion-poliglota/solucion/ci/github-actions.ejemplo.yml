@@ -1,0 +1,42 @@
+# EJEMPLO NO EJECUTADO en este laboratorio (no hay CI de GitHub acá).
+# Muestra las dos formas de llevar la solución políglota a la CI.
+# Las etiquetas de las acciones (@v5, @v4) NO se verificaron: en un repo real
+# se fijan por SHA de commit (N7).
+# Las sintaxis (strategy.matrix, jobs.<id>.container, actions/attest) están
+# documentadas en docs.github.com (ver la bitácora N8, tabla de evidencias).
+name: build-poliglota
+on: [push, pull_request]
+
+jobs:
+  # Variante 1: UNA imagen con los tres runtimes; la compuerta y la build son
+  # las mismas que en la estación (./build.sh).
+  imagen-unica:
+    runs-on: ubuntu-latest
+    container:
+      # La imagen se construye desde imagen/Dockerfile y se publica por digest.
+      image: ghcr.io/ORG/lab-n8-poliglota@sha256:DIGEST
+    permissions:
+      contents: read
+      id-token: write       # para firmar la atestación
+      attestations: write
+    steps:
+      - uses: actions/checkout@v5
+      - run: ./build.sh                       # compuerta + Python + Node + .NET + registro
+        env:
+          IMAGEN_DIGEST: sha256:DIGEST
+      - uses: actions/attest@v4               # procedencia SLSA firmada del artefacto
+        with:
+          subject-path: src/Saludo/bin/Release/net8.0/Saludo.dll
+
+  # Variante 2: MATRIZ por componente. Cada ecosistema en su runner o imagen;
+  # útil cuando cada componente se publica por separado. El ensamblado final
+  # necesita pasar artefactos entre jobs (upload/download-artifact).
+  componentes:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        componente: [python, node, dotnet]
+    steps:
+      - uses: actions/checkout@v5
+      - run: ./ci/construir-componente.sh ${{ matrix.componente }}   # (no incluido)

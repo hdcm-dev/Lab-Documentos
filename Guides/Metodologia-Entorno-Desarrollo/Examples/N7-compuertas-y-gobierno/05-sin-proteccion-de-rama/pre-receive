@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Hook pre-receive del SERVIDOR (modelo de lo que hace una rama protegida con
+# chequeo requerido): corre la compuerta sobre el commit empujado a main y, si
+# no da VERDE, git rechaza el push completo (githooks: "none of the refs will be updated").
+#
+# Durante pre-receive los objetos nuevos están en cuarentena y el repo no admite
+# escrituras: se exporta el árbol con `git archive` a un repo efímero aparte.
+set -u
+while read -r viejo nuevo ref; do
+  [ "$ref" = "refs/heads/main" ] || continue
+  tmp=$(mktemp -d)
+  git archive "$nuevo" | tar -x -C "$tmp"
+  if ! ( unset GIT_DIR GIT_QUARANTINE_PATH GIT_OBJECT_DIRECTORY GIT_ALTERNATE_OBJECT_DIRECTORIES
+         cd "$tmp" && git init -q && git add -A && git -c core.hooksPath=/dev/null commit -qm "$nuevo" \
+         && tools/compuerta.sh ) >"$tmp.salida" 2>&1; then
+    grep -E 'FALLA|POLITICA|resultado' "$tmp.salida" | sed 's/^/[servidor] /'
+    echo "[servidor] push a main RECHAZADO: la compuerta no dio VERDE en ${nuevo:0:7}"
+    rm -rf "$tmp" "$tmp.salida"; exit 1
+  fi
+  echo "[servidor] compuerta VERDE en ${nuevo:0:7}: push aceptado"
+  rm -rf "$tmp" "$tmp.salida"
+done
+exit 0

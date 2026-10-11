@@ -1,0 +1,31 @@
+### 1. Con el MSBuild del SDK 8 (imagen multi-runtime de la solución)
+/tmp/.nuget/packages/microsoft.visualstudio.javascript.sdk/1.0.6887863/Sdk/Sdk.targets(305,5): error MSB4018: The "GeneratePackageJsonProps" task failed unexpectedly. [/w/web/web.esproj]
+/tmp/.nuget/packages/microsoft.visualstudio.javascript.sdk/1.0.6887863/Sdk/Sdk.targets(305,5): error MSB4018: System.IO.FileNotFoundException: Could not load file or assembly 'System.Text.Json, Version=9.0.0.0, Culture=n
+
+### 2. SDK 10: el .esproj de fábrica sobre un repo SIN deriva
+Build succeeded.
+Failed to run npm audit: An error occurred trying to start process 'cmd.exe' with working directory '/w/web/'. No such file or directory
+npm install
+npm run build
+web: dist/app.js generado con node v22.23.2
+--- directorios que dejó en web/:
+dist/ node_modules/ obj/ obj\Debug/ 
+
+### 3. SDK 10: package.json cambiado a is-odd 2.0.0 sin regenerar el lock (deriva)
+lock: is-odd 3.0.1
+Build succeeded.
+lock: is-odd 2.0.0
+(el lock se reescribió en silencio: la build «pasó» con otro grafo)
+
+### 4. SDK 10: misma deriva con ShouldRunNpmInstall=false + npm ci enganchado antes de RunNpmInstall
+lock: is-odd 3.0.1
+/w/web/web.esproj(11,5): error MSB3073: The command "npm ci --no-audit --no-fund" exited with code 1.
+Build FAILED.
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+npm error code EUSAGE
+lock: is-odd 3.0.1
+--- y sin deriva, la variante estricta construye
+Build succeeded.
+npm ci --no-audit --no-fund
+npm run build
+web: dist/app.js generado con node v22.23.2

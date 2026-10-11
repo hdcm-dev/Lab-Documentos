@@ -1,0 +1,119 @@
+== SDK 8.0.425
+  .editorconfig      sin BOM  líneas CRLF: 364
+  .gitignore         sin BOM  líneas CRLF: 484
+  Program.cs         con BOM  líneas CRLF: 2
+  app.csproj         con BOM  líneas CRLF: 10
+  app.sln            con BOM  líneas CRLF: 14
+  global.json        sin BOM  líneas CRLF: 4
+-- reglas de texto en el .editorconfig que genera 'dotnet new editorconfig':
+    4:[*]
+    8:[*.xml]
+    12:[*.cs]
+    21:end_of_line = crlf
+    22:insert_final_newline = false
+    25:[*.{cs,vb}]
+    78:[*.cs]
+    175:[*.{cs,vb}]
+-- ¿la plantilla declara charset en algún lado?: 0 línea(s)
+-- ¿dotnet format hace cumplir charset? [*.cs] charset = utf-8-bom; Program.cs (LF) con primeros bytes  2f 2f 20:
+    Program.cs(1,1): error CHARSET: Fix file encoding.
+    --verify-no-changes exit=2
+    después de 'dotnet format whitespace': primeros bytes =  ef bb bf
+-- ¿dotnet format hace cumplir charset? [*.cs] charset = utf-8; Program.cs (LF) con primeros bytes  ef bb bf:
+    Program.cs(1,1): error WHITESPACE: Fix whitespace formatting. Delete 1 characters.
+    Program.cs(1,65): error WHITESPACE: Fix whitespace formatting. Replace 1 characters with '\n'.
+    Program.cs(1,1): error CHARSET: Fix file encoding.
+    --verify-no-changes exit=2
+    después de 'dotnet format whitespace': primeros bytes =  2f 2f 20
+-- ¿La CLI respeta el BOM/EOL de un .csproj o una solución existentes al editarlos?
+   antes (se les quitó BOM y CR a mano):
+    a/a.csproj   sin BOM, líneas CRLF: 0
+    s.sln        sin BOM, líneas CRLF: 0
+   después de 'dotnet sln add' y 'dotnet add reference':
+    a/a.csproj   sin BOM, líneas CRLF: 0
+    s.sln        con BOM, líneas CRLF: 0
+-- Plantillas web (webapp, blazor, razorcomponent): BOM y CRLF por extensión (sin wwwroot/lib)
+    .cs          archivos=2   con BOM=0   con CRLF=2
+    .cshtml      archivos=7   con BOM=7   con CRLF=7
+    .cshtml.cs   archivos=3   con BOM=1   con CRLF=3
+    .cshtml.css  archivos=1   con BOM=1   con CRLF=1
+    .csproj      archivos=2   con BOM=0   con CRLF=2
+    .css         archivos=2   con BOM=0   con CRLF=2
+    .js          archivos=1   con BOM=1   con CRLF=1
+    .json        archivos=6   con BOM=0   con CRLF=6
+    .razor       archivos=10  con BOM=10  con CRLF=10
+    .razor.css   archivos=2   con BOM=0   con CRLF=2
+-- ¿Y si el .csproj y la solución tienen BOM antes de editarlos?
+   antes (con BOM puesto a mano):
+    a/a.csproj   con BOM, líneas CRLF: 0
+    s.sln        con BOM, líneas CRLF: 0
+   después de 'dotnet sln add' y 'dotnet add reference':
+    a/a.csproj   con BOM, líneas CRLF: 0
+    s.sln        con BOM, líneas CRLF: 0
+-- Plantillas de ítem (class, interface, razorcomponent) dentro de un proyecto: ¿con BOM?
+    Items/Clase.cs con BOM, líneas CRLF: 6
+    Items/IFace.cs con BOM, líneas CRLF: 6
+    Items/Comp.razor con BOM, líneas CRLF: 5
+-- Sin BOM a mano: ¿'dotnet format whitespace' se lo repone al .razor? (.editorconfig sin charset)
+   dotnet format whitespace rc=0
+    Items/Comp.razor sin BOM, líneas CRLF: 5
+== SDK 10.0.400
+  .editorconfig      sin BOM  líneas CRLF: 0
+  .gitignore         sin BOM  líneas CRLF: 0
+  Program.cs         con BOM  líneas CRLF: 0
+  app.csproj         con BOM  líneas CRLF: 0
+  app.slnx           sin BOM  líneas CRLF: 0
+  global.json        sin BOM  líneas CRLF: 0
+-- reglas de texto en el .editorconfig que genera 'dotnet new editorconfig':
+    4:[*]
+    8:[*.xml]
+    12:[*.{csproj,fsproj,vbproj,proj,slnx}]
+    16:[*.{props,targets,config,nuspec}]
+    19:[*.json]
+    23:[*.cs]
+    32:insert_final_newline = false
+    35:[*.{cs,vb}]
+    91:[*.cs]
+    200:[*.{cs,vb}]
+-- ¿la plantilla declara charset en algún lado?: 0 línea(s)
+-- ¿dotnet format hace cumplir charset? [*.cs] charset = utf-8-bom; Program.cs (LF) con primeros bytes  43 6f 6e:
+    Program.cs(1,1): error CHARSET: Fix file encoding.
+    --verify-no-changes exit=2
+    después de 'dotnet format whitespace': primeros bytes =  ef bb bf
+-- ¿dotnet format hace cumplir charset? [*.cs] charset = utf-8; Program.cs (LF) con primeros bytes  ef bb bf:
+    Program.cs(1,1): error WHITESPACE: Fix whitespace formatting. Delete 1 characters.
+    Program.cs(1,1): error CHARSET: Fix file encoding.
+    --verify-no-changes exit=2
+    después de 'dotnet format whitespace': primeros bytes =  43 6f 6e
+-- ¿La CLI respeta el BOM/EOL de un .csproj o una solución existentes al editarlos?
+   antes (se les quitó BOM y CR a mano):
+    a/a.csproj   sin BOM, líneas CRLF: 0
+    s.slnx       sin BOM, líneas CRLF: 0
+   después de 'dotnet sln add' y 'dotnet add reference':
+    a/a.csproj   sin BOM, líneas CRLF: 0
+    s.slnx       sin BOM, líneas CRLF: 0
+-- Plantillas web (webapp, blazor, razorcomponent): BOM y CRLF por extensión (sin wwwroot/lib)
+    .cs          archivos=2   con BOM=0   con CRLF=2
+    .cshtml      archivos=7   con BOM=7   con CRLF=7
+    .cshtml.cs   archivos=3   con BOM=1   con CRLF=3
+    .cshtml.css  archivos=1   con BOM=1   con CRLF=1
+    .csproj      archivos=2   con BOM=0   con CRLF=2
+    .css         archivos=2   con BOM=0   con CRLF=2
+    .js          archivos=2   con BOM=1   con CRLF=2
+    .json        archivos=6   con BOM=0   con CRLF=6
+    .razor       archivos=12  con BOM=12  con CRLF=12
+    .razor.css   archivos=3   con BOM=0   con CRLF=3
+-- ¿Y si el .csproj y la solución tienen BOM antes de editarlos?
+   antes (con BOM puesto a mano):
+    a/a.csproj   con BOM, líneas CRLF: 0
+    s.slnx       con BOM, líneas CRLF: 0
+   después de 'dotnet sln add' y 'dotnet add reference':
+    a/a.csproj   con BOM, líneas CRLF: 0
+    s.slnx       sin BOM, líneas CRLF: 0
+-- Plantillas de ítem (class, interface, razorcomponent) dentro de un proyecto: ¿con BOM?
+    Items/Clase.cs con BOM, líneas CRLF: 0
+    Items/IFace.cs con BOM, líneas CRLF: 0
+    Items/Comp.razor con BOM, líneas CRLF: 5
+-- Sin BOM a mano: ¿'dotnet format whitespace' se lo repone al .razor? (.editorconfig sin charset)
+   dotnet format whitespace rc=0
+    Items/Comp.razor sin BOM, líneas CRLF: 5

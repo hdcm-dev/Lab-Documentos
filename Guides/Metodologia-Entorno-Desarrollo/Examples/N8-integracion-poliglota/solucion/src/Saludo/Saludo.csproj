@@ -1,0 +1,62 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Grafo congelado (N4). El modo bloqueado se pide desde la línea de comandos en CI. -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" />
+  </ItemGroup>
+
+  <!--
+    FRONTERA DE LA BUILD (N8). MSBuild es el punto de entrada para quien abre la
+    solución en Visual Studio (ESC-01) o hace `dotnet build`: llama a npm y a uv.
+    En CI el orquestador externo (build.sh) ya corrió esos pasos y construye con
+    -p:ConstruirPoliglota=false, para que cada ecosistema se ejecute UNA vez y con
+    su comando estricto.
+  -->
+  <PropertyGroup>
+    <!-- true en la estación (F5) y en la prueba de regresión de la CI (§11.2.5); build.sh pasa false -->
+    <ConstruirPoliglota Condition="'$(ConstruirPoliglota)' == ''">true</ConstruirPoliglota>
+    <RaizRepo>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '..', '..'))</RaizRepo>
+    <WebDir>$(RaizRepo)web/</WebDir>
+    <GenDir>$(RaizRepo)tools/gen/</GenDir>
+    <WebSalida>$(WebDir)dist/app.js</WebSalida>
+    <DatosSalida>$(GenDir)dist/Datos.g.cs</DatosSalida>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <WebEntrada Include="$(WebDir)package.json;$(WebDir)package-lock.json;$(WebDir)*.mjs" />
+    <GenEntrada Include="$(GenDir)pyproject.toml;$(GenDir)uv.lock;$(GenDir)*.py" />
+  </ItemGroup>
+
+  <!-- Inputs/Outputs: si nada cambió, MSBuild salta el target (build incremental). -->
+  <Target Name="ConstruirWeb" Condition="'$(ConstruirPoliglota)' == 'true'"
+          Inputs="@(WebEntrada)" Outputs="$(WebSalida)">
+    <!-- npm ci, no npm install: instala exactamente el lock o falla (N4). -->
+    <Exec Command="npm ci --no-audit --no-fund" WorkingDirectory="$(WebDir)" />
+    <Exec Command="npm run build" WorkingDirectory="$(WebDir)" />
+  </Target>
+
+  <Target Name="GenerarDatos" Condition="'$(ConstruirPoliglota)' == 'true'"
+          Inputs="@(GenEntrada)" Outputs="$(DatosSalida)">
+    <!-- uv run locked: falla si uv.lock no coincide con pyproject.toml (N4). -->
+    <Exec Command="uv run --locked python gen.py dist/Datos.g.cs" WorkingDirectory="$(GenDir)" />
+  </Target>
+
+  <Target Name="IncluirSalidasPoliglotas" BeforeTargets="BeforeBuild"
+          DependsOnTargets="ConstruirWeb;GenerarDatos">
+    <Error Condition="!Exists('$(WebSalida)') Or !Exists('$(DatosSalida)')"
+           Text="Faltan las salidas de Node/Python. Corré build.sh o construí con ConstruirPoliglota=true." />
+    <ItemGroup>
+      <Compile Include="$(DatosSalida)" />
+      <EmbeddedResource Include="$(WebSalida)" LogicalName="app.js" />
+    </ItemGroup>
+  </Target>
+
+</Project>

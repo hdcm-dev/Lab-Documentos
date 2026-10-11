@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "pinDigests": true,
+  "minimumReleaseAge": "7 days",
+  "lockFileMaintenance": { "enabled": true },
+  "dependencyDashboard": true,
+  "packageRules": [
+    { "matchManagers": ["nuget"], "matchUpdateTypes": ["patch"], "groupName": "parches NuGet" }
+  ]
+}

@@ -1,0 +1,14 @@
+node v22.23.2 · npm 10.9.8
+--- versiones publicadas de 'ms' que satisfacen ^2.0.0:
+ms@2.0.0 '2.0.0' ms@2.1.0 '2.1.0' ms@2.1.1 '2.1.1' ms@2.1.2 '2.1.2' ms@2.1.3 '2.1.3' 
+--- (a) npm install sin lock: el rango resuelve a la MÁS ALTA compatible
+    instalada: 2.1.3
+--- (b) lock congelado en 2.0.0 (simula el lock de hace años) + npm ci
+    instalada: 2.0.0
+    integrity en el lock: sha512-Tpp60P6IUJDTuOq/5Z8cdsk…
+--- (c) alguien cambia el rango a ^2.1.0 y no regenera el lock: npm ci
+npm error code EUSAGE
+npm error
+npm error `npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.
+npm error
+    código de salida: 1

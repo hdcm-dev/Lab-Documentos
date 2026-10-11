@@ -1,0 +1,10 @@
+# E1 de N4 (Python): rangos declarados acá; el grafo congelado vive en el lock.
+[project]
+name = "n4-python-lock"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    # tqdm depende de colorama SÓLO en Windows (marcador platform_system == "Windows"):
+    # sirve para ver qué hace cada herramienta con las dependencias por plataforma.
+    "tqdm>=4.66",
+]

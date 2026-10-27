@@ -9,7 +9,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 #### Corregido
 
 - **Enlaces**: los ocho enlaces de la guía que apuntaban a `../Documentacion-Tecnica/` (ruta duplicada desde la reorganización por categoría) ahora apuntan a `../Creacion-Guias-Tecnicas/`. La compuerta ya no los excluye.
-- **Frontmatter**: `status: borrador`, `origin: ia-generated`, `confidence: alta` y `audience: [humano, agente]`, según las convenciones del corpus; `DOC-ADR` ya no se repite en `traces`.
+- **Frontmatter**: `status: borrador`, `origin: ia-generated`, `confidence: alta` y `audience: [humano, agente]`, según las convenciones del corpus; `owner: fernandofilipuzzi` como en las otras guías; `DOC-ADR` ya no se repite en `traces`.
 - **Citas**: la de `ACT-10` pasa a ser literal; la de Docusaurus cita la fuente fijada por commit y no la rama `main`; la enumeración de atributos DITA se ajusta a la página citada (`@props` en lugar de `@product`).
 - **`llms.txt`**: deja de llamarse «adoptada»; es una propuesta publicada en `llmstxt.org`.
 - **Prueba de concepto**: recuento de páginas (7 fuentes + 2 traducciones; el log cuenta pares), nombres que difieren del árbol propuesto, `302` observado frente al `401` previsto, y los dos mecanismos de `translation_of`.

@@ -5,7 +5,7 @@ title: Sistema documentador técnico — de Markdown al portal publicado
 status: borrador
 origin: ia-generated
 confidence: alta
-owner: fernando
+owner: fernandofilipuzzi
 last_review: 2026-09-20
 audience: [humano, agente]
 traces: [DOC-ADR, DOC-SAD, DOC-SRS, DOC-MANUAL, DOC-SDD]

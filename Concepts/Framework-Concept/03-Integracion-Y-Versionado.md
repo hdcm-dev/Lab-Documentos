@@ -219,7 +219,8 @@ Ficha de decisión de versionado para un PR (criterio de esta guía):
 
 - **Hecho.** El runner `i7infra-runner-dev` trae SDK 10.0.402 y maui-android 10.0.110 (comentario del workflow, R2 §5);
   la demo fija `MauiVersion` 10.0.20 y SDK 10.0.400 con `rollForward: latestPatch`. El riesgo de `workloadVersion`
-  10.0.400.1 contra el workload del runner está NO VERIFICADO (E02 §7).
+  10.0.400.1 contra el workload del runner se midió en A5: con el SDK 10.0.403 del runner la compuerta falló (MSB4242,
+  run 40432670449) y el `global.json` dejó de fijarlo; la versión de MAUI la sigue fijando `MauiVersion`.
 - **Interpretación.** La condición de revisión de P6 (3 o más PR por mes que pasan de verde a rojo al actualizarse con
   `main`) es la señal para evaluar una *merge queue*.
 

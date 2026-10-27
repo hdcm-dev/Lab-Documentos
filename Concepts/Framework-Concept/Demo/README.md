@@ -151,7 +151,7 @@ puntos de entrada:
 
 - Layout completo: los ocho proyectos (`Core`, `Shell`, `Content`, `Tools`, `Receptor` y las tres suites),
   `FrameworkConcept.Demo.sln` (formato `.sln`) y `FrameworkConcept.Demo.SinMaui.slnf` (todo menos `Shell`),
-  `global.json` (SDK 10.0.400, `rollForward: latestPatch`, `workloadVersion` 10.0.400.1),
+  `global.json` (SDK 10.0.400, `rollForward: latestPatch`; sin `workloadVersion`, ver abajo),
   `Directory.Build.props` (`LangVersion`, `Nullable`, avisos como error con `CI=true`, `MauiVersion` 10.0.20,
   versiones de paquetes como propiedades `$(VersionXxx)`), `versionado/`, `.gitignore`.
 - `Core/Domain` y `Core/Application` portados del caso base, archivo por archivo, en `MAPA-CASO-BASE.md`. Cuatro
@@ -195,7 +195,7 @@ Compilación correcta.  0 Advertencia(s)  0 Errores   → com.frameworkconcept.d
 opciones y versión 0.
 
 **NO VERIFICADO en A1.** El APK no se instaló en ningún dispositivo. El contenido no se publicó ni se empaquetó.
-`workloadVersion` en `global.json` se aceptó en estas corridas; no se probó en el runner.
+`workloadVersion` 10.0.400.1 en `global.json` se aceptó en el contenedor, pero en el runner (SDK 10.0.403) rompió la compuerta con MSB4242 «Workload version 10.0.400.1 … was not found» (A5, run 40432670449): se quitó del `global.json`. El contenedor sigue instalando ese workload set; MAUI lo fija `MauiVersion`.
 
 **Pendiente para los tramos siguientes.**
 

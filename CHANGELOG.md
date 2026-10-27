@@ -2,6 +2,21 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (temas 01 a 03 del cuerpo del sistema documentador)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4b
+
+#### Añadido
+
+- **`TEM-01-Sistema-Documentador.md`** (`TEM-SDEI-01`): qué es un sistema documentador, arquitectura de referencia, el portal de un proveedor de notificaciones como caso de industria, adopciones públicas con fecha (docs as code, referencia desde OpenAPI, lint de prosa) y un inventario hecho por comando.
+- **`TEM-02-Ciclo-Documental.md`** (`TEM-SDEI-02`): las fases 1a a 5 y el control de deriva, el registro de requerimientos documentales con criterio Dado/Cuando/Entonces, estados del documento y la plantilla de cláusula.
+- **`TEM-03-Topologia-Y-Versionado.md`** (`TEM-SDEI-03`): las cuatro topologías, las anclas de versión, la regla del mismo pull request y adopciones públicas con fecha (documentación junto al código, rama por versión, copias versionadas).
+- **`99-Anexos/Referencias.md`** §7: SemVer, Keep a Changelog, Diátaxis, GivenWhenThen y doce repositorios públicos citados por commit.
+
+#### Cambiado
+
+- **`README.md`** del cuerpo: la tabla de contenido enlaza los tres temas. **`01-Mapa.md`**: su siguiente documento es el tema 01.
+
 ## 2026-10-27 (mini demo MovilidadUrbana)
 
 ### Guides/, .github/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U3

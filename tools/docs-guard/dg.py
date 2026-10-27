@@ -422,12 +422,20 @@ RE_ENCABEZADO_ID = re.compile(rf'^#{{1,6}}\s+`?({RE_ID})`?(?=[\s:—.\-]|$)')
 RE_VERSION = re.compile(r'^\*\*Versi[oó]n:\*\*\s*(\d+)\.(\d+)')
 
 
+def en_fixtures(p):
+    """Dentro de un tools/docs-guard/fixtures/: el de estas herramientas o el del repositorio que se verifica (en la CI
+    las herramientas se sacan en .docs-guard/ y el repositorio trae su propia copia)."""
+    r = Path(p).resolve()
+    partes = r.parts
+    return FIXTURES in r.parents or any(partes[i:i + 3] == ('tools', 'docs-guard', 'fixtures') for i in range(len(partes)))
+
+
 def registro(directorios):
     """ID → [(archivo, versión)] desde doc_id del frontmatter y desde los encabezados que empiezan con un ID."""
     reg = {}
     for d in directorios:
         for f in markdowns([d]):
-            if FIXTURES in f.resolve().parents and FIXTURES not in Path(d).resolve().parents and Path(d).resolve() != FIXTURES:
+            if en_fixtures(f) and not en_fixtures(Path(d) / '_'):
                 continue  # los fixtures declaran IDs de prueba: no entran al registro del repositorio
             texto = leer(f)
             fm, _ = frontmatter(texto)

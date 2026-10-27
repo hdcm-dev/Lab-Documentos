@@ -120,40 +120,70 @@ pantalla.
 
 ### 5.1 Agregar la fila al RRD
 
-En [`docs/_requisitos.md`](docs/_requisitos.md), una fila nueva con el número siguiente. Las columnas `ID`,
-`Audiencia`, `Tarea`, `Pieza`, `Criterio` y `Decisión` son obligatorias; el criterio tiene que tener las palabras
-**Dado**, **Cuando** y **Entonces**, y la decisión es `aceptado`, `rechazado`, `diferido` o `pendiente`. Una fila
-nueva propuesta por quien escribe va como `pendiente` hasta que la persona responsable la decida.
+En [`docs/_requisitos.md`](docs/_requisitos.md), una fila nueva con el número siguiente y las mismas ocho columnas de
+la tabla: `ID`, `Audiencia`, `Tarea`, `Pieza`, `Fuente`, `Criterio`, `Decisión` y `Decide y fecha`. La compuerta exige
+seis (`ID`, `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras dos se completan igual. Reglas:
+
+- **Criterio**: tiene que tener las palabras **Dado**, **Cuando** y **Entonces**, y nombrar el instrumento.
+- **Pieza**: clase y enlace relativo al archivo, como en las filas existentes.
+- **Fuente**: una regla con versión por cada ficha que la página va a trazar (§5.2).
+- **Decisión**: `aceptado`, `rechazado`, `diferido` o `pendiente`. Quien escribe no decide: una fila nueva va como
+  `pendiente`, y en `Decide y fecha` se pone quién la va a decidir, sin fecha (`PO, pendiente`). Cuando la persona
+  decide, cambia la decisión y agrega la fecha.
+- **Frontmatter del RRD**: su `traces` lista las reglas de las que salen las filas; se agregan las fichas nuevas con
+  su versión.
 
 ```text
-| RD-05 | persona usuaria | Completar una encuesta de movilidad | CL-06, docs/ayuda/encuesta.md | RN-ENC-01@1.0 | Dado el paso 1 de la encuesta, cuando la persona lee la ayuda, entonces sabe qué pide cada campo; instrumento: traces-resolve | pendiente | PO, fecha |
+| RD-05 | persona usuaria | Completar el paso 1 de la encuesta | CL-06, [`docs/ayuda/encuesta.md`](ayuda/encuesta.md) | `RN-ENC-01@1.0`, `RN-ENC-02@1.0` | Dado el paso 1 de la encuesta, cuando la persona lee la ayuda, entonces cada número coincide con el de la ficha; instrumento: `traces-resolve` | pendiente | PO, pendiente |
 ```
 
 ### 5.2 Escribir la ficha de cada regla que la página nombre
 
-Si la pantalla tiene reglas (un mínimo, un formato, una unicidad), cada una lleva su ficha en `docs/fichas/`.
-Copiá [`RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) como modelo: frontmatter, encabezado `# RN-XXX-nn — Nombre`, línea
-`**Versión:** 1.0`, la tabla de la ficha y la tabla de anclas. Para encontrar el símbolo, buscalo en el código del SHA
-(`verificar.sh fuente` lo deja en `$TRABAJO/sha/`; `TRABAJO` es por defecto `/tmp/mini-demo-movilidad`). Formas de ancla que la compuerta entiende:
+Si la pantalla tiene reglas (un mínimo, un rango, un formato, una unicidad), **cada regla lleva su ficha** en
+`docs/fichas/`, con un ID `RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). Copiá
+[`RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) como modelo: frontmatter (`doc_type: ficha`, `traces: [RD-04]`, porque las
+fichas son la pieza de RD-04), encabezado `# RN-XXX-nn — Nombre`, línea `**Versión:** 1.0`, la tabla de la ficha y la
+tabla de anclas.
 
-| Archivo | Símbolo | Ejemplo | Afirmaciones posibles |
+**Valores de la tabla de la ficha** (forma de *Deducción de reglas de negocio* §5.1; la lista es cerrada):
+
+| Campo | Valores |
+| --- | --- |
+| ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. Hay divergencia sólo si el código hace otra cosa que lo que la pantalla o la regla prometen |
+| Especie | restricción, derivación, alcance o estructura |
+| Momento | Invariant, Precondition de ‹acto› (por ejemplo, «del alta»), completitud o ninguno |
+| Grado de certeza | testimonio, letra, caso de uso, código, inferencia o conjetura |
+| Propuesta | Obligatoria si hay divergencia de fondo; si no, «No corresponde» |
+
+**Tabla de anclas.** Encabezado `| Rol | Ancla | Afirma |`. El código del SHA lo deja `verificar.sh fuente` en
+`$TRABAJO/sha/`. `TRABAJO` es la variable de entorno, si está; si no, `$RUNNER_TEMP`, `$TMPDIR` o `/tmp`, más
+`/mini-demo-movilidad`.
+
+| Archivo | Símbolo | Ejemplo | Qué entiende la compuerta |
 | --- | --- | --- | --- |
-| `.cs` | `Clase.Miembro` (constante, propiedad o método) | `src/MovilidadUrbana.MAUI/Domain/Rules/EncuestaRules.cs#EncuestaRules.EdadMinima@8fb4c3a` | `= 16`; `contiene` o `no contiene` un texto de la declaración |
-| `.xaml` | `Elemento.Atributo`, donde el elemento se nombra por `x:Name` o por `AutomationId` | `src/MovilidadUrbana.MAUI/Pages/EncuestaPage.xaml#edad.MaxLength@8fb4c3a` | `= 3` |
+| `.cs` (incluye `.xaml.cs`) | `Clase.Miembro` | `src/MovilidadUrbana.MAUI/Domain/Rules/EncuestaRules.cs#EncuestaRules.EdadMinima@8fb4c3a` | Constantes, campos, propiedades y métodos, con cuerpo de expresión (`=>`) o de bloque, con o sin atributos (`[RelayCommand]`). No entiende parámetros de constructores primarios ni funciones locales |
+| `.xaml` | `Elemento.Atributo`, con el elemento nombrado por `x:Name` o por `AutomationId` | `src/MovilidadUrbana.MAUI/Pages/EncuestaPage.xaml#edad.MaxLength@8fb4c3a` | Cualquier atributo; el valor se compara como texto (`` = `Numeric` `` también vale) |
+
+La columna **Afirma** se escribe con el valor entre comillas invertidas: `` = `16` ``, `` contiene `texto` `` o
+`` no contiene `texto` ``; vacía o `—` comprueba sólo que el símbolo existe. `contiene` mira la declaración completa,
+cuerpo incluido. La columna **Rol** no la lee la compuerta; los roles de las fichas modelo (`declara`, `muestra`,
+`verifica`, `aplica`, `persiste`) cubren los casos de la demo, y se puede usar otro si ninguno describe el lugar.
 
 El SHA del ancla tiene que ser el de `source.lock` (alcanza con los primeros siete caracteres). Escribí en la ficha lo
-que **el código hace**; si eso diverge de lo que la pantalla promete, marcá «¿Divergen?» como «de fondo» y dejá la
-decisión en la propuesta. No la decidas vos (§7).
+que **el código hace**; si eso diverge de lo que la pantalla promete, marcá «¿Divergen?» como «De fondo» y dejá la
+decisión en la propuesta. No la decidas vos (§7). Un dato que no es divergencia (por ejemplo, que la base no tiene
+índice único) va en un párrafo debajo de la tabla, como en RN-LOC-02.
 
 ### 5.3 Escribir la página
 
-Creá `docs/ayuda/encuesta.md` con este frontmatter; todos los campos son obligatorios:
+Creá `docs/ayuda/encuesta.md` con este frontmatter; todos los campos son obligatorios. Los comentarios `#` son sólo
+para este tutorial: en el archivo real se quitan.
 
 ```yaml
 ---
 doc_id: DEMO-MU-22          # prefijo DEMO, siguiente número libre del grupo (ayuda 2x, técnica 3x, fichas 1x)
 doc_type: guia-practica
-title: Completar la encuesta
+title: Completar el paso 1 de la encuesta
 description: Una oración de hasta 160 caracteres que diga qué resuelve la página.
 status: borrador            # vigente lo decide una persona
 origin: ia-generated        # human, ia-assisted o ia-generated
@@ -161,13 +191,18 @@ confidence: alta            # obligatorio si origin no es human: alta, media o b
 owner: Lab-Documentos
 last_review: 2026-10-27
 audience: [persona-usuaria] # humano, agente, estudiante, docente, desarrollo, qa, devops, po, analista, persona-usuaria
-traces: [RD-05, RN-ENC-01@1.0]
+traces: [RD-05, RN-ENC-01@1.0, RN-ENC-02@1.0]
 ---
 ```
 
-El cuerpo, como [`alta-de-localidad.md`](docs/ayuda/alta-de-localidad.md): un solo título `#`, índice, qué es lo que
-se carga, pasos, qué pide cada campo y qué hacer si la app no guarda. Cada número que la página nombra tiene que estar
-en una ficha que la página traza.
+El cuerpo, como [`alta-de-localidad.md`](docs/ayuda/alta-de-localidad.md): un solo título `#`, índice, qué se carga,
+pasos, qué pide cada campo y qué hacer cuando la app no acepta un dato. Si la pantalla no guarda (un paso intermedio),
+esa sección se llama por lo que pasa («Si la app no te deja seguir»). Una página puede cubrir una parte de una
+pantalla; el título y la tarea de la fila del RRD lo dicen. La ayuda trata de vos, aunque la app trate de usted.
+
+**Qué tiene que estar en una ficha.** Cada límite o valor de una regla que la página nombra (mínimos, máximos, rangos,
+formatos). Los datos de ejemplo («Goya», «3450») y los mensajes sin números no: un mensaje se cita textual y, si sale
+de una regla, la ficha de esa regla ya lo ancla en su fila `verifica`.
 
 ### 5.4 Validar
 
@@ -176,21 +211,44 @@ scripts/ci-local.sh todo "$DEMO"
 "$DEMO/verificar.sh"
 ```
 
-Los dos tienen que terminar en verde. Errores frecuentes:
+Los dos tienen que terminar en verde. El final de `ci-local.sh`:
+
+```text
+== agregador docs-guard
+  enlaces      verde
+  esquema      verde
+  ai           verde
+  estructura   verde
+  trazas       verde
+  contrato     verde
+  fijadas      verde
+  autoprueba   verde
+== docs-guard: verde
+```
+
+El de `verificar.sh` está en §4. Errores frecuentes:
 
 | Mensaje | Causa | Arreglo |
 | --- | --- | --- |
 | `traza-no-resuelve: RD-05` | La fila no está en el RRD o el ID está mal escrito | Agregar la fila (§5.1) |
 | `traza-version-desfasada` | La página traza `@1.0` y la ficha está en otra versión | Releer la página contra la ficha y actualizar la traza |
-| `ancla-sin-simbolo` | El símbolo no existe en el SHA | Buscarlo en la carpeta de trabajo; revisar mayúsculas y la clase |
+| `ancla-sin-simbolo` | El símbolo no existe en el SHA, o es una forma que la compuerta no entiende (§5.2) | Buscarlo en `$TRABAJO/sha/`; revisar mayúsculas y la clase |
+| `ancla-valor-distinto` | El código tiene otro valor que el que afirma la ficha | Escribir lo que el código hace (§5.2) |
 | `prefijo` | El `doc_id` no usa un prefijo registrado | Usar `DEMO-MU-nn` |
 | `rrd-criterio` | Falta Dado, Cuando o Entonces en el criterio | Reescribir el criterio |
 
 ### 5.5 Proponer el cambio
 
-Una rama, un commit y un PR contra `main` de Lab-Documentos. En el PR corren `docs-guard` y `mini-demo-movilidad` en
-el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los dos en verde. El cuerpo del PR copia el final de
-las dos salidas de §5.4.
+En el mismo cambio, además de las piezas nuevas:
+
+- la tabla de §2 de este README suma una fila por pieza nueva;
+- [`CHANGELOG.md`](../../../../../CHANGELOG.md) de Lab-Documentos suma una línea en la entrada del día, bajo
+  «Añadido».
+
+Después, una rama (`demo-mu/<pantalla>`, por ejemplo `demo-mu/encuesta-paso-1`), un commit con un mensaje que diga qué
+pantalla se documentó («Mini demo: ayuda del paso 1 de la encuesta») y un PR contra `main` de Lab-Documentos. En el PR
+corren `docs-guard` y `mini-demo-movilidad` en el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los
+dos en verde. El cuerpo del PR copia el final de las dos salidas de §5.4.
 
 ## 6. Cuando el código cambia
 

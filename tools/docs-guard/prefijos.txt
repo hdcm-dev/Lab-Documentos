@@ -24,6 +24,7 @@ OBJ     interno   objetivo de aprendizaje
 EJR     interno   ejercicio
 RD      interno   requerimiento documental (RRD)
 VER     interno   ítem de verificación
+GP      interno   guía práctica de un ejemplo (Examples/)
 # Prefijos de la industria que usan los ejemplos y los sistemas documentados
 RF      externo   requisito funcional
 RNF     externo   requisito no funcional

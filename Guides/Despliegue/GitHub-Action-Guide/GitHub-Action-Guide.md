@@ -1906,7 +1906,7 @@ simulador rechaza la app si el contenido AOT no está firmado:
 **[E: W-DEV-QR]** `--sign "-"` es firma ad-hoc: vale para el simulador y **no sirve para un
 dispositivo real ni para TestFlight**. Ningún workflow de los cinco repositorios de referencia de
 esta guía firma con certificado de distribución ni publica a TestFlight. **[E: IDX-DEV-09]** Sí lo
-hace un pipeline de otro repositorio del workspace, `GDA.Core.APP`, fuera del alcance de estos
+hace un pipeline de otro repositorio del workspace, el de una app híbrida de referencia de la organización, fuera del alcance de estos
 ejemplos. **[E: OBS-4]**
 
 **La variante con disparo automático.** De los dieciocho workflows de `Ejemplos_Maui_Devices`,
@@ -2950,8 +2950,8 @@ Hechos, no interpretaciones. Están acá porque afectan a quien use estos ejempl
   diferencia es de criterio por repositorio y no de desconocimiento.
 - **OBS-4** · **No hay firma de artefactos ni atestaciones de procedencia** en el sentido de cadena de
   suministro. El workflow de publicación del bot lo declara como paso pendiente en un comentario.
-  Firma de código de aplicaciones sí hay, fuera de los repositorios de referencia: `GDA.Core.APP`
-  importa un certificado de distribución y publica a TestFlight.
+  Firma de código de aplicaciones sí hay, fuera de los repositorios de referencia: una app híbrida de referencia de la
+  organización importa un certificado de distribución y publica a TestFlight.
 - **OBS-5** · **No hay notificación fuera de GitHub.** Una corrida nocturna que falla no avisa a nadie por otro
   canal.
 - **OBS-6** · **`Ejemplos_Maui_Devices` tiene 18 workflows casi idénticos**, y su propio índice registra que la
@@ -2968,7 +2968,7 @@ Hechos, no interpretaciones. Están acá porque afectan a quien use estos ejempl
   eso a correr es siempre de una persona.
 - **OBS-11** · **Ningún repositorio de referencia firma un APK con un almacén de claves real desde
   secretos.** `cd-android.yml` usa `AndroidKeyStore=false`, que firma con la clave de depuración. Sí
-  existe implementado fuera de ellos, en `GDA.Core.APP`.
+  existe implementado fuera de ellos, en una app híbrida de referencia de la organización.
 
 De OBS-6 a OBS-9 son del dominio de esos repositorios, no de esta guía: se registran porque salieron
 al reunir la evidencia y porque quien copie esos workflows como plantilla los va a heredar.

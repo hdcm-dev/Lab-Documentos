@@ -2,6 +2,21 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (TEM-07 y proceso «Cómo intervenir»)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — expediente 0002 de DocAsCode, unidad E1-U4d
+
+#### Añadido
+
+- **`TEM-07-Marco-SDD.md`** (`TEM-SDEI-07`, borrador hasta el escalón 2): integración del sistema documentador con un marco SDD, con los seis encabezados del tema en la forma de los temas 01 a 03, la frontera «se cita / se agrega / decide una persona» por clase de pieza y un ensayo de `traces-resolve` contra el SDD de Lab-Geometria en `5f07b12` (las versiones congeladas en `_legacy/` vuelven ambiguo el registro).
+- **`Examples/Como-Intervenir.md`** (`GP-SDEI-INTERVENIR`): plantilla del proceso en cinco pasos con bloques `entradas` / `salidas` / `validaciones`; el paso «validar» corre `scripts/ci-local.sh`.
+- **`Examples/Como-Intervenir-Lab-Documentos.md`** (`GP-SDEI-INTERVENIR-LD`): la instancia de una página para este repositorio, con las guías prácticas de los ejemplos.
+- **`99-Anexos/Referencias.md`**: GitHub (2026) Spec Kit, Kiro (s. f.) y Nygard (2011).
+
+#### Cambiado
+
+- **`README.md`** y **`01-Mapa.md`** del cuerpo: filas de la tabla de contenido y enlaces de la ruta «intervenir».
+
 ## 2026-10-27 (temas 01 a 03 del cuerpo del sistema documentador)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4b

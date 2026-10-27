@@ -172,8 +172,8 @@ los controles de la compuerta, que el agente no escribió en ese pull request, y
 
 ## 6. Un caso que recorre el marco
 
-MovilidadUrbana tiene hoy un defecto real: el texto de la pantalla promete 60 caracteres para el comentario y el campo
-admite 80. Una desarrolladora va a corregir el código, y la ayuda al usuario que menciona el límite tiene que seguir
+MovilidadUrbana tiene hoy un defecto real: el texto de la pantalla promete 60 caracteres para el nombre de una
+localidad y el campo admite 80. Una desarrolladora va a corregir el código, y la ayuda al usuario que menciona el límite tiene que seguir
 diciendo la verdad. La ayuda de ejemplo vive en la mini demo de `Examples/` de este repositorio, no en el de la app.
 Con el marco se ubica así:
 

@@ -29,7 +29,7 @@ dicen cómo escribirlos y dónde poner el material de consulta.
 
 | Id | Patrón | Qué hacer | Fuente |
 | --- | --- | --- | --- |
-| `PE-01` | Problema conductor | Un caso real recorre toda la guía y cada unidad lo hace avanzar. En este cuerpo, el límite de 60 u 80 caracteres del comentario en MovilidadUrbana | [Merrill (2002)](Referencias.md#ref-merrill-2002) |
+| `PE-01` | Problema conductor | Un caso real recorre toda la guía y cada unidad lo hace avanzar. En este cuerpo, el límite de 60 u 80 caracteres del nombre de una localidad en MovilidadUrbana | [Merrill (2002)](Referencias.md#ref-merrill-2002) |
 | `PE-02` | Ejemplo trabajado, después ejercicio | Primero el caso resuelto y rotulado; recién después un ejercicio análogo, con la respuesta aparte | [Sweller y Cooper (1985)](Referencias.md#ref-sweller-1985); [Atkinson et al. (2000)](Referencias.md#ref-atkinson-2000) |
 | `PE-03` | Ejemplo ejecutable con procedencia | Todo fragmento sale de un laboratorio que compila; lleva `[Compilado: ruta, l. x–y]` y la versión del SDK; la salida se guarda en `capturas/` | [Chen et al. (2025)](Referencias.md#ref-chen-2025); [Aghajani et al. (2020)](Referencias.md#ref-aghajani-2020) |
 | `PE-04` | Contraejemplo rotulado | Mostrar lo que no conviene, marcado `[Fragmento ilustrativo: contraejemplo]` | [van der Meij y Carroll (1995)](Referencias.md#ref-vandermeij-1995) |

@@ -75,7 +75,7 @@ flowchart TB
     T["TEM-01 … TEM-07<br/>en redacción"] --> EJ["Ejercicios"]
   end
   subgraph INT["Ruta intervenir"]
-    CI["Cómo intervenir<br/>en redacción"] --> PL["Plantilla del anexo"]
+    CI["Cómo intervenir<br/>plantilla"] --> PL["Instancia del proyecto"]
   end
   subgraph AGE["Ruta agente"]
     AG["AGENTS.md del repositorio"] --> CONV["Convenciones del Marco"]
@@ -93,7 +93,7 @@ flowchart TB
 | Ruta | Para quién | Recorrido | Sale con |
 | --- | --- | --- | --- |
 | **Aprender** | Quien estudia el tema desde cero | [Marco](00-Marco.md) → [Mapa](01-Mapa.md) (leído entero, como panorama) → `TEM-01` a `TEM-07` en orden → tutorial de la mini demo de `Examples/` → [Ejercicios](99-Anexos/Ejercicios.md) | Los objetivos `OBJ-SDEI-01` a `OBJ-SDEI-05` |
-| **Intervenir** | La persona del equipo que tiene que cambiar la documentación de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → «Cómo intervenir» y su plantilla (en redacción) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
+| **Intervenir** | La persona del equipo que tiene que cambiar la documentación de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → [Cómo intervenir](Examples/Como-Intervenir.md) y la instancia de su proyecto ([la de este repositorio](Examples/Como-Intervenir-Lab-Documentos.md)) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
 | **Agente** | Un agente de IA que trabaja sobre el repositorio | [`AGENTS.md`](../../../AGENTS.md) en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
 
 Mientras los temas no estén escritos, la ruta «aprender» se recorre en este orden (la guía de un solo archivo se lee
@@ -117,7 +117,7 @@ menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§
 | `TEM-04` Doble audiencia | — | tema | en redacción | Personas y agentes leyendo la misma fuente |
 | `TEM-05` Ayuda al usuario final | — | tema | en redacción | La ayuda dentro del producto, con roles como contexto |
 | `TEM-06` Compuertas de calidad y CI | — | tema | en redacción | Qué bloquea, qué avisa y por qué |
-| `TEM-07` Integración con un marco SDD | — | tema | en redacción | La documentación dentro de un desarrollo guiado por especificación |
+| [Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md) | `TEM-SDEI-07` | tema | borrador (hasta el escalón 2) | La documentación dentro de un desarrollo guiado por especificación: qué se cita del SDD, qué se agrega y cómo resuelven las trazas |
 | [Anexo: esquema de frontmatter y prefijos](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) | `ANX-SDEI-ESQUEMA` | anexo | borrador | Los diez campos más `description`, vocabularios y registro de prefijos |
 | [Anexo: glosario](99-Anexos/Glosario.md) | `ANX-SDEI-GLOSARIO` | anexo | borrador | Términos del cuerpo con su sigla y dónde se anclan |
 | [Anexo: referencias](99-Anexos/Referencias.md) | `ANX-SDEI-REFERENCIAS` | anexo de referencias | borrador | Bibliografía en APA 7 con anclas `ref-…` y fecha de consulta |
@@ -130,6 +130,8 @@ menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
 | [Ejemplo: lanzar la prueba de concepto](Examples/Lanzar-Example.md) | `GP-SDEI-LANZAR` | guía práctica | borrador | Cómo levantar el ejemplo anterior en su devcontainer y publicarlo |
+| [Cómo intervenir: plantilla](Examples/Como-Intervenir.md) | `GP-SDEI-INTERVENIR` | proceso | borrador | Los cinco pasos para cambiar la documentación de un proyecto (ubicar, derivar, validar, proponer, mantener), con entradas, salidas y validaciones |
+| [Cómo intervenir en Lab-Documentos](Examples/Como-Intervenir-Lab-Documentos.md) | `GP-SDEI-INTERVENIR-LD` | proceso | borrador | La instancia de una página de la plantilla para este repositorio |
 
 ## 5. Cómo está armado el cuerpo
 

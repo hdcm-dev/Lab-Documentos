@@ -242,7 +242,11 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 
 - **Hecho.** El TPR medido en el moto g42 en un intento anterior fue de 8 176 a 8 741 ms con la semilla instalada
   (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el TPR en el g42
-  **no se volvió a medir** (teléfono reservado para otra sesión). Ver el anexo de pendientes.
+  **no se volvió a medir** (teléfono reservado para otra sesión, también en el folio 042). Ver el anexo de pendientes.
+- **Hecho.** En el cierre del expediente, 5 arranques en el emulador no dieron la marca `primer-render`: la pantalla
+  estaba apagada y el WebView no llegó a pedir el contenido (folio 042). `scripts/guion.sh tpr` mide ahora con la
+  pantalla comprobada y calcula el TPR desde el inicio del proceso; en el emulador dio de 9 641 a 12 451 ms, cifras
+  que no juzgan el umbral.
 - **Hecho.** El paquete de contenido pesa 3,39 MB comprimido y 9,13 MB plano (E01 §7).
 - **Interpretación.** Si el TPR medido supera el umbral, la condición de revisión (2) de P1 abre la evaluación de la
   alternativa «C-min» (renderizador compilado en el cascarón más encuestas como datos).

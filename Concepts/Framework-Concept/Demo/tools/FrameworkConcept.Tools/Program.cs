@@ -18,6 +18,7 @@ try
         "firma-invalida" => Verificador.FirmaInvalida(Argumentos.Leer(resto)),
         "verificar" => Verificador.Verificar(Argumentos.Leer(resto)),
         "contrato" => EscribirContrato(resto.FirstOrDefault() ?? "src/FrameworkConcept.Core/Contracts/contrato.json"),
+        "tpr" => Tpr(Argumentos.Leer(resto)),
         _ => Ayuda()
     };
 }
@@ -41,6 +42,10 @@ static int EscribirContrato(string destino)
     Console.WriteLine($"contrato {ContratoDelPuente.Version} escrito en {destino}");
     return 0;
 }
+
+// P1 — TPR de un logcat de arranques en frío (LectorDeTpr.cs; lo usa «scripts/guion.sh tpr»).
+static int Tpr(Argumentos a) =>
+    LectorDeTpr.Comando(a.Requerida("logcat"), long.Parse(a.Opcion("umbral", "5000"), System.Globalization.CultureInfo.InvariantCulture));
 
 static int Ayuda()
 {
@@ -75,6 +80,10 @@ static int Ayuda()
               Hace las comprobaciones del teléfono sobre lo publicado: firma, expires, canal, size, sha256.
           contrato [destino]
               Regenera la instantánea del contrato del puente (contrato.json).
+          tpr --logcat <archivo> [--umbral 5000]
+              P1 — TPR por arranque en frío (inicio del proceso → marca primer-render) leído de un logcat
+              (-v time o -v threadtime). Una corrida sin marca dice si el WebView llegó a pedir el contenido.
+              Sale 0 si todas tienen marca y el máximo no pasa el umbral.
         """);
     return 2;
 }

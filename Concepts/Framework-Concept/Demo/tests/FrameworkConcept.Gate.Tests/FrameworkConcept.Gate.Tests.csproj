@@ -6,6 +6,7 @@
          Definiciones/ definiciones contra su esquema JSON y reglas de evolución (P13.8, P13.9)
          Catalogo/     catálogo de capacidades frente al AndroidManifest.xml del cascarón (P12)
          Contenido/    contenido sin AOT y sin API web que pidan permisos (P1, P8, P12)
+         Medicion/     lectura del TPR (P1) y su marca, en sincronía con puente.js y el cascarón
        La «base del PR» (lo ya publicado en main) la deja en una carpeta el workflow o scripts/ci-local.sh
        y llega por la variable FC_GATE_BASE (ver Infraestructura/Repositorio.cs). -->
   <PropertyGroup>
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+    <ProjectReference Include="../../tools/FrameworkConcept.Tools/FrameworkConcept.Tools.csproj" />
   </ItemGroup>
 
   <ItemGroup>

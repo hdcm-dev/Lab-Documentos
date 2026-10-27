@@ -1,0 +1,54 @@
+# mini-demo-movilidad: la mini demo MovilidadUrbana contra el código que documenta (expediente 0002, E1-U3).
+#
+# Baja por git archive el SHA de source.lock (Lab-E2E.WebBlazor, repositorio público: no hace falta credencial),
+# compila y arranca la ApiWeb, extrae GET /openapi/v1.json y corre los controles de verificar.sh:
+#   C1 contrato   contracts/openapi.json frente al extraído del SHA. Bloquea.
+#   C2 plantado   el mismo diff con una operación plantada tiene que dar exit 1. Bloquea si no.
+#   C3 trazas     traces-resolve de nivel 1 y anclas ruta#Símbolo@SHA de nivel 2 contra el SHA. Bloquea.
+#   C4 negativa   la ficha RN-LOC-01 sin corregir (defecto real 60/80) tiene que dar rojo. Bloquea si no.
+#   A1 deriva     contrato y anclas contra main de Lab-E2E.WebBlazor. Sólo avisa (::warning:: en el registro).
+# docs-guard verifica el resto de la demo (enlaces, esquema, anti-inyección, estructura) en su propio workflow.
+#
+# Seguridad: permissions contents: read; sin pull_request_target; actions fijadas por SHA; un PR desde un fork no
+# corre en el runner propio (guarda «if:»); ningún secreto; ningún agente LLM en el job.
+
+name: mini-demo-movilidad
+
+on:
+  pull_request:
+    paths:
+      - Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/MovilidadUrbana-Mini-Demo/**
+      - tools/docs-guard/**
+      - .github/workflows/mini-demo-movilidad.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mini-demo-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  mini-demo:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 15
+    env:
+      DEMO: Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/MovilidadUrbana-Mini-Demo
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Herramientas del runner
+        run: |
+          dotnet --list-sdks
+          python3 --version
+          git --version
+
+      - name: Verificación completa (fuente, contrato, C1-C4, deriva)
+        env:
+          TRABAJO: ${{ runner.temp }}/mini-demo-movilidad
+        run: bash "$DEMO/verificar.sh" todo

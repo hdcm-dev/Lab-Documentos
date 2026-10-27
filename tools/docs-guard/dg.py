@@ -13,7 +13,8 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
     fuera      RUTA...            (PR-1) enlaces relativos que salen del repositorio
     esquema    RUTA...            (PR-2) frontmatter contra su esquema, registro de prefijos y esquema RRD
     ai         RUTA...            (PR-3) anti-inyección AI-1..AI-5; AI-3 avisa; AI-4 avisa en el anexo de referencias
-    trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados
+    trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados;
+                                         con --fuente DIR, además las anclas ruta#Símbolo@SHA de las fichas (nivel 2)
     contrato   ESPERADO GENERADO  (PR-6) diff semántico de dos contratos OpenAPI (JSON)
     contratos  RUTA...            (PR-6) busca contracts/openapi.json; sin extracción declarada, «no aplica»
     fijadas    RUTA...            (PR-7) equivalente de «copiar.py --check»: cada pieza de BASE-FIJADA.md con su SHA-256
@@ -22,6 +23,8 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
     frescura   RUTA...            (carril programado) last_review con más de 365 días (--dias N); nunca bloquea
 
 Opciones comunes: --raiz DIR (raíz del repositorio que se verifica; por defecto, la de git o el directorio actual).
+Opciones de trazas: --fuente DIR (árbol del código al SHA de source.lock, para las anclas); --deriva (DIR es otra
+revisión, por ejemplo main: las anclas que no resuelven avisan y el SHA del ancla no se compara).
 
 Los datos de configuración viven al lado de este archivo: dominios.txt (AK-4, C-14), prefijos.txt (registro cerrado de
 prefijos, D09), excepciones.txt (AK-3, con huella) y esquemas/*.json. Ver README.md de esta carpeta.
@@ -431,6 +434,11 @@ def registro(directorios):
             if fm and fm.get('doc_id'):
                 v = str(fm.get('version', '')) or None
                 reg.setdefault(str(fm['doc_id']), []).append((f, '.'.join(v.split('.')[:2]) if v else None))
+            if f.name == '_requisitos.md' or (fm or {}).get('doc_type') == 'rrd':
+                for n, l, cod in fuera_de_codigo(texto):  # las filas RD-nn del RRD también declaran su ID
+                    m = None if cod else re.match(r'^\|\s*(RD-\d{2,})\s*\|', l)
+                    if m:
+                        reg.setdefault(m.group(1), []).append((f, None))
             actual = None
             for n, l, cod in fuera_de_codigo(texto):
                 if cod:
@@ -456,13 +464,159 @@ def source_lock(f, tope):
         d = d.parent
 
 
-def cmd_trazas(rutas, raiz, fuentes):
-    inf = Informe('PR-5 traces-resolve')
+RE_ANCLA = re.compile(r'^`([^`#\s]+)#([A-Za-z_][\w.]*)@([0-9a-f]{7,40})`$')
+RE_AFIRMA = re.compile(r'^(=|contiene|no contiene)\s+`([^`]*)`$')
+
+
+def lock_sha(lock):
+    for l in leer(lock).split('\n'):
+        m = re.match(r'^sha:\s*([0-9a-f]{7,40})\s*$', l)
+        if m:
+            return m.group(1)
+    return None
+
+
+def simbolo_cs(texto, simbolo):
+    """Declaración de Clase.Miembro (o Miembro) en C#: (texto de la declaración hasta «;» o «{», valor tras «=»)."""
+    partes = simbolo.split('.')
+    if len(partes) > 1 and not re.search(rf'\b(class|record|struct|interface|enum)\s+{re.escape(partes[-2])}\b', texto):
+        return None
+    nombre = re.escape(partes[-1])
+    m = re.search(rf'^[ \t]*(?:\[[^\]\n]*\][ \t]*)*(?:(?:public|private|internal|protected|static|const|readonly|'
+                  rf'partial|sealed|abstract|override|virtual|async|required)\s+)+[\w<>\[\]?,. ]*?\b{nombre}\b'
+                  rf'\s*(?P<t>=>|=|\(|\{{|;|$)', texto, re.M)
+    if not m:
+        return None
+    resto = texto[m.start():]
+    k = m.start('t') - m.start()
+    if m.group('t') == '(':  # método: se saltan los parámetros (pueden traer «= default»)
+        nivel = 0
+        for k in range(k, len(resto)):
+            nivel += {'(': 1, ')': -1}.get(resto[k], 0)
+            if nivel == 0:
+                break
+    t = re.compile(r'=>|=|;|\{').search(resto, k + 1 if m.group('t') == '(' else k)
+    if t and t.group(0) in ('=>', '='):  # expresión: hasta el «;» que la cierra
+        fin = resto.find(';', t.end())
+        fin = fin if fin >= 0 else len(resto) - 1
+    elif t:
+        fin = t.start()
+    else:
+        fin = len(resto) - 1
+    if resto[fin:fin + 1] == '{':  # cuerpo de bloque: hasta la llave que lo cierra
+        nivel = 0
+        for i in range(fin, len(resto)):
+            nivel += {'{': 1, '}': -1}.get(resto[i], 0)
+            if nivel == 0:
+                fin = i
+                break
+    decl = resto[:fin + 1]
+    v = re.search(rf'\b{nombre}\s*=(?!>)\s*([^;]+);', decl)
+    return decl, (v.group(1).strip().strip('"') if v else None)
+
+
+def simbolo_xaml(texto, simbolo):
+    """Elemento por x:Name o AutomationId y, si se pide, su atributo: Nombre o Nombre.Atributo."""
+    nombre, _, atributo = simbolo.partition('.')
+    m = re.search(rf'<[\w:.]+\s[^>]*\b(?:x:Name|AutomationId)="{re.escape(nombre)}"[^>]*>', texto, re.S)
+    if not m:
+        return None
+    if not atributo:
+        return m.group(0), None
+    v = re.search(rf'\b{re.escape(atributo)}="([^"]*)"', m.group(0))
+    return (m.group(0), v.group(1)) if v else None
+
+
+def anclas(f, raiz, fuente, deriva, inf):
+    """Nivel 2 de D10: cada fila «| rol | `ruta#Símbolo@SHA` | afirmación |» de la tabla de anclas de una ficha."""
+    texto = leer(f)
+    ruta = rel(f, raiz)
+    lock = source_lock(f, raiz)
+    sha = lock_sha(lock) if lock else None
+    total = ok = 0
+    cab = None
+    for n, l, cod in fuera_de_codigo(texto):
+        if cod or not l.strip().startswith('|'):
+            cab = None
+            continue
+        celdas = [c.strip() for c in l.strip().strip('|').split('|')]
+        if cab is None:
+            cab = celdas if ('Ancla' in celdas and 'Afirma' in celdas) else []
+            continue
+        if not cab or set(''.join(celdas)) <= set('-: '):
+            continue
+        fila = dict(zip(cab, celdas))
+        total += 1
+        m = RE_ANCLA.match(fila.get('Ancla', ''))
+        if not m:
+            inf.error(ruta, n, 'ancla-mal-formada', f'«{fila.get("Ancla")}» no es `ruta#Símbolo@SHA`')
+            continue
+        archivo, simbolo, sha_ancla = m.groups()
+        reportar = inf.aviso if deriva else inf.error
+        if not deriva:
+            if sha is None:
+                inf.error(ruta, n, 'ancla-sin-lock', 'la ficha no tiene source.lock en su carpeta o en una superior')
+                continue
+            if not (sha.startswith(sha_ancla) or sha_ancla.startswith(sha)):
+                inf.error(ruta, n, 'ancla-sha-distinto', f'{sha_ancla} no es el SHA de source.lock ({sha[:12]})')
+                continue
+        p = Path(fuente) / archivo
+        if not p.is_file():
+            reportar(ruta, n, 'ancla-sin-archivo', f'{archivo} no existe en la fuente')
+            continue
+        fuente_txt = leer(p)
+        hallado = simbolo_xaml(fuente_txt, simbolo) if p.suffix == '.xaml' else simbolo_cs(fuente_txt, simbolo)
+        if hallado is None:
+            reportar(ruta, n, 'ancla-sin-simbolo', f'{archivo}#{simbolo} no se encuentra')
+            continue
+        decl, valor = hallado
+        afirma = fila.get('Afirma', '').strip()
+        if afirma not in ('', '—', '-'):
+            a = RE_AFIRMA.match(afirma)
+            if not a:
+                inf.error(ruta, n, 'afirmacion-mal-formada', f'«{afirma}»: se espera = `v`, contiene `t` o no contiene `t`')
+                continue
+            op, esperado = a.groups()
+            if op == '=' and valor != esperado:
+                reportar(ruta, n, 'ancla-valor-distinto', f'{simbolo}: la ficha afirma {esperado} y el código tiene {valor}')
+                continue
+            if op == 'contiene' and esperado not in decl:
+                reportar(ruta, n, 'ancla-no-contiene', f'{simbolo} no contiene «{esperado}»')
+                continue
+            if op == 'no contiene' and esperado in decl:
+                reportar(ruta, n, 'ancla-contiene', f'{simbolo} contiene «{esperado}»')
+                continue
+        ok += 1
+    return total, ok
+
+
+def es_ficha(f, fm):
+    return (fm or {}).get('doc_type') == 'ficha'
+
+
+def cmd_trazas(rutas, raiz, fuentes, deriva=False):
+    inf = Informe('PR-5 traces-resolve' + (' (deriva: sólo avisa)' if deriva else ''))
+    if deriva:  # la otra revisión sólo se compara por anclas; las trazas de nivel 1 ya se verificaron
+        n_a = ok_a = 0
+        for f in markdowns(rutas):
+            fm, _ = frontmatter(leer(f))
+            if es_ficha(f, fm):
+                t, o = anclas(f, raiz, fuentes[0], True, inf)
+                n_a, ok_a = n_a + t, ok_a + o
+        inf.cerrar(f' anclas={n_a} resueltas={ok_a}')
+        return 0
     reg = registro([raiz] + [Path(x) for x in fuentes])
     pre = prefijos()
     total = ok = 0
+    n_a = ok_a = sin_verificar = 0
     for f in markdowns(rutas):
         fm, _ = frontmatter(leer(f))
+        if es_ficha(f, fm):
+            if fuentes:
+                t, o = anclas(f, raiz, fuentes[0], False, inf)
+                n_a, ok_a = n_a + t, ok_a + o
+            else:
+                sin_verificar += 1
         if not fm or not fm.get('traces'):
             continue
         ruta = rel(f, raiz)
@@ -495,7 +649,9 @@ def cmd_trazas(rutas, raiz, fuentes):
                     inf.error(ruta, 1, 'traza-version-desfasada', f'{t}: la declaración está en {vd}')
                     continue
             ok += 1
-    return inf.cerrar(f' trazas={total} resueltas={ok}')
+    if sin_verificar:
+        print(f'anclas: {sin_verificar} fichas sin --fuente; sus anclas las verifica el workflow de su source.lock')
+    return inf.cerrar(f' trazas={total} resueltas={ok} anclas={n_a} anclas-resueltas={ok_a}')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -539,14 +695,18 @@ def cmd_contratos(rutas, raiz):
         for c in sorted(Path(r).rglob('contracts/openapi.json')):
             n += 1
             gen = c.parent / '.generado' / 'openapi.json'
+            lock = source_lock(c, raiz)
             if gen.is_file():
                 if cmd_contrato(str(c), str(gen)):
                     inf.error(rel(c, raiz), 1, 'contrato', 'difiere del extraído en el build')
+            elif lock is not None and re.search(r'^workflow:\s*\S+', leer(lock), re.M):
+                wf = re.search(r'^workflow:\s*(\S+)', leer(lock), re.M).group(1)
+                print(f'{rel(c, raiz)}: lo extrae y compara {wf} (source.lock); este job no compila el código')
             else:
                 inf.error(rel(c, raiz), 1, 'contrato-sin-extraccion',
                           'hay contrato versionado pero el build no dejó contracts/.generado/openapi.json')
     if n == 0:
-        print('no aplica: la ruta no tiene contracts/openapi.json (la extracción en ejecución la agrega E1-U3)')
+        print('no aplica: la ruta no tiene contracts/openapi.json')
     return inf.cerrar(f' contratos={n}')
 
 
@@ -695,7 +855,7 @@ def main(argv):
             'fuera': lambda: cmd_fuera(rutas, raiz),
             'esquema': lambda: cmd_esquema(rutas, raiz),
             'ai': lambda: cmd_ai(rutas, raiz, '--ai3-bloquea' in banderas),
-            'trazas': lambda: cmd_trazas(rutas, raiz, opts['--fuente']),
+            'trazas': lambda: cmd_trazas(rutas, raiz, opts['--fuente'], '--deriva' in banderas),
             'contratos': lambda: cmd_contratos(rutas, raiz),
             'fijadas': lambda: cmd_fijadas(rutas, raiz),
             'reflint': lambda: cmd_reflint(rutas, raiz),

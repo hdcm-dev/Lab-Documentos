@@ -2,6 +2,20 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (mini demo MovilidadUrbana)
+
+### Guides/, .github/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U3
+
+#### Añadido
+
+- **`Examples/MovilidadUrbana-Mini-Demo/`** en la guía del sistema documentador: documentación de MovilidadUrbana.MAUI escrita desde este repositorio, con el código fijado por SHA en `source.lock` (Lab-E2E.WebBlazor, `8fb4c3a`). RRD, fichas `RN-LOC-01` y `RN-LOC-02` con anclas `ruta#Símbolo@SHA`, ayuda al usuario (CL-06), técnica (CL-07), el contrato OpenAPI extraído en ejecución y un README con el tutorial.
+- **`.github/workflows/mini-demo-movilidad.yml`** y **`verificar.sh`**: bajan el SHA con `git archive`, compilan y arrancan la ApiWeb, extraen `GET /openapi/v1.json` y comprueban contrato (bloquea), contrato con una operación plantada (tiene que dar rojo), trazas de nivel 1 y 2 (bloquea), la ficha RN-LOC-01 sin corregir (tiene que dar rojo) y la deriva contra `main` (avisa).
+- **`tools/docs-guard/`**: anclas de nivel 2 en `dg.py trazas --fuente` (y `--deriva`); IDs `RD-nn` del RRD en el registro; prefijo `DEMO`; fixtures `anclas/` (par rojo/verde y la negativa real `real-rn-loc-01/`).
+
+#### Cambiado
+
+- **`dg.py contratos`**: un contrato con `source.lock` que declara `workflow:` lo compara ese workflow; `docs-guard` ya no lo marca como «sin extracción».
+
 ## 2026-10-27 (docs-guard completo: grupos PR-1 a PR-7 y carril programado)
 
 ### .github/, scripts/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U2

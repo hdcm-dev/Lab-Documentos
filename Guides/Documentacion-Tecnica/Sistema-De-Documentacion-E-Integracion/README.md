@@ -111,9 +111,9 @@ menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§
 | [README](README.md) | `IDX-SDEI` | índice | borrador | Esta página: objetivos, rutas y contenido |
 | [00 Marco](00-Marco.md) | `MARCO-SDEI` | marco de referencia | borrador | Los cuatro escenarios, los contextos, los actores y las convenciones del cuerpo |
 | [01 Mapa](01-Mapa.md) | `MAPA-SDEI` | mapa | borrador | Tablas «estoy acá → qué aplico» por escenario, por contexto, por artefacto y por actor; índice de anexos |
-| `TEM-01` Qué es un sistema documentador | — | tema | en redacción | Piezas y un caso de industria |
-| `TEM-02` El ciclo documental | — | tema | en redacción | De la captura de requerimientos a la integración |
-| `TEM-03` Topología de repositorios y versionado | — | tema | en redacción | Dónde vive cada pieza y contra qué versión vale |
+| [Tema 01 — Qué es un sistema documentador](TEM-01-Sistema-Documentador.md) | `TEM-SDEI-01` | tema | borrador | Piezas, arquitectura de referencia, un caso de industria y adopciones públicas |
+| [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md) | `TEM-SDEI-02` | tema | borrador | De la captura de requerimientos a la integración: fases, RRD y estados |
+| [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md) | `TEM-SDEI-03` | tema | borrador | Dónde vive cada pieza y contra qué versión vale |
 | `TEM-04` Doble audiencia | — | tema | en redacción | Personas y agentes leyendo la misma fuente |
 | `TEM-05` Ayuda al usuario final | — | tema | en redacción | La ayuda dentro del producto, con roles como contexto |
 | `TEM-06` Compuertas de calidad y CI | — | tema | en redacción | Qué bloquea, qué avisa y por qué |

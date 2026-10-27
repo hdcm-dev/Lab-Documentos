@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!-- El contenido descargable (P1): páginas Razor compiladas a Blazor WebAssembly, empaquetadas, firmadas
+       y servidas por el cascarón desde un HybridWebView. No tiene ninguna encuesta compilada: las dibuja
+       desde la definición que recibe por el puente.
+
+       Dos variantes publicables (para la demo v1 → v2):
+         dotnet publish src/FrameworkConcept.Content -c Release                          → la de versionado/contenido.json
+         dotnet publish src/FrameworkConcept.Content -c Release -p:ContenidoVersion=1.1.0 → la v2 de la demo
+       La v2 es un MENOR (1.1.0), no 2.0.0: las definiciones declaran compatible-con-contenido >=1.0.0 <2.0.0 (P1). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FrameworkConcept.Content</RootNamespace>
+
+    <!-- P1 — SIN AOT. Con AOT el código descargado deja de ser IL interpretado y cambia de clase ante las
+         tiendas: habilitarlo es una decisión con su propia revisión, no una optimización. El empaquetador lo
+         comprueba y la compuerta lo prueba con un rojo provocado (P8). -->
+    <RunAOTCompilation>false</RunAOTCompilation>
+
+    <!-- C-4 de E01 — Archivos planos: el servidor de contenido del cascarón responde el archivo tal cual y no
+         negocia Content-Encoding, así que no se generan .br ni .gz. -->
+    <CompressionEnabled>false</CompressionEnabled>
+
+    <!-- P3 — CSP sin 'unsafe-inline': con huellas en los nombres, Blazor escribe un <script type="importmap">
+         en línea dentro de index.html, y la CSP lo bloquearía. Sin huellas no hace falta importmap. La
+         integridad de cada archivo la da el sha256 del índice firmado (P2), no el nombre. -->
+    <WasmFingerprintAssets>false</WasmFingerprintAssets>
+
+    <!-- El contenido serializa los tipos del contrato con System.Text.Json por reflexión (JsonDelContrato). -->
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+  <!-- P7 — Versión del contenido: SemVer sin pre-release. Fuente única: versionado/contenido.json; se puede
+       pisar con -p:ContenidoVersion=… para publicar la otra variante. El empaquetador le agrega +<commit>
+       (-p:ContenidoCommit=abc1234 la deja también dentro del ensamblado). -->
+  <PropertyGroup>
+    <_ArchivoDeVersion>$(MSBuildThisFileDirectory)../../versionado/contenido.json</_ArchivoDeVersion>
+    <ContenidoVersion Condition="'$(ContenidoVersion)' == ''">$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText($(_ArchivoDeVersion))), '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</ContenidoVersion>
+    <_ContenidoVersionCompleta>$(ContenidoVersion)</_ContenidoVersionCompleta>
+    <_ContenidoVersionCompleta Condition="'$(ContenidoCommit)' != ''">$(ContenidoVersion)+$(ContenidoCommit)</_ContenidoVersionCompleta>
+
+    <!-- El cambio visible de la v2 de la demo se enciende desde 1.1.0 (ver Pages/Inicio.razor). -->
+    <DefineConstants Condition="$([MSBuild]::VersionGreaterThanOrEquals('$(ContenidoVersion)', '1.1.0'))">$(DefineConstants);CONTENIDO_NOVEDADES</DefineConstants>
+
+    <!-- P2, P11 — Variante DEFECTUOSA a propósito, sólo para la demo del rollback local: -p:ContenidoSinListo=true
+         compila un contenido que se dibuja pero nunca avisa «Listo». El cascarón encuentra la marca «pendiente» en el
+         arranque siguiente y vuelve a la versión anterior. La publica «scripts/guion.sh publicar sin-listo». -->
+    <DefineConstants Condition="'$(ContenidoSinListo)' == 'true'">$(DefineConstants);CONTENIDO_SIN_LISTO</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="ExigirVersionDelContenido" BeforeTargets="BeforeBuild">
+    <Error Condition="'$(ContenidoVersion)' == ''" Text="No se pudo leer la versión del contenido de $(_ArchivoDeVersion)." />
+    <!-- P7 — Sin pre-release en ningún canal: la madurez la da el canal, no un sufijo. -->
+    <Error Condition="$(ContenidoVersion.Contains('-'))" Text="La versión del contenido no lleva pre-release (P7): $(ContenidoVersion)." />
+  </Target>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>ContenidoVersion</_Parameter1>
+      <_Parameter2>$(_ContenidoVersionCompleta)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- P12 — Lo que el contenido declara: rango del puente y capabilities {requires, optional}. El mismo
+         archivo lo lee el empaquetador para escribir manifiesto.json, y el contenido para decidir qué
+         funciones opcionales muestra. Una sola fuente. -->
+    <EmbeddedResource Include="declaracion-del-contenido.json" LogicalName="declaracion-del-contenido.json" />
+    <!-- Los archivos de prueba en navegador no forman parte del paquete. -->
+    <None Remove="Testing/**" />
+    <Content Remove="Testing/**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(VersionAspNetCore)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Las reglas del dominio son las mismas que usan las pruebas: no se copian al contenido, se referencian. -->
+    <ProjectReference Include="../FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+</Project>

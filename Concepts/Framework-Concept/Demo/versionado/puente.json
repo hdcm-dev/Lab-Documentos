@@ -1,0 +1,4 @@
+{
+  "version": "1.1.0",
+  "nota": "P7: SemVer 2.0.0 del puente. El mayor es la identidad del contrato (tabla de métodos + catálogo + transporte). Debe coincidir con ContratoDelPuente.Version y con src/FrameworkConcept.Core/Contracts/contrato.json; la instantánea de la compuerta lo comprueba (P3)."
+}

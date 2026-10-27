@@ -1,0 +1,12 @@
+{
+  "compatibleConPuente": ">=1.1.0 <2.0.0",
+  "capabilities": {
+    "requires": [],
+    "optional": [
+      { "id": "device.info", "rango": ">=1.0.0 <2.0.0" },
+      { "id": "network.status", "rango": ">=1.1.0 <2.0.0" },
+      { "id": "auth.session", "rango": ">=1.0.0 <2.0.0" },
+      { "id": "camera.capture", "rango": ">=1.0.0 <2.0.0" }
+    ]
+  }
+}

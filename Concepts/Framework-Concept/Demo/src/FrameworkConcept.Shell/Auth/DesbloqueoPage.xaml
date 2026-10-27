@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- P4, folio 038 — Pantalla propia del cascarón: desbloquear con la seguridad del teléfono (huella, rostro, PIN o
+     patrón). El diálogo es del sistema (BiometricPrompt); esta pantalla sólo lo pide y explica qué pasa.
+     La presenta PresentadorDeSesion encima del contenido mientras la sesión está Bloqueada. -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FrameworkConcept.Shell.Auth.DesbloqueoPage"
+             Title="Desbloquear">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Label Text="Movilidad urbana" FontSize="22" FontAttributes="Bold" />
+            <Label x:Name="Saludo" AutomationId="desbloqueo-usuario" />
+            <Label Text="Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión." />
+            <Button AutomationId="desbloqueo-desbloquear" Text="Desbloquear" Clicked="AlDesbloquear" />
+            <Label x:Name="Motivo" AutomationId="desbloqueo-motivo" FontSize="13" TextColor="#9a3412" IsVisible="False" />
+            <Button x:Name="BotonCerrar" Text="Cerrar sesión" Clicked="AlCerrar" />
+            <Label x:Name="AvisoDeCierre" FontSize="13" IsVisible="False"
+                   Text="Cerrar sesión borra la sesión guardada en este teléfono. Lo pendiente se conserva y se envía cuando vuelvas a ingresar con esta cuenta. Tocá de nuevo para confirmar." />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,124 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- El cascarón (P3): app MAUI que se actualiza SÓLO por tienda. Lleva las pantallas XAML propias, el
+       actualizador (el de Core, con sus adaptadores de Android), el servidor de contenido, el puente, el
+       catálogo, la base SQLite con el outbox y un único HybridWebView.
+
+       Cómo se compila (desde la raíz de la demo):
+         scripts/contenedor.sh dotnet build src/FrameworkConcept.Shell -c Debug \
+           -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk \
+           -p:FcCanalUrl=https://<servidor-del-canal>
+       android-arm64 es para un teléfono; android-x64, para el emulador. -->
+  <Import Project="../../versionado/version-cascaron.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <RootNamespace>FrameworkConcept.Shell</RootNamespace>
+    <MauiXamlInflator>SourceGen</MauiXamlInflator>
+
+    <ApplicationTitle>Framework Concept</ApplicationTitle>
+    <!-- En el teléfono de medida sólo se instalan paquetes com.frameworkconcept.* -->
+    <ApplicationId>com.frameworkconcept.demo</ApplicationId>
+
+    <!-- Piso de Android del ensayo E01 (24). El piso real del contenido es el WebView ≥ 94 (P1, C-3),
+         que se comprueba al arrancar, no acá. -->
+    <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+
+    <!-- El APK se instala con «adb install», no con el despliegue rápido del IDE: los ensamblados .NET tienen que
+         viajar DENTRO del APK también en Debug. Sin esto, el proceso aborta al abrir («No assemblies found …
+         Fast Deployment»), visto en el emulador el 2026-10-26. Misma receta que R2 §8. -->
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+  </PropertyGroup>
+
+  <!-- Configuración del canal. Se cambia al compilar, sin tocar el código:
+         -p:FcCanalUrl=https://xxxx.trycloudflare.com   raíz del servidor estático del canal (P2: sólo HTTPS)
+         -p:FcCanal=dev                                 dev, beta o prod: cada canal es un índice distinto
+         -p:FcReceptorUrl=https://...                   adonde se envían las respuestas (por defecto, el mismo servidor)
+         -p:FcKeyId=demo-2026                           keyId de claves/publica-demo.pem (lo fija FrameworkConcept.Tools)
+         -p:FcOidcAutoridad=https://203.0.113.10:8443/realms/fc-demo   emisor OIDC (P4, folio 038); vacío = sesión por dispositivo
+         -p:FcOidcClienteId=fc-demo-app                 cliente público del realm (infra/keycloak/)
+       Los valores quedan grabados en el ensamblado y los lee ConfiguracionDelCascaron. -->
+  <PropertyGroup>
+    <FcCanal Condition="'$(FcCanal)' == ''">dev</FcCanal>
+    <FcCanalUrl Condition="'$(FcCanalUrl)' == ''">https://canal.invalid</FcCanalUrl>
+    <FcReceptorUrl Condition="'$(FcReceptorUrl)' == ''">$(FcCanalUrl)</FcReceptorUrl>
+    <FcKeyId Condition="'$(FcKeyId)' == ''">demo-2026</FcKeyId>
+    <FcOidcClienteId Condition="'$(FcOidcClienteId)' == ''">fc-demo-app</FcOidcClienteId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcCanal</_Parameter1>
+      <_Parameter2>$(FcCanal)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcCanalUrl</_Parameter1>
+      <_Parameter2>$(FcCanalUrl)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcReceptorUrl</_Parameter1>
+      <_Parameter2>$(FcReceptorUrl)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcKeyId</_Parameter1>
+      <_Parameter2>$(FcKeyId)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcOidcAutoridad</_Parameter1>
+      <_Parameter2>$(FcOidcAutoridad)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcOidcClienteId</_Parameter1>
+      <_Parameter2>$(FcOidcClienteId)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Archivos que viajan dentro del APK. FileSystem.OpenAppPackageFileAsync los lee por su LogicalName. -->
+    <MauiAsset Include="Resources/Raw/**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+
+    <!-- P2 — La semilla: una copia de la carpeta del canal ({canal}/puente-{mayor}/: indice.json, su firma,
+         paquetes/ y definiciones/) que el guion deja en Demo/semilla/. Se instala en el primer arranque. -->
+    <MauiAsset Include="../../semilla/**" Exclude="../../semilla/**/.gitkeep;../../semilla/**/README*"
+               LogicalName="semilla/%(RecursiveDir)%(Filename)%(Extension)" />
+
+    <!-- P2 — El conjunto de claves embebido: sólo la pública de demostración. La privada nunca entra al APK. -->
+    <MauiAsset Include="../../claves/publica-demo.pem" Condition="Exists('../../claves/publica-demo.pem')"
+               LogicalName="claves/publica-demo.pem" />
+  </ItemGroup>
+
+  <!-- P2 — Sólo HTTPS. La configuración de red de Android (@xml/network_security_config, citada en
+       AndroidManifest.xml) sale de una de dos variantes de Platforms/Android/Red/:
+         - ConCaDeDemo/: en Debug, si existe claves/tls/ca_demo_tls.crt («scripts/guion.sh tls»). El APK depurable
+           confía además en esa CA, para llegar al receptor didáctico sin túnel público (P11).
+         - SinCa/: en cualquier otro caso. Sólo las autoridades del sistema.
+       Android exige nombres de recurso con [a-z0-9_.]: por eso las carpetas y la CA se llaman así. -->
+  <PropertyGroup>
+    <_CaDeDemo>$(MSBuildThisFileDirectory)../../claves/tls/ca_demo_tls.crt</_CaDeDemo>
+    <_ConfigDeRed Condition="'$(Configuration)' == 'Debug' And Exists('$(_CaDeDemo)')">ConCaDeDemo</_ConfigDeRed>
+    <_ConfigDeRed Condition="'$(_ConfigDeRed)' == ''">SinCa</_ConfigDeRed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Platforms/Android/Red/**" />
+    <AndroidResource Include="Platforms/Android/Red/$(_ConfigDeRed)/network_security_config.xml"
+                     Link="Platforms/Android/Resources/xml/network_security_config.xml" />
+    <AndroidResource Include="$(_CaDeDemo)" Condition="'$(_ConfigDeRed)' == 'ConCaDeDemo'"
+                     Link="Platforms/Android/Resources/raw/ca_demo_tls.crt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <!-- P5 — EF Core SQLite detrás de IDb (D-05: S2). -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(VersionEfCore)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+</Project>

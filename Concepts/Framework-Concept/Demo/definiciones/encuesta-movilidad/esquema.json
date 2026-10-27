@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://frameworkconcept.demo/definiciones/encuesta-movilidad/esquema.json",
+  "title": "Definición de encuesta",
+  "description": "Forma de una definición de encuesta (P1, P13). Lo valida la compuerta del PR (P8) y la publicación. Las reglas de evolución entre versiones (versión estrictamente mayor; id y tipo de una pregunta publicada no cambian) no se pueden expresar en JSON Schema: las prueba FrameworkConcept.Gate.Tests.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["encuestaId", "version", "compatibleConContenido", "titulo", "pasos"],
+  "properties": {
+    "encuestaId": {
+      "description": "Identificador estable de la encuesta. Un cambio destructivo exige uno nuevo (P13.8).",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$"
+    },
+    "version": {
+      "description": "Entero monótono: sube en cada publicación y nunca baja (P13.1, P13.9).",
+      "type": "integer",
+      "minimum": 1
+    },
+    "compatibleConContenido": {
+      "description": "«compatible-con-contenido» de P1: rango con piso y techo, >=A.B.C <(A+1).0.0 (VPI §2.6). El techo exacto lo comprueba RangoDeVersion.",
+      "type": "string",
+      "pattern": "^>=(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*) <(0|[1-9][0-9]*)\\.0\\.0$"
+    },
+    "titulo": { "type": "string", "minLength": 1 },
+    "pasos": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/paso" }
+    }
+  },
+  "$defs": {
+    "identificador": {
+      "type": "string",
+      "pattern": "^[a-z][a-zA-Z0-9]*$"
+    },
+    "paso": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "titulo", "preguntas"],
+      "properties": {
+        "id": { "$ref": "#/$defs/identificador" },
+        "titulo": { "type": "string", "minLength": 1 },
+        "preguntas": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/pregunta" }
+        }
+      }
+    },
+    "pregunta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tipo", "etiqueta", "requisito", "mensajeDeError"],
+      "properties": {
+        "id": {
+          "description": "Nombre del campo en la respuesta. Publicado, no cambia ni de nombre ni de tipo (P13.8).",
+          "$ref": "#/$defs/identificador"
+        },
+        "tipo": { "enum": ["texto", "entero", "decimal", "opcionUnica", "opcionMultiple"] },
+        "etiqueta": { "type": "string", "minLength": 1 },
+        "requisito": { "type": "string", "minLength": 1 },
+        "mensajeDeError": { "type": "string", "minLength": 1 },
+        "obligatoria": { "type": "boolean", "default": true },
+        "reglas": { "$ref": "#/$defs/reglas" },
+        "opciones": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/opcion" }
+        },
+        "origenDeOpciones": { "enum": ["localidades"] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "tipo": { "enum": ["opcionUnica", "opcionMultiple"] } } },
+          "then": {
+            "oneOf": [
+              { "required": ["opciones"], "not": { "required": ["origenDeOpciones"] } },
+              { "required": ["origenDeOpciones"], "not": { "required": ["opciones"] } }
+            ]
+          },
+          "else": {
+            "not": { "anyOf": [{ "required": ["opciones"] }, { "required": ["origenDeOpciones"] }] }
+          }
+        }
+      ]
+    },
+    "reglas": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "largoMinimo": { "type": "integer", "minimum": 0 },
+        "minimo": { "type": "number" },
+        "maximo": { "type": "number" },
+        "minimoDeOpciones": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "opcion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clave", "etiqueta"],
+      "properties": {
+        "clave": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "etiqueta": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

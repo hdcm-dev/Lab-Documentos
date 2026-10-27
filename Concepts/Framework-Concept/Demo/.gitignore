@@ -1,0 +1,14 @@
+# Salidas de compilación: nunca se versionan.
+bin/
+obj/
+publicacion/
+salida/
+*.apk
+*.aab
+TestResults/
+
+# Claves: sólo la pública de demostración se versiona (P2, custodia de la clave).
+claves/*.pem
+!claves/publica-demo.pem
+claves/*.key
+claves/tls/

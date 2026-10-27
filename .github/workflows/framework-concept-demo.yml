@@ -1,0 +1,204 @@
+# Compuerta del PR de la demo del framework (Concepts/Framework-Concept/Demo).
+#
+# Decisiones del expediente 0001 (dictamen de la ronda 2, folio 035) que este archivo implanta:
+#   P6.2  un solo workflow de PR, SIN «paths» en el «on:»: el alcance lo decide un paso del job «alcance».
+#   P6.3  «fw-ok» es el único check requerido de main, y es estricto: un job omitido cuenta como rojo, salvo
+#         la omisión declarada (el PR no toca la demo), que se informa con su motivo.
+#   P6.4  runs-on [self-hosted, i7infra-dev] con guarda de mismo repositorio (un PR desde un fork no corre en
+#         el runner propio), permissions: contents: read y ningún secreto.
+#   P8    la compuerta mínima: build sin MAUI con avisos como error, Core.Tests, Update.Tests, Gate.Tests,
+#         publish y empaquetado del contenido, APK del cascarón.
+#
+# El runner i7infra-runner-dev no tiene docker.sock ni KVM: los pasos corren dotnet directo, no contenedores.
+# Trae SDK 10.0.402, maui-android 10.0.110 y JDK 21 (relevamiento R2 §5). El SDK lo fija global.json de la
+# demo (10.0.400 con rollForward latestPatch: acepta 10.0.402); la versión de MAUI la fija MauiVersion en
+# Directory.Build.props, no el runner.
+#
+# Su equivalente local, con los mismos pasos en el mismo orden: Concepts/Framework-Concept/Demo/scripts/ci-local.sh
+
+name: framework-concept-demo
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: framework-concept-demo-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEMO: Concepts/Framework-Concept/Demo
+  DOTNET_NOLOGO: "1"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  CI: "true"
+
+jobs:
+  # ¿El PR toca la demo? Se decide acá (P6.2) para que un PR de Guides/ no espere la compilación de Android.
+  alcance:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 5
+    outputs:
+      demo: ${{ steps.decidir.outputs.demo }}
+      motivo: ${{ steps.decidir.outputs.motivo }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Decidir el alcance
+        id: decidir
+        env:
+          EVENTO: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENTO" = "workflow_dispatch" ]; then
+            echo "demo=true" >> "$GITHUB_OUTPUT"
+            echo "motivo=corrida manual: se corre todo" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Tres puntos: lo que cambió el PR desde que se separó de la rama de destino.
+          CAMBIOS="$(git diff --name-only "$BASE_SHA...$HEAD_SHA")"
+          echo "Archivos cambiados:"; printf '%s\n' "$CAMBIOS" | sed 's/^/  /'
+          # El propio workflow también es parte de la compuerta: si cambia, corre todo.
+          if printf '%s\n' "$CAMBIOS" | grep -qE "^($DEMO/|\.github/workflows/framework-concept-demo\.yml$)"; then
+            echo "demo=true" >> "$GITHUB_OUTPUT"
+            echo "motivo=el PR toca $DEMO/** o este workflow" >> "$GITHUB_OUTPUT"
+          else
+            echo "demo=false" >> "$GITHUB_OUTPUT"
+            echo "motivo=el PR no toca $DEMO/** ni este workflow" >> "$GITHUB_OUTPUT"
+          fi
+          # P6.8: un PR de la cadena de herramientas no se resuelve en el runner; se avisa para que quien
+          # revisa pida la prueba en dispositivo «manual: con registro» antes de fusionar.
+          if printf '%s\n' "$CAMBIOS" | grep -qE "^$DEMO/(global\.json|Directory\.Build\.props)$"; then
+            echo "::warning::El PR toca global.json o Directory.Build.props (SDK, workloadVersion o MauiVersion): P6.8 exige una prueba en dispositivo «manual: con registro» antes de fusionar."
+          fi
+
+  # Pasos 0 a 5 de scripts/ci-local.sh, en el mismo orden.
+  compuerta:
+    needs: alcance
+    if: needs.alcance.outputs.demo == 'true'
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ${{ env.DEMO }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Cadena de herramientas
+        run: |
+          cat global.json
+          dotnet --version
+          dotnet workload list || echo "(dotnet workload list terminó con error; ver la salida)"
+
+      - name: "0. Base del PR (lo publicado en la rama de destino)"
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || format('origin/{0}', github.event.repository.default_branch) }}
+        run: |
+          set -euo pipefail
+          BASE=salida/compuerta/base
+          rm -rf "$BASE" && mkdir -p "$BASE"
+          # git archive toma las rutas relativas a la carpeta actual: se corre desde la raíz del repositorio.
+          if git -C "$GITHUB_WORKSPACE" cat-file -e "$BASE_SHA:$DEMO" 2>/dev/null; then
+            git -C "$GITHUB_WORKSPACE" archive "$BASE_SHA" "$DEMO" | tar -x -C "$BASE" --strip-components=3
+            echo "base: $BASE_SHA:$DEMO"
+          else
+            echo "base: $BASE_SHA no tiene $DEMO (la demo es nueva en esta rama) → base vacía"
+          fi
+          echo "FC_GATE_BASE=$BASE" >> "$GITHUB_ENV"
+
+      - name: "1. Build sin el cascarón MAUI, avisos como error"
+        run: dotnet build FrameworkConcept.Demo.SinMaui.slnf -c Release
+
+      - name: "2. Core.Tests"
+        run: dotnet test tests/FrameworkConcept.Core.Tests -c Release --no-build
+
+      - name: "3. Update.Tests"
+        run: dotnet test tests/FrameworkConcept.Update.Tests -c Release --no-build
+
+      - name: "4. Gate.Tests"
+        run: dotnet test tests/FrameworkConcept.Gate.Tests -c Release --no-build
+
+      - name: "5. Publish del contenido y empaquetado"
+        env:
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          SALIDA=salida/compuerta
+          rm -rf "$SALIDA/publicado" "$SALIDA/canal"
+          dotnet publish src/FrameworkConcept.Content -c Release -o "$SALIDA/publicado"
+          VERSION="$(sed -n 's/^ *"version": *"\([^"]*\)".*/\1/p' versionado/contenido.json | head -n 1)"
+          dotnet run --project tools/FrameworkConcept.Tools -c Release --no-build -- empaquetar \
+            --raiz "$SALIDA/canal" --publicado "$SALIDA/publicado" --version "$VERSION" --commit "${SHA::7}"
+
+  # Paso 6 de scripts/ci-local.sh.
+  apk:
+    needs: [alcance, compuerta]
+    if: needs.alcance.outputs.demo == 'true'
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ${{ env.DEMO }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: "6. APK del cascarón (android-arm64)"
+        run: |
+          dotnet build src/FrameworkConcept.Shell -c Debug -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk
+          ls -l src/FrameworkConcept.Shell/bin/Debug/net10.0-android/android-arm64/*-Signed.apk
+
+  # El único check requerido de main (P6.1, P6.3). Corre siempre, también si algo falló o se omitió, y no
+  # lee código del PR: sólo el resultado de los otros jobs.
+  fw-ok:
+    needs: [alcance, compuerta, apk]
+    if: always()
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 5
+    steps:
+      - name: Agregador estricto
+        env:
+          ALCANCE: ${{ needs.alcance.result }}
+          DEMO_TOCADA: ${{ needs.alcance.outputs.demo }}
+          MOTIVO: ${{ needs.alcance.outputs.motivo }}
+          COMPUERTA: ${{ needs.compuerta.result }}
+          APK: ${{ needs.apk.result }}
+        run: |
+          set -u
+          echo "alcance=$ALCANCE (demo=$DEMO_TOCADA: $MOTIVO) compuerta=$COMPUERTA apk=$APK"
+
+          if [ "$ALCANCE" != "success" ]; then
+            # Con la guarda de mismo repositorio, un PR desde un fork deja «alcance» en skipped: es rojo.
+            echo "::error::fw-ok en rojo: el job «alcance» terminó en «$ALCANCE» (un PR desde un fork no corre en el runner propio; una falla del paso de alcance tampoco cuenta como verde)."
+            exit 1
+          fi
+
+          if [ "$DEMO_TOCADA" = "false" ]; then
+            # Única omisión legítima declarada (P6.3): el PR no toca la demo.
+            if [ "$COMPUERTA" = "skipped" ] && [ "$APK" = "skipped" ]; then
+              echo "fw-ok en verde por omisión declarada: $MOTIVO."
+              exit 0
+            fi
+            echo "::error::fw-ok en rojo: el alcance dice que el PR no toca la demo, pero compuerta=$COMPUERTA y apk=$APK."
+            exit 1
+          fi
+
+          if [ "$COMPUERTA" = "success" ] && [ "$APK" = "success" ]; then
+            echo "fw-ok en verde: compuerta y APK correctos."
+            exit 0
+          fi
+          # skipped, cancelled o failure: todo cuenta como rojo.
+          echo "::error::fw-ok en rojo: compuerta=$COMPUERTA, apk=$APK (estricto: «skipped» y «cancelled» también son rojo)."
+          exit 1

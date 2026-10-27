@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P2 — Configuración de red del cascarón: sólo HTTPS.
+     «debug-overrides» rige SOLO en un APK depurable (Debug): ahí, además de las autoridades del sistema, se
+     acepta la CA de demostración que genera «scripts/guion.sh tls» para el receptor didáctico. Un APK de
+     Release ignora este bloque, así que esta CA nunca llega a producción. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="@raw/ca_demo_tls" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

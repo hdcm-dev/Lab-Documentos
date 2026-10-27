@@ -1,0 +1,75 @@
+{
+  "realm": "fc-demo",
+  "displayName": "Framework Concept — emisor de ensayo (no producción)",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": false,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "revokeRefreshToken": false,
+  "clients": [
+    {
+      "clientId": "fc-demo-app",
+      "name": "Cascarón de la demo (cliente público, PKCE)",
+      "description": "P4 del folio 035: OIDC authorization code + PKCE S256 en el navegador del sistema (RFC 8252). Sin secreto.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "frontchannelLogout": false,
+      "redirectUris": [
+        "com.frameworkconcept.demo://callback"
+      ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "com.frameworkconcept.demo://callback"
+      },
+      "protocolMappers": [
+        {
+          "name": "audiencia-fc-receptor",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "fc-receptor",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "encuestador",
+      "enabled": true,
+      "email": "encuestador@fc-demo.invalid",
+      "emailVerified": true,
+      "firstName": "Encuestador",
+      "lastName": "De Prueba",
+      "credentials": [
+        { "type": "password", "value": "demo-encuestador", "temporary": false }
+      ]
+    },
+    {
+      "username": "supervisora",
+      "enabled": true,
+      "email": "supervisora@fc-demo.invalid",
+      "emailVerified": true,
+      "firstName": "Supervisora",
+      "lastName": "De Prueba",
+      "credentials": [
+        { "type": "password", "value": "demo-supervisora", "temporary": false }
+      ]
+    }
+  ]
+}

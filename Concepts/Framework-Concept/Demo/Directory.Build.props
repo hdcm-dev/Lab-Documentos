@@ -1,0 +1,40 @@
+<!--
+  Propiedades comunes a todos los proyectos de la demo. MSBuild lo importa solo, porque está en la
+  raíz: ningún .csproj tiene que nombrarlo.
+
+  Qué fija:
+  - el lenguaje y los avisos (Nullable, ImplicitUsings, LangVersion);
+  - avisos como errores cuando corre en integración continua (GitHub define CI=true; P8, «avisos como error»);
+  - la versión de MAUI (P6 punto 8 y P7: la cadena de herramientas es atributo del cascarón y no la decide
+    la máquina que compila);
+  - las versiones de los paquetes NuGet, en un solo lugar. Los .csproj las usan como $(VersionXxx).
+-->
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors Condition="'$(CI)' == 'true'">true</TreatWarningsAsErrors>
+    <!-- La cultura de la demo es es-AR. Se fija en el código (como el caso base), no con invariante. -->
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <!-- Cadena de herramientas. Cambiar cualquiera de estas líneas, global.json o workloadVersion exige
+       una prueba en dispositivo «manual: con registro» antes de fusionar (P6, punto 8). -->
+  <PropertyGroup>
+    <MauiVersion>10.0.20</MauiVersion>
+  </PropertyGroup>
+
+  <!-- Versiones de paquetes. Una sola fuente: si un número cambia, cambia acá. -->
+  <PropertyGroup>
+    <VersionDotNetExtensions>10.0.11</VersionDotNetExtensions>
+    <VersionAspNetCore>10.0.11</VersionAspNetCore>
+    <VersionEfCore>10.0.11</VersionEfCore>
+    <VersionTestSdk>17.14.0</VersionTestSdk>
+    <VersionNUnit>4.3.2</VersionNUnit>
+    <VersionNUnitAnalyzers>4.7.0</VersionNUnitAnalyzers>
+    <VersionNUnitAdapter>5.0.0</VersionNUnitAdapter>
+  </PropertyGroup>
+
+</Project>

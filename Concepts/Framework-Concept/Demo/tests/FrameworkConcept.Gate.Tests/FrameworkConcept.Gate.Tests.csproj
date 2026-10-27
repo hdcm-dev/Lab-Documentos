@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pruebas de la compuerta del PR (P8). Leen el repositorio tal como está —no copias— porque lo que
+       vigilan son archivos que la gente edita a mano:
+         Contrato/     instantánea del contrato del puente frente a contrato.json y a la base del PR (P3)
+         Definiciones/ definiciones contra su esquema JSON y reglas de evolución (P13.8, P13.9)
+         Catalogo/     catálogo de capacidades frente al AndroidManifest.xml del cascarón (P12)
+         Contenido/    contenido sin AOT y sin API web que pidan permisos (P1, P8, P12)
+       La «base del PR» (lo ya publicado en main) la deja en una carpeta el workflow o scripts/ci-local.sh
+       y llega por la variable FC_GATE_BASE (ver Infraestructura/Repositorio.cs). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Validador de JSON Schema 2020-12. 8.0.5 es la última versión con licencia MIT (desde 9.0 el
+         paquete pasa a la licencia OSMF). Pendiente: mover esta propiedad a Directory.Build.props, que es
+         la fuente única de versiones; acá queda con Condition para no pisarla cuando exista allá. -->
+    <VersionJsonSchemaNet Condition="'$(VersionJsonSchemaNet)' == ''">8.0.5</VersionJsonSchemaNet>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(VersionTestSdk)" />
+    <PackageReference Include="NUnit" Version="$(VersionNUnit)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(VersionNUnitAnalyzers)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(VersionNUnitAdapter)" />
+    <PackageReference Include="JsonSchema.Net" Version="$(VersionJsonSchemaNet)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+</Project>

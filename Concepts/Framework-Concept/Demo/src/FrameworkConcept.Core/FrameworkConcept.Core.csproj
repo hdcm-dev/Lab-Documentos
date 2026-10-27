@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Núcleo de la demo, sin MAUI: lo comparten el cascarón (Shell), el contenido Blazor (Content),
+       las herramientas y las pruebas. Por eso es net10.0 a secas: se compila y se prueba sin el workload
+       de Android ni teléfono.
+       Domain/ y Application/  → portados del caso base MovilidadUrbana.MAUI (ver MAPA-CASO-BASE.md).
+       Contracts/              → los tipos del contrato del dictamen (P2, P3, P7, P12, P13).
+       Update/                 → sólo las interfaces del actualizador; la implementación la escribe el tramo A2. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FrameworkConcept.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(VersionDotNetExtensions)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- La instantánea del contrato viaja dentro del ensamblado: el cascarón calcula su huella para la
+         pantalla de diagnóstico (P3, P7) sin depender de un archivo suelto en el teléfono. -->
+    <EmbeddedResource Include="Contracts/contrato.json" LogicalName="contrato.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- P3 — El mayor de MAUI es parte de la identidad del transporte: si cambia, la instantánea lo ve. -->
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>MauiVersion</_Parameter1>
+      <_Parameter2>$(MauiVersion)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

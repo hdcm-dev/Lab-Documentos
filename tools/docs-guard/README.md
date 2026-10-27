@@ -157,7 +157,10 @@ historia sin blobs) y escribe un informe con:
 2. `lychee --root-dir` con red sobre la carpeta elegida: enlaces entre repos (rutas `/LAB/…`, `/PROG2/…`) y externos;
 3. el atraso de cada `base_commit` y de cada `sha:` de un `source.lock` contra `main` del repo que lo contiene;
 4. la deriva de las piezas fijadas (`BASE-FIJADA.md`) en todo el árbol;
-5. la frescura: documentos con `last_review` de más de 365 días.
+5. la frescura: documentos con `last_review` de más de 365 días;
+6. la línea de base de AI-3 sobre la carpeta elegida, con las excepciones vigentes (cuándo AI-3 puede pasar a bloquear).
+
+El informe no lleva rutas del equipo que lo corre: se recortan antes de escribir el issue.
 
 El workflow corre los lunes y a mano (`workflow_dispatch`, con la carpeta como entrada), y abre o actualiza un único
 issue titulado «docs-enlaces-semanal: informe del carril programado». Declara `issues: write` sólo para eso. En un

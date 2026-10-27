@@ -2,6 +2,28 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (saneamiento de la guía del sistema documentador)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion — expediente 0002 de DocAsCode, unidad E1-U1
+
+#### Corregido
+
+- **Enlaces**: los ocho enlaces de la guía que apuntaban a `../Documentacion-Tecnica/` (ruta duplicada desde la reorganización por categoría) ahora apuntan a `../Creacion-Guias-Tecnicas/`. La compuerta ya no los excluye.
+- **Frontmatter**: `status: borrador`, `origin: ia-generated`, `confidence: alta` y `audience: [humano, agente]`, según las convenciones del corpus; `owner: fernandofilipuzzi` como en las otras guías; `DOC-ADR` ya no se repite en `traces`.
+- **Citas**: la de `ACT-10` pasa a ser literal; la de Docusaurus cita la fuente fijada por commit y no la rama `main`; la enumeración de atributos DITA se ajusta a la página citada (`@props` en lugar de `@product`).
+- **`llms.txt`**: deja de llamarse «adoptada»; es una propuesta publicada en `llmstxt.org`.
+- **Prueba de concepto**: recuento de páginas (7 fuentes + 2 traducciones; el log cuenta pares), nombres que difieren del árbol propuesto, `302` observado frente al `401` previsto, y los dos mecanismos de `translation_of`.
+- **Contrato del frontmatter de la ayuda**: una sola tabla (7.3), con `owner` y `last_review`.
+- **`Examples/Lanzar-Example.md`**: rutas del ejemplo (`$P` y la invocación) con la carpeta actual.
+
+#### Añadido
+
+- **`README.md`** y **`Guides/README.md`**, que estaban vacíos: ruta de lectura mínima hasta la guía.
+
+### scripts/
+
+- **`docs-guard.lychee.toml`**: quedan sólo las exclusiones permanentes y con motivo: el defecto plantado de la consola y los dos enlaces de respaldo de cultura de `Web/Ayuda/en/`.
+
 ## 2026-10-27 (compuerta de documentación y delegación del merge)
 
 ### .github/ y scripts/ — `docs-guard` (expediente 0002 de DocAsCode, unidad E1-U0a)

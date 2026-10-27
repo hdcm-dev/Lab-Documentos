@@ -86,7 +86,7 @@ red, clona los repos hermanos y escribe un issue.
 | PR-4 | `estructura` | Markdown estructural (MD013 apagado); mermaid que parsea | markdownlint-cli2; [`mermaid/mermaid-parse.mjs`](mermaid/mermaid-parse.mjs) |
 | PR-5 | `trazas` | Cada `traces: [ID@MAYOR.MENOR]` contra el registro generado de `doc_id` y de los encabezados que empiezan con un ID | `dg.py trazas` |
 | PR-6 | `contrato` | Diff del contrato OpenAPI (`contracts/openapi.json` frente a `contracts/.generado/openapi.json`) | `dg.py contratos` y `dg.py contrato` |
-| PR-7 | `fijadas` | Piezas fijadas con su SHA-256 (`BASE-FIJADA.md`); formato de referencias con ancla `ref-…` | `dg.py fijadas`; `dg.py reflint` |
+| PR-7 | `fijadas` | Piezas fijadas con su SHA-256 (`BASE-FIJADA.md`); formato de referencias con ancla `ref-…`; URL y citas por dominio con referencia completa (`url-fecha`) | `dg.py fijadas`; `dg.py reflint`; `dg.py url-fecha` |
 | — | `autoprueba` | Par rojo/verde de cada control y fixture AK-7 | los mismos controles sobre [`fixtures/`](fixtures/) |
 | — | `avisos` | `url-fecha` y `cita-linea` sobre lo heredado | `dg.py avisos` (nunca bloquea) |
 
@@ -117,6 +117,19 @@ es la [mini demo MovilidadUrbana](../../Guides/Documentacion-Tecnica/Sistema-De-
 en una superior, `dg.py contratos` no lo marca como «sin extracción»: lo extrae y compara ese workflow, que compila el
 código. Sin `source.lock` y sin `contracts/.generado/openapi.json`, sigue bloqueando.
 
+**`url-fecha` ampliado (E1-U4f, E-F7, D28).** Una fuente externa citada en el texto lleva referencia completa: en
+el mismo bloque (un párrafo, una fila de tabla o un encabezado) aparece la fecha de consulta («consultado el
+AAAA-MM-DD»; también vale la de una observación propia, «medido el» o «verificado el») o una cita enlazada al anexo
+de referencias (`](…#ref-…)`). El control ve dos formas: la URL con esquema (`https://…`) y la cita por dominio dentro
+de un code span (`` `docusaurus.io/docs/…` ``), que el aviso heredado no veía. Un dominio es una cadena en minúsculas
+con al menos dos etiquetas y un dominio de primer nivel genérico de la lista o de país de dos letras, salvo los que
+coinciden con extensiones de archivo (`README.md`, `ci-local.sh`, `Program.cs` no son dominios). No son citas, y no
+se marcan: direcciones locales (`localhost`, `127.…`), dominios reservados para ejemplos (`example.com`, `.test`),
+plantillas con «…», direcciones de clonado que terminan en `.git` e imágenes de contenedor con etiqueta
+(`mcr.microsoft.com/dotnet/sdk:10.0`). Bloquea en el cuerpo nuevo salvo en un documento `status: obsoleto`, que avisa:
+la conversión a APA se hace en el documento que lo reemplaza. Los fixtures son `fixtures/url-fecha/rojo` (cuatro
+citas incompletas), `verde` (las mismas formas completas y las excepciones) y `obsoleto` (verde con avisos).
+
 **IDs del RRD.** Las filas `RD-nn` de un `_requisitos.md` (o `doc_type: rrd`) entran al registro: una página puede
 trazar al requerimiento que la pide.
 
@@ -139,7 +152,8 @@ positivos conocidos o los canaliza por excepciones con huella.
 | AI-4 | Sí, salvo en el anexo de referencias | En el anexo (archivo con «Referencias» en el nombre o `doc_type: anexo-referencias`) sólo avisa |
 | AI-3 | No: avisa | Tiene falsos positivos conocidos en textos que explican cómo se arma un agente. Pasa a bloquear cuando su línea de base con excepciones sea 0 en el cuerpo nuevo (`--ai3-bloquea`) |
 | `reflint` | Sí en el cuerpo nuevo; avisa en lo heredado | Lo heredado no siguió la norma de citación |
-| `url-fecha`, `cita-linea` | No: avisan | Línea de base alta en lo heredado |
+| `url-fecha` (PR-7) | Sí en el cuerpo nuevo, salvo en un documento `status: obsoleto`; avisa en lo heredado | Línea de base 0 en el cuerpo nuevo desde E1-U4f; alta en lo heredado |
+| `cita-linea` | No: avisa | Línea de base alta en lo heredado |
 | Trazas a un sistema externo sin `source.lock` | No: avisa | No hay SHA contra el que resolverlas |
 
 ## 6. Pares rojo/verde y fixture AK-7

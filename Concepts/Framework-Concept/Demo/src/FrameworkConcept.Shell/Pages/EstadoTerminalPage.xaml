@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Pantalla propia del cascarón para los estados en que el contenido no puede mostrarse (P1, P2):
+     «no hay contenido sano», «actualizá la app», base incompatible o un error del arranque.
+     Los pendientes no se tocan y la sincronización del outbox sigue (P2, «Estado terminal»). -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FrameworkConcept.Shell.Pages.EstadoTerminalPage"
+             Title="Framework Concept">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Label x:Name="Titulo" FontSize="22" FontAttributes="Bold" />
+            <Label x:Name="Explicacion" />
+            <Label x:Name="Detalle" FontSize="12" TextColor="Gray" />
+            <Label x:Name="EstadoDelReintento" FontSize="13" />
+            <Button x:Name="BotonReintentar" Text="Reintentar ahora" Clicked="AlReintentar" />
+            <Button Text="Diagnóstico" Clicked="AlAbrirDiagnostico" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

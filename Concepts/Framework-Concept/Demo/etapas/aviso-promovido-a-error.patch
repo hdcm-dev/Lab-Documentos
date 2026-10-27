@@ -1,0 +1,15 @@
+--- a/src/FrameworkConcept.Core/Domain/Rules/LocalidadRules.cs
++++ b/src/FrameworkConcept.Core/Domain/Rules/LocalidadRules.cs
+@@ -18,7 +18,11 @@
+     public static bool NombreValido(string? nombre) =>
+         (nombre ?? string.Empty).Trim().Length >= LargoMinimoDelNombre;
+ 
+-    public static bool ProvinciaValida(string? provincia) => !string.IsNullOrWhiteSpace(provincia);
++    public static bool ProvinciaValida(string? provincia)
++    {
++        var sinUso = 0;   // CS0219: variable asignada y nunca usada (un aviso)
++        return !string.IsNullOrWhiteSpace(provincia);
++    }
+ 
+     public static bool CodigoPostalValido(string? codigoPostal) =>
+         CodigoPostal().IsMatch((codigoPostal ?? string.Empty).Trim());

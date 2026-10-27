@@ -1,0 +1,4 @@
+{
+  "version": "1.0.0",
+  "nota": "P7: SemVer 2.0.0 del paquete de contenido, sin pre-release en ningún canal. El empaquetador le agrega +<commit>. La madurez la da el canal, no un sufijo."
+}

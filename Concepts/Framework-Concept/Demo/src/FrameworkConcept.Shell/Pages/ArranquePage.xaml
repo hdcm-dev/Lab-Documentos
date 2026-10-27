@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Pantalla propia del cascarón (XAML, P1): se ve mientras se abre la base y el actualizador decide qué versión
+     del contenido mostrar. No usa la red: la consulta al canal va después, en segundo plano (P2, N = 0). -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FrameworkConcept.Shell.Pages.ArranquePage"
+             NavigationPage.HasNavigationBar="False"
+             Title="Framework Concept">
+    <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
+        <Label Text="Framework Concept" FontSize="24" HorizontalOptions="Center" />
+        <ActivityIndicator IsRunning="True" HorizontalOptions="Center" />
+        <Label x:Name="Estado" Text="Arrancando…" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+    </VerticalStackLayout>
+</ContentPage>

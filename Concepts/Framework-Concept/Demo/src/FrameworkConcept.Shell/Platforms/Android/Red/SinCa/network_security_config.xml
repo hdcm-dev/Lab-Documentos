@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- P2 — Configuración de red del cascarón: sólo HTTPS, y sólo las autoridades del sistema.
+     Es la que lleva un APK de Release, o uno de Debug compilado sin la CA de demostración. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

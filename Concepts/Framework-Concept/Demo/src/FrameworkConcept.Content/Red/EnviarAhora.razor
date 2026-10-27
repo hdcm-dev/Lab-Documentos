@@ -1,0 +1,40 @@
+@using FrameworkConcept.Core.Contracts.Puente
+@inject BridgeClient Puente
+@inject BridgeSession Sesion
+@*
+    «Enviar ahora» junto a «Por enviar: N» (DISENO §4.4): la acción SoloEnLinea que demuestra el bloqueo. Sin servidor
+    el botón queda deshabilitado con su motivo; con servidor fuerza una pasada del sincronizador (outbox.sendNow).
+    Lo normal es no tocarlo: al volver la conexión el cascarón envía solo (reconexión automática).
+*@
+<BotonDeAccion Accion="outbox.enviarAhora" Texto="@(_ocupado ? "Enviando…" : "Enviar ahora")" Clase="fc-boton fc-boton--fila"
+               TestId="boton-enviar-ahora" Deshabilitado="_ocupado" OnClick="EnviarAsync" />
+@if (_resultado is not null)
+{
+    <span class="fc-nota" data-testid="resultado-enviar-ahora">@_resultado</span>
+}
+
+@code {
+    private bool _ocupado;
+    private string? _resultado;
+
+    private async Task EnviarAsync()
+    {
+        if (_ocupado) return;
+        _ocupado = true;
+        try
+        {
+            var r = await Puente.OutboxSendNowAsync();
+            _resultado = $"Enviadas: {r.Enviadas}";
+            await Sesion.RefrescarAsync();
+        }
+        catch (BridgeException excepcion)
+        {
+            // AccionBloqueada: el cascarón la rechazó (la red cambió entre la evaluación y el toque).
+            _resultado = excepcion.Code == CodigosDeError.AccionBloqueada ? "No se envió: " + excepcion.Message : excepcion.Message;
+        }
+        finally
+        {
+            _ocupado = false;
+        }
+    }
+}

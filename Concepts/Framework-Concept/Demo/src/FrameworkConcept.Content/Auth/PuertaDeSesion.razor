@@ -1,0 +1,157 @@
+@using FrameworkConcept.Core.Auth
+@using FrameworkConcept.Core.Red
+@implements IDisposable
+@inject SesionDelContenido SesionDelUsuario
+@*
+    P4 — La puerta de la sesión (DISENO §3.7). Envuelve la página en MainLayout:
+
+      sin «auth.session» o modo Dispositivo  → la página, como en A3
+      SinCuenta                              → «Ingresar con tu cuenta» (sesion.ingresar: sin servidor, deshabilitado + motivo)
+      Ingresando                             → «Completá el ingreso en el navegador…»
+      Bloqueada                              → «Desbloquear» (el diálogo es del sistema)
+      Activa                                 → la página; si se puede, ofrece la seguridad del teléfono
+      Vencida, Revocada                      → la página MÁS una banda de reingreso: se sigue trabajando local (P4)
+
+    En la app, el cascarón además pone sus pantallas propias de ingreso y desbloqueo encima (Shell/Auth/*.xaml); esta
+    puerta es lo que ve un contenido que corre sin ellas (prueba en navegador) y lo que queda debajo.
+    data-testid: puerta-ingresar, puerta-desbloquear, puerta-reingresar, sesion-usuario, sesion-cerrar.
+*@
+@if (Sesion is null || Sesion.Modo == ModoDeSesion.Dispositivo)
+{
+    @ChildContent
+}
+else
+{
+    @switch (Sesion.Estado)
+    {
+        case EstadoDeSesion.SinCuenta:
+            <section class="fc-puerta" data-testid="puerta" data-estado="sinCuenta">
+                <h1 class="fc-puerta__titulo">Ingresá con tu cuenta</h1>
+                <p>Se abre el navegador del teléfono; al terminar, volvés a la app.</p>
+                @if (SesionDelUsuario.PendientesConservados is int n && n > 0)
+                {
+                    <p class="fc-banda fc-banda--info" data-testid="sesion-pendientes-conservados">
+                        @(n == 1 ? "Quedó 1 pendiente guardado: sale" : $"Quedaron {n} pendientes guardados: salen") cuando vuelvas a ingresar con esa cuenta.
+                    </p>
+                }
+                <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-ingresar" Texto="Ingresar con tu cuenta"
+                               Deshabilitado="SesionDelUsuario.Ocupada" OnClick="SesionDelUsuario.IngresarAsync" />
+                @ErrorDeSesion
+            </section>
+            break;
+
+        case EstadoDeSesion.Ingresando:
+            <section class="fc-puerta" data-testid="puerta" data-estado="ingresando">
+                <h1 class="fc-puerta__titulo">Completá el ingreso en el navegador…</h1>
+                <p>Cuando termines, el navegador te devuelve a la app.</p>
+            </section>
+            break;
+
+        case EstadoDeSesion.Bloqueada:
+            <section class="fc-puerta" data-testid="puerta" data-estado="bloqueada">
+                <h1 class="fc-puerta__titulo">Desbloqueá la app</h1>
+                @if (Sesion.Usuario is { Length: > 0 } usuario)
+                {
+                    <p>Hola, <strong>@usuario</strong>.</p>
+                }
+                <p>Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión.</p>
+                <button type="button" class="fc-boton" data-testid="puerta-desbloquear" disabled="@SesionDelUsuario.Ocupada"
+                        @onclick="SesionDelUsuario.DesbloquearAsync">Desbloquear</button>
+                @ErrorDeSesion
+            </section>
+            break;
+
+        default:
+            @* Activa, Vencida o Revocada: hay entrada abierta, se trabaja. *@
+            <div class="fc-sesion" data-testid="sesion">
+                <span class="fc-sesion__usuario" data-testid="sesion-usuario">@Sesion.Usuario</span>
+                @if (_confirmandoCierre)
+                {
+                    <span class="fc-sesion__confirmar">Lo pendiente se conserva y sale cuando vuelvas a ingresar con esta cuenta.</span>
+                    <button type="button" class="fc-boton fc-boton--fila fc-boton--peligro" data-testid="sesion-cerrar-confirmar"
+                            disabled="@SesionDelUsuario.Ocupada" @onclick="CerrarAsync">Cerrar sesión</button>
+                    <button type="button" class="fc-boton fc-boton--fila" @onclick="() => _confirmandoCierre = false">Cancelar</button>
+                }
+                else
+                {
+                    <button type="button" class="fc-boton fc-boton--fila" data-testid="sesion-cerrar"
+                            @onclick="() => _confirmandoCierre = true">Cerrar sesión</button>
+                }
+            </div>
+
+            @if (Sesion.Estado is EstadoDeSesion.Vencida or EstadoDeSesion.Revocada)
+            {
+                <section class="fc-banda fc-banda--aviso" data-testid="sesion-reingreso" data-estado="@EnElPuente(Sesion.Estado)">
+                    @* El motivo del cascarón ya dice qué pasó y qué hacer; sin motivo, el texto por defecto. *@
+                    <strong>@(Sesion.Motivo ?? (Sesion.Estado == EstadoDeSesion.Vencida ? "Tu sesión venció: ingresá para enviar lo pendiente." : "Tu sesión fue cerrada: ingresá de nuevo para enviar lo pendiente."))</strong>
+                    <span>Mientras tanto podés seguir trabajando: lo que hagas queda guardado.</span>
+                    <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-reingresar" Texto="Ingresar de nuevo"
+                                   Clase="fc-boton fc-boton--secundario" Deshabilitado="SesionDelUsuario.Ocupada"
+                                   OnClick="SesionDelUsuario.IngresarAsync" />
+                    @ErrorDeSesion
+                </section>
+            }
+            else if (Sesion.DesbloqueoLocal == DesbloqueoLocal.Disponible && !SesionDelUsuario.DesbloqueoRechazado)
+            {
+                @* Borrador §4 paso 2 — después del primer ingreso. *@
+                <section class="fc-banda fc-banda--info" data-testid="sesion-ofrecer-desbloqueo">
+                    <strong>¿Usar la seguridad del teléfono para entrar?</strong>
+                    <span>La próxima vez entrás con tu huella, rostro, PIN o patrón, sin escribir la clave.</span>
+                    <span class="fc-acciones fc-acciones--inicio">
+                        <button type="button" class="fc-boton" data-testid="sesion-activar-desbloqueo" disabled="@SesionDelUsuario.Ocupada"
+                                @onclick="SesionDelUsuario.ActivarDesbloqueoAsync">Sí, usarla</button>
+                        <button type="button" class="fc-boton fc-boton--secundario" @onclick="SesionDelUsuario.RechazarDesbloqueo">Ahora no</button>
+                    </span>
+                    @ErrorDeSesion
+                </section>
+            }
+            else if (Sesion.DesbloqueoLocal == DesbloqueoLocal.NoDisponible && Sesion.Motivo is { Length: > 0 } porQue
+                     && !SesionDelUsuario.DesbloqueoRechazado)
+            {
+                @* D-03 = T1 — sin bloqueo de pantalla (o Android < 11) no se ofrece: se dice por qué, una vez. *@
+                <section class="fc-banda fc-banda--info" data-testid="sesion-desbloqueo-no-disponible">
+                    <span>@porQue</span>
+                    <span class="fc-acciones fc-acciones--inicio">
+                        <button type="button" class="fc-boton fc-boton--secundario" @onclick="SesionDelUsuario.RechazarDesbloqueo">Entendido</button>
+                    </span>
+                </section>
+            }
+            @ChildContent
+            break;
+    }
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private bool _confirmandoCierre;
+
+    // El error de la última acción de sesión (cancelada o fallida), tal como lo explicó el cascarón.
+    private RenderFragment ErrorDeSesion => __builder =>
+    {
+        if (SesionDelUsuario.Error is { Length: > 0 } error)
+        {
+            <span class="fc-accion__motivo fc-accion__motivo--bloqueada" data-testid="sesion-error">@error</span>
+        }
+    };
+
+    private SesionInformada? Sesion => SesionDelUsuario.Sesion;
+
+    private static string EnElPuente(EstadoDeSesion estado) => estado == EstadoDeSesion.Vencida ? "vencida" : "revocada";
+
+    protected override async Task OnInitializedAsync()
+    {
+        SesionDelUsuario.Cambio += AlCambiar;
+        await SesionDelUsuario.IniciarAsync();
+    }
+
+    private async Task CerrarAsync()
+    {
+        _confirmandoCierre = false;
+        await SesionDelUsuario.CerrarAsync();
+    }
+
+    private void AlCambiar() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => SesionDelUsuario.Cambio -= AlCambiar;
+}

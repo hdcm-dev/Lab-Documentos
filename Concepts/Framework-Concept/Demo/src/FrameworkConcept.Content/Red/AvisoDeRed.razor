@@ -1,0 +1,53 @@
+@using FrameworkConcept.Core.Red
+@implements IDisposable
+@inject EstadoDeRedDelContenido RedDelContenido
+@*
+    Borrador §6, folio 038 «notificación al usuario que no hay red» — Aviso permanente y visible del estado de red. Lo
+    monta MainLayout arriba de toda página cuando el puente está listo.
+
+    Mientras no se esté en línea es una banda llamativa con el texto del cascarón («motivo»), y se queda MIENTRAS DURE:
+    no es un toast. Al reconectar (el cascarón reintenta solo, DISENO §2.3) pasa a una línea discreta «En línea».
+    data-testid «aviso-red», con data-estado = el estado del puente (sinRed, redSinServidor, enLinea, enLineaMedida).
+*@
+@if (RedDelContenido.Estado is { } estado)
+{
+    <section class="fc-aviso-red fc-aviso-red--@Clase(estado)" data-testid="aviso-red" data-estado="@EnElPuente(estado)"
+             role="status" aria-live="polite">
+        <strong class="fc-aviso-red__titulo">@Titulo(estado)</strong>
+        @if (estado is EstadoDeRed.SinRed or EstadoDeRed.RedSinServidor && RedDelContenido.Red?.Motivo is { Length: > 0 } motivo)
+        {
+            <span class="fc-aviso-red__motivo" data-testid="aviso-red-motivo">@motivo</span>
+        }
+    </section>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        RedDelContenido.Cambio += AlCambiar;
+        await RedDelContenido.IniciarAsync();
+    }
+
+    // El estado en lenguaje claro (lo que pide el folio 038); el detalle lo da el «motivo» del cascarón.
+    private static string Titulo(EstadoDeRed estado) => estado switch
+    {
+        EstadoDeRed.SinRed => "Sin conexión",
+        EstadoDeRed.RedSinServidor => "Sin acceso al servidor",
+        EstadoDeRed.EnLineaMedida => "En línea por datos móviles",
+        _ => "En línea"
+    };
+
+    private static string Clase(EstadoDeRed estado) => estado switch
+    {
+        EstadoDeRed.SinRed => "sin-red",
+        EstadoDeRed.RedSinServidor => "sin-servidor",
+        _ => "en-linea"
+    };
+
+    // Como viaja en el puente (camelCase), para que la prueba compare con lo que manda el cascarón.
+    private static string EnElPuente(EstadoDeRed estado) => JsonNamingPolicy.CamelCase.ConvertName(estado.ToString());
+
+    private void AlCambiar() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => RedDelContenido.Cambio -= AlCambiar;
+}

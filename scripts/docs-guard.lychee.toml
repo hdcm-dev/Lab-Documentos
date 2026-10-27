@@ -1,0 +1,13 @@
+# Configuración de lychee para docs-guard (expediente 0002, E1-U0a).
+# Línea de base: los ocho enlaces rotos que E1-U1 tiene en su alcance cerrado. Se excluyen acá, con nombre, para
+# que la compuerta nazca verde y detecte todo enlace roto NUEVO. E1-U1 borra las dos primeras entradas al sanearlos;
+# la tercera es el defecto plantado de la prueba de concepto (su README lo declara) y se conserva.
+exclude_path = []
+exclude = [
+  # Sistema-Documentador-Tecnico-Guide.md: cinco enlaces a ../Documentacion-Tecnica/ (ruta duplicada). E1-U1.
+  'Documentacion-Tecnica/Documentacion-Tecnica/',
+  # Examples/Prueba-Ayuda-Por-Rol/Web/Ayuda/en/: dos páginas en inglés que no existen. E1-U1.
+  'Prueba-Ayuda-Por-Rol/Web/Ayuda/en/(comun/cambiar-la-contrasena|alumno/consultar-mis-trabajos)\.md',
+  # Examples/Prueba-Ayuda-Por-Rol/Consola: enlace roto plantado a propósito (README §«defectos plantados»).
+  'Prueba-Ayuda-Por-Rol/Consola/Ayuda/comun/no-existe\.md',
+]

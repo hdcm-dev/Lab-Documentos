@@ -1,0 +1,14 @@
+{
+  // Markdownlint estructural de docs-guard (expediente 0002, E1-U0a).
+  // Sólo reglas de estructura: niveles de encabezado, un único título, sin enlaces vacíos y tablas
+  // con columnas consistentes. MD025 no cuenta el «title» del frontmatter: el H1 es el título visible. Las reglas de estilo (largo de línea, espacios, listas) quedan apagadas a propósito.
+  "config": {
+    "default": false,
+    "MD001": true,
+    "MD003": { "style": "atx" },
+    "MD024": { "siblings_only": true },
+    "MD025": { "front_matter_title": "" },
+    "MD042": true,
+    "MD056": true
+  }
+}

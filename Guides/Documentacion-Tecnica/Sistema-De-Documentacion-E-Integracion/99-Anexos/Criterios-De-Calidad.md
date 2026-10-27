@@ -72,7 +72,7 @@ los canaliza por excepciones con huella. Si falla una, el control avisa.
 | --- | --- | --- |
 | `CQ-03` | PR-5 `traces-resolve`: cada traza resuelve contra el registro o contra el SHA de `source.lock`. Aviso `cita-linea` para rutas del workspace sin línea | PR-5 bloquea; `cita-linea` avisa |
 | `CQ-05` | PR-1 enlaces y anclas (`lychee --offline --include-fragments`); PR-4 estructura de encabezados | Bloquea |
-| `CQ-11` | PR-7 `reflint`: año, título en cursiva y fecha de consulta en cada referencia; aviso `url-fecha` en lo heredado | Bloquea en un cuerpo nuevo; avisa en lo heredado |
+| `CQ-11` | PR-7 `reflint`: año, título en cursiva y fecha de consulta en cada referencia; PR-7 `url-fecha`: toda URL y toda cita por dominio en un code span con fecha de consulta o cita al anexo | Bloquean en un cuerpo nuevo; avisan en lo heredado y `url-fecha` también en un documento `obsoleto` |
 | `CQ-13` | PR-2 esquema de frontmatter y registro de prefijos; PR-4 mermaid que parsea | Bloquea |
 | `CQ-14` | PR-2 exige `confidence` cuando `origin` no es `human`. La revisión en sí la registra el pull request que pasa el documento a vigente | Bloquea la falta del metadato |
 

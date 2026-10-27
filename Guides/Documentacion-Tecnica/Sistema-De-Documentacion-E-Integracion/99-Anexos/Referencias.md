@@ -27,6 +27,7 @@ fuentes por esas anclas sin leer la prosa.
 5. [Modelos de lenguaje y documentación](#5-modelos-de-lenguaje-y-documentación)
 6. [Práctica de la industria](#6-práctica-de-la-industria)
 7. [Versionado, estilo y adopciones públicas](#7-versionado-estilo-y-adopciones-públicas)
+8. [Desarrollo guiado por especificación](#8-desarrollo-guiado-por-especificación)
 
 ## 1. Norma de citación
 
@@ -37,7 +38,7 @@ fuentes por esas anclas sin leer la prosa.
 | Software | Con la versión usada |
 | Fuentes en Git | Por versión publicada o por commit, nunca por la rama principal |
 | Estado de verificación | Al final de cada entrada: **V** verificada en fuente primaria o registro oficial; **P** parcial (sólo resumen o fuentes secundarias concordantes) |
-| Procedencia de las fechas | Las fechas de consulta son las de las bitácoras de investigación del expediente 0002 de DocAsCode (2026-10-26); este anexo las transcribe y no volvió a consultar las fuentes |
+| Procedencia de las fechas | Las fechas de consulta del 2026-10-26 son las de las bitácoras de investigación del expediente 0002 de DocAsCode; este anexo las transcribe y no volvió a consultar esas fuentes. Las del 2026-10-27 son consultas directas hechas al escribir el tema que las cita |
 
 Plantillas:
 
@@ -159,5 +160,15 @@ DocAsCode (`evidencia/E1-U4b/04-adopciones.sh`) reproduce la consulta.
 <a id="ref-docusaurus-2026"></a>Docusaurus. (2026). *facebook/docusaurus* (commit 206e741) [Repositorio]. https://github.com/facebook/docusaurus/tree/206e741f1fed6b38eb0ddd6d31cc220652bf2e1b (consultado el 2026-10-27). Ruta `website/versioned_docs/`, doce versiones publicadas. Verificación: V (API pública de GitHub).
 
 <a id="ref-jest-2026"></a>Jest. (2026). *jestjs/jest* (commit ea7258e) [Repositorio]. https://github.com/jestjs/jest/tree/ea7258e3338b9df680c66a5198607da8accf25c3 (consultado el 2026-10-27). Ruta `website/versioned_docs/`, cuatro versiones publicadas. Verificación: V (API pública de GitHub).
+
+## 8. Desarrollo guiado por especificación
+
+Las entradas de esta sección se consultaron el 2026-10-27 para el tema 07.
+
+<a id="ref-github-2026"></a>GitHub. (2026). *Spec Kit* (v1.2.4) [Software]. https://github.com/github/spec-kit/tree/v1.2.4 (consultado el 2026-10-27). Verificación: V.
+
+<a id="ref-kiro-sf"></a>Kiro. (s. f.). *Specs*. Kiro Docs. https://kiro.dev/docs/specs/ (consultado el 2026-10-27). Verificación: V.
+
+<a id="ref-nygard-2011"></a>Nygard, M. (2011, 15 de noviembre). *Documenting architecture decisions*. Cognitect. https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions (consultado el 2026-10-27). Verificación: V.
 
 Volver al [Mapa](../01-Mapa.md#6-anexos).

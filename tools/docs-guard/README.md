@@ -120,6 +120,12 @@ código. Sin `source.lock` y sin `contracts/.generado/openapi.json`, sigue bloqu
 **IDs del RRD.** Las filas `RD-nn` de un `_requisitos.md` (o `doc_type: rrd`) entran al registro: una página puede
 trazar al requerimiento que la pide.
 
+**`AGENTS.md` de la raíz (CL-03, E1-U4e).** Si el repositorio que se verifica tiene `AGENTS.md` en la raíz, los grupos
+`enlaces`, `ai` y `estructura` lo revisan junto con la RUTA: sus enlaces y anclas tienen que resolver. Como un puntero
+para agentes se dirige al agente por oficio, queda fuera de AI-3 por una excepción con huella en
+[`excepciones.txt`](excepciones.txt) (AK-3); los otros cuatro chequeos AI lo siguen mirando. Si falta, `enlaces` sólo
+avisa, porque otros repositorios usan el mismo script por el workflow reutilizable.
+
 ## 5. Qué bloquea y qué avisa
 
 Un control bloquea sólo si cumple las cinco condiciones de la regla de bloqueo: es determinista y no usa red; el

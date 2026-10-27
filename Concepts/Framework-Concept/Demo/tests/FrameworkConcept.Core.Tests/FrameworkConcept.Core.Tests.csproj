@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pruebas del dominio y de las reglas portadas del caso base (MovilidadUrbana.MAUI.Tests), adaptadas a la demo, y de los tipos del contrato. Sin MAUI ni teléfono. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(VersionTestSdk)" />
+    <PackageReference Include="NUnit" Version="$(VersionNUnit)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(VersionNUnitAnalyzers)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(VersionNUnitAdapter)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Las definiciones publicadas se leen tal como están en el repositorio. -->
+    <None Include="../../definiciones/encuesta-movilidad/*.json" LinkBase="definiciones/encuesta-movilidad" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

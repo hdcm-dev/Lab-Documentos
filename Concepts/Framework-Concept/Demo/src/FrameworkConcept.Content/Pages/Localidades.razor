@@ -1,0 +1,201 @@
+@page "/localidades"
+@inject LocalidadService Servicio
+@using FrameworkConcept.Core.Contracts.Puente
+@*
+    ABM de localidades del caso base. Lo que decide (validación, duplicados, mensajes) es el
+    LocalidadService del caso base, sin cambios; esta página sólo muestra sus resultados. Lo único nuevo es
+    dónde se guarda: documentos JSON del cascarón, por el puente (Bridge/LocalidadBridgeRepository.cs).
+
+    Folio 038 — Guardar y Eliminar son la acción «localidades.guardar» (SoloLocal): funcionan sin red; sólo se
+    deshabilitan, con su motivo, si no hay entrada abierta (BotonDeAccion, DISENO §4.4).
+*@
+
+<PageTitle>Movilidad urbana — Localidades</PageTitle>
+
+<h1>Localidades</h1>
+
+@if (_aviso is { } aviso)
+{
+    <p class="fc-banda @(aviso.Exito ? "fc-banda--exito" : "fc-banda--error")" data-testid="aviso">@aviso.Mensaje</p>
+}
+
+<section class="fc-tarjeta">
+    <h2 data-testid="titulo-formulario">@(_modelo.IsEdit ? "Editar localidad" : "Alta de localidad")</h2>
+
+    <div class="fc-campo @ClaseDeError("nombre")">
+        <label class="fc-campo__etiqueta" for="nombre">Nombre</label>
+        <input class="fc-input" id="nombre" type="text" autocomplete="off" maxlength="@LocalidadRules.LargoMaximoDelNombre"
+               value="@_modelo.Nombre" @oninput="e => _modelo.Nombre = e.Value?.ToString() ?? string.Empty" />
+        <span class="fc-campo__requisito">@LocalidadPolicy.RequisitoDelNombre</span>
+        <MensajeDeError Texto="@Error("nombre")" Campo="nombre" />
+    </div>
+
+    <div class="fc-campo @ClaseDeError("provincia")">
+        <label class="fc-campo__etiqueta" for="provincia">Provincia</label>
+        <select class="fc-input" id="provincia" value="@_modelo.Provincia"
+                @onchange="e => _modelo.Provincia = e.Value?.ToString() ?? string.Empty">
+            <option value="">Seleccione…</option>
+            @foreach (var provincia in Catalogos.Provincias)
+            {
+                <option value="@provincia">@provincia</option>
+            }
+        </select>
+        <span class="fc-campo__requisito">@LocalidadPolicy.RequisitoDeLaProvincia</span>
+        <MensajeDeError Texto="@Error("provincia")" Campo="provincia" />
+    </div>
+
+    <div class="fc-campo @ClaseDeError("codigoPostal")">
+        <label class="fc-campo__etiqueta" for="codigo-postal">Código postal</label>
+        <input class="fc-input fc-input--corto" id="codigo-postal" type="text" inputmode="numeric"
+               value="@_modelo.CodigoPostal" @oninput="e => _modelo.CodigoPostal = e.Value?.ToString() ?? string.Empty" />
+        <span class="fc-campo__requisito">@LocalidadPolicy.RequisitoDelCodigoPostal</span>
+        <MensajeDeError Texto="@Error("codigoPostal")" Campo="codigoPostal" />
+    </div>
+
+    <div class="fc-campo @ClaseDeError("habitantes")">
+        <label class="fc-campo__etiqueta" for="habitantes">Habitantes</label>
+        <input class="fc-input fc-input--corto" id="habitantes" type="number" step="1" min="@LocalidadRules.HabitantesMinimos"
+               @bind="_modelo.Habitantes" @bind:event="oninput" />
+        <span class="fc-campo__requisito">@LocalidadPolicy.RequisitoDeLosHabitantes</span>
+        <MensajeDeError Texto="@Error("habitantes")" Campo="habitantes" />
+    </div>
+
+    <div class="fc-acciones">
+        <button type="button" class="fc-boton fc-boton--secundario" @onclick="Cancelar">Cancelar</button>
+        <BotonDeAccion Accion="localidades.guardar" TestId="boton-guardar" Deshabilitado="_ocupado" OnClick="GuardarAsync">
+            @(_ocupado ? "Guardando…" : _modelo.IsEdit ? "Actualizar" : "Guardar")
+        </BotonDeAccion>
+    </div>
+</section>
+
+<section class="fc-tarjeta">
+    <h2>Listado <span class="fc-chip" data-testid="contador">@_localidades.Count</span></h2>
+
+    @if (_cargando)
+    {
+        <p class="fc-cargando">Cargando…</p>
+    }
+    else if (_localidades.Count == 0)
+    {
+        <p class="fc-nota" data-testid="sin-datos">Todavía no hay localidades. Cargá la primera con el formulario.</p>
+    }
+    else
+    {
+        <table class="fc-tabla">
+            <thead>
+                <tr><th>Nombre</th><th>Provincia</th><th>CP</th><th class="fc-num">Habitantes</th><th></th></tr>
+            </thead>
+            <tbody data-testid="cuerpo-tabla">
+                @foreach (var localidad in _localidades)
+                {
+                    <tr data-testid="fila">
+                        <th scope="row">@localidad.Nombre</th>
+                        <td>@localidad.Provincia</td>
+                        <td>@localidad.CodigoPostal</td>
+                        <td class="fc-num">@localidad.Habitantes.ToString("N0")</td>
+                        <td class="fc-tabla__acciones">
+                            <button type="button" class="fc-boton fc-boton--fila" @onclick="() => Editar(localidad)">Editar</button>
+                            <BotonDeAccion Accion="localidades.guardar" Clase="fc-boton fc-boton--fila fc-boton--peligro" MostrarMotivo="false"
+                                           Texto="Eliminar" OnClick="() => BorrarAsync(localidad)" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>
+
+@code {
+    private IReadOnlyList<Localidad> _localidades = [];
+    private LocalidadModel _modelo = new();
+    private IReadOnlyDictionary<string, string> _errores = new Dictionary<string, string>();
+    private (string Mensaje, bool Exito)? _aviso;
+    private bool _cargando = true;
+    private bool _ocupado;
+
+    protected override Task OnInitializedAsync() => CargarAsync();
+
+    private async Task CargarAsync()
+    {
+        _cargando = true;
+        _localidades = await Servicio.GetAllAsync();
+        _cargando = false;
+    }
+
+    private string? Error(string campo) => _errores.GetValueOrDefault(campo);
+
+    private string ClaseDeError(string campo) => _errores.ContainsKey(campo) ? "fc-campo--error" : "";
+
+    private async Task GuardarAsync()
+    {
+        if (_ocupado) return;
+        _ocupado = true;
+        try
+        {
+            var resultado = await Servicio.SaveAsync(_modelo);
+            _errores = resultado.Errors;
+            _aviso = (resultado.Message, resultado.IsSuccess);
+            if (!resultado.IsSuccess) return;
+
+            _modelo = new LocalidadModel();
+            await CargarAsync();
+        }
+        catch (BridgeException excepcion) when (excepcion.EsConflicto)
+        {
+            // D-04 — Otro cambió la localidad mientras se editaba: no se pisa. Se recarga y se avisa.
+            _aviso = ("Otra pantalla cambió esta localidad. Se recargó el listado: revisá y volvé a guardar.", false);
+            await CargarAsync();
+        }
+        catch (BridgeException excepcion) when (excepcion.Code == CodigosDeError.AccionBloqueada)
+        {
+            // Folio 038 — El cascarón no la permitió (doble cerrojo): se dice por qué.
+            _aviso = ("No se guardó: " + excepcion.Message, false);
+        }
+        finally
+        {
+            _ocupado = false;
+        }
+    }
+
+    private void Editar(Localidad localidad)
+    {
+        _modelo = new LocalidadModel
+        {
+            Id = localidad.Id,
+            Nombre = localidad.Nombre,
+            Provincia = localidad.Provincia,
+            CodigoPostal = localidad.CodigoPostal,
+            Habitantes = localidad.Habitantes
+        };
+        _errores = new Dictionary<string, string>();
+        _aviso = null;
+    }
+
+    private void Cancelar()
+    {
+        _modelo = new LocalidadModel();
+        _errores = new Dictionary<string, string>();
+        _aviso = null;
+    }
+
+    private async Task BorrarAsync(Localidad localidad)
+    {
+        if (_ocupado) return;
+        _ocupado = true;
+        try
+        {
+            if (_modelo.Id == localidad.Id) Cancelar();
+            var resultado = await Servicio.DeleteAsync(localidad.Id);
+            _aviso = (resultado.Message, resultado.IsSuccess);
+            await CargarAsync();
+        }
+        catch (BridgeException excepcion) when (excepcion.Code == CodigosDeError.AccionBloqueada)
+        {
+            _aviso = ("No se eliminó: " + excepcion.Message, false);
+        }
+        finally
+        {
+            _ocupado = false;
+        }
+    }
+}

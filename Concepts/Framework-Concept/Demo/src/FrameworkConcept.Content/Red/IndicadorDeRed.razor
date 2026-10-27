@@ -1,0 +1,33 @@
+@using FrameworkConcept.Core.Red
+@implements IDisposable
+@inject EstadoDeRedDelContenido RedDelContenido
+@inject BridgeSession Sesion
+@*
+    El chip de red de la línea de estado (data-testid «estado-red», el de A3). Con el puente 1.1 dice el estado
+    combinado; con sólo «conectado» (puente 1.0) dice lo de A3. P12 — Sin «network.status» en el catálogo no se muestra.
+*@
+@if (Sesion.Conectado is bool conectado)
+{
+    var estado = RedDelContenido.Estado ?? (conectado ? EstadoDeRed.EnLinea : EstadoDeRed.SinRed);
+    <span class="fc-chip @(estado is EstadoDeRed.EnLinea or EstadoDeRed.EnLineaMedida ? "fc-chip--ok" : "fc-chip--aviso")" data-testid="estado-red">
+        @(estado switch
+        {
+            EstadoDeRed.SinRed => "Sin red: se guarda y se envía después",
+            EstadoDeRed.RedSinServidor => "Sin acceso al servidor: se guarda y se envía después",
+            EstadoDeRed.EnLineaMedida => "En línea (datos móviles)",
+            _ => "En línea"
+        })
+    </span>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        RedDelContenido.Cambio += AlCambiar;
+        await RedDelContenido.IniciarAsync();
+    }
+
+    private void AlCambiar() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => RedDelContenido.Cambio -= AlCambiar;
+}

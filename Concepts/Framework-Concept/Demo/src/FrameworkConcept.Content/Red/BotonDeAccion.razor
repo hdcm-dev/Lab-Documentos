@@ -1,0 +1,66 @@
+@using FrameworkConcept.Core.Red
+@implements IDisposable
+@inject EstadoDeRedDelContenido RedDelContenido
+@*
+    Borrador §7 «botón deshabilitado + motivo» — Un botón de una acción del negocio (PoliticaDeAcciones del cascarón).
+    Se deshabilita si el cascarón dice que la acción no está permitida, y muestra el motivo debajo
+    (data-testid «motivo-{accion}»). Una Encolable que queda pendiente sigue habilitada y dice por qué queda pendiente.
+
+    El contenido no decide: muestra la evaluación que llegó por actions.policy / actions.changed. Y aunque un
+    contenido viejo no la mostrara, el cascarón rechaza el método igual (AccionBloqueada): es un doble cerrojo.
+*@
+<span class="fc-accion">
+    <button type="button" class="@Clase" data-testid="@TestId" data-accion="@Accion"
+            disabled="@(Deshabilitado || !Permitida)" title="@Evaluacion?.Motivo" @onclick="OnClick">
+        @if (ChildContent is not null)
+        {
+            @ChildContent
+        }
+        else
+        {
+            @Texto
+        }
+    </button>
+    @if (MostrarMotivo && Evaluacion?.Motivo is { Length: > 0 } motivo)
+    {
+        <span class="fc-accion__motivo @(Permitida ? "fc-accion__motivo--pendiente" : "fc-accion__motivo--bloqueada")"
+              data-testid="motivo-@Accion">@motivo</span>
+    }
+</span>
+
+@code {
+    /// <summary>Id de la acción en PoliticaDeAcciones («outbox.enviarAhora»…).</summary>
+    [Parameter, EditorRequired] public string Accion { get; set; } = "";
+
+    [Parameter] public string? Texto { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    /// <summary>Clases CSS del botón.</summary>
+    [Parameter] public string Clase { get; set; } = "fc-boton";
+
+    [Parameter] public string? TestId { get; set; }
+
+    /// <summary>Un motivo propio de la página para deshabilitar (por ejemplo, «guardando…»).</summary>
+    [Parameter] public bool Deshabilitado { get; set; }
+
+    /// <summary>false en botones de fila: el motivo queda en el «title» para no repetirlo en cada renglón.</summary>
+    [Parameter] public bool MostrarMotivo { get; set; } = true;
+
+    private EvaluacionDeAccion? Evaluacion => RedDelContenido.Evaluacion(Accion);
+
+    // Sin evaluación todavía, habilitado: el cascarón la evalúa igual al recibir el método.
+    private bool Permitida => Evaluacion?.Permitida ?? true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        RedDelContenido.Cambio += AlCambiar;
+        await RedDelContenido.IniciarAsync();
+    }
+
+    private void AlCambiar() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => RedDelContenido.Cambio -= AlCambiar;
+}

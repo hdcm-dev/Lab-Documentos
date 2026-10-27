@@ -1,0 +1,215 @@
+/* Estilos del contenido. Los valores son los tokens del caso base (MovilidadUrbana.Web, Tokens.css): mismos
+   colores, tipografía y espaciado. Todo va en este archivo: la CSP no permite estilos en línea (P3). */
+
+:root {
+    --color-fondo: #FFFFFF;
+    --color-fondo-2: #F1F1EF;
+    --color-fondo-3: #F7F6F4;
+    --color-texto: #1A1A18;
+    --color-texto-2: #5C5C57;
+    --color-borde: #D9D9D4;
+    --color-marca: #0F6E56;
+    --color-marca-oscuro: #04342C;
+    --color-marca-tinte: #E1F5EE;
+    --color-novedades: #185FA5;          /* acento «module-d» del caso base: el color de la v2 */
+    --color-exito: #0F6E56;
+    --color-exito-fondo: #E1F5EE;
+    --color-aviso: #854F0B;
+    --color-aviso-fondo: #FAEEDA;
+    --color-error: #A03030;
+    --color-error-fondo: #FBEAF0;
+    --color-info: #185FA5;
+    --color-info-fondo: #E7F0F9;
+
+    --fuente: "Segoe UI", system-ui, -apple-system, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+    --fuente-mono: ui-monospace, "Cascadia Mono", "Consolas", "Liberation Mono", monospace;
+
+    --e-1: 4px;
+    --e-2: 8px;
+    --e-3: 12px;
+    --e-4: 16px;
+    --e-5: 24px;
+    --radio: 8px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+    margin: 0;
+    background: var(--color-fondo-3);
+    color: var(--color-texto);
+    font-family: var(--fuente);
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+h1 { font-size: 20px; font-weight: 600; margin: 0 0 var(--e-4); }
+h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; align-items: center; gap: var(--e-2); }
+
+/* --- Marco ---------------------------------------------------------------------------------------- */
+
+.fc-cabecera {
+    background: var(--color-marca);
+    color: #FFFFFF;
+    padding: var(--e-3) var(--e-4) 0;
+}
+.fc-cabecera--novedades { background: var(--color-novedades); }
+.fc-cabecera__marca { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-2); }
+.fc-cabecera__titulo { font-weight: 600; font-size: 17px; }
+.fc-cabecera__version { font-family: var(--fuente-mono); font-size: 12px; opacity: .9; }
+
+.fc-nav { display: flex; gap: var(--e-1); margin-top: var(--e-2); }
+.fc-nav__enlace {
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: var(--e-2) var(--e-3);
+    border-radius: var(--radio) var(--radio) 0 0;
+    opacity: .85;
+}
+.fc-nav__enlace.active { background: var(--color-fondo-3); color: var(--color-texto); opacity: 1; font-weight: 600; }
+
+.fc-principal { padding: var(--e-4); max-width: 760px; margin: 0 auto; padding-bottom: 72px; }
+
+.fc-estado {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    display: flex; flex-wrap: wrap; gap: var(--e-2);
+    padding: var(--e-2) var(--e-4);
+    background: var(--color-fondo); border-top: 1px solid var(--color-borde);
+}
+
+/* --- Piezas --------------------------------------------------------------------------------------- */
+
+.fc-tarjeta {
+    background: var(--color-fondo);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio);
+    padding: var(--e-4);
+    margin-bottom: var(--e-4);
+}
+.fc-tarjeta--novedades { border-color: var(--color-novedades); background: var(--color-info-fondo); }
+
+.fc-banda { display: flex; flex-direction: column; gap: var(--e-1); padding: var(--e-3); border-radius: var(--radio); margin: 0 0 var(--e-4); }
+.fc-banda--exito { background: var(--color-exito-fondo); color: var(--color-exito); }
+.fc-banda--error { background: var(--color-error-fondo); color: var(--color-error); }
+.fc-banda--info { background: var(--color-info-fondo); color: var(--color-info); }
+
+.fc-chip {
+    display: inline-block; padding: 2px var(--e-2);
+    border-radius: 999px; background: var(--color-fondo-2); color: var(--color-texto-2);
+    font-size: 12px; font-weight: 600;
+}
+.fc-chip--ok { background: var(--color-exito-fondo); color: var(--color-exito); }
+.fc-chip--aviso { background: var(--color-aviso-fondo); color: var(--color-aviso); }
+.fc-chip--error { background: var(--color-error-fondo); color: var(--color-error); }
+
+.fc-kv { display: grid; grid-template-columns: max-content 1fr; gap: var(--e-2) var(--e-4); margin: 0; }
+.fc-kv dt { color: var(--color-texto-2); }
+.fc-kv dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+
+.fc-lista { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--e-2); }
+.fc-nota { color: var(--color-texto-2); font-size: 13px; }
+.fc-mono { font-family: var(--fuente-mono); font-size: 13px; }
+.fc-cargando { color: var(--color-texto-2); }
+
+/* --- Formularios ---------------------------------------------------------------------------------- */
+
+.fc-paso { border: 0; padding: 0; margin: 0; }
+.fc-paso__titulo { font-weight: 600; margin-bottom: var(--e-3); padding: 0; }
+
+.fc-campo { display: flex; flex-direction: column; gap: var(--e-1); margin-bottom: var(--e-4); }
+.fc-campo__etiqueta { font-weight: 600; }
+.fc-campo__requisito { color: var(--color-texto-2); font-size: 12px; }
+.fc-campo__mensaje { color: var(--color-error); font-size: 13px; font-weight: 600; }
+.fc-campo--error .fc-input { border-color: var(--color-error); }
+
+.fc-input {
+    font: inherit; padding: var(--e-2) var(--e-3);
+    border: 1px solid var(--color-borde); border-radius: var(--radio);
+    background: var(--color-fondo); width: 100%;
+}
+.fc-input--corto { max-width: 12em; }
+
+.fc-opciones { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--e-2); }
+.fc-opcion { display: flex; align-items: center; gap: var(--e-2); }
+
+.fc-capacidad { display: flex; flex-direction: column; gap: var(--e-1); padding: var(--e-3); background: var(--color-fondo-2); border-radius: var(--radio); margin-bottom: var(--e-4); }
+
+.fc-acciones { display: flex; justify-content: flex-end; gap: var(--e-2); flex-wrap: wrap; }
+
+.fc-boton {
+    font: inherit; font-weight: 600; cursor: pointer;
+    padding: var(--e-2) var(--e-4); border-radius: var(--radio);
+    border: 1px solid var(--color-marca); background: var(--color-marca); color: #FFFFFF;
+}
+.fc-boton:disabled { opacity: .6; cursor: default; }
+.fc-boton--secundario { background: var(--color-fondo); color: var(--color-marca); }
+.fc-boton--fila { padding: 2px var(--e-2); font-size: 13px; background: var(--color-fondo); color: var(--color-marca); }
+.fc-boton--peligro { border-color: var(--color-error); color: var(--color-error); }
+
+.fc-pasos { display: flex; gap: var(--e-2); margin-bottom: var(--e-3); }
+.fc-pasos__marca {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--color-fondo-2); color: var(--color-texto-2); font-weight: 600;
+}
+.fc-pasos__marca--hecha { background: var(--color-marca-tinte); color: var(--color-marca); }
+.fc-pasos__marca--actual { background: var(--color-marca); color: #FFFFFF; }
+
+/* --- Tabla ---------------------------------------------------------------------------------------- */
+
+.fc-tabla { width: 100%; border-collapse: collapse; }
+.fc-tabla th, .fc-tabla td { text-align: left; padding: var(--e-2); border-bottom: 1px solid var(--color-borde); }
+.fc-tabla thead th { color: var(--color-texto-2); font-size: 12px; }
+.fc-num { text-align: right; }
+.fc-tabla .fc-num { text-align: right; }
+.fc-tabla__acciones { white-space: nowrap; text-align: right; }
+
+/* Error no controlado de Blazor: oculto hasta que Blazor lo muestre. */
+#blazor-error-ui {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: var(--e-3) var(--e-4);
+    background: var(--color-error-fondo); color: var(--color-error);
+}
+
+/* --- Red (folio 038): aviso permanente y motivo de las acciones ------------------------------------ */
+
+/* Fijo arriba mientras dure: no es un toast (DISENO §2.6). Sin servidor, color de aviso; sin red, de error. */
+.fc-aviso-red {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-direction: column; gap: 2px;
+    padding: var(--e-2) var(--e-3); margin: 0 0 var(--e-4);
+    border-radius: var(--radio); font-size: 14px;
+}
+.fc-aviso-red--sin-red { background: var(--color-error-fondo); color: var(--color-error); border: 1px solid var(--color-error); }
+.fc-aviso-red--sin-servidor { background: var(--color-aviso-fondo); color: var(--color-aviso); border: 1px solid var(--color-aviso); }
+/* En línea: una línea discreta, para que se note que volvió sin ocupar la pantalla. */
+.fc-aviso-red--en-linea { background: transparent; color: var(--color-exito); padding: 0 var(--e-1); font-size: 12px; }
+.fc-aviso-red__motivo { font-size: 13px; }
+
+.fc-accion { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.fc-accion__motivo { font-size: 12px; }
+.fc-accion__motivo--bloqueada { color: var(--color-error); }
+.fc-accion__motivo--pendiente { color: var(--color-aviso); }
+
+/* --- Sesión (folio 038, P4): puerta de ingreso y desbloqueo, usuario y reingreso -------------------- */
+
+.fc-puerta {
+    display: flex; flex-direction: column; align-items: flex-start; gap: var(--e-3);
+    padding: var(--e-4); margin: 0 0 var(--e-4);
+    background: var(--color-fondo-2); border-radius: var(--radio);
+}
+.fc-puerta__titulo { font-size: 20px; margin: 0; }
+.fc-puerta p { margin: 0; }
+
+/* Usuario y «Cerrar sesión»: una línea discreta arriba de la página. */
+.fc-sesion {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--e-2);
+    margin: 0 0 var(--e-3); font-size: 13px; color: var(--color-texto-2);
+}
+.fc-sesion__usuario { font-weight: 600; }
+.fc-sesion__confirmar { flex-basis: 100%; text-align: right; }
+
+/* Vencida o revocada: se sigue trabajando; la banda dice qué hacer para enviar lo pendiente. */
+.fc-banda--aviso { background: var(--color-aviso-fondo); color: var(--color-aviso); }
+.fc-acciones--inicio { justify-content: flex-start; }

@@ -1,0 +1,208 @@
+@page "/encuesta"
+@inject BridgeClient Puente
+@inject BridgeSession Sesion
+@inject LocalidadService Localidades
+@inject EstadoDeRedDelContenido RedDelContenido
+@*
+    Encuesta de tres pasos. Esta página NO tiene la encuesta compilada: pide la definición al cascarón
+    (encuestas.getDefinicion) y la dibuja con el renderizador genérico (Survey/EncuestaRenderer.razor).
+    Corregir la encuesta es publicar otra definición; no hace falta contenido nuevo (P1).
+
+    P13 — La encuesta en curso se guarda como borrador CON su definición. Si llega otra versión mientras
+    tanto, ésta se termina con la suya, y la próxima empieza con la nueva.
+
+    Folio 038 — Registrar es la acción «encuesta.enviar» (Encolable): con o sin red se registra; sin servidor (o sin
+    sesión válida) queda pendiente en el outbox y la página lo dice con el motivo del cascarón.
+*@
+
+<PageTitle>Movilidad urbana — Encuesta</PageTitle>
+
+@if (_error is not null)
+{
+    <p class="fc-banda fc-banda--error" data-testid="aviso">@_error</p>
+}
+
+@if (_registrada is not null)
+{
+    <h1>Encuesta registrada</h1>
+    <section class="fc-tarjeta" data-testid="resumen">
+        <p class="fc-banda fc-banda--exito" data-testid="mensaje-envio">
+            Encuesta guardada en el teléfono. Se envía sola cuando haya red.
+        </p>
+        @if (_pendientePorque is { } motivo)
+        {
+            <p class="fc-banda fc-banda--info" data-testid="encuesta-pendiente">Quedó pendiente: @motivo</p>
+        }
+        <dl class="fc-kv">
+            @foreach (var (etiqueta, valor) in _registrada.Resumen(EtiquetaDeOrigen))
+            {
+                <dt>@etiqueta</dt>
+                <dd>@valor</dd>
+            }
+            <dt>Definición</dt>
+            <dd data-testid="resumen-definicion">@_registrada.Definicion.EncuestaId v@(_registrada.Definicion.Version)</dd>
+            <dt>Clave de envío</dt>
+            <dd class="fc-mono" data-testid="resumen-clave">@_registrada.ClaveIdempotencia</dd>
+        </dl>
+        <div class="fc-acciones">
+            <button type="button" class="fc-boton" data-testid="boton-reiniciar" @onclick="EmpezarOtraAsync">Cargar otra encuesta</button>
+        </div>
+    </section>
+}
+else if (_encuesta is null)
+{
+    @if (_error is null)
+    {
+        <p class="fc-cargando">Cargando la encuesta…</p>
+    }
+}
+else
+{
+    <h1>@_encuesta.Definicion.Titulo</h1>
+    <p class="fc-nota" data-testid="encuesta-version">
+        Se está tomando con la definición v@(_encuesta.Definicion.Version).
+    </p>
+
+    @if (_vigente is { } vigente && vigente.Version != _encuesta.Definicion.Version)
+    {
+        <p class="fc-banda fc-banda--info" data-testid="aviso-version-nueva">
+            Llegó la definición v@(vigente.Version). Esta encuesta, que empezó con la v@(_encuesta.Definicion.Version),
+            se termina con su versión; la próxima ya usa la nueva.
+        </p>
+    }
+
+    <div class="fc-pasos" aria-hidden="true">
+        @for (var i = 1; i <= _encuesta.TotalDePasos; i++)
+        {
+            <span class="fc-pasos__marca @(i == _encuesta.Paso ? "fc-pasos__marca--actual" : i < _encuesta.Paso ? "fc-pasos__marca--hecha" : "")">@i</span>
+        }
+    </div>
+
+    <section class="fc-tarjeta">
+        <EncuestaRenderer Encuesta="_encuesta" OpcionesDeOrigen="OpcionesDeOrigen" />
+
+        @if (_encuesta.EsUltimoPaso)
+        {
+            @* P12 — «camera.capture» es OPCIONAL en la declaración del contenido. El cascarón de la demo no la
+               trae, así que la función no se ofrece y se explica por qué. *@
+            var camara = Sesion.Capacidad("camera.capture");
+            <div class="fc-capacidad" data-testid="capacidad-camara">
+                <span class="fc-campo__etiqueta">Foto del recorrido (opcional)</span>
+                @if (camara.Disponible)
+                {
+                    <span class="fc-nota">La app permite adjuntar fotos; esta versión del contenido todavía no lo usa.</span>
+                }
+                else
+                {
+                    <span class="fc-nota">No disponible: @camara.Motivo</span>
+                }
+            </div>
+        }
+
+        <div class="fc-acciones">
+            @if (_encuesta.Paso > 1)
+            {
+                <button type="button" class="fc-boton fc-boton--secundario" data-testid="boton-atras" @onclick="Retroceder">Atrás</button>
+            }
+            @if (_encuesta.EsUltimoPaso)
+            {
+                <BotonDeAccion Accion="encuesta.enviar" TestId="boton-siguiente" Deshabilitado="_ocupado" OnClick="AvanzarAsync"
+                               Texto="@(_ocupado ? "Registrando…" : "Registrar la encuesta")" />
+            }
+            else
+            {
+                <button type="button" class="fc-boton" data-testid="boton-siguiente" disabled="@_ocupado" @onclick="AvanzarAsync">Siguiente</button>
+            }
+        </div>
+    </section>
+}
+
+@code {
+    private const string EncuestaId = "encuesta-movilidad";
+
+    // P13.2 — La encuesta a medio cargar vive en esta colección de documentos, una por encuestaId.
+    private const string ColeccionDeBorradores = "encuestas-en-curso";
+
+    private EncuestaEnCurso? _encuesta;
+    private EncuestaEnCurso? _registrada;
+    private DefinicionEncuesta? _vigente;
+    private IReadOnlyList<OpcionDePregunta> _localidades = [];
+    private string? _error;
+    private bool _ocupado;
+    private string? _pendientePorque;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _localidades = [.. (await Localidades.GetAllAsync())
+                .Select(l => new OpcionDePregunta(l.Nombre, $"{l.Nombre} ({l.Provincia})"))];
+            _vigente = await Puente.GetDefinicionAsync(EncuestaId);
+
+            var borrador = await Puente.GetDocumentAsync(ColeccionDeBorradores, EncuestaId);
+            _encuesta = borrador is null
+                ? new EncuestaEnCurso(_vigente)
+                : EncuestaEnCurso.DesdeBorrador(borrador.Json.Deserialize<EncuestaEnCurso.Borrador>(JsonDelContrato.Opciones)!);
+        }
+        catch (BridgeException excepcion)
+        {
+            _error = $"No se pudo abrir la encuesta: {excepcion.Message}";
+        }
+    }
+
+    private IReadOnlyList<OpcionDePregunta> OpcionesDeOrigen(string origen) =>
+        origen == "localidades" ? _localidades : [];
+
+    private string EtiquetaDeOrigen(PreguntaDeEncuesta pregunta, string clave) =>
+        _localidades.FirstOrDefault(o => o.Clave == clave)?.Etiqueta ?? clave;
+
+    private void Retroceder() => _encuesta!.Retroceder();
+
+    private async Task AvanzarAsync()
+    {
+        if (_ocupado || _encuesta is null) return;
+        _ocupado = true;
+        _error = null;
+        try
+        {
+            var eraUltimo = _encuesta.EsUltimoPaso;
+            if (!_encuesta.IntentarAvanzar()) return;
+
+            if (eraUltimo) await RegistrarAsync();
+            else await GuardarBorradorAsync();
+        }
+        catch (BridgeException excepcion)
+        {
+            _error = $"No se pudo guardar: {excepcion.Message}";
+        }
+        finally
+        {
+            _ocupado = false;
+        }
+    }
+
+    private Task GuardarBorradorAsync() =>
+        Puente.PutDocumentAsync(ColeccionDeBorradores, EncuestaId, 1, _encuesta!.ComoBorrador());
+
+    private async Task RegistrarAsync()
+    {
+        // P5, P13 — Se encola en el outbox del cascarón (misma transacción que la respuesta), con
+        // {encuestaId, versionDefinicion} y la versión del contenido. Con o sin red: el envío es del cascarón.
+        // Folio 038 — Si el cascarón la evalúa «queda pendiente», se dice por qué (sin red, sin servidor, sin sesión).
+        var evaluacion = RedDelContenido.Evaluacion("encuesta.enviar");
+        await Puente.EnqueueRespuestaAsync(_encuesta!.ComoEnvio(ContentInfo.Version));
+        _pendientePorque = evaluacion is { QuedaPendiente: true } ? evaluacion.Motivo : null;
+        await Puente.DeleteDocumentAsync(ColeccionDeBorradores, EncuestaId);
+        _registrada = _encuesta;
+        _encuesta = null;
+        await Sesion.RefrescarAsync();
+    }
+
+    private async Task EmpezarOtraAsync()
+    {
+        // La próxima encuesta empieza con la definición vigente en este momento (P13.2).
+        _vigente = await Puente.GetDefinicionAsync(EncuestaId);
+        _encuesta = new EncuestaEnCurso(_vigente);
+        _registrada = null;
+    }
+}

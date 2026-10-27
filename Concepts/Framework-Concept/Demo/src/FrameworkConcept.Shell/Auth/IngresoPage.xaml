@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- P4, folio 038 — Pantalla propia del cascarón (borrador §3 «pantallas mínimas propias: arranque, login, error»):
+     ingresar con la cuenta. El ingreso se hace en el navegador del sistema (RFC 8252), nunca acá adentro. El botón
+     se deshabilita con su motivo cuando la guardia no permite «sesion.ingresar» (sin servidor, borrador §7).
+     La presenta PresentadorDeSesion encima del contenido mientras la sesión está SinCuenta o Ingresando. -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FrameworkConcept.Shell.Auth.IngresoPage"
+             Title="Ingresar">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+            <Label Text="Movilidad urbana" FontSize="22" FontAttributes="Bold" />
+            <Label x:Name="Explicacion"
+                   Text="Ingresá con tu cuenta. Se abre el navegador del teléfono; al terminar, volvés acá." />
+            <Button x:Name="BotonIngresar" AutomationId="ingreso-ingresar" Text="Ingresar con tu cuenta" Clicked="AlIngresar" />
+            <Label x:Name="Motivo" AutomationId="ingreso-motivo" FontSize="13" TextColor="#9a3412" IsVisible="False" />
+            <ActivityIndicator x:Name="Ocupado" IsRunning="False" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

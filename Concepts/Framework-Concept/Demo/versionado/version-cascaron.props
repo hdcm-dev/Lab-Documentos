@@ -1,0 +1,9 @@
+<!-- P7 — Fuente única de la versión del cascarón. La importa FrameworkConcept.Shell.csproj.
+     ApplicationDisplayVersion: MAYOR.MENOR.PARCHE sin sufijo. ApplicationVersion: entero monótono
+     (cada build que llega a un teléfono lleva uno mayor que el anterior). -->
+<Project>
+  <PropertyGroup>
+    <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+  </PropertyGroup>
+</Project>

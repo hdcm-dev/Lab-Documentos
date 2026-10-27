@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- «Receptor didáctico» (P11): un doble de prueba del servidor. Sirve el canal estático
+       /{canal}/puente-{mayor}/… y recibe las respuestas del outbox (idempotentes por clave; versión con
+       If-Match → 412; definición retirada → carta muerta). NO es un servidor de producción.
+       Ver Program.cs para el uso. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FrameworkConcept.Receptor</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Folio 038 — Validación del access token del emisor OIDC (AutenticacionDelReceptor.cs). -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(VersionAspNetCore)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+</Project>

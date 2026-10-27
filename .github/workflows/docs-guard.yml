@@ -1,0 +1,69 @@
+# docs-guard: compuerta mínima de documentación (expediente 0002 de DocAsCode, unidad E1-U0a).
+#
+# Qué verifica, sobre la carpeta «ruta» (por defecto, la guía del sistema documentador):
+#   1. herramientas  lychee con versión y SHA-256 fijos.
+#   2. enlaces       lychee --offline --include-fragments: enlaces internos y anclas.
+#   3. estructura    markdownlint-cli2 con reglas sólo estructurales.
+# Su equivalente local, con los mismos pasos en el mismo orden: scripts/ci-local.sh
+#
+# Seguridad: permissions contents: read; sin pull_request_target; actions fijadas por SHA; un PR desde un fork no
+# corre en el runner propio (guarda «if:»); ningún secreto.
+#
+# Reutilizable: otro repositorio lo llama con «uses: <dueño>/Lab-Documentos/.github/workflows/docs-guard.yml@<SHA>»
+# y pasa «ruta» y «herramientas-ref» (el mismo SHA, para que scripts y configuración coincidan con el workflow).
+
+name: docs-guard
+
+on:
+  pull_request:
+  workflow_call:
+    inputs:
+      ruta:
+        description: Carpeta a verificar, relativa a la raíz del repositorio que llama
+        type: string
+        required: false
+        default: Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion
+      herramientas-ref:
+        description: Commit de Lab-Documentos del que se toman scripts/ci-local.sh y su configuración
+        type: string
+        required: false
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  docs-guard:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 10
+    env:
+      RUTA: ${{ inputs.ruta || 'Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion' }}
+      GUARD: ${{ github.workspace }}/.docs-guard
+    steps:
+      - name: Checkout del repositorio que se verifica
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Checkout de las herramientas de docs-guard
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: hdcm-dev/Lab-Documentos
+          ref: ${{ inputs.herramientas-ref || github.sha }}
+          path: .docs-guard
+          sparse-checkout: scripts
+          persist-credentials: false
+
+      - name: 1/3 herramientas
+        run: bash "$GUARD/scripts/ci-local.sh" herramientas "$RUTA"
+
+      - name: 2/3 enlaces
+        run: bash "$GUARD/scripts/ci-local.sh" enlaces "$RUTA"
+
+      - name: 3/3 estructura
+        run: bash "$GUARD/scripts/ci-local.sh" estructura "$RUTA"

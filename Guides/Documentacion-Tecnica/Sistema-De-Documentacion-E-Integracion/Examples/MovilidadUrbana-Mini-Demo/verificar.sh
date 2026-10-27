@@ -65,7 +65,7 @@ extraer() {
   [[ -f "$arbol/$API" ]] || { echo "  falta $API en $arbol"; return 1; }
   local salida="$arbol/.compilado" datos="$arbol/.datos"
   mkdir -p "$datos"
-  dotnet build "$arbol/$API" -c Release -o "$salida" -nologo -v quiet -clp:ErrorsOnly || return 1
+  dotnet build "$arbol/$API" -c Release -o "$salida" -nologo -v quiet -clp:ErrorsOnly --disable-build-servers || return 1
   local dll; dll="$salida/$(basename "${API%.csproj}").dll"
   ASPNETCORE_ENVIRONMENT=Development ASPNETCORE_URLS="http://127.0.0.1:$PUERTO" \
     ConnectionStrings__BaseDeDatos="Data Source=$datos/movilidad.db" \
@@ -118,7 +118,8 @@ json.dump(d,open(sys.argv[2],"w"),indent=2)' "$TRABAJO/sha/openapi.json" "$TRABA
 
 # C4: rojo, y por las dos anclas del defecto real (no por otro hallazgo).
 negativa() {
-  local s rc; s="$(py trazas --raiz "$NEGATIVA" --fuente "$TRABAJO/sha" "$NEGATIVA" 2>&1)"; rc=$?
+  # Sin anotaciones de GitHub: el rojo esperado no se marca como error en el PR y el formato de línea es uno solo.
+  local s rc; s="$(GITHUB_ACTIONS=false py trazas --raiz "$NEGATIVA" --fuente "$TRABAJO/sha" "$NEGATIVA" 2>&1)"; rc=$?
   printf '%s\n' "$s" | sed 's/^/    /'
   local motivo
   for motivo in 'NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80' \
@@ -135,7 +136,7 @@ controles() {
   echo "== C1 contrato: contracts/openapi.json frente al extraído de $SHA"
   espera verde C1 py contrato "$DEMO/contracts/openapi.json" "$TRABAJO/sha/openapi.json"; res[C1]=$?
   echo "== C2 plantado: una operación de más tiene que dar exit 1"
-  plantar && espera rojo C2 py contrato "$DEMO/contracts/openapi.json" "$TRABAJO/plantado.json"; res[C2]=$?
+  plantar && GITHUB_ACTIONS=false espera rojo C2 py contrato "$DEMO/contracts/openapi.json" "$TRABAJO/plantado.json"; res[C2]=$?
   echo "== C3 trazas: traces-resolve y anclas contra $SHA"
   espera verde C3 py trazas --raiz "$RAIZ" --fuente "$TRABAJO/sha" "$DEMO"; res[C3]=$?
   echo "== C4 negativa: RN-LOC-01 sin corregir (defecto real 60/80) tiene que dar rojo"

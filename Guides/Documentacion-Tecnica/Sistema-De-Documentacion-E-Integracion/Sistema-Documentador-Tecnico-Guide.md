@@ -757,3 +757,6 @@ Las consultas de las secciones 1 a 4 se realizaron el 2026-09-16; las de la secc
 | `keepachangelog.com/en/1.1.0/` | WebFetch, 2026-09-19 | *Added, Changed, Deprecated, Removed, Fixed, Security*; "Keep an `Unreleased` section at the top" |
 | `Lab-Documentos/Guides/Documentacion-Tecnica/00-Marco-de-Referencia/Convenciones.md` y `60-Desarrollo/Change-Log.md` | `grep` | `status: vigente \| borrador \| obsoleto`, `origin`, `confidence`, `last_review`; Obsoleto antes que Eliminado |
 | `Lab-Geometria/SDD/` (`4b114d7`) | `grep`, `find` | Estados en cabecera (190 `Aprobado`, 60 `Propuesto`…); 550 documentos vivos con control de cambios; `_legacy/` fechado por migración |
+
+Enlace roto plantado: [no existe](./no-existe-plantado.md).
+

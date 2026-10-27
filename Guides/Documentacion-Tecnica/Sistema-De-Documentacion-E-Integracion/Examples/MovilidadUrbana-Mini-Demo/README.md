@@ -146,7 +146,8 @@ una unicidad, que un campo sea obligatorio o que su valor tenga que salir de una
 Qué cuenta como **una** regla: las restricciones sobre un mismo campo van en una sola ficha, aunque cada una se
 compruebe o se imponga por un camino distinto; los caminos son filas de la tabla de anclas. Que la edad sea un número
 entero y esté entre 16 y 110 es una regla; que el nombre tenga entre 3 y 60 caracteres, también, aunque el máximo no lo
-compruebe nadie (RN-LOC-01); que la localidad sea obligatoria y salga de la lista, también. Las reglas que valen para
+compruebe nadie (RN-LOC-01); que la localidad sea obligatoria y salga de la lista, también. Los textos de navegación
+(«Paso 1 de 3», títulos, botones) no son reglas y no llevan ficha. Las reglas que valen para
 toda la app y no las impone esta pantalla, como que cada sesión ve sólo sus datos, no llevan ficha en la pantalla; si
 la persona las nota, la ayuda las dice en «Antes de empezar», como en
 [alta-de-localidad §1](docs/ayuda/alta-de-localidad.md#1-antes-de-empezar). Copiá
@@ -162,7 +163,7 @@ orden:
 | --- | --- |
 | Id | `RN-<ÁREA>-nn`, provisional |
 | Enunciado atómico | La regla en una oración |
-| Ancla | El ancla principal y «y las de §2». La principal es la de `declara`; si no hay, la de `verifica`; si tampoco, la de `aplica` |
+| Ancla | El ancla principal y «y las de §2». La principal es la primera fila `declara` de la tabla; si no hay, la primera `verifica`; si tampoco, la primera `aplica` |
 | Letra | Lo que la app promete, textual, entre comillas: el texto de ayuda bajo el campo y los mensajes. Los rótulos y los ejemplos de los campos describen, no prometen |
 | Intención | Para qué existe la regla y qué la respalda en el código; si no hay respaldo, «Conjetura» |
 | ¿Divergen? | Ver la tabla siguiente |
@@ -245,7 +246,8 @@ ejemplo («Goya», «3450») no. Un mensaje de error se cita textual en la pági
 regla lo ancla en su fila `verifica`. Un mensaje general que no sale de una sola regla («Complete los datos del
 paso…») se cita sin ficha y sin ancla: es un límite conocido de la demo, y si el código lo cambia nada da rojo.
 
-**Qué divergencias cuenta la página.** Toda divergencia de fondo que la persona pueda notar, no sólo un límite contra
+**Qué divergencias cuenta la página.** Una divergencia leve, sólo si la persona la va a notar al usar la pantalla, y
+en una oración. Toda divergencia de fondo que la persona pueda notar, no sólo un límite contra
 una promesa (también, por ejemplo, un paso que deja avanzar sin un dato que la pantalla pide). Se cuenta en lenguaje
 llano, como en alta-de-localidad §3. Si la letra que se cita tiene jerga («ABM»), se cita textual y se explica.
 
@@ -385,4 +387,4 @@ permanente.
 | Los IDs `RN-LOC-nn` son provisionales | MovilidadUrbana no tiene registro de reglas; los asigna esta demo |
 | Las páginas no se publican en un sitio | Se leen como `.md` en el repositorio |
 | No se modifica el código | Si el repositorio del código abre un expediente que lo autorice, la documentación pasa a vivir junto al código |
-| La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos mixtos que §5.2 no resuelve (una regla con partes de especies o momentos distintos, un grado de certeza dudoso, una divergencia que no encaja en Leve o De fondo) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |
+| La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos de borde que §5.2 no resuelve (qué cuenta como una regla, una regla con partes de especies o momentos distintos, un grado de certeza mixto o dudoso, una divergencia que no encaja en Leve o De fondo, un hueco común a toda la pantalla) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |

@@ -196,7 +196,8 @@ orden:
 
 La columna **Afirma** se escribe con el valor entre comillas invertidas: `` = `16` ``, `` contiene `texto` `` o
 `` no contiene `texto` ``; vacía o `—` comprueba sólo que el símbolo existe. `contiene` mira la declaración completa,
-cuerpo incluido. La columna **Rol** no la lee la compuerta; los roles de las fichas modelo (`declara`, `muestra`,
+desde la línea que declara el símbolo hasta el final de su cuerpo; no incluye los comentarios `///` ni los atributos
+escritos en las líneas de arriba. La columna **Rol** no la lee la compuerta; los roles de las fichas modelo (`declara`, `muestra`,
 `verifica`, `aplica`, `persiste`) cubren los casos de la demo, y se puede usar otro si ninguno describe el lugar.
 
 **Mensajes interpolados.** Si el código arma un texto con valores (`$"Entre {EncuestaRules.EdadMinima} y …"`), la
@@ -274,7 +275,8 @@ Los dos tienen que terminar en verde. El final de `ci-local.sh`:
 == docs-guard: verde
 ```
 
-El de `verificar.sh` está en §4. Para revisar sólo las trazas y las anclas sin compilar ni tener .NET (con el código
+El de `verificar.sh` está en §4. Qué controla cada grupo y qué significa cada mensaje está en el
+[README de docs-guard](../../../../../tools/docs-guard/README.md#4-controles-del-carril-pr). Para revisar sólo las trazas y las anclas sin compilar ni tener .NET (con el código
 ya bajado por `verificar.sh fuente`):
 
 ```bash

@@ -141,7 +141,13 @@ seis (`ID`, `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras d
 
 **Cada regla de la pantalla lleva su ficha** en `docs/fichas/`, tenga número o no: un mínimo, un rango, un formato,
 una unicidad, que un campo sea obligatorio o que su valor tenga que salir de una lista. Cada una con un ID
-`RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). La fila RD-04 del RRD no cambia: su pieza es la carpeta de fichas. Copiá
+`RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). La fila RD-04 del RRD no cambia: su pieza es la carpeta de fichas.
+
+Qué cuenta como **una** regla: las restricciones de un mismo campo que se comprueban juntas van en una sola ficha (que
+la edad sea un número entero y esté entre 16 y 110 es una regla: RN-ENC-02, por ejemplo). Las reglas que valen para
+toda la app y no las impone esta pantalla, como que cada sesión ve sólo sus datos, no llevan ficha en la pantalla; si
+la persona las nota, la ayuda las dice en «Antes de empezar», como en
+[alta-de-localidad §1](docs/ayuda/alta-de-localidad.md#1-antes-de-empezar). Copiá
 [`RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) como modelo: frontmatter (`doc_type: ficha`, `traces: [RD-04]`, porque las
 fichas son la pieza de RD-04), encabezado `# RN-XXX-nn — Nombre`, línea `**Versión:** 1.0`, la tabla de la ficha y la
 tabla de anclas.
@@ -173,7 +179,7 @@ orden:
 | --- | --- |
 | ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, o un rótulo que pide más de lo que se valida, como «Nombre y apellido» cuando alcanza una palabra). **De fondo**: la letra promete algo que cambia alguna de esas tres cosas, como el 60/80. **Silencio**: si la letra no nombra un límite que el código aplica, no hay divergencia; va como dato debajo de la tabla y la ayuda nombra el límite |
 | Especie | **restricción** (limita qué valores se aceptan: un largo, un rango, una unicidad, un campo obligatorio, un valor de una lista); **derivación** (un valor se calcula de otros); **alcance** (a qué objetos o casos se aplica otra regla, como «sólo las localidades de la sesión»); **estructura** (cómo se relacionan los objetos, como «una localidad tiene una provincia») |
-| Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** (nadie la comprueba en un acto: sólo la impone la pantalla, por ejemplo con `MaxLength`). Si se comprueba en un acto y no en otro que la necesitaría (se valida al avanzar pero no al registrar), el Momento es el del acto donde se comprueba y el hueco va en «¿Divergen?» |
+| Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** (nadie la comprueba en un acto: sólo la impone la pantalla, por ejemplo con `MaxLength`). Si se comprueba en un acto y no en otro que la necesitaría (se valida al avanzar pero no al registrar), el Momento es el del acto donde se comprueba y el hueco va en «¿Divergen?»: «De fondo» si por ese hueco se puede guardar algo que la regla prohíbe; si no, «Leve» |
 | Grado de certeza | testimonio, letra, caso de uso, código, inferencia o conjetura |
 | Propuesta | Obligatoria si hay divergencia de fondo; con una leve, una propuesta o «Sin propuesta: divergencia leve»; sin divergencia, «No corresponde» |
 
@@ -286,7 +292,8 @@ En el mismo cambio, además de las piezas nuevas:
 
 - la tabla de §2 de este README suma una fila por pieza nueva;
 - la tabla de §3 de [`docs/tecnica/arquitectura.md`](docs/tecnica/arquitectura.md) suma una fila por regla nueva
-  (es la pieza de RD-03: dónde vive cada regla), y el `traces` de esa página y la columna Fuente de RD-03 suman las
+  (es la pieza de RD-03: dónde vive cada regla; si la regla no tiene dueño en el dominio, la columna Declara dice
+  «ninguno en el dominio»), y el `traces` de esa página y la columna Fuente de RD-03 suman las
   fichas nuevas con su versión. Agregar una fuente a una fila ya decidida no la reabre; cambiar su tarea o su
   criterio sí: vuelve a `pendiente`;
 - [`CHANGELOG.md`](../../../../../CHANGELOG.md) de Lab-Documentos suma una entrada nueva arriba de todo, con la fecha y
@@ -304,7 +311,17 @@ En el mismo cambio, además de las piezas nuevas:
 ```
 
 Después, una rama (`demo-mu/<pantalla>`, por ejemplo `demo-mu/encuesta-paso-1`), un commit con un mensaje que diga qué
-pantalla se documentó («Mini demo: ayuda del paso 1 de la encuesta») y un PR contra `main` de Lab-Documentos. En el PR
+pantalla se documentó y un PR contra `main` de Lab-Documentos:
+
+```bash
+git switch -c demo-mu/encuesta-paso-1 origin/main
+git add "$DEMO" CHANGELOG.md
+git commit -m "Mini demo: ayuda del paso 1 de la encuesta"
+git push -u origin demo-mu/encuesta-paso-1
+```
+
+El PR se abre desde la página del repositorio en GitHub (botón «Compare & pull request») o con la herramienta que use
+el equipo; la base es `main`. En el PR
 corren `docs-guard` y `mini-demo-movilidad` en el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los
 dos en verde. El cuerpo del PR lleva: qué pantalla se documentó, la lista de piezas nuevas y cambiadas, las
 divergencias que quedan para decidir (con su ficha), los supuestos de §5.6 y el final de las dos salidas de §5.4.

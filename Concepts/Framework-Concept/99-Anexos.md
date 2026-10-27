@@ -178,7 +178,7 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 
 | Pendiente | Motivo | Fuente |
 | --- | --- | --- |
-| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO VERIFICADO | El g42 quedó reservado para otra sesión; el intento anterior midió 8,2–8,7 s y la corrección sacó ~0,7 s; el estimado (~7,5 s) seguiría fuera | E02 §4.3, §5 H-A, §7 |
+| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO VERIFICADO; la condición de revisión (2) de P1 sigue abierta | El g42 siguió tomado por otra sesión de mayor prioridad también en el folio 042. El intento anterior midió 8,2–8,7 s y la corrección sacó ~0,7 s; el estimado (~7,5 s) seguiría fuera. La falta de `primer-render` en el cierre era la pantalla apagada del emulador, no la marca; `guion.sh tpr` ya la mide con la pantalla comprobada (emulador: 9 641–12 451 ms, que no juzgan el umbral) | E02 §4.3, §5 H-A, §7; E03 `P1-TPR-EN-EMULADOR.md`; folio 042 |
 | **Apartamiento H-1**: una huella nueva no invalida la clave | Decisión de mesa: se mantiene P4 (PIN o patrón), avisado al PO | E03 §5 H-1 |
 | **iOS** — NO VERIFICADO | Sin Mac, sin cuenta de Apple Developer, sin job `macos-*` (folio 023) | P9 |
 | `.wasm` ante Apple y ante Play — NO VERIFICADO | Ninguna política nombra WebAssembly | P1, N1 §4.1 |

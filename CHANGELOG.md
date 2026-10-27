@@ -19,6 +19,15 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **`scripts/ci-local.sh`**: los mismos pasos, en el mismo orden; `todo` corre todos los grupos y agrega. Los pasos `herramientas`, `enlaces` y `estructura` conservan el nombre.
 - **Guía del sistema documentador**: suma `description` al frontmatter, para que la línea de base del esquema sea 0.
 
+## 2026-10-27 (medición del TPR de la demo)
+
+### Concepts/Framework-Concept/ — expediente 0001 de Framework Concept, folio 042
+
+#### Corregido
+
+- **Medición del TPR (P1)**: la falta de la marca `primer-render` en el cierre era la pantalla apagada del emulador (el WebView no carga sin la actividad al frente), no la marca. `Demo/scripts/guion.sh tpr` mide con la pantalla encendida y sin bloqueo, y `FrameworkConcept.Tools tpr` calcula el TPR por proceso y explica una corrida sin marca. El cascarón deja escrito a los 10 s si el WebView no pidió el contenido. `Gate.Tests/Medicion/` lo cubre (4 pruebas).
+- **Guía**: `99-Anexos.md` §6, `Developer-Guide.md` §8, `01-Actualizacion-Sin-Tienda.md` §8 y el README de la demo con la causa, la medición del emulador (9 641–12 451 ms, no juzga el umbral) y el TPR del moto g42, que sigue sin medir.
+
 ## 2026-10-27 (saneamiento de la guía del sistema documentador)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion — expediente 0002 de DocAsCode, unidad E1-U1

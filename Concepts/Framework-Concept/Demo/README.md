@@ -63,6 +63,7 @@ FC_RID=android-x64 FC_URL_CANAL=https://$IP:8099 scripts/guion.sh apk   # androi
 export FC_ADB_CONTENEDOR=adb-contenedor           # sólo si adb vive en un contenedor
 scripts/guion.sh dispositivo -H <host> -P <puerto> -s <serie>   # comprueba WebView ≥ 94
 scripts/guion.sh instalar    -H <host> -P <puerto> -s <serie>
+scripts/guion.sh tpr         -H <host> -P <puerto> -s <serie>   # P1: 5 arranques en frío y el TPR de cada uno
 ```
 
 **Las claves en un clon nuevo.** El clon trae `claves/publica-demo.pem` y `semilla/` (firmada con su privada), pero no
@@ -272,7 +273,7 @@ rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; cascarón: CS0029). En el 
 semilla ya no se carga después del primer arranque; dos arranques cortados antes de cargar no cuentan; dos cargas
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
-**NO VERIFICADO.** El TPR en el g42 después de la corrección (reservado para otra sesión). Con el desglose del
+**NO VERIFICADO.** El TPR en el g42 después de la corrección (reservado para otra sesión; ver «Medición del TPR», abajo). Con el desglose del
 intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. El PR en rojo con
 M-13 en el runner (tramo A5).
 
@@ -376,3 +377,31 @@ Al terminar: `infra/keycloak/keycloak.sh parar` (el realm se reimporta al levant
 
 **NO VERIFICADO:** `EnLineaMedida` en un dispositivo (el emulador no tiene datos móviles), la regresión R0 sin cuenta
 en el emulador, y todo en un teléfono físico.
+
+### Medición del TPR (folio 042, 2026-10-27)
+
+**Hecho.** En el cierre del expediente 0001 la marca `primer-render` no llegó en 5 arranques en frío del emulador. La
+causa no estaba en el contenido: **la pantalla estaba apagada**. `am start -W` devolvía `LaunchState: UNKNOWN` y
+«Activity pause timeout», la actividad no pasaba al frente y el WebView no pedía ni el `index.html`. Se reprodujo a
+propósito: con `input keyevent KEYCODE_SLEEP` antes de arrancar, el registro es idéntico al del cierre; al encender la
+pantalla, el WebView carga y la marca aparece.
+
+Qué cambió:
+
+- `scripts/guion.sh tpr` despierta la pantalla antes de cada arranque, no mide si el dispositivo está bloqueado, deja
+  `LaunchState` de cada corrida en `salida/evidencia/tpr-am-start.txt` y calcula el TPR con
+  `FrameworkConcept.Tools tpr`.
+- `FrameworkConcept.Tools tpr --logcat <archivo>` calcula el TPR por proceso: de la hora de la primera línea `FC` menos
+  su `t=`, que es el inicio del proceso, a la línea de consola `FC-MARCA primer-render`. Una corrida sin marca dice si
+  el WebView llegó a pedir el contenido.
+- El cascarón deja escrito a los 10 s si el WebView no pidió el contenido (`ContenidoPage`).
+- `Gate.Tests/Medicion/LectorDeTprTests.cs` fija el cálculo, el diagnóstico de la corrida sin marca y que los textos
+  buscados sigan siendo los que escriben `puente.js` y el cascarón.
+
+**Verificado** (2026-10-27): `ci-local.sh` en verde con `rc=0`: Core 211, Update 102, Gate 56 y el APK. En el emulador
+`fc-android-emu-hpdev`, con el APK Release x64 sin depuración: 5 de 5 arranques `COLD` con marca y TPR de 9 641 a
+12 451 ms. Las cifras del emulador no juzgan el umbral de P1.
+
+
+**NO VERIFICADO.** El TPR en el moto g42: el teléfono siguió tomado por otra sesión de mayor prioridad durante todo el
+folio 042. La condición de revisión (2) de P1 sigue abierta, sin número nuevo.

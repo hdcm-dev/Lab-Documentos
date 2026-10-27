@@ -18,6 +18,7 @@ public partial class ContenidoPage : ContentPage
     private readonly ProveedorDelActualizador _proveedor;
     private readonly ContenidoActivo _contenido;
     private int _consultaLanzada;
+    private int _cargaIniciada;
 
     public ContenidoPage(ContenidoActivo contenido, ServidorDeContenido servidor, PuenteDelCascaron puente,
         EmisorDeEventos emisor, DespachadorDelPuente despachador, ConsultasDelCanal consultas, SincronizadorDelOutbox sincronizador,
@@ -46,6 +47,10 @@ public partial class ContenidoPage : ContentPage
         _sincronizador.ConteoCambiado += AlCambiarElOutbox;
         Dispatcher.StartTimer(EsperaMaximaDelListo, () =>
         {
+            // P1, folio 042 — Si a los 10 s el WebView ni pidió el contenido, la actividad no llegó al frente (pantalla
+            // apagada o bloqueada): no habrá «primer-render» hasta que se vea. Se deja dicho para quien lee el TPR.
+            if (Volatile.Read(ref _cargaIniciada) == 0)
+                Bitacora.Log("contenido: el WebView no pidió el contenido a los 10 s (¿la app no llegó al frente? pantalla apagada o bloqueada)");
             LanzarConsulta("sin Listo a los 10 s");
             return false;
         });
@@ -56,6 +61,7 @@ public partial class ContenidoPage : ContentPage
     // P2 — El WebView empezó a cargar el contenido: recién ahora este arranque cuenta para el rollback por marca.
     private void AlIniciarLaCarga()
     {
+        Volatile.Write(ref _cargaIniciada, 1);
         if (_contenido.Version is not { } version) return;
         _ = Task.Run(async () =>
         {

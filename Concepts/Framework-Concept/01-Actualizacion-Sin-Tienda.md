@@ -243,6 +243,9 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 - **Hecho.** El TPR medido en el moto g42 en un intento anterior fue de 8 176 a 8 741 ms con la semilla instalada
   (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el TPR en el g42
   **no se volvió a medir** (teléfono reservado para otra sesión). Ver el anexo de pendientes.
+- **Hecho.** En el emulador `fc-android-emu-hpdev` (2026-10-27, 5 arranques en frío) el cascarón agrega el WebView a
+  ≤ 2 878 ms desde el inicio del proceso, pero la marca `primer-render` no llegó: **TPR no obtenido** (E03 `P1-TPR-EN-EMULADOR.md`). El
+  emulador no sustituye al teléfono de gama media que fija el umbral.
 - **Hecho.** El paquete de contenido pesa 3,39 MB comprimido y 9,13 MB plano (E01 §7).
 - **Interpretación.** Si el TPR medido supera el umbral, la condición de revisión (2) de P1 abre la evaluación de la
   alternativa «C-min» (renderizador compilado en el cascarón más encuestas como datos).

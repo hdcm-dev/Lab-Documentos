@@ -273,7 +273,8 @@ semilla ya no se carga después del primer arranque; dos arranques cortados ante
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
 **NO VERIFICADO.** El TPR en el g42 después de la corrección (reservado para otra sesión). Con el desglose del
-intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. El PR en rojo con
+intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. En el emulador de hpdev (2026-10-27) tampoco se obtuvo: el contenido no emitió
+`primer-render` en 5 arranques en frío (E03 `P1-TPR-EN-EMULADOR.md`). El PR en rojo con
 M-13 en el runner (tramo A5).
 
 ### Incremento A4 — red y autenticación con el sistema operativo (folio 038)

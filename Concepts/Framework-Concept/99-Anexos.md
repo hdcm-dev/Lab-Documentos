@@ -153,7 +153,7 @@ Enlaces a los folios y ensayos citados:
 | Folio 038 | [Autenticación del SO y manejo de red en la demo](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Expedientes/0001-Framework-Concept-Maui-Autoactualizable/actuaciones/038-providencia-autenticacion-del-so-y-manejo-de-red-en-la-demo.md) |
 | E01 | [INFORME](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E01-WASM-Descargado-En-WebView/INFORME.md) |
 | E02 | [INFORME](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E02-Demo-Integracion/INFORME.md), [correcciones](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E02-Demo-Integracion/correcciones.md), [rojos de la compuerta](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E02-Demo-Integracion/rojos-compuerta.md), [rojos del actualizador](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E02-Demo-Integracion/rojos-actualizador.md) |
-| E03 | [INFORME](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E03-Red-Y-Autenticacion/INFORME.md), [correcciones](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E03-Red-Y-Autenticacion/correcciones.md) |
+| E03 | [INFORME](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E03-Red-Y-Autenticacion/INFORME.md), [correcciones](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E03-Red-Y-Autenticacion/correcciones.md), [TPR en emulador](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Ensayos/E03-Red-Y-Autenticacion/P1-TPR-EN-EMULADOR.md) |
 
 Los folios y ensayos viven en el repositorio de documentación del laboratorio, no en el de la guía: desde el
 repositorio publicado de la guía, estos enlaces se resuelven contra el espacio de trabajo completo.
@@ -178,7 +178,7 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 
 | Pendiente | Motivo | Fuente |
 | --- | --- | --- |
-| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO VERIFICADO | El g42 quedó reservado para otra sesión; el intento anterior midió 8,2–8,7 s y la corrección sacó ~0,7 s; el estimado (~7,5 s) seguiría fuera | E02 §4.3, §5 H-A, §7 |
+| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO VERIFICADO | El g42 quedó reservado para otra sesión; el intento anterior midió 8,2–8,7 s y la corrección sacó ~0,7 s; el estimado (~7,5 s) seguiría fuera. En el emulador `fc-android-emu-hpdev` (2026-10-27, 5 arranques en frío) el TPR **no se obtuvo**: el WebView queda agregado a ≤ 2 878 ms, pero la marca `primer-render` no llegó (sin canal y con la red dada por caída); el emulador no sustituye al teléfono de gama media | E02 §4.3, §5 H-A, §7; E03 `P1-TPR-EN-EMULADOR.md` |
 | **Apartamiento H-1**: una huella nueva no invalida la clave | Decisión de mesa: se mantiene P4 (PIN o patrón), avisado al PO | E03 §5 H-1 |
 | **iOS** — NO VERIFICADO | Sin Mac, sin cuenta de Apple Developer, sin job `macos-*` (folio 023) | P9 |
 | `.wasm` ante Apple y ante Play — NO VERIFICADO | Ninguna política nombra WebAssembly | P1, N1 §4.1 |

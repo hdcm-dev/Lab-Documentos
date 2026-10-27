@@ -2,17 +2,91 @@
 doc_id: DOC-SDT-0001
 doc_type: study-note
 title: Sistema documentador técnico — de Markdown al portal publicado
-description: Cómo un portal de documentación nace de Markdown versionado (docs as code) y cómo montar un sistema documentador propio.
-status: borrador
+description: Obsoleto. Lo reemplaza el cuerpo SDEI (IDX-SDEI); la tabla de destinos dice adónde fue cada sección. Se archiva en la versión siguiente.
+status: obsoleto
 origin: ia-generated
 confidence: alta
 owner: fernandofilipuzzi
-last_review: 2026-09-20
+last_review: 2026-10-27
 audience: [humano, agente]
 traces: [DOC-ADR, DOC-SAD, DOC-SRS, DOC-MANUAL, DOC-SDD]
 ---
 
 # Sistema documentador técnico — de Markdown al portal publicado
+
+## Estado: obsoleto
+
+> **Este archivo está obsoleto.** Lo reemplaza el cuerpo del sistema documentador, cuyo punto de entrada es el
+> [README del cuerpo](README.md) (`IDX-SDEI`). No se corrige más: un cambio de contenido va al documento de destino.
+
+| Campo | Valor |
+| --- | --- |
+| Estado | `obsoleto` desde el 2026-10-27 (expediente 0002 de DocAsCode, unidad E1-U4f) |
+| Lo reemplaza | El cuerpo `SDEI`: [README](README.md), [Marco](00-Marco.md), [Mapa](01-Mapa.md), los temas `TEM-SDEI-01` a `TEM-SDEI-07` y los [anexos](01-Mapa.md#6-anexos) |
+| Qué queda acá | El texto original, sin cambios, para que sigan resolviendo los enlaces que lo citan |
+| Cuándo se archiva | En la versión siguiente del cuerpo: se mueve a un archivo inmutable y los enlaces que lo citan pasan a la versión archivada |
+| Compuertas | Sigue dentro del cuerpo y pasa PR-1 a PR-7. Por estar `obsoleto`, `url-fecha` sobre este archivo **avisa** y no bloquea: sus citas por dominio se convirtieron en los temas, no acá |
+
+## Tabla de destinos
+
+Cada sección de este archivo tiene un destino en el cuerpo nuevo. La columna «Cobertura» dice si el destino cubre
+todo lo que decía la sección o sólo una parte; lo que no se trasladó queda nombrado en esa misma celda y sigue
+legible acá hasta el archivado.
+
+| Sección vieja | Destino | Dónde | Cobertura |
+| --- | --- | --- | --- |
+| [Resumen ejecutivo](#resumen-ejecutivo) | `TEM-SDEI-01` | [Qué es](TEM-01-Sistema-Documentador.md#qué-es) | Completa: la pregunta del caso y la respuesta (*docs as code*) quedan en la definición y en el caso de industria |
+| [1. Qué es el sitio consultado](#1-qué-es-el-sitio-consultado) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Parcial: el tema resume el caso y enlaza este archivo para el detalle de la verificación (respuestas del sitio); ese detalle no se reescribió |
+| [1.1 Evidencia: el generador es Mintlify](#11-evidencia-el-generador-es-mintlify) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Parcial: el tema resume el caso y enlaza este archivo para el detalle de la verificación (respuestas del sitio); ese detalle no se reescribió |
+| [1.2 Evidencia: el fuente es Markdown (MDX)](#12-evidencia-el-fuente-es-markdown-mdx) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Parcial: el tema resume el caso y enlaza este archivo para el detalle de la verificación (respuestas del sitio); ese detalle no se reescribió |
+| [1.3 Evidencia: la referencia de API sale de OpenAPI](#13-evidencia-la-referencia-de-api-sale-de-openapi) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Parcial: el tema resume el caso y enlaza este archivo para el detalle de la verificación (respuestas del sitio); ese detalle no se reescribió |
+| [1.4 Evidencia: el sitio está pensado también para agentes](#14-evidencia-el-sitio-está-pensado-también-para-agentes) | `TEM-SDEI-04` | [3.1 Un proveedor que sirve a los dos lectores](TEM-04-Doble-Audiencia.md#31-un-proveedor-que-sirve-a-los-dos-lectores) | Parcial: el tema resume la salida para agentes y enlaza este archivo para la verificación |
+| [2. El modelo general: *docs as code*](#2-el-modelo-general-docs-as-code) | `TEM-SDEI-01` | [Qué es](TEM-01-Sistema-Documentador.md#qué-es) | Completa |
+| [2.1 Definición](#21-definición) | `TEM-SDEI-01` | [Qué es](TEM-01-Sistema-Documentador.md#qué-es) | Completa: la definición de Write the Docs, ahora con cita APA |
+| [2.2 Flujo de trabajo](#22-flujo-de-trabajo) | `TEM-SDEI-01` | [Arquitectura de referencia](TEM-01-Sistema-Documentador.md#arquitectura-de-referencia) | Completa; las fases del flujo, en `TEM-SDEI-02` |
+| [2.3 Evidencia de adopción en la industria](#23-evidencia-de-adopción-en-la-industria) | `TEM-SDEI-01` | [Adopciones públicas de las prácticas que recomienda este tema](TEM-01-Sistema-Documentador.md#adopciones-públicas-de-las-prácticas-que-recomienda-este-tema) | Completa, con adopciones fechadas por práctica |
+| [2.4 Cómo se publica](#24-cómo-se-publica) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Completa: la fila «Sitio HTML» del caso |
+| [3. Piezas de un sistema documentador](#3-piezas-de-un-sistema-documentador) | `TEM-SDEI-01` | [Arquitectura de referencia](TEM-01-Sistema-Documentador.md#arquitectura-de-referencia) | Completa: las piezas pasan a ser el catálogo de clases `CL-01`… |
+| [3.1 Sobre la estructura del contenido](#31-sobre-la-estructura-del-contenido) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Completa: la distinción de Diátaxis entre referencia y explicación |
+| [4. Respuesta a las preguntas planteadas](#4-respuesta-a-las-preguntas-planteadas) | `TEM-SDEI-01` | [Un caso de industria: el portal de un proveedor de notificaciones](TEM-01-Sistema-Documentador.md#un-caso-de-industria-el-portal-de-un-proveedor-de-notificaciones) | Completa |
+| [5. Audiencias, privilegios y el lugar de la especificación](#5-audiencias-privilegios-y-el-lugar-de-la-especificación) | `TEM-SDEI-05` | [Aplicación por escenario](TEM-05-Ayuda-Al-Usuario-Final.md#aplicación-por-escenario) | Completa |
+| [5.1 Dos cadenas, dos portales](#51-dos-cadenas-dos-portales) | `TEM-SDEI-01` | [Arquitectura de referencia](TEM-01-Sistema-Documentador.md#arquitectura-de-referencia) | Parcial: la frontera entre documentación del equipo y del usuario es el catálogo de clases; la tabla de las siete familias sigue en la guía [Documentación técnica](../Creacion-Guias-Tecnicas/README.md), fuera de este cuerpo |
+| [5.2 Un vault, varias publicaciones](#52-un-vault-varias-publicaciones) | `TEM-SDEI-03` | [Qué es](TEM-03-Topologia-Y-Versionado.md#qué-es) | Completa: una fuente, varias salidas, ubicadas por topología |
+| [5.3 Privilegios: distinguir rol de usuario y confidencialidad](#53-privilegios-distinguir-rol-de-usuario-y-confidencialidad) | `TEM-SDEI-05` | [Aplicación por escenario](TEM-05-Ayuda-Al-Usuario-Final.md#aplicación-por-escenario) | Completa: «Confidencialidad por rol», que se decide en el servidor y en el build |
+| [5.4 Cómo se llama esto en la industria](#54-cómo-se-llama-esto-en-la-industria) | `ANX-SDEI-GLOSARIO` | [2. Términos](99-Anexos/Glosario.md#2-términos) | Parcial: *docs as code* tiene entrada en el glosario; *internal developer portal* (Backstage) y *single sourcing* (DITA) no la tienen todavía |
+| [6. Caso: un panel de control en .NET — Lab-Geometria](#6-caso-un-panel-de-control-en-net--lab-geometria) | `TEM-SDEI-03` | [Lab-Geometria: por qué la separación que ya tiene es la correcta](TEM-03-Topologia-Y-Versionado.md#lab-geometria-por-qué-la-separación-que-ya-tiene-es-la-correcta) | Completa |
+| [6.1 Estado verificado](#61-estado-verificado) | `TEM-SDEI-07` | [Resolver una traza contra el SDD real de Lab-Geometria](TEM-07-Marco-SDD.md#resolver-una-traza-contra-el-sdd-real-de-lab-geometria) | Parcial: el estado se vuelve a verificar contra una revisión más nueva del SDD; el inventario de 2026-09-15 queda en la versión archivada |
+| [6.2 ¿Mismo repositorio o repositorio auxiliar?](#62-mismo-repositorio-o-repositorio-auxiliar) | `TEM-SDEI-03` | [La regla para ubicar una pieza](TEM-03-Topologia-Y-Versionado.md#la-regla-para-ubicar-una-pieza) | Completa |
+| [6.3 Coherencia de ramas y versiones](#63-coherencia-de-ramas-y-versiones) | `TEM-SDEI-03` | [Qué problema resuelve](TEM-03-Topologia-Y-Versionado.md#qué-problema-resuelve) | Completa: coherencia por topología y versionado de la documentación publicada |
+| [6.4 ¿Renderiza el panel o un servicio aparte?](#64-renderiza-el-panel-o-un-servicio-aparte) | `TEM-SDEI-05` | [Aplicación por escenario](TEM-05-Ayuda-Al-Usuario-Final.md#aplicación-por-escenario) | Completa: con servidor o sin servidor de ayuda; la referencia de API servida por la propia API, en `TEM-SDEI-01` |
+| [7. Propuesta: ayuda por rol en Lab-Geometria](#7-propuesta-ayuda-por-rol-en-lab-geometria) | `TEM-SDEI-05` | [3.3 Ayuda por rol, con un cruce que nadie había plantado](TEM-05-Ayuda-Al-Usuario-Final.md#33-ayuda-por-rol-con-un-cruce-que-nadie-había-plantado) | Completa |
+| [7.1 Qué se toma de OneSignal y cómo se traduce](#71-qué-se-toma-de-onesignal-y-cómo-se-traduce) | `TEM-SDEI-04` | [3.1 Un proveedor que sirve a los dos lectores](TEM-04-Doble-Audiencia.md#31-un-proveedor-que-sirve-a-los-dos-lectores) | Completa |
+| [7.2 Arquitectura](#72-arquitectura) | `TEM-SDEI-05` | [Definición](TEM-05-Ayuda-Al-Usuario-Final.md#definición) | Completa |
+| [7.3 Estructura del contenido y contrato del frontmatter](#73-estructura-del-contenido-y-contrato-del-frontmatter) | `TEM-SDEI-05` | [Anexo](TEM-05-Ayuda-Al-Usuario-Final.md#anexo) | Completa: plantilla de la página de ayuda; el contrato del frontmatter, en el anexo de esquema |
+| [7.4 Derivación desde la especificación](#74-derivación-desde-la-especificación) | `TEM-SDEI-05` | [Definición](TEM-05-Ayuda-Al-Usuario-Final.md#definición) | Completa: «Derivar (una página)» |
+| [7.5 Roles: dónde se decide y cómo se prueba](#75-roles-dónde-se-decide-y-cómo-se-prueba) | `TEM-SDEI-05` | [3.3 Ayuda por rol, con un cruce que nadie había plantado](TEM-05-Ayuda-Al-Usuario-Final.md#33-ayuda-por-rol-con-un-cruce-que-nadie-había-plantado) | Completa |
+| [7.6 Idiomas](#76-idiomas) | `TEM-SDEI-05` | [3.4 Idiomas sin perder la ayuda](TEM-05-Ayuda-Al-Usuario-Final.md#34-idiomas-sin-perder-la-ayuda) | Completa |
+| [7.7 Validaciones en CI](#77-validaciones-en-ci) | `TEM-SDEI-06` | [1.1 Los dos carriles](TEM-06-Compuertas-Y-CI.md#11-los-dos-carriles) | Completa |
+| [7.8 Prueba de concepto](#78-prueba-de-concepto) | `GP-SDEI-LANZAR` | [Examples/Lanzar-Example.md](Examples/Lanzar-Example.md) | Completa: la guía práctica levanta la prueba de concepto de `Examples/Prueba-Ayuda-Por-Rol/` |
+| [7.9 Cómo entraría en Lab-Geometria](#79-cómo-entraría-en-lab-geometria) | `TEM-SDEI-07` | [Lo que el SDD no cubre: la ayuda al usuario final](TEM-07-Marco-SDD.md#lo-que-el-sdd-no-cubre-la-ayuda-al-usuario-final) | Completa |
+| [8. La documentación como parte del ciclo de desarrollo](#8-la-documentación-como-parte-del-ciclo-de-desarrollo) | `TEM-SDEI-02` | [Qué es](TEM-02-Ciclo-Documental.md#qué-es) | Completa |
+| [8.1 Qué dice la norma](#81-qué-dice-la-norma) | `TEM-SDEI-02` | [Qué problema resuelve](TEM-02-Ciclo-Documental.md#qué-problema-resuelve) | Parcial: el tema se apoya en ISO/IEC/IEEE 26514:2022; la lectura de ISO/IEC/IEEE 15289:2019 (sólo su muestra pública) no se trasladó |
+| [8.2 Las fases](#82-las-fases) | `TEM-SDEI-02` | [Qué es](TEM-02-Ciclo-Documental.md#qué-es) | Completa: cinco fases, con la primera partida en dos |
+| [8.3 Acoplamiento con el ciclo del código](#83-acoplamiento-con-el-ciclo-del-código) | `TEM-SDEI-02` | [Qué problema resuelve](TEM-02-Ciclo-Documental.md#qué-problema-resuelve) | Completa; el acoplamiento por traza, en `TEM-SDEI-07` |
+| [8.4 Estados y metadatos: el ciclo de vida escrito en el documento](#84-estados-y-metadatos-el-ciclo-de-vida-escrito-en-el-documento) | `TEM-SDEI-02` | [Estados del documento](TEM-02-Ciclo-Documental.md#estados-del-documento) | Completa |
+| [8.5 Tres formas de envejecer](#85-tres-formas-de-envejecer) | `TEM-SDEI-06` | [1.1 Los dos carriles](TEM-06-Compuertas-Y-CI.md#11-los-dos-carriles) | Completa: lo que tiene un evento que lo dispara va al carril PR; lo demás, al programado |
+| [8.6 Deprecar y archivar](#86-deprecar-y-archivar) | `TEM-SDEI-02` | [Estados del documento](TEM-02-Ciclo-Documental.md#estados-del-documento) | Completa: un documento `obsoleto` dice cuál lo reemplaza; este archivo es el primer caso |
+| [8.7 Quién hace qué en el ciclo](#87-quién-hace-qué-en-el-ciclo) | `MARCO-SDEI` | [4. Actores](00-Marco.md#4-actores) | Completa: los actores `ACT-SDEI-1` a `ACT-SDEI-5` |
+| [8.8 Recorrido de punta a punta: una página de ayuda](#88-recorrido-de-punta-a-punta-una-página-de-ayuda) | `TEM-SDEI-05` | [3.2 Ensayo reproducible: la compuerta detecta la ayuda que quedó atrás](TEM-05-Ayuda-Al-Usuario-Final.md#32-ensayo-reproducible-la-compuerta-detecta-la-ayuda-que-quedó-atrás) | Completa, sobre la mini demo en lugar de un escenario ilustrativo |
+| [9. Preguntas guía para diseñar un documentador propio](#9-preguntas-guía-para-diseñar-un-documentador-propio) | `MARCO-SDEI` | [7. Preguntas guía](00-Marco.md#7-preguntas-guía) | Completa: cada tema trae las suyas |
+| [10. Observaciones](#10-observaciones) | `TEM-SDEI-01` | [Fuentes y observaciones](TEM-01-Sistema-Documentador.md#fuentes-y-observaciones) | Completa: cada tema cierra con sus hechos, interpretaciones y criterio propio |
+| [11. Glosario](#11-glosario) | `ANX-SDEI-GLOSARIO` | [99-Anexos/Glosario.md](99-Anexos/Glosario.md) | Completa |
+| [12. Registro de evidencias](#12-registro-de-evidencias) | `ANX-SDEI-REFERENCIAS` | [99-Anexos/Referencias.md](99-Anexos/Referencias.md) | Completa: las fuentes pasan a referencias APA con ancla `ref-…` y fecha de consulta |
+
+Leída en orden, la tabla sigue la ruta «aprender» del [README](README.md): marco, temas 01 a 07, ejemplos y anexos.
+
+---
+
 
 ## Resumen ejecutivo
 

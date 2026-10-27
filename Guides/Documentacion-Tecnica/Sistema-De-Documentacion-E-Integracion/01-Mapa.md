@@ -125,6 +125,6 @@ CL-14 está latente: no se activa mientras ningún escenario publique sitio (`CT
 3. Si la pieza no encaja en ninguna clase del catálogo, ¿quién decide abrir una nueva?
 
 Documento anterior: [00 Marco](00-Marco.md). Siguiente documento: [Tema 01 — Qué es un sistema
-documentador](TEM-01-Sistema-Documentador.md); para los temas todavía en redacción, la
-[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md), en el orden que da el
-[README](README.md#3-rutas-de-lectura).
+documentador](TEM-01-Sistema-Documentador.md), en el orden que da el [README](README.md#3-rutas-de-lectura). La
+[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) está `obsoleta`; su tabla de destinos lleva cada
+sección vieja a su tema.

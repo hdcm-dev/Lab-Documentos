@@ -2,6 +2,23 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (la guía de un solo archivo pasa a obsoleta; `url-fecha` ampliado)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4f
+
+#### Cambiado
+
+- **`Sistema-Documentador-Tecnico-Guide.md`** (`DOC-SDT-0001`): `status: obsoleto`. Suma un aviso con su reemplazo (el cuerpo `SDEI`) y una tabla de destinos «sección vieja → `doc_id` nuevo» con las 47 secciones, el ancla de destino y la cobertura (completa o parcial, con lo que no se trasladó). El texto original no cambia; se archiva en la versión siguiente del cuerpo.
+- **`README.md`** del cuerpo y **`01-Mapa.md`**: la ruta «aprender» ya no pasa por la guía de un solo archivo; su fila de la tabla de contenido dice `obsoleto` y enlaza la tabla de destinos.
+- **`TEM-06-Compuertas-Y-CI.md`** y **`99-Anexos/Criterios-De-Calidad.md`** (`CQ-11`): `url-fecha` está en `PR-7` y bloquea en el cuerpo nuevo.
+- **`TEM-07-Marco-SDD.md`**: la cita de las reglas del marco SDD lleva fecha de consulta.
+
+### tools/docs-guard/ y scripts/ci-local.sh — unidad E1-U4f (E-F7)
+
+#### Añadido
+
+- **`dg.py url-fecha`** (grupo `PR-7`): toda URL y toda cita por dominio en un code span lleva, en su párrafo o fila, la fecha de consulta o la cita enlazada al anexo de referencias. Bloquea en el cuerpo nuevo salvo en documentos `obsoleto`; avisa en lo heredado. Fixtures `url-fecha/rojo`, `verde` y `obsoleto` en la autoprueba.
+
 ## 2026-10-27 (temas 04 a 06 del cuerpo del sistema documentador)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4c

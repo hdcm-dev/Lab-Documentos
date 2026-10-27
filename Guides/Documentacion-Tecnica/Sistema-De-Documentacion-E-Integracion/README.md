@@ -96,13 +96,9 @@ flowchart TB
 | **Intervenir** | La persona del equipo que tiene que cambiar la documentación de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → [Cómo intervenir](Examples/Como-Intervenir.md) y la instancia de su proyecto ([la de este repositorio](Examples/Como-Intervenir-Lab-Documentos.md)) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
 | **Agente** | Un agente de IA que trabaja sobre el repositorio | [`AGENTS.md`](../../../AGENTS.md) en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
 
-Mientras los temas no estén escritos, la ruta «aprender» se recorre en este orden (la guía de un solo archivo se lee
-de corrido; la correspondencia entre paréntesis sirve para volver a ella cuando cada tema exista, y `TEM-07` no tiene
-equivalente porque es un tema nuevo): [Marco](00-Marco.md) →
-[Mapa](01-Mapa.md) → [guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md), que cubre el mismo dominio con
-menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§6.3, a `TEM-03`; §1.4 y §5.3, a `TEM-04`; §5, §6.4 y §7, a
-`TEM-05`; §7.7, a `TEM-06`) →
-[Glosario](99-Anexos/Glosario.md) → [Cómo decidir](99-Anexos/Como-Decidir.md) → [Ejercicios](99-Anexos/Ejercicios.md).
+Los siete temas están escritos, así que la ruta «aprender» ya no pasa por la guía de un solo archivo: esa guía está
+`obsoleta` y su [tabla de destinos](Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) dice en qué tema o
+anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte.
 
 ## 4. Tabla de contenido
 
@@ -126,7 +122,7 @@ menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§
 | [Anexo: lista de verificación](99-Anexos/Lista-De-Verificacion.md) | `ANX-SDEI-VER` | anexo | borrador | Ítems `VER-*` que se revisan sobre una guía antes de pasarla a vigente |
 | [Anexo: cómo decidir](99-Anexos/Como-Decidir.md) | `ANX-SDEI-DECIDIR` | anexo | borrador | Criterios, escala anclada, filtros, regla de firmeza y una matriz trabajada |
 | [Anexo: ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` | anexo | borrador | Ejercicios de transferencia `EJR-SDEI-nn`, con claves al final |
-| [Guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) | `DOC-SDT-0001` | nota de estudio | borrador | El mismo dominio en un archivo: el portal público de un proveedor de notificaciones (OneSignal) como caso de industria, *docs as code*, la ayuda por rol y la documentación en el ciclo de desarrollo. Está dentro del cuerpo y pasa la compuerta; sus secciones se reparten entre los temas |
+| [Guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) | `DOC-SDT-0001` | nota de estudio | obsoleto | La primera forma del mismo dominio en un archivo. La reemplaza este cuerpo: su [tabla de destinos](Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) lleva cada sección a su tema o anexo. Se archiva en la versión siguiente del cuerpo |
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
 | [Ejemplo: lanzar la prueba de concepto](Examples/Lanzar-Example.md) | `GP-SDEI-LANZAR` | guía práctica | borrador | Cómo levantar el ejemplo anterior en su devcontainer y publicarlo |

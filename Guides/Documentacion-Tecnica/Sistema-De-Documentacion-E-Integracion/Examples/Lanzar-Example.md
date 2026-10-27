@@ -1,3 +1,17 @@
+---
+doc_id: GP-SDEI-LANZAR
+doc_type: guia-practica
+title: Lanzar el ejemplo de ayuda por rol
+description: Tool-prompt que levanta la prueba de concepto de ayuda por rol en su devcontainer, la publica por un túnel y entrega la URL.
+status: borrador
+origin: ia-assisted
+confidence: media
+owner: Lab-Documentos — guía del sistema documentador
+last_review: 2026-10-27
+audience: [agente, humano, desarrollo]
+traces: [IDX-SDEI]
+---
+
 # Tool-Prompt — Lanzar el ejemplo de demostración
 
 > **Invocación**:

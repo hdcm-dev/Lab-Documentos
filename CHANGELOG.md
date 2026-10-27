@@ -16,6 +16,22 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 - **`dg.py contratos`**: un contrato con `source.lock` que declara `workflow:` lo compara ese workflow; `docs-guard` ya no lo marca como «sin extracción».
 
+## 2026-10-27 (esqueleto del cuerpo del sistema documentador)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI` 2.0.0-borrador, expediente 0002 de DocAsCode, unidad E1-U4a
+
+#### Añadido
+
+- **`README.md`** del cuerpo: `corpus_id: SDEI`, `version: 2.0.0-borrador`, objetivos de aprendizaje `OBJ-SDEI-01` a `05`, las tres rutas de lectura (aprender, intervenir, agente) y la tabla de contenido completa. Al declarar `corpus_id`, la carpeta pasa a ser cuerpo nuevo para `docs-guard`: frontmatter obligatorio y `reflint` bloqueante.
+- **`00-Marco.md`**: los cuatro escenarios `ESC-SDEI-1` a `4` (corpus de guías, app sin roles, panel con roles, servicio con paquetes), los contextos `CTX-SDEI-1` a `4`, los actores `ACT-SDEI-1` a `6` y las convenciones del cuerpo.
+- **`01-Mapa.md`**: tablas «estoy acá → qué aplico» por escenario, contexto, artefacto (catálogo CL-01 a CL-14) y actor, e índice de anexos.
+- **`99-Anexos/`**: esquema de frontmatter y registro de prefijos; glosario; referencias APA 7 con anclas `ref-…` y fecha de consulta; criterios de calidad `CQ-01` a `CQ-14`; patrones de ejemplos `PE-01` a `PE-12`; lista de verificación `VER-*`; «Cómo decidir» con la escala anclada y una matriz trabajada; ejercicios `EJR-SDEI-01` a `05` con claves.
+- **`tools/docs-guard/prefijos.txt`**: prefijo `GP` (guía práctica de un ejemplo).
+
+#### Cambiado
+
+- **`Examples/Lanzar-Example.md`**: suma frontmatter (`GP-SDEI-LANZAR`), que el cuerpo nuevo exige. El texto no cambia.
+
 ## 2026-10-27 (docs-guard completo: grupos PR-1 a PR-7 y carril programado)
 
 ### .github/, scripts/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U2

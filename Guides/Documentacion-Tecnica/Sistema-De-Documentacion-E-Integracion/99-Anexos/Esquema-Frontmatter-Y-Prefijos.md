@@ -120,6 +120,7 @@ documenta y se resuelve contra el SHA de su `source.lock`.
 | `RD` | interno | Requerimiento documental |
 | `VER` | interno | Ítem de verificación |
 | `GP` | interno | Guía práctica de un ejemplo |
+| `DEMO` | interno | Pieza de una demo de `Examples/` (mini demo MovilidadUrbana: `DEMO-MU-nn`) |
 | `RF` | externo | Requisito funcional |
 | `RNF` | externo | Requisito no funcional |
 | `RN` | externo | Regla de negocio |

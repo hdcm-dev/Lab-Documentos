@@ -24,6 +24,7 @@ OBJ     interno   objetivo de aprendizaje
 EJR     interno   ejercicio
 RD      interno   requerimiento documental (RRD)
 VER     interno   ítem de verificación
+DEMO    interno   pieza de una demo de Examples/ (E1-U3: mini demo MovilidadUrbana, DEMO-MU-nn)
 GP      interno   guía práctica de un ejemplo (Examples/)
 # Prefijos de la industria que usan los ejemplos y los sistemas documentados
 RF      externo   requisito funcional

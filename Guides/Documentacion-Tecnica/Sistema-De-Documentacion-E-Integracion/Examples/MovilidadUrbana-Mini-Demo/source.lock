@@ -1,0 +1,10 @@
+# source.lock: el código que documenta esta mini demo, fijado por SHA (D25, alternativa A; expediente 0002, E1-U3).
+# La demo no copia código: lo baja por SHA con git archive (verificar.sh). Cambiar el SHA es un PR que actualiza,
+# en el mismo cambio, contracts/openapi.json y las anclas de docs/fichas/.
+repo: https://github.com/hdcm-dev/Lab-E2E.WebBlazor.git
+sha: 8fb4c3a8b1cc629027f456c7c3ce19e041164c06
+comparar: main
+rutas: src/MovilidadUrbana.ApiWeb src/MovilidadUrbana.MAUI
+proyecto-api: src/MovilidadUrbana.ApiWeb/MovilidadUrbana.ApiWeb.csproj
+contrato: GET /openapi/v1.json (ASPNETCORE_ENVIRONMENT=Development)
+workflow: .github/workflows/mini-demo-movilidad.yml

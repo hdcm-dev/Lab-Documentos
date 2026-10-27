@@ -322,8 +322,5 @@ se releyeron el 2026-10-27 para este tema.
 | Observación sobre la compuerta | El anexo del esquema dice que `traces` puede ser una lista vacía, pero `docs-guard` hoy la rechaza como campo faltante. Hasta que se corrija, toda página lleva al menos una traza |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |
 
-Documento anterior: [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md). Siguiente documento: Tema 04 —
-Doble audiencia, en redacción; mientras tanto, las secciones
-[§1.4](Sistema-Documentador-Tecnico-Guide.md#14-evidencia-el-sitio-está-pensado-también-para-agentes) y
-[§5.3](Sistema-Documentador-Tecnico-Guide.md#53-privilegios-distinguir-rol-de-usuario-y-confidencialidad) de la guía de
-un solo archivo, como indica el [README](README.md#3-rutas-de-lectura).
+Documento anterior: [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md). Siguiente documento:
+[Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md).

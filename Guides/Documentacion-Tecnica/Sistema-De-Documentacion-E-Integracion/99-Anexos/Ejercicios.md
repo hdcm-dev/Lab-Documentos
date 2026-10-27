@@ -66,7 +66,7 @@ Un equipo duda entre dos formas de publicar la ayuda al usuario de una app sin r
 
 ### EJR-SDEI-04 — Encontrar qué aplicar
 
-En MovilidadUrbana se renombró el método que valida el largo del comentario. Una página de ayuda de la demostración
+En MovilidadUrbana se renombró el método que valida el largo del nombre de una localidad. Una página de ayuda de la demostración
 traza a la ficha de esa regla, y la demostración fija el código en un `source.lock`. Usando sólo el Mapa:
 
 1. ¿Por qué tabla entrás y qué fila aplicás?

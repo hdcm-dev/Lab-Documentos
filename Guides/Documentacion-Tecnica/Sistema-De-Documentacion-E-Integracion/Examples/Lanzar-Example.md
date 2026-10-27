@@ -1,7 +1,7 @@
 # Tool-Prompt — Lanzar el ejemplo de demostración
 
 > **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Lanzar-Example.md`
+> - Leer y ejecutar `/LAB/Lab-Documentos/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Lanzar-Example.md`
 > - Variantes: `… Lanzar-Example.md --bajar` (detener todo) · `… --estado` (sólo informar)
 >
 > Overview: levanta la prueba de concepto «ayuda por rol» en su devcontainer, la expone por un túnel público y entrega la URL para compartir.
@@ -18,7 +18,7 @@ Rutas y nombres fijos:
 
 | Cosa | Valor |
 |------|-------|
-| Carpeta del proyecto (`$P`) | `/LAB/Lab-Documentos/Guides/Sistema-Documentador-Tecnico-Guide/Examples/Prueba-Ayuda-Por-Rol` |
+| Carpeta del proyecto (`$P`) | `/LAB/Lab-Documentos/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Prueba-Ayuda-Por-Rol` |
 | Proyecto web | `Web/AyudaDemo.Web.csproj` |
 | Puerto local | `5190` |
 | Contenedor del túnel | `demo-ayuda-por-rol-tunnel` |

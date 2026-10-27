@@ -78,7 +78,7 @@ flowchart TB
     CI["Cómo intervenir<br/>en redacción"] --> PL["Plantilla del anexo"]
   end
   subgraph AGE["Ruta agente"]
-    AG["AGENTS.md del repositorio<br/>en redacción"] --> CONV["Convenciones del Marco"]
+    AG["AGENTS.md del repositorio"] --> CONV["Convenciones del Marco"]
     CONV --> ANX["Anexos de referencia"]
   end
   MAPA --> T
@@ -94,7 +94,7 @@ flowchart TB
 | --- | --- | --- | --- |
 | **Aprender** | Quien estudia el tema desde cero | [Marco](00-Marco.md) → [Mapa](01-Mapa.md) (leído entero, como panorama) → `TEM-01` a `TEM-07` en orden → tutorial de la mini demo de `Examples/` → [Ejercicios](99-Anexos/Ejercicios.md) | Los objetivos `OBJ-SDEI-01` a `OBJ-SDEI-05` |
 | **Intervenir** | La persona del equipo que tiene que cambiar la documentación de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → «Cómo intervenir» y su plantilla (en redacción) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
-| **Agente** | Un agente de IA que trabaja sobre el repositorio | `AGENTS.md` en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
+| **Agente** | Un agente de IA que trabaja sobre el repositorio | [`AGENTS.md`](../../../AGENTS.md) en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
 
 Mientras los temas no estén escritos, la ruta «aprender» se recorre en este orden (la guía de un solo archivo se lee
 de corrido; la correspondencia entre paréntesis sirve para volver a ella cuando cada tema exista, y `TEM-07` no tiene

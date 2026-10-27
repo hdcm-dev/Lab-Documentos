@@ -2,6 +2,20 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (AGENTS.md de la raíz)
+
+### Raíz, scripts/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U4e
+
+#### Añadido
+
+- **`AGENTS.md`**: puntero para agentes de código y puerta de la ruta «agente» del cuerpo `SDEI` (D27). Dice qué es el repositorio, qué leer y en qué orden (README del cuerpo, convenciones del Marco, esquema de frontmatter, glosario, Mapa), cómo validar con `scripts/ci-local.sh`, qué puede proponer un agente y qué es clase H, y enlaza los anexos de referencia. Cambiarlo es clase H.
+- **`tools/docs-guard/excepciones.txt`**: primera excepción con huella (AK-3): `AGENTS.md` queda fuera de AI-3 mientras su SHA-256 no cambie.
+
+#### Cambiado
+
+- **`scripts/ci-local.sh`**: los grupos `enlaces`, `ai` y `estructura` revisan también el `AGENTS.md` de la raíz del repositorio que se verifica, si existe (CL-03); si falta, `enlaces` avisa.
+- **README del cuerpo `SDEI`** y **README de la raíz**: enlazan `AGENTS.md`; la caja de la ruta «agente» ya no figura «en redacción».
+
 ## 2026-10-27 (mini demo MovilidadUrbana)
 
 ### Guides/, .github/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U3

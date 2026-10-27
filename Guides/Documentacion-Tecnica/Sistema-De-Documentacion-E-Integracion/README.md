@@ -114,9 +114,9 @@ menos estructura (§1–§4 corresponden a `TEM-01`; §8, a `TEM-02`; §6.2–§
 | [Tema 01 — Qué es un sistema documentador](TEM-01-Sistema-Documentador.md) | `TEM-SDEI-01` | tema | borrador | Piezas, arquitectura de referencia, un caso de industria y adopciones públicas |
 | [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md) | `TEM-SDEI-02` | tema | borrador | De la captura de requerimientos a la integración: fases, RRD y estados |
 | [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md) | `TEM-SDEI-03` | tema | borrador | Dónde vive cada pieza y contra qué versión vale |
-| `TEM-04` Doble audiencia | — | tema | en redacción | Personas y agentes leyendo la misma fuente |
-| `TEM-05` Ayuda al usuario final | — | tema | en redacción | La ayuda dentro del producto, con roles como contexto |
-| `TEM-06` Compuertas de calidad y CI | — | tema | en redacción | Qué bloquea, qué avisa y por qué |
+| [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md) | `TEM-SDEI-04` | tema | borrador | Personas y agentes leyendo la misma fuente: canales, `AGENTS.md` y anti-inyección |
+| [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) | `TEM-SDEI-05` | tema | borrador | La ayuda dentro del producto, trazada a la regla con su versión, con roles como contexto |
+| [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md) | `TEM-SDEI-06` | tema | borrador | Qué bloquea, qué avisa y por qué: dos carriles, regla de bloqueo, pares rojo/verde |
 | [Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md) | `TEM-SDEI-07` | tema | borrador (hasta el escalón 2) | La documentación dentro de un desarrollo guiado por especificación: qué se cita del SDD, qué se agrega y cómo resuelven las trazas |
 | [Anexo: esquema de frontmatter y prefijos](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) | `ANX-SDEI-ESQUEMA` | anexo | borrador | Los diez campos más `description`, vocabularios y registro de prefijos |
 | [Anexo: glosario](99-Anexos/Glosario.md) | `ANX-SDEI-GLOSARIO` | anexo | borrador | Términos del cuerpo con su sigla y dónde se anclan |

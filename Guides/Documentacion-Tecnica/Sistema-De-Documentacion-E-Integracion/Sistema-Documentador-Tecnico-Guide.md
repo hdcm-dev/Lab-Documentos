@@ -2,13 +2,13 @@
 doc_id: DOC-SDT-0001
 doc_type: study-note
 title: Sistema documentador técnico — de Markdown al portal publicado
-status: draft
-origin: agent
-confidence: high
+status: borrador
+origin: ia-generated
+confidence: alta
 owner: fernando
 last_review: 2026-09-20
-audience: [human, agent]
-traces: [DOC-ADR, DOC-ADR, DOC-SAD, DOC-SRS, DOC-MANUAL, DOC-SDD]
+audience: [humano, agente]
+traces: [DOC-ADR, DOC-SAD, DOC-SRS, DOC-MANUAL, DOC-SDD]
 ---
 
 # Sistema documentador técnico — de Markdown al portal publicado
@@ -158,7 +158,7 @@ Lo observado en OneSignal y en los repos citados se descompone en piezas estable
 | Fragmentos reutilizables | Un dato en un solo lugar | carpeta `snippets/` | `include` de AsciiDoc/Sphinx, partials de Hugo |
 | Validación | Enlaces, spec, estilo | CLI `mint` + Vale | `lychee`, `markdownlint`, `spectral` (OpenAPI), Vale |
 | Build y hosting | Compilar y servir | Mintlify (SaaS) | GitHub Pages, Netlify, Vercel, Read the Docs, contenedor propio |
-| Salida para agentes | Contexto para LLM | `llms.txt` + `.md` por página | Convención `llms.txt` (adoptada por varios generadores) |
+| Salida para agentes | Contexto para LLM | `llms.txt` + `.md` por página | Convención `llms.txt`: propuesta publicada en `llmstxt.org`, no un estándar; varios generadores la implementan |
 
 ### 3.1 Sobre la estructura del contenido
 
@@ -186,7 +186,7 @@ La pregunta cambia de escala cuando el proyecto no es OneSignal sino uno propio:
 
 Dentro de la cadena de desarrollo se escribe para decidir y construir: especificación de requisitos, diseño y arquitectura, decisiones, runbooks de operación. Fuera de ella se escribe para usar: guías del panel, referencia de la API, notas de versión. Las dos cadenas escriben en el mismo repositorio y con el mismo flujo de *docs as code*; lo que las separa es el lector y, por lo tanto, dónde se publican.
 
-Qué documentos existen y para qué sirve cada uno no se redefine acá: lo fija la guía [Documentación técnica](../Documentacion-Tecnica/README.md) de este mismo corpus, con sus siete familias. Este apunte sólo agrega la dimensión que esa guía no trata —**hacia qué portal se compila cada familia**— y la cruza con los tipos de Diátaxis.
+Qué documentos existen y para qué sirve cada uno no se redefine acá: lo fija la guía [Documentación técnica](../Creacion-Guias-Tecnicas/README.md) de este mismo corpus, con sus siete familias. Este apunte sólo agrega la dimensión que esa guía no trata —**hacia qué portal se compila cada familia**— y la cruza con los tipos de Diátaxis.
 
 | Familia (guía `Documentacion-Tecnica`) | Documentos | Lector dominante | Tipo Diátaxis dominante | Portal |
 |----------------------------------------|------------|------------------|-------------------------|--------|
@@ -200,7 +200,7 @@ Qué documentos existen y para qué sirve cada uno no se redefine acá: lo fija 
 
 La asignación de portal es criterio propio; la familia y los `doc_id` son los de la guía. Seis de las siete familias se quedan dentro de la cadena de desarrollo. La frontera no pasa entre familias sino a través de tres documentos —`DOC-API`, `DOC-ADMIN` y las notas de `DOC-RELEASE`—, y es justamente ahí donde un vault único necesita dos builds.
 
-La especificación y el diseño **sí pertenecen al vault**, y la industria tiene formatos establecidos para guardarlos junto al código. La guía los desarrolla en [ADR](../Documentacion-Tecnica/30-Arquitectura/ADR.md) y [SAD](../Documentacion-Tecnica/30-Arquitectura/SAD.md); los antecedentes externos son dos. Michael Nygard propuso en 2011 los *Architecture Decision Records*: archivos cortos en Markdown guardados "in the project repository under doc/arch/adr-NNN.md", con secciones Title, Context, Decision, Status y Consequences, escritos como "a conversation with a future developer". arc42 fija las doce secciones de una documentación de arquitectura, de Introducción y Objetivos a Glosario, y su sección 9 son precisamente las decisiones. Ninguno de los dos es documentación para el usuario final, y ninguno debería llegarle. Cuando la especificación además se usa como fuente de verdad para generar código con agentes, el tema pasa a [Spec-Driven Development](../Documentacion-Tecnica/95-Transversales/Spec-Driven-Development.md) (`DOC-SDD`), que la guía trata como transversal.
+La especificación y el diseño **sí pertenecen al vault**, y la industria tiene formatos establecidos para guardarlos junto al código. La guía los desarrolla en [ADR](../Creacion-Guias-Tecnicas/30-Arquitectura/ADR.md) y [SAD](../Creacion-Guias-Tecnicas/30-Arquitectura/SAD.md); los antecedentes externos son dos. Michael Nygard propuso en 2011 los *Architecture Decision Records*: archivos cortos en Markdown guardados "in the project repository under doc/arch/adr-NNN.md", con secciones Title, Context, Decision, Status y Consequences, escritos como "a conversation with a future developer". arc42 fija las doce secciones de una documentación de arquitectura, de Introducción y Objetivos a Glosario, y su sección 9 son precisamente las decisiones. Ninguno de los dos es documentación para el usuario final, y ninguno debería llegarle. Cuando la especificación además se usa como fuente de verdad para generar código con agentes, el tema pasa a [Spec-Driven Development](../Creacion-Guias-Tecnicas/95-Transversales/Spec-Driven-Development.md) (`DOC-SDD`), que la guía trata como transversal.
 
 ### 5.2 Un vault, varias publicaciones
 
@@ -231,7 +231,7 @@ La especificación no se publica afuera, pero alimenta a lo que sí se publica: 
 
 «Documentación con distintos privilegios» encierra dos problemas diferentes que conviene no mezclar.
 
-El primero es **segmentar por rol del producto**: el administrador del panel ve la guía de gestión de usuarios, el operador no. Es contenido del mismo producto filtrado por audiencia, y los portales lo resuelven con metadatos por página. Mintlify, por ejemplo, permite declarar `groups` en el frontmatter: "Users must belong to at least one of the listed groups to access the page. If a user tries to access a page without the required group, they'll receive a 404 error". En la tradición anterior a Markdown, el estándar DITA de OASIS lo llama *conditional processing* o *profiling*: atributos como `@audience`, `@platform` o `@product` marcan cada fragmento, y un perfil DITAVAL decide al compilar qué se incluye y qué no.
+El primero es **segmentar por rol del producto**: el administrador del panel ve la guía de gestión de usuarios, el operador no. Es contenido del mismo producto filtrado por audiencia, y los portales lo resuelven con metadatos por página. Mintlify, por ejemplo, permite declarar `groups` en el frontmatter: "Users must belong to at least one of the listed groups to access the page. If a user tries to access a page without the required group, they'll receive a 404 error". En la tradición anterior a Markdown, el estándar DITA de OASIS lo llama *conditional processing* o *profiling*: atributos como `@audience`, `@platform` o `@props` marcan cada fragmento, y un perfil DITAVAL decide al compilar qué se incluye y qué no.
 
 El segundo es **confidencialidad**: el diseño interno, las decisiones y los runbooks no deben estar en el portal del producto con una marca que los oculte. Mintlify distingue entre *authentication*, que exige login, y *personalization*, que identifica al visitante "while keeping pages public". Su propia documentación lo advierte sin rodeos: "With personalization, `groups` control visibility but do not restrict access to a page. A visitor can still open a group-filtered page by navigating directly to its URL. Use authentication to restrict access to sensitive content." Un filtro de visibilidad no es un control de acceso. La recomendación que se desprende —criterio propio, no norma de la industria— es resolver la confidencialidad **en el build y no en la vista**: el documento interno no se compila en el sitio externo, de modo que un frontmatter mal escrito no puede filtrarlo. Los grupos por rol quedan para lo que son: comodidad del lector dentro de un contenido que ya es publicable.
 
@@ -405,8 +405,10 @@ Las carpetas `comun/`, `alumno/` y `administrador/` ordenan el trabajo del autor
 | `roles` | Sí | `[Student]` | Quién la ve. Valores: los nombres del enum `Role` |
 | `order` | Sí | `10` | Orden dentro de la navegación del rol |
 | `traces` | Sí | `[CU-00026@1.1, RN-02005]` | Casos de uso y reglas que la página explica, con la versión del CU que se leyó |
+| `owner` | Sí | `ACT-09` | Quién responde por la frescura de la página (8.4) |
+| `last_review` | Sí | `2026-09-19` | Última revisión sustantiva; la usa la frescura por tiempo (8.5) |
 | `topic` | No | `envio-de-trabajo` | Clave estable para `<AyudaContextual Tema="…"/>` |
-| `translation_of` | Sólo en traducciones | `es/alumno/enviar-un-trabajo.md@a1b2c3d` | Página fuente y revisión de la que se tradujo |
+| `translation_of` | Sólo en traducciones | `es/alumno/enviar-un-trabajo.md@a1b2c3d` | Página fuente y revisión (commit) de la que se tradujo. La prueba de concepto usa en su lugar la versión del CU (`…@CU-00026@1.1`); ver 7.6 |
 
 Los valores de `roles` son los nombres del enum `Role`, y no las etiquetas en castellano. `Role.cs` fija que los papeles "se guardan y se serializan POR SU NOMBRE": la documentación sigue la misma regla.
 
@@ -429,7 +431,7 @@ De los CU del panel, los candidatos directos son `CU-00021` a `CU-00029`: alta d
 
 La traza es lo que mantiene coherente la derivación. Cada página declara en `traces` el CU **y la versión** que se leyó (`CU-00026@1.1`). Cuando el CU pasa a 1.2, el validador de CI marca la página como potencialmente desactualizada. El que escribió la página revisa, actualiza la traza y el aviso desaparece. Es el mismo mecanismo que la ia-db aplica a sus índices («cuando la evidencia contradiga un índice, manda la evidencia»), llevado a la ayuda.
 
-Un agente puede producir el primer borrador de cada página a partir de su CU, y es trabajo apropiado para uno. La guía [Documentación técnica](../Documentacion-Tecnica/README.md) fija el límite en su actor `ACT-10`: el agente "produce borradores, no decide". La página entra por pull request y la aprueba una persona.
+Un agente puede producir el primer borrador de cada página a partir de su CU, y es trabajo apropiado para uno. La guía [Documentación técnica](../Creacion-Guias-Tecnicas/README.md) fija el límite en su actor `ACT-10`, cuya autoridad es "Ninguna; produce borradores trazables", y lo resume así: "el agente de IA no decide nada". La página entra por pull request y la aprueba una persona.
 
 ### 7.5 Roles: dónde se decide y cómo se prueba
 
@@ -455,6 +457,8 @@ Lo que **no** conviene usar para la ayuda son los `.resx`. Están hechos para ca
 La búsqueda por cultura imita el *culture fallback* de .NET, en el que, según Microsoft, "if not found, it reverts to the parent culture". Para `es-AR` se busca `es-AR/`, después `es/`. Si la página no está traducida, se sirve la del idioma fuente con un aviso visible de que no está traducida, y nunca un 404: la falta de traducción no puede quitarle la ayuda a nadie.
 
 La frescura se controla igual que la derivación. Cada traducción declara en `translation_of` la página fuente y la revisión de la que se tradujo. Si la fuente cambia después, CI marca la traducción como atrasada.
+
+Hay dos mecanismos de frescura posibles y no son equivalentes. La revisión del archivo fuente (`es/alumno/enviar-un-trabajo.md@a1b2c3d`) detecta **cualquier** cambio de la página. La versión del caso de uso (`es/alumno/enviar-un-trabajo.md@CU-00026@1.1`, la que usa la prueba de concepto) sólo detecta cambios de la especificación, y no ve una corrección de redacción de la página fuente. Esta propuesta adopta la revisión del archivo; la prueba de concepto quedó con la versión del CU.
 
 Una aclaración para no sobredimensionar: Lab-Geometria hoy no tiene localización (no hay `AddLocalization`, `IStringLocalizer` ni `.resx` en `src/`), y su norma de nombres fija las etiquetas en castellano. La recomendación —criterio propio— es crear la carpeta `es/` desde el primer día, porque cuesta un nivel de directorio y evita mover todo el árbol después, pero **no** activar el middleware ni escribir traducciones hasta que exista un segundo idioma real.
 
@@ -506,18 +510,21 @@ Lo que la corrida demostró (`Consola/salida.txt`, 2026-09-19):
 | Tablas de Markdown | `<table>` con `<thead>` y `<tbody>` |
 | Validador | 3 fallas, código de salida 1. Dos plantadas; la tercera —`comun/ingresar` enlaza a una página sólo de alumno, que el administrador no puede abrir— **no estaba plantada** y la encontró el validador |
 
-Sobre ese motor se armó después un panel web mínimo en Blazor, dentro de un devcontainer (`Examples/Prueba-Ayuda-Por-Rol/Web/` y su `.devcontainer/`). Tiene ingreso simulado por papel, nueve páginas derivadas de `CU-00022` a `CU-00029`, ayuda contextual en cada pantalla, fuente `.md`, `llms.txt` y dos idiomas. Se verificó con `curl` sobre `localhost` y a través de un túnel público, y quedaron siete capturas en `capturas/`:
+Sobre ese motor se armó después un panel web mínimo en Blazor, dentro de un devcontainer (`Examples/Prueba-Ayuda-Por-Rol/Web/` y su `.devcontainer/`). Tiene ingreso simulado por papel, siete páginas fuente en español más dos traducciones al inglés, derivadas de `CU-00022`, `CU-00023`, `CU-00024`, `CU-00026`, `CU-00028` y `CU-00029`, ayuda contextual en cada pantalla, fuente `.md`, `llms.txt` y dos idiomas. Se verificó con `curl` sobre `localhost` y a través de un túnel público, y quedaron siete capturas en `capturas/`:
 
 | Verificación (2026-09-19) | Resultado |
 |---------------------------|-----------|
-| Arranque | `Catálogo de ayuda: 9 páginas, validador con 0 fallas` |
+| Arranque | `Catálogo de ayuda: 9 páginas, validador con 0 fallas` (el catálogo cuenta pares cultura-página: 7 fuentes + 2 traducciones) |
 | Sin sesión, `/ayuda` | `302` a `/ingresar` |
+| Sin sesión, `/ayuda/llms.txt` | `302` a `/ingresar`, aunque el middleware de `.md` y `llms.txt` prevé `401`. Observado en una revisión posterior (2026-10-26), no re-medido. Inferencia no verificada: la ruta `/ayuda/{*Slug}` con `[Authorize]` coincide antes y el cookie handler redirige. Para un agente, un `302` a HTML no equivale a un `401` |
 | Alumno → página de administrador (HTML y `.md`) | `404`; el cuerpo no contiene el título de la página pedida |
 | Administrador → página de alumno | `404` |
 | `llms.txt` | 4 entradas para el alumno, 5 para el administrador |
 | Inglés, página sin traducir | Se sirve la española con el aviso «This page has not been translated yet» |
 
 La prueba web dejó un aprendizaje de .NET 10 que conviene registrar. Fijar `HttpContext.Response.StatusCode = 404` desde un componente de render estático devolvió **un cuerpo vacío** (`Content-Length: 0`). El camino que funcionó es el que prevé el framework: `NavigationManager.NotFound()` más `NotFoundPage` en el `Router`.
+
+La prueba usa un subconjunto del árbol de 7.3 y algunos nombres difieren: `cambiar-la-contrasena` por `cambiar-contrasena` y `dar-desenlace` por `dar-desenlace-a-la-revision`; no tiene `leer-las-discrepancias`, `primer-arranque` ni `glosario`.
 
 Lo que la prueba **no** cubre: la integración con el `SessionState` real de Lab-Geometria y su modo Interactive Server, la cobertura contra el SDD completo y el rendimiento. Esas piezas son diseño, no evidencia.
 
@@ -526,7 +533,7 @@ Lo que la prueba **no** cubre: la integración con el `SessionState` real de Lab
 Lab-Geometria no se modifica con un parche: todo cambio de alcance pasa por su SDD. Una ayuda por rol es alcance nuevo, así que entraría como una necesidad de negocio y un caso de uso propios. Sobre ellos irían la maqueta de la superficie `/ayuda`, la decisión de arquitectura (catálogo incrustado frente a sitio aparte, que es la discusión de la sección 6.4) y las pruebas. El orden de construcción razonable es este:
 
 1. Catálogo, render y filtro por rol, con el validador de enlaces y cruces en CI.
-2. Las nueve páginas derivadas de `CU-00021` a `CU-00029`, en español, con sus trazas.
+2. Las diez páginas y el glosario del árbol de 7.3, derivados de `CU-00021` a `CU-00029`, en español, con sus trazas.
 3. Ayuda contextual desde las pantallas y los endpoints `.md` y `llms.txt`.
 4. Cobertura y frescura de la derivación en CI.
 5. Idiomas, recién cuando haya un segundo idioma real.
@@ -587,7 +594,7 @@ flowchart LR
 Hay tres puntos de anclaje, y los tres ya existen en la práctica de la industria:
 
 - **El pull request como unidad de cambio.** La regla de 6.2: si un documento tiene que cambiar en el mismo PR que el código que describe, vive en el mismo repositorio. El PR que cambia `CU-00026` también cambia su página de ayuda, porque si no, el validador de frescura de 7.7 lo rechaza.
-- **El changelog como puente entre desarrollo y publicación.** Keep a Changelog 1.1.0 pide "Keep an `Unreleased` section at the top to track upcoming changes", y al publicar esa sección pasa a ser la de la versión. La guía [Change-Log](../Documentacion-Tecnica/60-Desarrollo/Change-Log.md) del corpus desarrolla ese ciclo; este apunte no lo repite.
+- **El changelog como puente entre desarrollo y publicación.** Keep a Changelog 1.1.0 pide "Keep an `Unreleased` section at the top to track upcoming changes", y al publicar esa sección pasa a ser la de la versión. La guía [Change-Log](../Creacion-Guias-Tecnicas/60-Desarrollo/Change-Log.md) del corpus desarrolla ese ciclo; este apunte no lo repite.
 - **El tag como congelamiento.** Con la documentación en el repo del código, el tag congela las dos cosas juntas (6.3). Lab-Geometria tiene hoy `v1.0.0` a `v1.2.0`.
 
 ### 8.4 Estados y metadatos: el ciclo de vida escrito en el documento
@@ -598,15 +605,15 @@ Una fase que no queda registrada en el documento no se puede verificar. Los sist
 |----------------------------|---------------------------------------------|----------------------|-----------------|-----------------------|
 | ¿En qué estado está? | `status: vigente \| borrador \| obsoleto` | `**Estado:**` en cabecera (`Aprobado`, `Propuesto`, `Emitido`, `Aceptado`…) | — | Heredado del PR: en `main` está vigente |
 | ¿Qué versión es? | — | `**Versión:**` en cabecera | `git_commit_id` en la página publicada | La del ensamblado desplegado |
-| ¿Cuándo se revisó? | `last_review` | Control de cambios fechado (en 550 documentos vivos) | `ms.date` | — (propuesta: agregarlo) |
-| ¿Quién responde? | `owner` | `**Autor:**` | `ms.author` | — (propuesta: agregarlo) |
+| ¿Cuándo se revisó? | `last_review` | Control de cambios fechado (en 550 documentos vivos) | `ms.date` | `last_review` |
+| ¿Quién responde? | `owner` | `**Autor:**` | `ms.author` | `owner` |
 | ¿Quién lo produjo y cuánto confiar? | `origin`, `confidence` | Auditoría por fase | — | — |
 | ¿De qué fuente deriva? | `traces` | `Trazabilidad upstream` | — | `traces: [CU-00026@1.1]` |
 | ¿Dónde queda lo retirado? | Estado `obsoleto` | `_legacy/` fechado por migración | — | Historial de Git |
 
 Dos definiciones de Microsoft sirven de referencia porque son explícitas. `ms.date` se muestra en la página publicada "to indicate the last time the article was substantially edited or guaranteed fresh". `ms.author` "Identifies the article's owner. The owner is responsible for decisions about the content of the article". La primera hace visible la frescura para el lector. La segunda le pone nombre a quien tiene que mantenerla. La página de localización de ASP.NET Core consultada en 7.6 lleva además en su metadato `ms.update-cycle: 365-days`: un plazo de revisión declarado por página.
 
-La tabla deja ver un hueco concreto en la propuesta de 7.3. La ayuda por rol registra de qué fuente deriva, pero no **cuándo se revisó ni quién responde**. Agregar `last_review` y `owner` al contrato del frontmatter la alinea con las convenciones del corpus.
+La comparación muestra por qué el contrato de 7.3 lleva `last_review` y `owner`: sin ellos, la ayuda por rol registraría de qué fuente deriva, pero no **cuándo se revisó ni quién responde**. Con ellos queda alineada con las convenciones del corpus. La tabla de 7.3 es la única fuente del contrato; la prueba de concepto es anterior y sus páginas todavía no llevan esos dos campos.
 
 ### 8.5 Tres formas de envejecer
 
@@ -622,20 +629,20 @@ La diferencia entre la primera y la segunda fila define dónde se automatiza. El
 
 ### 8.6 Deprecar y archivar
 
-Retirar un documento también tiene un orden, y la industria lo resuelve con dos pasos separados. Keep a Changelog distingue "**Deprecated** for soon-to-be removed features" de "**Removed** for now removed features". La guía [Change-Log](../Documentacion-Tecnica/60-Desarrollo/Change-Log.md) del corpus explica por qué: la sección Obsoleto "anuncia con antelación lo que va a desaparecer". Una eliminación sin obsolescencia previa es un antipatrón que "rompe a todos los consumidores a la vez y sin aviso". Para la documentación rige lo mismo. La página de una funcionalidad en retiro se marca obsoleta con su fecha y recién después se quita.
+Retirar un documento también tiene un orden, y la industria lo resuelve con dos pasos separados. Keep a Changelog distingue "**Deprecated** for soon-to-be removed features" de "**Removed** for now removed features". La guía [Change-Log](../Creacion-Guias-Tecnicas/60-Desarrollo/Change-Log.md) del corpus explica por qué: la sección Obsoleto "anuncia con antelación lo que va a desaparecer". Una eliminación sin obsolescencia previa es un antipatrón que "rompe a todos los consumidores a la vez y sin aviso". Para la documentación rige lo mismo. La página de una funcionalidad en retiro se marca obsoleta con su fecha y recién después se quita.
 
-Archivar no es borrar. Docusaurus recomienda mantener menos de diez versiones vivas y observa que proyectos como Jest archivan las anteriores "linking to immutable standalone deployment". Lab-Geometria lo practica dentro del repositorio: `SDD/Docs/_legacy/` guarda las emisiones reemplazadas en carpetas fechadas por migración (`2026-08-15-migracion-8.2`, `2026-08-16-consolidacion-8.5`…). Su ia-db fija la regla: "`_legacy/` es registro histórico y no se reescribe". El archivo es inmutable porque su valor está en decir lo que se sabía en ese momento.
+Archivar no es borrar. Docusaurus recomienda mantener menos de diez versiones vivas y observa que proyectos como Jest archivan las anteriores "linking to immutable standalone deployment" (fuente de la página, `versioning.mdx` en el commit `a85847f`, línea 330; la página publicada en `docusaurus.io` no muestra esa frase). Lab-Geometria lo practica dentro del repositorio: `SDD/Docs/_legacy/` guarda las emisiones reemplazadas en carpetas fechadas por migración (`2026-08-15-migracion-8.2`, `2026-08-16-consolidacion-8.5`…). Su ia-db fija la regla: "`_legacy/` es registro histórico y no se reescribe". El archivo es inmutable porque su valor está en decir lo que se sabía en ese momento.
 
 La superficie HTTP del mismo proyecto muestra la contracara en el código. El punto `A-04` figura como "retirado y **no reciclado**" en el índice 04 de su ia-db. Un identificador retirado no se reasigna, y por eso las trazas viejas siguen apuntando a algo inequívoco. Es la misma lógica que mantiene estables los `doc_id` de una guía.
 
 ### 8.7 Quién hace qué en el ciclo
 
-La guía [Documentación técnica](../Documentacion-Tecnica/README.md) ya fija los actores del dominio documental, y el ciclo de vida los distribuye:
+La guía [Documentación técnica](../Creacion-Guias-Tecnicas/README.md) ya fija los actores del dominio documental, y el ciclo de vida los distribuye:
 
 | Fase | Actor principal (guía `Documentacion-Tecnica`) | Límite |
 |------|-----------------------------------------------|--------|
 | Planificar | `ACT-01` Product Owner, `ACT-09` Technical Writer | Decide qué documentación exige el producto |
-| Derivar y redactar | `ACT-09` Technical Writer, `ACT-10` Agente de IA | El agente "produce borradores, no decide" |
+| Derivar y redactar | `ACT-09` Technical Writer, `ACT-10` Agente de IA | "Ninguna; produce borradores trazables" (autoridad de `ACT-10`) |
 | Revisar | `ACT-02` Analista funcional, `ACT-05` QA | Contrastan la página contra la especificación y contra la pantalla real |
 | Publicar | `ACT-06` DevOps/SRE | El pipeline, no una persona, mueve el documento |
 | Mantener | El `owner` de cada documento | Responde por su frescura |
@@ -736,12 +743,12 @@ Las consultas de las secciones 1 a 4 se realizaron el 2026-09-16; las de la secc
 | `mintlify.com/docs/deploy/authentication-setup` | WebFetch, 2026-09-19 | `public: true`; `groups` en frontmatter → 404 si no pertenece; personalization mantiene páginas públicas |
 | `cognitect.com/blog/2011/11/15/documenting-architecture-decisions` | WebFetch, 2026-09-19 | ADR en `doc/arch/adr-NNN.md`, Markdown; Title, Context, Decision, Status, Consequences |
 | `arc42.org/overview` | WebFetch, 2026-09-19 | Las doce secciones de arc42 |
-| `docs.oasis-open.org/dita/dita/v1.3/os/part1-base/archSpec/base/condproc.html` | WebSearch, 2026-09-19 | Conditional processing (profiling); `@audience`, `@platform`, `@product`; perfiles DITAVAL |
+| `docs.oasis-open.org/dita/dita/v1.3/os/part1-base/archSpec/base/condproc.html` | WebSearch, 2026-09-19 | Conditional processing (profiling); `@audience`, `@deliveryTarget`, `@otherprops`, `@platform`, `@props`; perfiles DITAVAL |
 | `mintlify.com/docs/deploy/personalization-setup.md` | `curl`, 2026-09-19 | Línea 142: con personalization, `groups` "control visibility but do not restrict access to a page" |
 | `PROG2/Geometria/Lab-Geometria` (local, `4b114d7`) | `find SDD -name '*.md' -not -path '*_legacy*'`; `grep` en `src/` y `.csproj`; `git tag` | 580 `.md`; `Microsoft.AspNetCore.OpenApi` 10.0.11, `Scalar.AspNetCore`; `ApiDocumentation.cs` con `Documentacion:Publicada`; tags `v1.0.0`…`v1.2.0`; sin manual en `*.razor` |
 | `PROG2/Geometria/Lab-Geometria.Documentacion/ia-db/README.md` e índices 01 y 04 | Lectura | Corpus `SDD/` y su autoridad; rutas OpenAPI/Scalar condicionales por `ADR-08008` |
 | `api.github.com/repos/kubernetes/website/branches` | `curl`, 2026-09-19 | 82 ramas; `release-1.29` … `release-1.36` |
-| `raw.githubusercontent.com/facebook/docusaurus/main/website/docs/guides/docs/versioning.mdx` | `curl`, 2026-09-19 | Línea 20: "Most of the time, you don't need versioning…"; línea 103: `docs:version 1.1.0`; línea 330: "keep the number of your versions below 10" |
+| `raw.githubusercontent.com/facebook/docusaurus/a85847fbac7b7394d1b6325e40ac34fcc7f1c729/website/docs/guides/docs/versioning.mdx` (fijado por commit; antes se citaba la rama `main`) | `curl`, 2026-09-19; reverificado por commit el 2026-10-27 | Línea 20: "Most of the time, you don't need versioning…"; línea 103: `docs:version 1.1.0`; línea 330: "keep the number of your versions below 10" |
 | `api.github.com/repos/{dotnet/docfx, xoofx/markdig}` | `curl`, 2026-09-19 | Descripciones declaradas de DocFX y Markdig |
 | `Lab-Geometria` `src/GeometriaFactory.Domain/Values/Role.cs`, `src/GeometriaFactory.Web/Services/SessionClaims.cs`, `SessionState.cs` | Lectura | `enum Role { Student = 1, Administrator = 2 }`, serializado por nombre; claim `gf:role`; `IsAdministrator` |
 | `Lab-Geometria` `SDD/…/Casos-De-Uso/CU-00026-Enviar-Un-Trabajo-Y-Ver-Sus-Observaciones.md` | Lectura | Versión 1.1; secciones Actores, Precondiciones, Flujo principal, Flujos alternativos, Excepciones |

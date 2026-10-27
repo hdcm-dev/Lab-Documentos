@@ -21,7 +21,7 @@ npx -y @devcontainers/cli exec --workspace-folder . \
   dotnet run --project Web/AyudaDemo.Web.csproj --no-launch-profile
 ```
 
-Abrir `http://localhost:5190`. Al arrancar, el log dice `Catálogo de ayuda: 9 páginas, validador con 0 fallas`.
+Abrir `http://localhost:5190`. Al arrancar, el log dice `Catálogo de ayuda: 9 páginas, validador con 0 fallas`. El catálogo cuenta pares cultura-página: son 7 páginas fuente en español y 2 traducciones al inglés.
 
 Para mostrarla afuera sin tocar DNS ni cuentas, un túnel rápido de Cloudflare (la URL `*.trycloudflare.com` sale en el log y muere al borrar el contenedor):
 
@@ -61,3 +61,5 @@ docker run --rm -u $(id -u):$(id -g) -e HOME=/tmp -v "$PWD/Consola":/w -w /w \
 | Página común enlaza a una sólo de alumno | `comun/ingresar.md` → `alumno/entregar-trabajo.md` | **No**: lo encontró el validador |
 
 El `<script>` de `Consola/Ayuda/comun/ingresar.md` también es deliberado: sale escapado (`&lt;script&gt;`).
+
+En `Web/Ayuda/en/` hay dos enlaces a páginas que no tienen traducción (`comun/cambiar-la-contrasena.md` y `alumno/consultar-mis-trabajos.md`). También son deliberados: el panel los resuelve con el respaldo de cultura (sección 7.6 de la guía) y sirve la página en español con un aviso. Un verificador de enlaces sobre archivos los ve rotos; la compuerta de documentación del repositorio los excluye con nombre y motivo, igual que el defecto plantado de la consola.

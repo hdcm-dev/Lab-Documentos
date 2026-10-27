@@ -2,6 +2,25 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (compuerta de documentación y delegación del merge)
+
+### .github/ y scripts/ — `docs-guard` (expediente 0002 de DocAsCode, unidad E1-U0a)
+
+#### Añadido
+
+- **`.github/workflows/docs-guard.yml`**: compuerta mínima de documentación. Corre en `pull_request` y como workflow reutilizable (`workflow_call`) en el runner propio `[self-hosted, i7infra-dev]`, con `timeout-minutes: 10`. Verifica la guía del sistema documentador (`Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/`) con `lychee --offline --include-fragments` (enlaces internos y anclas) y `markdownlint-cli2` con reglas sólo estructurales. Seguridad: `permissions: contents: read`, sin `pull_request_target`, actions fijadas por SHA y un PR desde un fork no corre en el runner propio.
+- **`scripts/ci-local.sh`**: los mismos tres pasos, en el mismo orden, para correr la compuerta antes de empujar.
+- **`scripts/docs-guard.lychee.toml`** y **`scripts/docs-guard.markdownlint-cli2.jsonc`**: la configuración de ambos. La de lychee excluye, con nombre, los ocho enlaces rotos de la línea de base: siete los sanea la unidad siguiente (E1-U1) y uno es el defecto plantado de la prueba de concepto, que se conserva.
+
+#### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0)
+
+- **Fecha:** 2026-10-27. **Decidió:** el responsable del producto (PO). **Asiento:** folio 130 §2 del expediente 0002 de DocAsCode (`130-respuestas-del-po-y-asiento.md`, en `hdcm-dev/Lab-Documentos.Documentacion`).
+- **Testimonio del PO (fila L2, literal):** «esto surgió porque despues de un avance surgia preguntas y confirmaciones tontas … Mi objetivo es que se enriquesca de tal forma el conocimiento analitico que los subagentes con este conocimiento puedan orquestar de forma automatica todo el proceso de desarrollo».
+- **Alcance:** los PR del expediente 0002 en este repositorio, incluido el primer merge (esta unidad), por pedido explícito del PO (folio 130 §3).
+- **Guarda:** techo de espera 120 minutos; intervalo de relectura 30 segundos; estado `clean` y al menos un control de la cabeza, todos en éxito. El techo duplica el de la delegación anterior porque el runner `i7infra-dev` es único y lo comparten otros proyectos.
+- **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual; también lo irreversible con consecuencia externa (configuración de la organización, publicación de paquetes ajenos al caso, compras), que sale al PO con sugerencias y valor por defecto.
+
 ## 2026-10-26 (guía nueva)
 
 ### Concepts/Framework-Concept/ — v1.0.0 (nueva, borrador)

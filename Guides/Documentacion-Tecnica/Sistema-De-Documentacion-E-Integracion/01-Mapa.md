@@ -124,6 +124,7 @@ CL-14 está latente: no se activa mientras ningún escenario publique sitio (`CT
 2. ¿Qué control de la compuerta va a mirar la pieza que vas a producir, y qué tendría que estar mal para que dé rojo?
 3. Si la pieza no encaja en ninguna clase del catálogo, ¿quién decide abrir una nueva?
 
-Documento anterior: [00 Marco](00-Marco.md). Siguiente: los temas de la ruta «aprender»; mientras estén en redacción,
-la [guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md), en el orden que da el
+Documento anterior: [00 Marco](00-Marco.md). Siguiente documento: [Tema 01 — Qué es un sistema
+documentador](TEM-01-Sistema-Documentador.md); para los temas todavía en redacción, la
+[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md), en el orden que da el
 [README](README.md#3-rutas-de-lectura).

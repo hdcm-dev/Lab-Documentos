@@ -26,6 +26,7 @@ fuentes por esas anclas sin leer la prosa.
 4. [Normas y estilos](#4-normas-y-estilos)
 5. [Modelos de lenguaje y documentación](#5-modelos-de-lenguaje-y-documentación)
 6. [Práctica de la industria](#6-práctica-de-la-industria)
+7. [Versionado, estilo y adopciones públicas](#7-versionado-estilo-y-adopciones-públicas)
 
 ## 1. Norma de citación
 
@@ -120,5 +121,43 @@ Plantillas:
 <a id="ref-winters-2020"></a>Winters, T., Manshreck, T., y Wright, H. (Eds.). (2020). *Software engineering at Google*, cap. 10 «Documentation». O'Reilly. https://abseil.io/resources/swe-book/html/ch10.html (consultado el 2026-10-26). Verificación: V.
 
 <a id="ref-dora-sf"></a>DORA. (s. f.). *Documentation quality*. https://dora.dev/capabilities/documentation-quality/ (consultado el 2026-10-26). Verificación: V.
+
+## 7. Versionado, estilo y adopciones públicas
+
+Las entradas de esta sección se consultaron el 2026-10-27 para los temas 01 a 03. Los repositorios se citan por el
+commit más reciente que tocó la ruta que materializa la práctica; el ensayo de adopciones del expediente 0002 de
+DocAsCode (`evidencia/E1-U4b/04-adopciones.sh`) reproduce la consulta.
+
+<a id="ref-procida-sf"></a>Procida, D. (s. f.). *Diátaxis: A systematic approach to technical documentation authoring*. https://diataxis.fr/ (consultado el 2026-10-27). Verificación: P (la página no nombra al autor; la autoría es la conocida del marco).
+
+<a id="ref-prestonwerner-sf"></a>Preston-Werner, T. (s. f.). *Semantic Versioning 2.0.0*. https://semver.org/ (consultado el 2026-10-27). Verificación: V.
+
+<a id="ref-lacan-sf"></a>Lacan, O. (s. f.). *Keep a Changelog* (versión 1.1.0). https://keepachangelog.com/en/1.1.0/ (consultado el 2026-10-27). Verificación: V.
+
+<a id="ref-fowler-2013"></a>Fowler, M. (2013, 21 de agosto). *GivenWhenThen*. martinfowler.com. https://martinfowler.com/bliki/GivenWhenThen.html (consultado el 2026-10-27). Verificación: V.
+
+<a id="ref-github-docs-2026"></a>GitHub. (2026). *github/docs* (commit ee20fda) [Repositorio]. https://github.com/github/docs/tree/ee20fda5d4810d2e641a1591754b699bb8677637 (consultado el 2026-10-27). Ruta `content/`; la verificación diaria de enlaces está en `.github/workflows/link-check-daily.yml` (commit 7abf80d, 2026-01-26). Verificación: V (API pública de GitHub).
+
+<a id="ref-github-openapi-2026"></a>GitHub. (2026). *github/rest-api-description* (commit a5c38c1) [Repositorio]. https://github.com/github/rest-api-description/tree/a5c38c137866bd959dcb7a5457c5181ee1224c0f (consultado el 2026-10-27). Ruta `descriptions/`, descripciones OpenAPI de la API REST. Verificación: V (API pública de GitHub).
+
+<a id="ref-kubernetes-website-2026"></a>Kubernetes. (2026). *kubernetes/website* (commit ed70e31) [Repositorio]. https://github.com/kubernetes/website/tree/ed70e311737a341574ed5758b7af24e3bba232cb (consultado el 2026-10-27). Ruta `content/en/`; 33 ramas `release-1.*` (la última, `release-1.36`). Verificación: V (API pública de GitHub).
+
+<a id="ref-microsoft-azure-docs-2026"></a>Microsoft. (2026). *MicrosoftDocs/azure-docs* (commit d7e590b) [Repositorio]. https://github.com/MicrosoftDocs/azure-docs/tree/d7e590b2008f569384236af9abf02893d82c14db (consultado el 2026-10-27). Ruta `articles/`. Verificación: V (API pública de GitHub).
+
+<a id="ref-stripe-openapi-2026"></a>Stripe. (2026). *stripe/openapi* (commit a6cd987) [Repositorio]. https://github.com/stripe/openapi/tree/a6cd9878ad3d86f46a4b81ec4368e76f690a1e09 (consultado el 2026-10-27). Ruta `openapi/`. Verificación: V (API pública de GitHub).
+
+<a id="ref-mintlify-docs-2026"></a>Mintlify. (2026). *mintlify/docs* (commit 4a8f15c) [Repositorio]. https://github.com/mintlify/docs/tree/4a8f15c3dc3f2e5a855098c16bc2ecab56242b4d (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub).
+
+<a id="ref-redhat-openshift-docs-2026"></a>Red Hat. (2026). *openshift/openshift-docs* (commit df83131) [Repositorio]. https://github.com/openshift/openshift-docs/tree/df831314fea6714928d2f9e4da6967ef03507c77 (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub).
+
+<a id="ref-grafana-2026"></a>Grafana Labs. (2026). *grafana/grafana* (commit 5427e8d) [Repositorio]. https://github.com/grafana/grafana/tree/5427e8d92b287503d5df1b272b9811e3ec0322f0 (consultado el 2026-10-27). Archivo `.vale.ini`; la documentación del producto vive en `docs/sources/` del mismo repositorio (commit 7b102dd, 2026-10-27). Verificación: V (API pública de GitHub).
+
+<a id="ref-backstage-2026"></a>Backstage. (2026). *backstage/backstage* (commit 82079b4) [Repositorio]. https://github.com/backstage/backstage/tree/82079b4e75b68807eb83a718749663fb6d730236 (consultado el 2026-10-27). Ruta `docs/`, en el mismo repositorio que el código. Verificación: V (API pública de GitHub).
+
+<a id="ref-istio-2026"></a>Istio. (2026). *istio/istio.io* (commit 2100f40) [Repositorio]. https://github.com/istio/istio.io/tree/2100f4033a629dd1986620fe1f7c3375e73945e1 (consultado el 2026-10-27). Ruta `content/`; 33 ramas `release-1.*` (la última, `release-1.31`). Verificación: V (API pública de GitHub).
+
+<a id="ref-docusaurus-2026"></a>Docusaurus. (2026). *facebook/docusaurus* (commit 206e741) [Repositorio]. https://github.com/facebook/docusaurus/tree/206e741f1fed6b38eb0ddd6d31cc220652bf2e1b (consultado el 2026-10-27). Ruta `website/versioned_docs/`, doce versiones publicadas. Verificación: V (API pública de GitHub).
+
+<a id="ref-jest-2026"></a>Jest. (2026). *jestjs/jest* (commit ea7258e) [Repositorio]. https://github.com/jestjs/jest/tree/ea7258e3338b9df680c66a5198607da8accf25c3 (consultado el 2026-10-27). Ruta `website/versioned_docs/`, cuatro versiones publicadas. Verificación: V (API pública de GitHub).
 
 Volver al [Mapa](../01-Mapa.md#6-anexos).

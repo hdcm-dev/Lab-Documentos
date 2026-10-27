@@ -2,6 +2,23 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (temas 04 a 06 del cuerpo del sistema documentador)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4c
+
+#### Añadido
+
+- **`TEM-04-Doble-Audiencia.md`** (`TEM-SDEI-04`): una fuente para personas y agentes; canales por escenario y contexto, `AGENTS.md` como puntero, índice derivado del frontmatter y la compuerta anti-inyección, con ensayo reproducible.
+- **`TEM-05-Ayuda-Al-Usuario-Final.md`** (`TEM-SDEI-05`): ayuda derivada de la especificación, traza con versión, divergencias declaradas y rol como contexto que se resuelve en el servidor, con ensayo de `traces-resolve` sobre la mini demo.
+- **`TEM-06-Compuertas-Y-CI.md`** (`TEM-SDEI-06`): los dos carriles, la regla de bloqueo de cinco condiciones, pares rojo/verde, seguridad del runner y plantilla para dar de alta un control.
+- **`99-Anexos/Referencias.md`**: entrada `ref-gitlab-testing-sf` (GitLab, *Documentation testing*).
+
+#### Cambiado
+
+- **`README.md`** del cuerpo: las filas de `TEM-04` a `TEM-06` de la tabla de contenido enlazan a sus archivos.
+- **`TEM-03-Topologia-Y-Versionado.md`** y **`TEM-07-Marco-SDD.md`**: sus pies enlazan a `TEM-04` y a `TEM-06` (antes «en redacción»). Los temas 04 a 06 usan los seis encabezados sin número, igual que 01 a 03 (VER-T07).
+- **`00-Marco.md`** §6, **`PE-01`** y **`EJR-SDEI-04`**: el caso 60/80 es el largo del nombre de una localidad (`RN-LOC-01`), como dice la ficha verificada contra el código, no el de un comentario.
+
 ## 2026-10-27 (TEM-07 y proceso «Cómo intervenir»)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — expediente 0002 de DocAsCode, unidad E1-U4d

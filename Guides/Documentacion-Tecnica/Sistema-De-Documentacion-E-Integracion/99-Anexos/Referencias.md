@@ -107,6 +107,8 @@ Plantillas:
 
 <a id="ref-gitlab-sf"></a>GitLab. (s. f.). *Documentation workflow*. GitLab Docs. https://docs.gitlab.com/development/documentation/workflow/ (consultado el 2026-10-26). Verificación: V.
 
+<a id="ref-gitlab-testing-sf"></a>GitLab. (s. f.). *Documentation testing*. GitLab Docs. https://docs.gitlab.com/development/documentation/testing/ (consultado el 2026-10-26). Verificación: V.
+
 <a id="ref-backstage-sf"></a>Backstage. (s. f.). *TechDocs architecture*. https://backstage.io/docs/features/techdocs/architecture (consultado el 2026-10-26). Verificación: V.
 
 <a id="ref-docusaurus-sf"></a>Docusaurus. (s. f.). *Versioning*. https://docusaurus.io/docs/versioning (consultado el 2026-10-26). Verificación: V.

@@ -326,7 +326,6 @@ proyecto, la página de cada proyecto que completa esa plantilla con sus datos (
 El paso a paso para intervenir la documentación de un proyecto, con entradas, salidas y validaciones, está en la
 plantilla [Cómo intervenir](Examples/Como-Intervenir.md).
 
-Documento anterior: Tema 06 — Compuertas de calidad y CI, en redacción; mientras tanto, su fila en la
-[tabla de contenido](README.md#4-tabla-de-contenido). Siguiente documento: el
+Documento anterior: [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md). Siguiente documento: el
 [tutorial de la mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md), que cierra la ruta «aprender» antes de los
 [Ejercicios](99-Anexos/Ejercicios.md).

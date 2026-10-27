@@ -104,6 +104,22 @@ IDs `RD-nn`, criterio Dado/Cuando/Entonces y decisión `aceptado`, `rechazado`, 
 superior, la traza no se puede verificar y el control **avisa**. Con `source.lock`, la traza tiene que resolver contra
 las fuentes que se pasen con `--fuente DIR`, y si no resuelve **bloquea**.
 
+**Anclas de nivel 2 (E1-U3).** Una ficha de regla (`doc_type: ficha`) lleva una tabla `| Rol | Ancla | Afirma |`. Cada
+ancla es `` `ruta#Símbolo@SHA` ``: un archivo del código, un símbolo (`Clase.Miembro` en `.cs`; `Elemento.Atributo` en
+`.xaml`, con el elemento nombrado por `x:Name` o `AutomationId`) y el SHA del `source.lock` más cercano. La afirmación
+es `` = `v` `` (valor del símbolo), `` contiene `t` `` o `` no contiene `t` `` (texto de su declaración), o vacía (sólo
+existencia). `dg.py trazas --fuente DIR` las comprueba contra el árbol del código en ese SHA y **bloquea**; con
+`--deriva` compara contra otra revisión y sólo **avisa**. Sin `--fuente` (el job de `docs-guard`, que no baja código)
+no se comprueban y el control lo dice en una línea: las verifica el workflow que declara el `source.lock`. El ejemplo
+es la [mini demo MovilidadUrbana](../../Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/MovilidadUrbana-Mini-Demo/README.md).
+
+**Contrato extraído en otro job.** Si `contracts/openapi.json` tiene un `source.lock` con `workflow:` en su carpeta o
+en una superior, `dg.py contratos` no lo marca como «sin extracción»: lo extrae y compara ese workflow, que compila el
+código. Sin `source.lock` y sin `contracts/.generado/openapi.json`, sigue bloqueando.
+
+**IDs del RRD.** Las filas `RD-nn` de un `_requisitos.md` (o `doc_type: rrd`) entran al registro: una página puede
+trazar al requerimiento que la pide.
+
 ## 5. Qué bloquea y qué avisa
 
 Un control bloquea sólo si cumple las cinco condiciones de la regla de bloqueo: es determinista y no usa red; el
@@ -125,7 +141,9 @@ positivos conocidos o los canaliza por excepciones con huella.
 [`fixtures/`](fixtures/) tiene, por cada control que bloquea, una carpeta `rojo/` con el defecto y una `verde/` sin
 él. El paso `autoprueba` los corre en cada pull request: si un control no da rojo sobre su `rojo/` o no da verde
 sobre su `verde/`, la compuerta misma está rota y la corrida da rojo. Dos carpetas `aviso/` comprueban lo contrario:
-que AI-3 y AI-4 en el anexo **no** bloquean.
+que AI-3 y AI-4 en el anexo **no** bloquean. `fixtures/anclas/` tiene su par con una fuente de prueba (`fuente/`) y un
+`source.lock` con un SHA ficticio, y además `real-rn-loc-01/`: la ficha 1.0 de RN-LOC-01 de la mini demo, sin
+corregir, que el workflow `mini-demo-movilidad` corre contra el código real y exige en rojo (defecto 60/80).
 
 [`fixtures/ak7/inyeccion.md`](fixtures/ak7/inyeccion.md) es el fixture permanente de AK-7: una página con las cinco
 formas de inyección. Tiene que dar rojo en cada corrida, con AI-1, AI-2, AI-4 y AI-5 detectados y AI-3 como aviso. Si

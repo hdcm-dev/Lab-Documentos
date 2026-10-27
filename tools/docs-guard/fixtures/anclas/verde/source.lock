@@ -1,0 +1,2 @@
+# Fixture de docs-guard: source.lock con un SHA de prueba (no existe en ningún repositorio).
+sha: 0123456789abcdef0123456789abcdef01234567

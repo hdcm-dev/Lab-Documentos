@@ -1,0 +1,437 @@
+{
+  "version": "1.1.0",
+  "transporte": {
+    "script": "_framework/hybridwebview.js",
+    "rutaDeInvocacion": "POST /__hwvInvokeDotNet",
+    "metodoNativo": "Call(sobre)",
+    "eventos": "HybridWebView.InvokeJavaScriptAsync",
+    "mauiMayor": 10
+  },
+  "metodos": [
+    {
+      "nombre": "actions.check",
+      "parametros": [
+        {
+          "nombre": "accion",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "evaluacion",
+          "tipo": "EvaluacionDeAccion",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "actions.policy",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "acciones",
+          "tipo": "EvaluacionDeAccion[]",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "auth.enableUnlock",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "auth.signIn",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "auth.signOut",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        },
+        {
+          "nombre": "pendientesConservados",
+          "tipo": "int",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "auth.status",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "auth.unlock",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "bridge.handshake",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "versionPuente",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "catalogo",
+          "tipo": "EntradaVersionada[]",
+          "opcional": false
+        },
+        {
+          "nombre": "huellaContrato",
+          "tipo": "string",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "bridge.ready",
+      "parametros": [
+        {
+          "nombre": "version",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "aceptado",
+          "tipo": "bool",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "device.info",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "fabricante",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "modelo",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "plataforma",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "versionSistema",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "capacidad": "device.info"
+    },
+    {
+      "nombre": "documents.delete",
+      "parametros": [
+        {
+          "nombre": "coleccion",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "id",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "borrado",
+          "tipo": "bool",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "documents.get",
+      "parametros": [
+        {
+          "nombre": "coleccion",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "id",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "documento",
+          "tipo": "Documento",
+          "opcional": true
+        }
+      ]
+    },
+    {
+      "nombre": "documents.list",
+      "parametros": [
+        {
+          "nombre": "coleccion",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "documentos",
+          "tipo": "Documento[]",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "documents.put",
+      "parametros": [
+        {
+          "nombre": "coleccion",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "id",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "versionDeForma",
+          "tipo": "int",
+          "opcional": false
+        },
+        {
+          "nombre": "json",
+          "tipo": "json",
+          "opcional": false
+        },
+        {
+          "nombre": "versionEsperada",
+          "tipo": "int",
+          "opcional": true
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "version",
+          "tipo": "int",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "encuestas.enqueueRespuesta",
+      "parametros": [
+        {
+          "nombre": "envio",
+          "tipo": "EnvioDeRespuesta",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "claveIdempotencia",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "encolada",
+          "tipo": "bool",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "encuestas.getDefinicion",
+      "parametros": [
+        {
+          "nombre": "encuestaId",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
+      "respuesta": [
+        {
+          "nombre": "definicion",
+          "tipo": "DefinicionEncuesta",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "network.status",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "conectado",
+          "tipo": "bool",
+          "opcional": false
+        },
+        {
+          "nombre": "estado",
+          "tipo": "EstadoDeRed",
+          "opcional": true
+        },
+        {
+          "nombre": "motivo",
+          "tipo": "string",
+          "opcional": true
+        }
+      ],
+      "capacidad": "network.status"
+    },
+    {
+      "nombre": "outbox.sendNow",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "enviadas",
+          "tipo": "int",
+          "opcional": false
+        },
+        {
+          "nombre": "pendientes",
+          "tipo": "int",
+          "opcional": false
+        },
+        {
+          "nombre": "rechazadas",
+          "tipo": "int",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "outbox.status",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "pendientes",
+          "tipo": "int",
+          "opcional": false
+        },
+        {
+          "nombre": "rechazadas",
+          "tipo": "int",
+          "opcional": false
+        }
+      ]
+    }
+  ],
+  "eventos": [
+    {
+      "nombre": "actions.changed",
+      "parametros": [
+        {
+          "nombre": "acciones",
+          "tipo": "EvaluacionDeAccion[]",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "auth.changed",
+      "parametros": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ]
+    },
+    {
+      "nombre": "network.changed",
+      "parametros": [
+        {
+          "nombre": "conectado",
+          "tipo": "bool",
+          "opcional": false
+        },
+        {
+          "nombre": "estado",
+          "tipo": "EstadoDeRed",
+          "opcional": true
+        },
+        {
+          "nombre": "motivo",
+          "tipo": "string",
+          "opcional": true
+        }
+      ]
+    },
+    {
+      "nombre": "outbox.changed",
+      "parametros": [
+        {
+          "nombre": "pendientes",
+          "tipo": "int",
+          "opcional": false
+        },
+        {
+          "nombre": "rechazadas",
+          "tipo": "int",
+          "opcional": false
+        }
+      ]
+    }
+  ],
+  "catalogo": [
+    {
+      "id": "auth.session",
+      "version": "1.0.0"
+    },
+    {
+      "id": "device.info",
+      "version": "1.0.0"
+    },
+    {
+      "id": "network.status",
+      "version": "1.1.0"
+    }
+  ]
+}

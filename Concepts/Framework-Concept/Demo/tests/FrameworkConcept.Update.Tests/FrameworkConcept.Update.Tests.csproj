@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pruebas del actualizador (P8): firma, expires, anti-rollback, hash, staging, activación, rollback, retiradas, predicado de P3 y reglas de P13. Los casos de N4 §3.6 y C02–C08 de E-SEG-1 (folio 016) están en ConsultaTests; los cortes provocados, en CortesTests. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(VersionTestSdk)" />
+    <PackageReference Include="NUnit" Version="$(VersionNUnit)" />
+    <PackageReference Include="NUnit.Analyzers" Version="$(VersionNUnitAnalyzers)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(VersionNUnitAdapter)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+</Project>

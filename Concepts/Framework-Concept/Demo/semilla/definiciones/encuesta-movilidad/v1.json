@@ -1,0 +1,167 @@
+{
+  "encuestaId": "encuesta-movilidad",
+  "version": 1,
+  "compatibleConContenido": ">=1.0.0 <2.0.0",
+  "titulo": "Encuesta de uso del transporte",
+  "pasos": [
+    {
+      "id": "persona",
+      "titulo": "Datos de la persona",
+      "preguntas": [
+        {
+          "id": "nombre",
+          "tipo": "texto",
+          "etiqueta": "Nombre y apellido",
+          "requisito": "Al menos 3 caracteres.",
+          "mensajeDeError": "Ingrese nombre y apellido (mínimo 3 caracteres).",
+          "obligatoria": true,
+          "reglas": {
+            "largoMinimo": 3
+          }
+        },
+        {
+          "id": "edad",
+          "tipo": "entero",
+          "etiqueta": "Edad",
+          "requisito": "Entre 16 y 110 años.",
+          "mensajeDeError": "La edad debe estar entre 16 y 110 años.",
+          "obligatoria": true,
+          "reglas": {
+            "minimo": 16,
+            "maximo": 110
+          }
+        },
+        {
+          "id": "localidad",
+          "tipo": "opcionUnica",
+          "etiqueta": "Localidad",
+          "requisito": "Una de las localidades cargadas en el ABM.",
+          "mensajeDeError": "Seleccione una localidad.",
+          "obligatoria": true,
+          "origenDeOpciones": "localidades"
+        }
+      ]
+    },
+    {
+      "id": "medios",
+      "titulo": "Medios que utiliza para viajar",
+      "preguntas": [
+        {
+          "id": "medios",
+          "tipo": "opcionMultiple",
+          "etiqueta": "¿Qué medios utiliza para viajar?",
+          "requisito": "Al menos uno.",
+          "mensajeDeError": "Seleccione al menos un medio de transporte.",
+          "obligatoria": true,
+          "reglas": {
+            "minimoDeOpciones": 1
+          },
+          "opciones": [
+            {
+              "clave": "colectivo",
+              "etiqueta": "Colectivo"
+            },
+            {
+              "clave": "auto",
+              "etiqueta": "Auto particular"
+            },
+            {
+              "clave": "bicicleta",
+              "etiqueta": "Bicicleta"
+            },
+            {
+              "clave": "moto",
+              "etiqueta": "Moto"
+            },
+            {
+              "clave": "caminata",
+              "etiqueta": "A pie"
+            },
+            {
+              "clave": "tren",
+              "etiqueta": "Tren"
+            }
+          ]
+        },
+        {
+          "id": "frecuencia",
+          "tipo": "opcionUnica",
+          "etiqueta": "Frecuencia de uso",
+          "requisito": "Con qué asiduidad usa esos medios.",
+          "mensajeDeError": "Seleccione la frecuencia de uso.",
+          "obligatoria": true,
+          "opciones": [
+            {
+              "clave": "diaria",
+              "etiqueta": "Todos los días"
+            },
+            {
+              "clave": "semanal",
+              "etiqueta": "Algunos días por semana"
+            },
+            {
+              "clave": "ocasional",
+              "etiqueta": "Ocasionalmente"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "distancia",
+      "titulo": "Distancia recorrida",
+      "preguntas": [
+        {
+          "id": "distancia",
+          "tipo": "decimal",
+          "etiqueta": "Distancia diaria (km)",
+          "requisito": "Entre 0 y 500 km por día.",
+          "mensajeDeError": "Ingrese una distancia entre 0 y 500 km.",
+          "obligatoria": true,
+          "reglas": {
+            "minimo": 0,
+            "maximo": 500
+          }
+        },
+        {
+          "id": "minutos",
+          "tipo": "entero",
+          "etiqueta": "Tiempo de viaje (minutos)",
+          "requisito": "Entre 1 y 600 minutos.",
+          "mensajeDeError": "Ingrese un tiempo entre 1 y 600 minutos.",
+          "obligatoria": true,
+          "reglas": {
+            "minimo": 1,
+            "maximo": 600
+          }
+        },
+        {
+          "id": "motivo",
+          "tipo": "opcionUnica",
+          "etiqueta": "Motivo principal",
+          "requisito": "El motivo principal del viaje.",
+          "mensajeDeError": "Seleccione el motivo principal del viaje.",
+          "obligatoria": true,
+          "opciones": [
+            {
+              "clave": "trabajo",
+              "etiqueta": "Trabajo"
+            },
+            {
+              "clave": "estudio",
+              "etiqueta": "Estudio"
+            },
+            {
+              "clave": "salud",
+              "etiqueta": "Salud"
+            },
+            {
+              "clave": "otros",
+              "etiqueta": "Otros"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

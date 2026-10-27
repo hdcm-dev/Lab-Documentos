@@ -1,0 +1,92 @@
+@page "/"
+@inject BridgeSession Sesion
+@inject BridgeClient Puente
+@*
+    Inicio: qué versión de cada cosa está corriendo. Es lo primero que se mira en la demo v1 → v2, y es
+    la mitad del contenido de la pantalla de diagnóstico del cascarón (P7: atribuir un error a versiones exactas).
+*@
+
+<PageTitle>Movilidad urbana — Inicio</PageTitle>
+
+<h1>Inicio</h1>
+
+@if (ContentInfo.ConNovedades)
+{
+<section class="fc-tarjeta fc-tarjeta--novedades" data-testid="novedades">
+    <h2>Novedades de esta versión</h2>
+    <p>
+        Esta pantalla llegó con el contenido @ContentInfo.Version, bajado del canal y activado al reabrir la
+        app, sin pasar por la tienda. La app instalada es la misma.
+    </p>
+    <p>Hoy hay <strong data-testid="novedades-localidades">@_cantidadDeLocalidades</strong> localidades cargadas.</p>
+</section>
+}
+
+<section class="fc-tarjeta">
+    <h2>Versiones</h2>
+    <dl class="fc-kv">
+        <dt>Contenido (estas pantallas)</dt>
+        <dd data-testid="inicio-version-contenido">@ContentInfo.Version</dd>
+
+        <dt>Encuesta «@EncuestaId»</dt>
+        <dd data-testid="inicio-version-definicion">@(_versionDefinicion is int v ? $"definición v{v}" : _errorDefinicion ?? "…")</dd>
+
+        <dt>Puente del cascarón</dt>
+        <dd data-testid="inicio-version-puente">@Sesion.Handshake?.VersionPuente</dd>
+
+        <dt>Contrato (huella)</dt>
+        <dd class="fc-mono" data-testid="inicio-huella">@Huella</dd>
+    </dl>
+</section>
+
+<section class="fc-tarjeta">
+    <h2>Capacidades del dispositivo</h2>
+    <p class="fc-nota">
+        Las pide el contenido en su declaración; el cascarón dice cuáles trae. Una opcional que falta se oculta o se explica.
+    </p>
+    <ul class="fc-lista">
+        @foreach (var requisito in ContentInfo.Declaracion.Capabilities.Optional)
+        {
+            var disponibilidad = Sesion.Capacidad(requisito.Id);
+            <li data-testid="capacidad-@requisito.Id">
+                <span class="fc-chip @(disponibilidad.Disponible ? "fc-chip--ok" : "fc-chip--aviso")">@requisito.Id</span>
+                @(disponibilidad.Disponible ? "disponible" : disponibilidad.Motivo)
+            </li>
+        }
+    </ul>
+
+    @if (_dispositivo is { } d)
+    {
+        <p data-testid="inicio-dispositivo">@d.Fabricante @d.Modelo — @d.Plataforma @d.VersionSistema</p>
+    }
+</section>
+
+@code {
+    private const string EncuestaId = "encuesta-movilidad";
+
+    private int? _versionDefinicion;
+    private string? _errorDefinicion;
+    private InformacionDelDispositivo? _dispositivo;
+    private int _cantidadDeLocalidades;
+
+    [Inject] private LocalidadService Localidades { get; set; } = default!;
+
+    private string Huella => Sesion.Handshake?.HuellaContrato is { Length: >= 12 } h ? h[..12] + "…" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _versionDefinicion = (await Puente.GetDefinicionAsync(EncuestaId)).Version;
+        }
+        catch (BridgeException excepcion)
+        {
+            _errorDefinicion = excepcion.Message;
+        }
+
+        // P12 — device.info es opcional: sólo se llama si el cascarón la trae.
+        if (Sesion.Capacidad("device.info").Disponible) _dispositivo = await Puente.DeviceInfoAsync();
+
+        if (ContentInfo.ConNovedades) _cantidadDeLocalidades = (await Localidades.GetAllAsync()).Count;
+    }
+}

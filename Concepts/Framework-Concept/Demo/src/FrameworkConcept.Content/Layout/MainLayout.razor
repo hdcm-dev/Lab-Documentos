@@ -1,0 +1,89 @@
+@inherits LayoutComponentBase
+@implements IDisposable
+@inject BridgeSession Sesion
+@*
+    Marco de todas las páginas: cabecera, navegación y una línea de estado (red y outbox).
+
+    Antes de mostrar una página espera el handshake con el cascarón. Si no hay puente o es incompatible,
+    lo dice en lugar de mostrar pantallas que no podrían guardar nada.
+
+    Folio 038 — Con el puente listo: el aviso permanente de red (Red/AvisoDeRed.razor) arriba de todo, y la página
+    dentro de la puerta de sesión (Auth/PuertaDeSesion.razor), que muestra ingreso o desbloqueo cuando hace falta.
+*@
+
+<header class="fc-cabecera @ClaseDeVariante">
+    <div class="fc-cabecera__marca">
+        <span class="fc-cabecera__titulo">Movilidad urbana</span>
+        <span class="fc-cabecera__version" data-testid="version-contenido">contenido @ContentInfo.Version</span>
+    </div>
+    <nav class="fc-nav">
+        <NavLink class="fc-nav__enlace" href="" Match="NavLinkMatch.All">Inicio</NavLink>
+        <NavLink class="fc-nav__enlace" href="localidades">Localidades</NavLink>
+        <NavLink class="fc-nav__enlace" href="encuesta">Encuesta</NavLink>
+    </nav>
+</header>
+
+<main class="fc-principal">
+    @switch (Sesion.Estado)
+    {
+        case EstadoDelPuente.Conectando:
+            <p class="fc-cargando">Conectando con la app…</p>
+            break;
+
+        case EstadoDelPuente.SinPuente:
+        case EstadoDelPuente.Incompatible:
+            <section class="fc-banda fc-banda--error" data-testid="estado-puente">
+                <strong>@(Sesion.Estado == EstadoDelPuente.SinPuente ? "Este contenido corre sólo dentro de la app." : "Este contenido no es compatible con esta versión de la app.")</strong>
+                <span>@Sesion.Motivo</span>
+            </section>
+            break;
+
+        default:
+            <AvisoDeRed />
+            <PuertaDeSesion>@Body</PuertaDeSesion>
+            break;
+    }
+</main>
+
+@if (Sesion.Estado == EstadoDelPuente.Listo)
+{
+    <footer class="fc-estado" data-testid="linea-de-estado">
+        @* P12 — «network.status» es opcional: si el cascarón no la trae, el indicador no se muestra (Red/IndicadorDeRed). *@
+        <IndicadorDeRed />
+        @if (Sesion.Outbox is { } outbox)
+        {
+            <span class="fc-chip" data-testid="estado-outbox">Por enviar: @outbox.Pendientes</span>
+            @* Folio 038 — «Enviar ahora» (SoloEnLinea): deshabilitado con motivo sin servidor (Red/EnviarAhora). *@
+            @if (outbox.Pendientes > 0)
+            {
+                <EnviarAhora />
+            }
+            @if (outbox.Rechazadas > 0)
+            {
+                <span class="fc-chip fc-chip--error">Rechazadas: @outbox.Rechazadas</span>
+            }
+        }
+    </footer>
+}
+
+@code {
+    // El cambio visible de la v2 de la demo: otro color de cabecera (y la tarjeta de novedades del Inicio).
+    private static string ClaseDeVariante => ContentInfo.ConNovedades ? "fc-cabecera--novedades" : "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Sesion.Cambio += AlCambiar;
+        await Sesion.IniciarAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // P2 — «Listo(version)» va después del PRIMER render con contenido real, no al cargar el script:
+        // lo que se quiere saber es que el contenido llegó a dibujarse. Sólo se avisa una vez.
+        if (Sesion.Estado != EstadoDelPuente.Conectando) await Sesion.AvisarListoAsync();
+    }
+
+    private void AlCambiar() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Sesion.Cambio -= AlCambiar;
+}

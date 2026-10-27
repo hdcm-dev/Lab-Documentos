@@ -2,6 +2,25 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-26 (guía nueva)
+
+### Concepts/Framework-Concept/ — v1.0.0 (nueva, borrador)
+
+#### Añadido
+
+- **`Developer-Guide.md`** (`GUIA-INDICE`, único índice): guía de estudio para apps .NET MAUI con pantallas Blazor WebAssembly que se actualizan desde un servidor propio sin pasar por las tiendas, con el marco (`00-Marco.md`), siete temas (`01` a `07`), la cohesión (`08-Cohesion-Global.md`) y los anexos (`99-Anexos.md`). Sale del expediente 0001 de Framework Concept (tramo A4 del folio 037).
+- **`Demo/`**: la demo compilable que ilustra la guía (cascarón MAUI, contenido Blazor WASM, herramientas de firma, receptor de prueba y tres suites), con su compuerta en `.github/workflows/framework-concept-demo.yml` (check `fw-ok`, runner propio).
+- `.github/pull_request_template.md`: plantilla de PR.
+- `README.md` como portada; `Framework-APP.md` es el borrador del PO y queda fuera del conjunto.
+
+#### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0)
+
+- **Fecha:** 2026-10-25. **Decidió:** el responsable del producto (PO). **Asiento:** folio 007 del expediente 0001 de Framework Concept (`PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Expedientes/0001-Framework-Concept-Maui-Autoactualizable/actuaciones/007-providencia-delegacion-del-merge.md`, en `hdcm-dev/Lab-Documentos.Documentacion`).
+- **Alcance:** los PR del expediente 0001 en `hdcm-dev/Lab-Documentos` y `hdcm-dev/Lab-Documentos.Documentacion`.
+- **Guarda:** techo de espera 60 minutos; intervalo de relectura 30 segundos; estado `clean` y controles de la cabeza en éxito (al menos uno).
+- **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual.
+
 ## 2026-09-21 (reorganización y guía nueva)
 
 ### Guides/Git-Flow-Guides/ — reubicación

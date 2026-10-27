@@ -1,0 +1,10 @@
+--- a/src/FrameworkConcept.Shell/App.cs
++++ b/src/FrameworkConcept.Shell/App.cs
+@@ -15,6 +15,7 @@
+     protected override Window CreateWindow(IActivationState? activationState)
+     {
+         var ventana = new Window(Navegacion(servicios.GetRequiredService<ArranquePage>()));
++        int errorDeCompilacion = "texto";   // CS0029: no se puede convertir string en int
+ 
+         // P2 — Volver desde segundo plano: consulta en segundo plano (el actualizador la omite si no pasaron 15
+         // minutos desde la última exitosa) y una pasada del outbox. MAUI llama a Resumed sólo al volver, no al abrir.

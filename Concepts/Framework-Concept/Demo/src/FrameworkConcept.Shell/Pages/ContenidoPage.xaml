@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- La única pantalla que muestra el contenido: un solo HybridWebView (P3), que se crea en el código con la versión
+     que decidió el arranque. Arriba, un aviso si hay respuestas en carta muerta (P5). -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FrameworkConcept.Shell.Pages.ContenidoPage"
+             Title="Framework Concept">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Diagnóstico" Clicked="AlAbrirDiagnostico" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="Auto,*">
+        <Border x:Name="AvisoCartaMuerta" Grid.Row="0" IsVisible="False" Padding="12,8" BackgroundColor="#FFF4E5" StrokeThickness="0">
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Tapped="AlAbrirDiagnostico" />
+            </Border.GestureRecognizers>
+            <Label x:Name="TextoCartaMuerta" TextColor="#7A4100" FontSize="13" />
+        </Border>
+        <Grid x:Name="Contenedor" Grid.Row="1" />
+    </Grid>
+</ContentPage>

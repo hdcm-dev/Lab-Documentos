@@ -1,0 +1,89 @@
+@using FrameworkConcept.Core.Contracts.Encuestas
+@*
+    Renderizador GENÉRICO de un paso de encuesta (P1: encuestas como datos).
+
+    No hay ninguna pregunta escrita acá: recorre las preguntas del paso actual de la definición y elige el
+    control por el TIPO de cada una. Una definición nueva (por ejemplo, la v2 con una pregunta más) se dibuja
+    sin tocar este archivo ni publicar contenido nuevo.
+*@
+
+<fieldset class="fc-paso" data-testid="paso-@Encuesta.Paso">
+    <legend class="fc-paso__titulo">Paso @Encuesta.Paso de @Encuesta.TotalDePasos — @Encuesta.PasoActual.Titulo</legend>
+
+    @foreach (var pregunta in Encuesta.PasoActual.Preguntas)
+    {
+        var id = $"pregunta-{pregunta.Id}";
+        var error = Encuesta.Errores.GetValueOrDefault(pregunta.Id);
+
+        <div class="fc-campo @(error is null ? "" : "fc-campo--error")" data-testid="campo-@pregunta.Id">
+            @if (pregunta.Tipo == TipoDePregunta.OpcionMultiple)
+            {
+                <span class="fc-campo__etiqueta">@pregunta.Etiqueta</span>
+                <div class="fc-opciones">
+                    @foreach (var opcion in Opciones(pregunta))
+                    {
+                        var idOpcion = $"{id}-{opcion.Clave}";
+                        <label class="fc-opcion" for="@idOpcion">
+                            <input type="checkbox" id="@idOpcion" data-testid="opcion-@pregunta.Id-@opcion.Clave"
+                                   checked="@Encuesta.EstaElegida(pregunta.Id, opcion.Clave)"
+                                   @onchange="e => Encuesta.Alternar(pregunta.Id, opcion.Clave, e.Value is true)" />
+                            @opcion.Etiqueta
+                        </label>
+                    }
+                </div>
+            }
+            else
+            {
+                <label class="fc-campo__etiqueta" for="@id">@pregunta.Etiqueta</label>
+                @switch (pregunta.Tipo)
+                {
+                    case TipoDePregunta.Texto:
+                        <input class="fc-input" id="@id" type="text" autocomplete="off" value="@Encuesta.Texto(pregunta.Id)"
+                               @oninput="e => Encuesta.PonerTexto(pregunta.Id, e.Value?.ToString())" />
+                        break;
+
+                    case TipoDePregunta.Entero:
+                    case TipoDePregunta.Decimal:
+                        <input class="fc-input fc-input--corto" id="@id" type="number"
+                               step="@(pregunta.Tipo == TipoDePregunta.Entero ? "1" : "0.1")"
+                               min="@pregunta.Reglas?.Minimo" max="@pregunta.Reglas?.Maximo"
+                               value="@Encuesta.Numero(pregunta.Id)"
+                               @oninput="e => Encuesta.PonerNumero(pregunta, e.Value?.ToString())" />
+                        break;
+
+                    case TipoDePregunta.OpcionUnica:
+                        <select class="fc-input" id="@id" value="@Encuesta.Texto(pregunta.Id)"
+                                @onchange="e => Encuesta.PonerTexto(pregunta.Id, e.Value?.ToString())">
+                            <option value="">Seleccione…</option>
+                            @foreach (var opcion in Opciones(pregunta))
+                            {
+                                <option value="@opcion.Clave">@opcion.Etiqueta</option>
+                            }
+                        </select>
+                        break;
+                }
+            }
+
+            @* El requisito se muestra ANTES del intento; el error, después (como el caso base). *@
+            <span class="fc-campo__requisito">@pregunta.Requisito</span>
+            @if (error is not null)
+            {
+                <span class="fc-campo__mensaje" data-testid="error-@pregunta.Id">@error</span>
+            }
+        </div>
+    }
+</fieldset>
+
+@code {
+    [Parameter, EditorRequired] public EncuestaEnCurso Encuesta { get; set; } = default!;
+
+    /// <summary>
+    /// Opciones de una pregunta cuyo «origenDeOpciones» no está en la definición (por ejemplo, «localidades»:
+    /// las del ABM). Las da la página que conoce esos datos.
+    /// </summary>
+    [Parameter] public Func<string, IReadOnlyList<OpcionDePregunta>>? OpcionesDeOrigen { get; set; }
+
+    private IReadOnlyList<OpcionDePregunta> Opciones(PreguntaDeEncuesta pregunta) =>
+        pregunta.Opciones
+        ?? (pregunta.OrigenDeOpciones is { } origen && OpcionesDeOrigen is not null ? OpcionesDeOrigen(origen) : []);
+}

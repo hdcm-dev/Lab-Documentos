@@ -1,0 +1,10 @@
+--- a/src/FrameworkConcept.Core/Domain/Rules/LocalidadRules.cs
++++ b/src/FrameworkConcept.Core/Domain/Rules/LocalidadRules.cs
+@@ -31,6 +31,6 @@
+         string.Equals(nombreA.Trim(), nombreB.Trim(), StringComparison.OrdinalIgnoreCase) &&
+         string.Equals(provinciaA, provinciaB, StringComparison.Ordinal);
+ 
+-    [GeneratedRegex(@"^\d{4}$")]
++    [GeneratedRegex(@"^\d{5}$")]
+     private static partial Regex CodigoPostal();
+ }

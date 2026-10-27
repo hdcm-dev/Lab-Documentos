@@ -33,6 +33,8 @@
 #   demo        [-H h -P p -s serie]   recorrido completo en el dispositivo: semilla, encuesta sin red (paso
 #                           manual), v1 → v2 de contenido y definición, firma inválida y contenido sin «Listo».
 #                           Exige FC_URL_CANAL (sin túnel)
+#   tpr         [-H h -P p -s serie]   P1: $FC_CORRIDAS (5) arranques en frío medidos con la pantalla encendida y
+#                           sin bloqueo (si no, no mide); el TPR de cada uno sale del logcat («FrameworkConcept.Tools tpr»)
 #   humo                    prueba de humo de las herramientas y del receptor, sin teléfono
 #   limpiar                 borra salida/, bin/ y obj/ (no toca claves/ ni semilla/)
 #
@@ -40,6 +42,7 @@
 #   FC_CANAL        canal (dev)                    FC_PUERTO     puerto del receptor (8099)
 #   FC_URL_CANAL    URL HTTPS con la que el dispositivo llega al receptor (si falta, «apk» usa la del túnel, si hay)
 #   FC_ESPERA       segundos de espera tras cada arranque en «demo» (50)
+#   FC_CORRIDAS     arranques en frío de «tpr» (5)   FC_ESPERA_TPR  segundos tras cada uno (20)   FC_UMBRAL_TPR  ms (5000)
 #   FC_ADB_CONTENEDOR  si el adb está en un contenedor (docker exec <él> adb …); si falta, adb del sistema
 #   FC_LOCK         candado del teléfono compartido; cada tramo de adb corre dentro de «flock $FC_LOCK»
 #   FC_SIN_BUILD=1  no recompila las herramientas antes de usarlas
@@ -88,7 +91,7 @@ falla() { echo "guion: $*" >&2; exit 1; }
 herramienta() {
   local comando="$1"; shift
   local opciones=()
-  case "$comando" in claves|contrato) ;; *) opciones=(--raiz "$RAIZ" --canal "$CANAL" --puente "$PUENTE_MAYOR") ;; esac
+  case "$comando" in claves|contrato|tpr) ;; *) opciones=(--raiz "$RAIZ" --canal "$CANAL" --puente "$PUENTE_MAYOR") ;; esac
   if [ "${FC_SIN_BUILD:-}" = 1 ] && [ -f "$TOOLS_DLL" ]; then
     "$C" dotnet "$TOOLS_DLL" "$comando" "${opciones[@]}" "$@"
   else
@@ -345,6 +348,38 @@ arrancar() {  # $1 = etiqueta, $2 = segundos de espera
   echo "  evidencia: $ev/captura-$etiqueta.png, $ev/logcat-$etiqueta.txt"
 }
 
+# P1 — El TPR en el dispositivo (folio 042). En el cierre del expediente 0001 cinco arranques «sin primer-render» eran
+# la pantalla apagada: am start -W devolvía «LaunchState: UNKNOWN» y el WebView no pedía el contenido. Por eso se
+# despierta la pantalla antes de cada arranque y no se mide con el bloqueo puesto. Sólo toca $PAQUETE_APP.
+cmd_tpr() {
+  leer_adb "$@"
+  local n="${FC_CORRIDAS:-5}" espera="${FC_ESPERA_TPR:-20}" ev=salida/evidencia adb
+  adb="$(printf '%q ' "${ADB[@]}")"
+  mkdir -p "$ev" && : > "$ev/tpr-logcat.txt" && : > "$ev/tpr-am-start.txt"
+  paso "tpr: $n arranques en frío de $PAQUETE_APP (espera de $espera s cada uno)"
+  flock "$LOCK" bash -c "
+    $adb shell input keyevent KEYCODE_WAKEUP
+    $adb shell wm dismiss-keyguard
+    sleep 2
+    if ! $adb shell dumpsys power | grep -q 'mWakefulness=Awake'; then echo 'tpr: la pantalla no se encendió' >&2; exit 3; fi
+    if $adb shell dumpsys window | grep -q 'isKeyguardShowing=true'; then
+      echo 'tpr: el dispositivo está bloqueado; desbloquealo a mano y repetí (con el bloqueo, el WebView no carga)' >&2; exit 3
+    fi
+    actividad=\$($adb shell cmd package resolve-activity --brief $PAQUETE_APP | tail -1 | tr -d '\r')
+    for i in \$(seq 1 $n); do
+      $adb shell am force-stop $PAQUETE_APP
+      sleep 3
+      $adb shell input keyevent KEYCODE_WAKEUP
+      desde=\$($adb shell \"date '+%m-%d %H:%M:%S.000'\" | tr -d '\r')
+      { echo \"== corrida \$i\"; $adb shell am start -W -n \"\$actividad\" | tr -d '\r' | grep -E 'LaunchState|TotalTime|WaitTime'; } | tee -a '$ev/tpr-am-start.txt'
+      sleep $espera
+      $adb logcat -d -v time -T \"\$desde\" | tr -d '\r' | grep -E 'I/FC|FC-MARCA' >> '$ev/tpr-logcat.txt' || true
+    done
+    $adb shell am force-stop $PAQUETE_APP" || return
+  echo "  evidencia: $ev/tpr-am-start.txt, $ev/tpr-logcat.txt («LaunchState: COLD» en cada corrida)"
+  herramienta tpr --logcat "$ev/tpr-logcat.txt" --umbral "${FC_UMBRAL_TPR:-5000}"
+}
+
 cmd_demo() {
   leer_adb "$@"
   export FC_SIN_BUILD=1
@@ -566,6 +601,7 @@ case "$sub" in
   dispositivo) cmd_dispositivo "$@" ;;
   instalar) cmd_instalar "$@" ;;
   demo) cmd_demo "$@" ;;
+  tpr) cmd_tpr "$@" ;;
   humo) cmd_humo ;;
   limpiar) cmd_limpiar ;;
   *) uso; exit 2 ;;

@@ -154,14 +154,14 @@ orden:
 | --- | --- |
 | Id | `RN-<ÁREA>-nn`, provisional |
 | Enunciado atómico | La regla en una oración |
-| Ancla | El ancla principal y «y las de §2» |
+| Ancla | El ancla principal y «y las de §2». La principal es la de `declara`; si no hay, la de `verifica`; si tampoco, la de `aplica` |
 | Letra | Lo que la app promete, textual, entre comillas: el texto de ayuda bajo el campo y los mensajes. Los rótulos y los ejemplos de los campos describen, no prometen |
 | Intención | Para qué existe la regla y qué la respalda en el código; si no hay respaldo, «Conjetura» |
 | ¿Divergen? | Ver la tabla siguiente |
 | Especie | Ver la tabla siguiente |
 | Momento | Ver la tabla siguiente |
 | Quién la verifica hoy | El método que la comprueba, o **nadie** |
-| Dueño | La clase del dominio que la declara. Si ninguna la declara, «ninguno en el dominio» y dónde termina (la clase que la verifica); la tabla de anclas no lleva fila `declara` |
+| Dueño | La clase del dominio que la declara. Si ninguna la declara, «ninguno en el dominio» y dónde termina: la clase que la verifica o, si nadie la verifica, el elemento de la pantalla o el método que la impone. La tabla de anclas no lleva fila `declara` |
 | Depende de | Otras fichas cuya regla esta supone, o «Ninguna» |
 | Grado de certeza | Ver la tabla siguiente |
 | Prueba | Una oración Dado/Cuando/Entonces que se podría escribir como prueba |
@@ -173,9 +173,9 @@ orden:
 | --- | --- |
 | ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, o un rótulo que pide más de lo que se valida, como «Nombre y apellido» cuando alcanza una palabra). **De fondo**: la letra promete algo que cambia alguna de esas tres cosas, como el 60/80. **Silencio**: si la letra no nombra un límite que el código aplica, no hay divergencia; va como dato debajo de la tabla y la ayuda nombra el límite |
 | Especie | **restricción** (limita qué valores se aceptan: un largo, un rango, una unicidad, un campo obligatorio, un valor de una lista); **derivación** (un valor se calcula de otros); **alcance** (a qué objetos o casos se aplica otra regla, como «sólo las localidades de la sesión»); **estructura** (cómo se relacionan los objetos, como «una localidad tiene una provincia») |
-| Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** |
+| Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** (nadie la comprueba en un acto: sólo la impone la pantalla, por ejemplo con `MaxLength`). Si se comprueba en un acto y no en otro que la necesitaría (se valida al avanzar pero no al registrar), el Momento es el del acto donde se comprueba y el hueco va en «¿Divergen?» |
 | Grado de certeza | testimonio, letra, caso de uso, código, inferencia o conjetura |
-| Propuesta | Obligatoria si hay divergencia de fondo; con una leve, opcional; sin divergencia, «No corresponde» |
+| Propuesta | Obligatoria si hay divergencia de fondo; con una leve, una propuesta o «Sin propuesta: divergencia leve»; sin divergencia, «No corresponde» |
 
 **Tabla de anclas.** Encabezado `| Rol | Ancla | Afirma |`. El código del SHA lo deja `verificar.sh fuente` en
 `$TRABAJO/sha/`. `TRABAJO` es la variable de entorno, si está; si no, `$RUNNER_TEMP`, `$TMPDIR` o `/tmp`, más
@@ -300,13 +300,29 @@ En el mismo cambio, además de las piezas nuevas:
 
 #### Añadido
 
-- **`docs/ayuda/encuesta.md`** y las fichas `RN-ENC-01` a `RN-ENC-03`: ayuda del paso 1 de la encuesta.
+- **`docs/ayuda/encuesta.md`** y las fichas `RN-ENC-01` y `RN-ENC-02`: ayuda del paso 1 de la encuesta.
 ```
 
 Después, una rama (`demo-mu/<pantalla>`, por ejemplo `demo-mu/encuesta-paso-1`), un commit con un mensaje que diga qué
 pantalla se documentó («Mini demo: ayuda del paso 1 de la encuesta») y un PR contra `main` de Lab-Documentos. En el PR
 corren `docs-guard` y `mini-demo-movilidad` en el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los
-dos en verde. El cuerpo del PR copia el final de las dos salidas de §5.4.
+dos en verde. El cuerpo del PR lleva: qué pantalla se documentó, la lista de piezas nuevas y cambiadas, las
+divergencias que quedan para decidir (con su ficha), los supuestos de §5.6 y el final de las dos salidas de §5.4.
+
+Lo que **no** se toca: `verificar.sh`, el workflow y `source.lock` (C3 lee todas las fichas de `docs/fichas/` sin
+configurar nada); el `traces` de este README (traza las filas que el README mismo explica, RD-01 a RD-04); el
+`last_review` de los archivos que no se releyeron. En los que sí se cambiaron, `last_review` pasa a la fecha del PR, y
+si una página amplía lo que cubre (como `arquitectura.md` con reglas nuevas), su `description` se ajusta.
+
+### 5.6 Cuando el tutorial no cubre un caso
+
+Ningún tutorial cubre todos los casos de una pantalla real. Si te encontrás con uno que este no prevé:
+
+1. Resolvelo por analogía con la pieza modelo más parecida (las fichas RN-LOC, la ayuda de alta, las páginas técnicas).
+2. Si el caso es sobre lo que el código hace y la letra promete, escribí lo que el código hace y no decidas la
+   divergencia (§7).
+3. Anotalo en el cuerpo del PR, en una sección «Supuestos», con el caso, lo que elegiste y por qué. Quien revise el PR
+   decide si el supuesto queda o si este tutorial suma la respuesta.
 
 ## 6. Cuando el código cambia
 

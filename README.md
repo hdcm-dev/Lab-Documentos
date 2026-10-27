@@ -37,11 +37,15 @@ metodologías, despliegue, pruebas e IA. Todo está escrito en Markdown y se lee
 | [`Guides/`](Guides/README.md) | Guías de estudio, agrupadas por categoría |
 | [`Concepts/`](Concepts/) | Material conceptual de apoyo |
 | [`scripts/`](scripts/) | Verificación local de la documentación |
+| [`tools/docs-guard/`](tools/docs-guard/README.md) | Controles de la compuerta de documentación y del carril programado |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios del repositorio y delegaciones vigentes |
 
 ## Compuerta de documentación
 
-Cada pull request pasa por `docs-guard` (enlaces internos y estructura de Markdown). Para correr lo mismo en local:
+Cada pull request pasa por `docs-guard`: enlaces internos y anclas, esquema de frontmatter, anti-inyección, estructura
+y mermaid, trazas, contrato OpenAPI y piezas fijadas, más la autoprueba de cada control
+([`tools/docs-guard/`](tools/docs-guard/README.md)). Una vez por semana, `docs-enlaces-semanal` revisa los enlaces entre
+repositorios y externos y deja el informe en un issue. Para correr la compuerta en local:
 
 ```bash
 scripts/ci-local.sh

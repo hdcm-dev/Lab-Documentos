@@ -2,6 +2,23 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-27 (docs-guard completo: grupos PR-1 a PR-7 y carril programado)
+
+### .github/, scripts/ y tools/docs-guard/ — expediente 0002 de DocAsCode, unidad E1-U2
+
+#### Añadido
+
+- **`tools/docs-guard/`**: los controles del carril PR, portados de los prototipos de las comisiones y reescritos sin dependencias (`dg.py`, Python 3 con biblioteca estándar; mermaid por lockfile). PR-1 relativos que salen del repositorio; PR-2 esquema de frontmatter (diez campos más `description`), registro cerrado de prefijos y esquema del RRD; PR-3 anti-inyección AI-1 a AI-5 con excepciones con huella; PR-5 `traces-resolve`; PR-6 diff del contrato OpenAPI; PR-7 piezas fijadas con su SHA-256 y `reflint`. Ver `tools/docs-guard/README.md`.
+- **`tools/docs-guard/fixtures/`**: un par rojo/verde por control que bloquea y el fixture permanente AK-7, que tiene que dar rojo en cada corrida. El paso `autoprueba` los corre en cada PR.
+- **`tools/docs-guard/dominios.txt`**: lista de dominios permitidos (AK-4), clase P con aprobación explícita. **`prefijos.txt`**, **`excepciones.txt`**, **`esquemas/`** y **`arbol.tsv`** (tabla repo → ruta del carril programado).
+- **`.github/workflows/docs-enlaces-semanal.yml`** y **`tools/docs-guard/semanal.sh`**: carril programado, sólo aviso. Arma el árbol del workspace con los repos públicos (clon anónimo), corre `lychee --root-dir` con red, el atraso de `base_commit` y `source.lock`, la deriva de piezas fijadas y la frescura de `last_review`, y abre o actualiza un issue. Declara `issues: write` sólo para eso.
+
+#### Cambiado
+
+- **`.github/workflows/docs-guard.yml`**: un solo job con un paso por grupo (PR-1 a PR-7, autoprueba y avisos) y un agregador estricto al final. Cada grupo corre aunque otro falle, para que el PR vea todos sus defectos en una corrida. Las herramientas se toman de `scripts/` y `tools/docs-guard/`.
+- **`scripts/ci-local.sh`**: los mismos pasos, en el mismo orden; `todo` corre todos los grupos y agrega. Los pasos `herramientas`, `enlaces` y `estructura` conservan el nombre.
+- **Guía del sistema documentador**: suma `description` al frontmatter, para que la línea de base del esquema sea 0.
+
 ## 2026-10-27 (saneamiento de la guía del sistema documentador)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion — expediente 0002 de DocAsCode, unidad E1-U1

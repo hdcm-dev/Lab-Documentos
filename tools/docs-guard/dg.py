@@ -19,6 +19,8 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
     contratos  RUTA...            (PR-6) busca contracts/openapi.json; sin extracción declarada, «no aplica»
     fijadas    RUTA...            (PR-7) equivalente de «copiar.py --check»: cada pieza de BASE-FIJADA.md con su SHA-256
     reflint    RUTA...            (PR-7) formato de referencias APA con ancla ref-…; bloquea sólo en el cuerpo nuevo
+    url-fecha  RUTA...            (PR-7) URL y citas por dominio en code spans sin fecha de consulta ni cita a #ref-…;
+                                         bloquea en el cuerpo nuevo salvo status: obsoleto (E-F7, D28)
     avisos     RUTA...            (aviso) url-fecha y cita-linea sobre lo heredado; nunca bloquea
     frescura   RUTA...            (carril programado) last_review con más de 365 días (--dias N); nunca bloquea
 
@@ -806,6 +808,94 @@ def cmd_avisos(rutas, raiz):
     return 0
 
 
+# --------------------------------------------------------------------------------------------------------------------
+# PR-7: url-fecha ampliado (E1-U4f, E-F7, D28). Una fuente externa citada en el texto lleva referencia completa:
+# fecha de consulta en el mismo bloque o cita enlazada al anexo de referencias (#ref-…). Ve las URL con esquema y,
+# además, las citas por dominio escritas en code spans (`docusaurus.io/docs/…`), que el aviso heredado no veía.
+# Bloquea en el cuerpo nuevo salvo en documentos con status: obsoleto; en lo demás avisa.
+
+# La fecha de consulta; también vale la de una observación propia fechada («medido el», «verificado el»).
+RE_FECHA = re.compile(r'(?:consultad|medid|verificad)[oa]s? el \d{4}-\d{2}-\d{2}', re.I)
+RE_URL_CITA = re.compile(r'https?://[^\s)>\]`|]+')
+RE_SPAN = re.compile(r'`([^`\n]+)`')
+# Dominio de primer nivel citable: los genéricos de la lista y cualquier código de país de dos letras, salvo los que
+# coinciden con extensiones de archivo (`README.md`, `ci-local.sh`, `Program.cs` no son dominios).
+TLD_GENERICOS = {'com', 'org', 'net', 'edu', 'gov', 'info', 'dev', 'app', 'cloud', 'page', 'site', 'tech', 'blog'}
+TLD_EXTENSIONES = {'md', 'sh', 'cs', 'js', 'ts', 'py', 'rb', 'go', 'rs', 'ps', 'pl', 'mk', 'so', 'gz', 'xz', 'bz',
+                   'db', 'fs', 'vb', 'cc', 'hh', 'el', 'jl', 'kt', 'lua', 'nu'}
+RE_DOMINIO = re.compile(r'(?:https?://)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+([a-z]{2,6})(?:[/:?#][^\s]*)?')
+
+
+def es_dominio(s):
+    m = RE_DOMINIO.fullmatch(s)
+    if not m:
+        return False
+    tld = m.group(1)
+    return tld in TLD_GENERICOS or (len(tld) == 2 and tld not in TLD_EXTENSIONES)
+
+
+# No son citas: direcciones locales, dominios reservados para ejemplos (RFC 2606 y 6761), plantillas con «…» y la
+# dirección de clonado de un repositorio (termina en .git: es un argumento de una orden, no una fuente) y la imagen
+# de contenedor con etiqueta.
+RE_NO_CITA = re.compile(r'^(?:https?://)?(?:localhost|127\.|0\.0\.0\.0|\[::1\]|[^/]*\.(?:local|test|example|invalid)'
+                        r'(?:[:/]|$)|(?:[^/]*\.)?example\.(?:com|org|net)(?:[:/]|$))|…|\.git$'
+                        # Imagen de contenedor con etiqueta (registro/ruta:etiqueta): se nombra, no se cita.
+                        r'|^[a-z0-9.-]+\.[a-z]+/[^\s:]+:[\w.-]+$')
+
+
+def bloques_de_texto(texto):
+    """(línea inicial, [(n, línea)]) por bloque: párrafo separado por línea vacía; cada fila de tabla y cada
+    encabezado es su propio bloque. Omite el frontmatter y los bloques de código cercados."""
+    _, fin_fm = frontmatter(texto)
+    bloque = []
+    for n, l, cod in fuera_de_codigo(texto):
+        if n <= fin_fm or cod or not l.strip() or l.lstrip().startswith(('|', '#')):
+            if bloque:
+                yield bloque
+                bloque = []
+            if n > fin_fm and not cod and l.lstrip().startswith(('|', '#')):
+                yield [(n, l)]
+            continue
+        bloque.append((n, l))
+    if bloque:
+        yield bloque
+
+
+def citas_externas(texto):
+    """(n, regla, cita) de cada fuente externa sin referencia completa en su bloque."""
+    for bloque in bloques_de_texto(texto):
+        junto = '\n'.join(l for _, l in bloque)
+        if RE_FECHA.search(junto) or re.search(r'\]\([^)\s]*#ref-[^)\s]+\)', junto):
+            continue
+        for n, l in bloque:
+            vistos = set()
+            for u in RE_URL_CITA.findall(l):
+                u = u.rstrip('.,;:')
+                if not RE_NO_CITA.search(u):
+                    vistos.add(u)
+                    yield n, 'url-sin-fecha', u
+            for m in RE_SPAN.finditer(l):
+                s = m.group(1).strip()
+                if es_dominio(s) and not RE_NO_CITA.search(s) and s not in vistos:
+                    yield n, 'dominio-sin-referencia', s
+
+
+def cmd_url_fecha(rutas, raiz):
+    inf = Informe('PR-7 url-fecha')
+    bloquean = 0
+    for f in markdowns(rutas):
+        texto = leer(f)
+        fm, _ = frontmatter(texto)
+        obsoleto = str((fm or {}).get('status') or '') == 'obsoleto'
+        bloquea = cuerpo_nuevo(f, raiz) and not obsoleto
+        bloquean += bloquea
+        reportar = inf.error if bloquea else inf.aviso
+        ruta = rel(f, raiz)
+        for n, regla, cita in citas_externas(texto):
+            reportar(ruta, n, regla, cita)
+    return inf.cerrar(f' documentos-que-bloquean={bloquean}')
+
+
 def cmd_frescura(rutas, raiz, dias):
     import datetime
     inf = Informe(f'frescura last_review > {dias} días')
@@ -867,6 +957,7 @@ def main(argv):
             'contratos': lambda: cmd_contratos(rutas, raiz),
             'fijadas': lambda: cmd_fijadas(rutas, raiz),
             'reflint': lambda: cmd_reflint(rutas, raiz),
+            'url-fecha': lambda: cmd_url_fecha(rutas, raiz),
             'avisos': lambda: cmd_avisos(rutas, raiz),
             'frescura': lambda: cmd_frescura(rutas, raiz, int(opts['--dias'])),
         }

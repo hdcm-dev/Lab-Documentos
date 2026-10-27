@@ -15,7 +15,8 @@
 #   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados. Las anclas
 #                       ruta#Símbolo@SHA de las fichas las verifica el workflow de su source.lock (E1-U3).
 #   contrato      PR-6  diff del contrato OpenAPI (si la ruta tiene contracts/openapi.json).
-#   fijadas       PR-7  piezas fijadas con su SHA-256 (equivalente de «copiar.py --check») y reflint.
+#   fijadas       PR-7  piezas fijadas con su SHA-256 (equivalente de «copiar.py --check»), reflint y url-fecha
+#                       (URL y citas por dominio con fecha de consulta o cita al anexo; E1-U4f).
 #   autoprueba    G-c y AK-7: cada control da rojo sobre su fixture rojo y verde sobre el verde; el fixture
 #                 permanente AK-7 tiene que dar rojo en cada corrida.
 #   avisos        url-fecha y cita-linea sobre lo heredado. Nunca bloquea.
@@ -102,6 +103,7 @@ fijadas() {
   local rc=0
   py fijadas "$RUTA" || rc=1
   py reflint "$RUTA" || rc=1
+  py url-fecha "$RUTA" || rc=1
   return $rc
 }
 avisos()     { echo "== avisos: url-fecha y cita-linea ($RUTA)"; py avisos "$RUTA"; return 0; }
@@ -133,13 +135,15 @@ autoprueba() {
   local -x GITHUB_ACTIONS=false
   espera rojo  'PR-1 lychee'          lychee_offline "$FX/enlaces/rojo"
   espera verde 'PR-1 lychee'          lychee_offline "$FX/enlaces/verde"
-  declare -A grupo=([fuera]=PR-1 [esquema]=PR-2 [trazas]=PR-5 [fijadas]=PR-7 [reflint]=PR-7)
-  for c in fuera esquema trazas fijadas reflint; do
+  declare -A grupo=([fuera]=PR-1 [esquema]=PR-2 [trazas]=PR-5 [fijadas]=PR-7 [reflint]=PR-7 [url-fecha]=PR-7)
+  for c in fuera esquema trazas fijadas reflint url-fecha; do
     espera rojo  "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/rojo"  "$FX/$c/rojo"
     espera verde "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/verde" "$FX/$c/verde"
   done
   # Anclas de nivel 2 (E1-U3): la ficha contra una fuente de prueba con su source.lock.
   espera rojo  'PR-5 anclas'          py trazas --raiz "$FX/anclas/rojo"  --fuente "$FX/anclas/rojo/fuente"  "$FX/anclas/rojo"
+  # url-fecha (E1-U4f): un documento obsoleto del cuerpo nuevo avisa y no bloquea.
+  espera verde 'PR-7 url-fecha obsoleto'  py url-fecha --raiz "$FX/url-fecha/obsoleto" "$FX/url-fecha/obsoleto"
   espera verde 'PR-5 anclas'          py trazas --raiz "$FX/anclas/verde" --fuente "$FX/anclas/verde/fuente" "$FX/anclas/verde"
   for c in ai-1 ai-2 ai-4 ai-5; do
     espera rojo  "PR-3 ${c^^}" py ai --raiz "$FX/$c/rojo" "$FX/$c/rojo"

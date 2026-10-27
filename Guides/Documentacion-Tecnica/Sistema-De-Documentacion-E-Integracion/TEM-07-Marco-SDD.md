@@ -162,7 +162,7 @@ salen del build, y las trata el sistema documentador como en cualquier escenario
 | CL-07 Documentación técnica | Categoría 11, cuerpos integrador, mantenedor y operador | Cita; no reescribe esos archivos ni los pasa por la compuerta: los gobierna la norma del SDD, con su propia auditoría (al final de [Resolver una traza contra el SDD real de Lab-Geometria](#resolver-una-traza-contra-el-sdd-real-de-lab-geometria)). Si el escalón 2 decide que entren a la compuerta, el frontmatter lo agrega el propio proyecto en su pull request, como contenido suyo |
 
 La cita de la categoría 11 sale de sus reglas, en la tabla de fronteras
-([IA.SDD@bac7e48, `Rules-Documentacion.md`, l. 102](https://github.com/hdcm-dev/IA.SDD/blob/bac7e48409786396cecd36e180a06419b96cfef4/SDD/Devs/Rules/Rules-Documentacion.md#L102)).
+([IA.SDD@bac7e48, `Rules-Documentacion.md`, l. 102](https://github.com/hdcm-dev/IA.SDD/blob/bac7e48409786396cecd36e180a06419b96cfef4/SDD/Devs/Rules/Rules-Documentacion.md#L102), consultado el 2026-10-27).
 
 ### Las lecciones de decisión, dentro del marco
 

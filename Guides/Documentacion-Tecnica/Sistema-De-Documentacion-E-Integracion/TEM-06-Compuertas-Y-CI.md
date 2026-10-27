@@ -92,8 +92,8 @@ caché de herramientas.
 | `PR-4` | Markdown estructural (sin la regla de largo de línea) y mermaid que parsea | Sí |
 | `PR-5` | `traces-resolve`: cada `ID@versión` contra el registro generado de los encabezados (detalle en `TEM-05`) | Sí |
 | `PR-6` | Diff del contrato OpenAPI, si la carpeta tiene un `contracts/openapi.json`: el contrato versionado contra el que emitió el código, `contracts/.generado/openapi.json`. Como `docs-guard` no compila, ese archivo llega de una de dos formas: está en el árbol del pull request (lo escribió el build y se versionó en el mismo cambio), o el `source.lock` de la carpeta tiene una línea `workflow:` que nombra otro workflow del repositorio, que compila, extrae y compara; su resultado es otro check del pull request y la guarda G3 lo exige en verde como a `docs-guard`. Sin ninguna de las dos, `PR-6` da rojo por falta de extracción. Es el caso de la mini demo, cuyo `source.lock` nombra `mini-demo-movilidad`. Cualquier operación nueva, quitada o cambiada da rojo, rompa o no la compatibilidad: un cambio legítimo de la API actualiza el contrato versionado en el mismo pull request, y el diff queda a la vista de quien revisa | Sí |
-| `PR-7` | Piezas fijadas con su SHA-256; `reflint` sobre las entradas del anexo de referencias (año, título en cursiva, fecha de consulta) | Sí; `reflint` avisa en lo heredado |
-| `avisos` | `url-fecha` (toda URL de la prosa sin fecha de consulta, fuera de un anexo) y `cita-linea` (ruta del workspace sin línea) | No: avisa siempre y no entra al agregador |
+| `PR-7` | Piezas fijadas con su SHA-256; `reflint` sobre las entradas del anexo de referencias (año, título en cursiva, fecha de consulta); `url-fecha`: toda URL y toda cita por dominio en un code span (como `example.org/docs`) lleva, en su mismo párrafo o fila, la fecha de consulta o la cita enlazada al anexo (`#ref-…`) | Sí; `reflint` y `url-fecha` avisan en lo heredado, y `url-fecha` también en un documento `obsoleto` |
+| `avisos` | `url-fecha` sobre lo heredado y `cita-linea` (ruta del workspace sin línea) | No: avisa siempre y no entra al agregador |
 
 | Control del carril programado | Qué detecta |
 | --- | --- |
@@ -296,13 +296,13 @@ tiene que responder.
 
 | Campo | Pregunta que lo guía | Ejemplo |
 | --- | --- | --- |
-| Nombre y grupo | ¿Qué detecta, en una frase, y en qué grupo `PR-n` entra? | `url-fecha`: URL sin fecha de consulta; hoy corre en el paso `avisos`, fuera de los grupos |
+| Nombre y grupo | ¿Qué detecta, en una frase, y en qué grupo `PR-n` entra? | `url-fecha`: URL o cita por dominio sin fecha de consulta ni cita al anexo; grupo `PR-7` |
 | Condición 1 | ¿Es determinista y corre sin red? | Sí: expresión regular sobre el texto |
 | Condición 2 | ¿El defecto lo introduce el mismo pull request? | Sí, si la URL es nueva |
 | Condición 3 | ¿Dónde están sus fixtures `rojo/` y `verde/`? | `tools/docs-guard/fixtures/<control>/` |
-| Condición 4 | ¿Cuál es su línea de base sobre la carpeta que vigila? | Alta: las guías viejas tienen URL sin fecha en la prosa |
-| Condición 5 | ¿Tiene falsos positivos conocidos? ¿Cómo se exceptúan? | Citas por dominio en code spans; excepción con huella |
-| Decisión | ¿Bloquea o avisa? ¿Dónde? | Avisa, porque falla la condición 4. Para que bloquee en el cuerpo nuevo habría que restringirlo a él, medir ahí su línea de base y, si es 0, sumarlo al agregador |
+| Condición 4 | ¿Cuál es su línea de base sobre la carpeta que vigila? | 0 en el cuerpo nuevo, sin contar la guía `obsoleta`; alta en las guías viejas |
+| Condición 5 | ¿Tiene falsos positivos conocidos? ¿Cómo se exceptúan? | Direcciones locales, dominios de ejemplo, imágenes de contenedor y direcciones de clonado: se exceptúan por clase, con un fixture verde que lo prueba |
+| Decisión | ¿Bloquea o avisa? ¿Dónde? | Bloquea en el cuerpo nuevo, donde la línea de base es 0; avisa en lo heredado y en un documento `obsoleto` |
 | Pasos | ¿Está en `ci-local.sh`, en el workflow y, si bloquea, en el agregador? | Paso `avisos`, que no entra al agregador |
 
 ---

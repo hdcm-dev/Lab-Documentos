@@ -1,0 +1,6 @@
+# Excepciones con huella (AK-3). Una línea por excepción: SHA-256 del archivo, ruta desde la raíz del repositorio y
+# control exceptuado (AI-1 … AI-5). La excepción vale sólo mientras el archivo tenga esa huella: si el archivo cambia,
+# el control vuelve a mirarlo. Agregar o renovar una excepción es clase H (D08): la aprueba una persona en el PR.
+# Uso previsto: AGENTS.md y archivos de instrucciones de clase H, excluidos de AI-3 por ruta (CL-03).
+#
+# sha256                                                            ruta                          control

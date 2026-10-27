@@ -1,13 +1,21 @@
-# docs-guard: compuerta mínima de documentación (expediente 0002 de DocAsCode, unidad E1-U0a).
+# docs-guard: compuerta de documentación del carril PR (expediente 0002 de DocAsCode).
+# E1-U0a dejó la compuerta mínima; E1-U2 la completa con los grupos PR-1 a PR-7 de N09 §8.1.
 #
-# Qué verifica, sobre la carpeta «ruta» (por defecto, la guía del sistema documentador):
-#   1. herramientas  lychee con versión y SHA-256 fijos.
-#   2. enlaces       lychee --offline --include-fragments: enlaces internos y anclas.
-#   3. estructura    markdownlint-cli2 con reglas sólo estructurales.
+# Un solo job. Cada grupo es un paso que corre aunque otro haya fallado (continue-on-error) y el último paso es el
+# agregador estricto: el job da rojo si cualquier grupo dio rojo. Así un PR ve todos sus defectos en una corrida.
+#   herramientas  lychee con versión y SHA-256 fijos; mermaid y jsdom por lockfile; markdownlint-cli2 con versión fija.
+#   PR-1 enlaces    lychee --offline --include-fragments; relativos que salen del repositorio.
+#   PR-2 esquema    frontmatter contra su esquema (tools/docs-guard/esquemas), registro de prefijos, esquema RRD.
+#   PR-3 ai         anti-inyección AI-1..AI-5 (AI-3 avisa; AI-4 avisa en el anexo de referencias).
+#   PR-4 estructura markdownlint-cli2 estructural y mermaid que parsea.
+#   PR-5 trazas     traces-resolve.
+#   PR-6 contrato   diff del contrato OpenAPI, si la ruta tiene uno.
+#   PR-7 fijadas    piezas fijadas con su SHA-256 y reflint.
+#   autoprueba      par rojo/verde de cada control (G-c) y fixture permanente AK-7, que tiene que dar rojo.
 # Su equivalente local, con los mismos pasos en el mismo orden: scripts/ci-local.sh
 #
 # Seguridad: permissions contents: read; sin pull_request_target; actions fijadas por SHA; un PR desde un fork no
-# corre en el runner propio (guarda «if:»); ningún secreto.
+# corre en el runner propio (guarda «if:»); ningún secreto; ningún agente LLM en el job (AK-5).
 #
 # Reutilizable: otro repositorio lo llama con «uses: <dueño>/Lab-Documentos/.github/workflows/docs-guard.yml@<SHA>»
 # y pasa «ruta» y «herramientas-ref» (el mismo SHA, para que scripts y configuración coincidan con el workflow).
@@ -24,7 +32,7 @@ on:
         required: false
         default: Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion
       herramientas-ref:
-        description: Commit de Lab-Documentos del que se toman scripts/ci-local.sh y su configuración
+        description: Commit de Lab-Documentos del que se toman scripts/, tools/docs-guard/ y su configuración
         type: string
         required: false
         default: main
@@ -56,14 +64,74 @@ jobs:
           repository: hdcm-dev/Lab-Documentos
           ref: ${{ inputs.herramientas-ref || github.sha }}
           path: .docs-guard
-          sparse-checkout: scripts
+          sparse-checkout: |
+            scripts
+            tools/docs-guard
           persist-credentials: false
 
-      - name: 1/3 herramientas
+      - name: herramientas
         run: bash "$GUARD/scripts/ci-local.sh" herramientas "$RUTA"
 
-      - name: 2/3 enlaces
+      - name: PR-1 enlaces
+        id: enlaces
+        continue-on-error: true
         run: bash "$GUARD/scripts/ci-local.sh" enlaces "$RUTA"
 
-      - name: 3/3 estructura
+      - name: PR-2 esquema
+        id: esquema
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" esquema "$RUTA"
+
+      - name: PR-3 anti-inyección
+        id: ai
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" ai "$RUTA"
+
+      - name: PR-4 estructura y mermaid
+        id: estructura
+        continue-on-error: true
         run: bash "$GUARD/scripts/ci-local.sh" estructura "$RUTA"
+
+      - name: PR-5 trazas
+        id: trazas
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" trazas "$RUTA"
+
+      - name: PR-6 contrato
+        id: contrato
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" contrato "$RUTA"
+
+      - name: PR-7 fijadas y reflint
+        id: fijadas
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" fijadas "$RUTA"
+
+      - name: autoprueba (G-c y AK-7)
+        id: autoprueba
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" autoprueba "$RUTA"
+
+      - name: avisos (url-fecha y cita-linea; no bloquea)
+        continue-on-error: true
+        run: bash "$GUARD/scripts/ci-local.sh" avisos "$RUTA"
+
+      - name: agregador estricto
+        env:
+          R_ENLACES: ${{ steps.enlaces.outcome }}
+          R_ESQUEMA: ${{ steps.esquema.outcome }}
+          R_AI: ${{ steps.ai.outcome }}
+          R_ESTRUCTURA: ${{ steps.estructura.outcome }}
+          R_TRAZAS: ${{ steps.trazas.outcome }}
+          R_CONTRATO: ${{ steps.contrato.outcome }}
+          R_FIJADAS: ${{ steps.fijadas.outcome }}
+          R_AUTOPRUEBA: ${{ steps.autoprueba.outcome }}
+        run: |
+          FALLA=0
+          for g in ENLACES ESQUEMA AI ESTRUCTURA TRAZAS CONTRATO FIJADAS AUTOPRUEBA; do
+            v="R_$g"; r="${!v}"
+            printf '  %-11s %s\n' "$g" "$r"
+            if [ "$r" != "success" ]; then FALLA=1; echo "::error::docs-guard: el grupo $g dio $r"; fi
+          done
+          if [ "$FALLA" -ne 0 ]; then echo "== docs-guard: ROJO"; exit 1; fi
+          echo "== docs-guard: verde"

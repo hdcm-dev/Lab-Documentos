@@ -1,13 +1,11 @@
-# Configuración de lychee para docs-guard (expediente 0002, E1-U0a).
-# Línea de base: los ocho enlaces rotos que E1-U1 tiene en su alcance cerrado. Se excluyen acá, con nombre, para
-# que la compuerta nazca verde y detecte todo enlace roto NUEVO. E1-U1 borra las dos primeras entradas al sanearlos;
-# la tercera es el defecto plantado de la prueba de concepto (su README lo declara) y se conserva.
+# Configuración de lychee para docs-guard (expediente 0002, E1-U0a; saneada en E1-U1).
+# Exclusiones permanentes, con nombre y motivo. Toda otra ruta rota pone la compuerta en rojo.
+# E1-U1 corrigió los cinco destinos rotos de la guía (ruta ../Documentacion-Tecnica/ duplicada); ya no se excluyen.
 exclude_path = []
 exclude = [
-  # Sistema-Documentador-Tecnico-Guide.md: cinco enlaces a ../Documentacion-Tecnica/ (ruta duplicada). E1-U1.
-  'Documentacion-Tecnica/Documentacion-Tecnica/',
-  # Examples/Prueba-Ayuda-Por-Rol/Web/Ayuda/en/: dos páginas en inglés que no existen. E1-U1.
+  # Examples/Prueba-Ayuda-Por-Rol/Web/Ayuda/en/: dos enlaces a páginas sin traducir. Son el respaldo de cultura de la
+  # prueba de concepto (la app sirve la página en español con aviso; guía 7.6 y README de la prueba). Se conservan.
   'Prueba-Ayuda-Por-Rol/Web/Ayuda/en/(comun/cambiar-la-contrasena|alumno/consultar-mis-trabajos)\.md',
-  # Examples/Prueba-Ayuda-Por-Rol/Consola: enlace roto plantado a propósito (README §«defectos plantados»).
+  # Examples/Prueba-Ayuda-Por-Rol/Consola: enlace roto plantado a propósito (README, tabla de defectos). Se conserva.
   'Prueba-Ayuda-Por-Rol/Consola/Ayuda/comun/no-existe\.md',
 ]

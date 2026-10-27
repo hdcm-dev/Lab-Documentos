@@ -139,21 +139,42 @@ seis (`ID`, `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras d
 
 ### 5.2 Escribir la ficha de cada regla que la página nombre
 
-Si la pantalla tiene reglas (un mínimo, un rango, un formato, una unicidad), **cada regla lleva su ficha** en
-`docs/fichas/`, con un ID `RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). Copiá
+**Cada regla de la pantalla lleva su ficha** en `docs/fichas/`, tenga número o no: un mínimo, un rango, un formato,
+una unicidad, que un campo sea obligatorio o que su valor tenga que salir de una lista. Cada una con un ID
+`RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). La fila RD-04 del RRD no cambia: su pieza es la carpeta de fichas. Copiá
 [`RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) como modelo: frontmatter (`doc_type: ficha`, `traces: [RD-04]`, porque las
 fichas son la pieza de RD-04), encabezado `# RN-XXX-nn — Nombre`, línea `**Versión:** 1.0`, la tabla de la ficha y la
 tabla de anclas.
 
-**Valores de la tabla de la ficha** (forma de *Deducción de reglas de negocio* §5.1; la lista es cerrada):
+**Campos de la ficha.** La forma es la de *Deducción de reglas de negocio* §5.1, un conocimiento del espacio de
+trabajo que no se publica con este repositorio; todo lo que hace falta de él está acá. Los catorce campos van en este
+orden:
+
+| Campo | Qué se escribe |
+| --- | --- |
+| Id | `RN-<ÁREA>-nn`, provisional |
+| Enunciado atómico | La regla en una oración |
+| Ancla | El ancla principal y «y las de §2» |
+| Letra | Lo que la pantalla dice, textual, entre comillas |
+| Intención | Para qué existe la regla y qué la respalda en el código; si no hay respaldo, «Conjetura» |
+| ¿Divergen? | Ver la tabla siguiente |
+| Especie, Momento | Ver la tabla siguiente |
+| Quién la verifica hoy | El método que la comprueba, o **nadie** |
+| Dueño | La clase del dominio que la declara |
+| Depende de | Otras fichas cuya regla esta supone, o «Ninguna» |
+| Grado de certeza | Ver la tabla siguiente |
+| Prueba | Una oración Dado/Cuando/Entonces que se podría escribir como prueba |
+| Propuesta | Ver la tabla siguiente |
+
+**Valores cerrados:**
 
 | Campo | Valores |
 | --- | --- |
-| ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. Hay divergencia sólo si el código hace otra cosa que lo que la pantalla o la regla prometen |
+| ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, un ejemplo). **De fondo**: cambia alguna de esas tres cosas, como el 60/80 |
 | Especie | restricción, derivación, alcance o estructura |
 | Momento | Invariant, Precondition de ‹acto› (por ejemplo, «del alta»), completitud o ninguno |
 | Grado de certeza | testimonio, letra, caso de uso, código, inferencia o conjetura |
-| Propuesta | Obligatoria si hay divergencia de fondo; si no, «No corresponde» |
+| Propuesta | Obligatoria si hay divergencia de fondo; con una leve, opcional; sin divergencia, «No corresponde» |
 
 **Tabla de anclas.** Encabezado `| Rol | Ancla | Afirma |`. El código del SHA lo deja `verificar.sh fuente` en
 `$TRABAJO/sha/`. `TRABAJO` es la variable de entorno, si está; si no, `$RUNNER_TEMP`, `$TMPDIR` o `/tmp`, más
@@ -168,6 +189,15 @@ La columna **Afirma** se escribe con el valor entre comillas invertidas: `` = `1
 `` no contiene `texto` ``; vacía o `—` comprueba sólo que el símbolo existe. `contiene` mira la declaración completa,
 cuerpo incluido. La columna **Rol** no la lee la compuerta; los roles de las fichas modelo (`declara`, `muestra`,
 `verifica`, `aplica`, `persiste`) cubren los casos de la demo, y se puede usar otro si ninguno describe el lugar.
+
+**Mensajes interpolados.** Si el código arma un texto con valores (`$"Entre {EncuestaRules.EdadMinima} y …"`), la
+afirmación `contiene` copia el texto **tal como está en el código**, con las llaves, y los números se anclan aparte con
+`=` sobre sus constantes:
+
+```text
+| muestra | `src/MovilidadUrbana.MAUI/Application/Encuestas/EncuestaPolicy.cs#EncuestaPolicy.RequisitoDeLaEdad@8fb4c3a` | contiene `{EncuestaRules.EdadMinima}` |
+| declara | `src/MovilidadUrbana.MAUI/Domain/Rules/EncuestaRules.cs#EncuestaRules.EdadMinima@8fb4c3a` | = `16` |
+```
 
 El SHA del ancla tiene que ser el de `source.lock` (alcanza con los primeros siete caracteres). Escribí en la ficha lo
 que **el código hace**; si eso diverge de lo que la pantalla promete, marcá «¿Divergen?» como «De fondo» y dejá la
@@ -200,9 +230,13 @@ pasos, qué pide cada campo y qué hacer cuando la app no acepta un dato. Si la 
 esa sección se llama por lo que pasa («Si la app no te deja seguir»). Una página puede cubrir una parte de una
 pantalla; el título y la tarea de la fila del RRD lo dicen. La ayuda trata de vos, aunque la app trate de usted.
 
-**Qué tiene que estar en una ficha.** Cada límite o valor de una regla que la página nombra (mínimos, máximos, rangos,
-formatos). Los datos de ejemplo («Goya», «3450») y los mensajes sin números no: un mensaje se cita textual y, si sale
-de una regla, la ficha de esa regla ya lo ancla en su fila `verifica`.
+**Qué tiene que estar en una ficha.** Cada regla que la página explica, con sus límites o valores. Los datos de
+ejemplo («Goya», «3450») no. Un mensaje de error se cita textual en la página; si sale de una regla, la ficha de esa
+regla lo ancla en su fila `verifica`.
+
+**Qué límites nombra la página.** Los que la persona se va a encontrar, es decir, lo que el código aplica, aunque la
+pantalla no lo prometa: si el campo corta en 80, la ayuda dice «hasta 80». Si lo que el código aplica contradice lo
+que la pantalla promete, la página dice las dos cosas, como [alta-de-localidad §3](docs/ayuda/alta-de-localidad.md#3-qué-pide-cada-campo).
 
 ### 5.4 Validar
 
@@ -226,7 +260,14 @@ Los dos tienen que terminar en verde. El final de `ci-local.sh`:
 == docs-guard: verde
 ```
 
-El de `verificar.sh` está en §4. Errores frecuentes:
+El de `verificar.sh` está en §4. Para revisar sólo las trazas y las anclas sin compilar ni tener .NET (con el código
+ya bajado por `verificar.sh fuente`):
+
+```bash
+python3 -I tools/docs-guard/dg.py trazas --fuente "$TRABAJO/sha" "$DEMO"
+```
+
+Errores frecuentes:
 
 | Mensaje | Causa | Arreglo |
 | --- | --- | --- |
@@ -242,8 +283,11 @@ El de `verificar.sh` está en §4. Errores frecuentes:
 En el mismo cambio, además de las piezas nuevas:
 
 - la tabla de §2 de este README suma una fila por pieza nueva;
-- [`CHANGELOG.md`](../../../../../CHANGELOG.md) de Lab-Documentos suma una línea en la entrada del día, bajo
-  «Añadido».
+- la tabla de §3 de [`docs/tecnica/arquitectura.md`](docs/tecnica/arquitectura.md) suma una fila por regla nueva
+  (es la pieza de RD-03: dónde vive cada regla);
+- [`CHANGELOG.md`](../../../../../CHANGELOG.md) de Lab-Documentos suma una entrada nueva arriba de todo, con la fecha y
+  un título propio entre paréntesis («2026-10-28 (mini demo: ayuda de la encuesta)»), y la línea bajo «Añadido». No se
+  agrega a la entrada de otro cambio aunque tenga la misma fecha.
 
 Después, una rama (`demo-mu/<pantalla>`, por ejemplo `demo-mu/encuesta-paso-1`), un commit con un mensaje que diga qué
 pantalla se documentó («Mini demo: ayuda del paso 1 de la encuesta») y un PR contra `main` de Lab-Documentos. En el PR

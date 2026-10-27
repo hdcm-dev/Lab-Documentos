@@ -12,7 +12,8 @@
 #   esquema       PR-2  frontmatter contra su esquema, registro cerrado de prefijos, esquema RRD.
 #   ai            PR-3  anti-inyección AI-1..AI-5. AI-3 avisa; AI-4 avisa en el anexo de referencias.
 #   estructura    PR-4  markdownlint-cli2 estructural (MD013 apagado) y mermaid que parsea.
-#   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados.
+#   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados. Las anclas
+#                       ruta#Símbolo@SHA de las fichas las verifica el workflow de su source.lock (E1-U3).
 #   contrato      PR-6  diff del contrato OpenAPI (si la ruta tiene contracts/openapi.json).
 #   fijadas       PR-7  piezas fijadas con su SHA-256 (equivalente de «copiar.py --check») y reflint.
 #   autoprueba    G-c y AK-7: cada control da rojo sobre su fixture rojo y verde sobre el verde; el fixture
@@ -130,6 +131,9 @@ autoprueba() {
     espera rojo  "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/rojo"  "$FX/$c/rojo"
     espera verde "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/verde" "$FX/$c/verde"
   done
+  # Anclas de nivel 2 (E1-U3): la ficha contra una fuente de prueba con su source.lock.
+  espera rojo  'PR-5 anclas'          py trazas --raiz "$FX/anclas/rojo"  --fuente "$FX/anclas/rojo/fuente"  "$FX/anclas/rojo"
+  espera verde 'PR-5 anclas'          py trazas --raiz "$FX/anclas/verde" --fuente "$FX/anclas/verde/fuente" "$FX/anclas/verde"
   for c in ai-1 ai-2 ai-4 ai-5; do
     espera rojo  "PR-3 ${c^^}" py ai --raiz "$FX/$c/rojo" "$FX/$c/rojo"
   done

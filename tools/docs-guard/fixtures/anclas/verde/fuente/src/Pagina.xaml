@@ -1,0 +1,4 @@
+<!-- Fuente de prueba de docs-guard (fixture de anclas). -->
+<ContentPage xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Entry x:Name="Campo" MaxLength="80" />
+</ContentPage>

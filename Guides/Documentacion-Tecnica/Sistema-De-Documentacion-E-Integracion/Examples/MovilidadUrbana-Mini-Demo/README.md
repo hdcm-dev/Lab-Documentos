@@ -150,7 +150,8 @@ compruebe nadie (RN-LOC-01); que la localidad sea obligatoria y salga de la list
 («Paso 1 de 3», títulos, botones) no son reglas y no llevan ficha. Las reglas que valen para
 toda la app y no las impone esta pantalla, como que cada sesión ve sólo sus datos, no llevan ficha en la pantalla; si
 la persona las nota, la ayuda las dice en «Antes de empezar», como en
-[alta-de-localidad §1](docs/ayuda/alta-de-localidad.md#1-antes-de-empezar). Copiá
+[alta-de-localidad §1](docs/ayuda/alta-de-localidad.md#1-antes-de-empezar). Ahí van también los requisitos previos de
+la pantalla (por ejemplo, que para elegir una localidad tiene que haber alguna cargada) y qué ve la persona si faltan. Copiá
 [`RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) como modelo: frontmatter (`doc_type: ficha`, `traces: [RD-04]`, porque las
 fichas son la pieza de RD-04), encabezado `# RN-XXX-nn — Nombre`, línea `**Versión:** 1.0`, la tabla de la ficha y la
 tabla de anclas.
@@ -180,7 +181,7 @@ orden:
 
 | Campo | Valores |
 | --- | --- |
-| ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, o un rótulo que pide más de lo que se valida, como «Nombre y apellido» cuando alcanza una palabra). **De fondo**: la letra promete algo que cambia alguna de esas tres cosas, como el 60/80. **Silencio**: si la letra no nombra un límite que el código aplica, no hay divergencia; va como dato debajo de la tabla y la ayuda nombra el límite |
+| ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, o un rótulo que pide más de lo que se valida, como «Nombre y apellido» cuando alcanza una palabra). **De fondo**: la letra promete algo que cambia alguna de esas tres cosas, como el 60/80. **Silencio**: si la letra no promete nada sobre algo que el código hace (un límite, o que dos localidades homónimas de provincias distintas se vean iguales en una lista), no hay divergencia; va como dato debajo de la tabla y, si la persona lo va a notar, la ayuda lo dice |
 | Especie | **restricción** (limita qué valores se aceptan: un largo, un rango, una unicidad, un campo obligatorio, un valor de una lista); **derivación** (un valor se calcula de otros); **alcance** (a qué objetos o casos se aplica otra regla, como «sólo las localidades de la sesión»); **estructura** (cómo se relacionan los objetos, como «una localidad tiene una provincia») |
 | Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** (nadie la comprueba en un acto: sólo la impone la pantalla, por ejemplo con `MaxLength`). Si se comprueba en un acto y no en otro que la necesitaría (se valida al avanzar pero no al registrar), el Momento es el del acto donde se comprueba y el hueco va en «¿Divergen?»: «De fondo» si por ese hueco se puede guardar algo que la regla prohíbe; si no, «Leve» |
 | Grado de certeza | **testimonio** (lo dijo una persona responsable); **letra** (lo dice un texto de la app o de un requisito); **caso de uso** (sale de un caso de uso escrito); **código** (cada paso está en una ancla de la ficha, aunque no se haya ejecutado); **inferencia** (se deduce de varias piezas y al menos un paso no tiene ancla); **conjetura** (no hay respaldo) |

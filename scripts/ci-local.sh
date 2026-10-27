@@ -40,6 +40,12 @@ MERMAID_DIR="$CACHE/mermaid-$(sha256sum "$DG/mermaid/package-lock.json" | cut -c
 
 py() { python3 -I "$DG/dg.py" "$@"; }
 
+# CL-03 (E1-U4e): el AGENTS.md de la raíz del repositorio que se verifica (el directorio actual) entra en los grupos
+# enlaces, ai y estructura junto con la RUTA. Su exclusión de AI-3 va por huella en tools/docs-guard/excepciones.txt
+# (AK-3). Si no existe, enlaces sólo avisa: el script lo usan también otros repositorios por el workflow reutilizable.
+PUNTEROS=()
+[[ -f AGENTS.md ]] && PUNTEROS+=(AGENTS.md)
+
 herramientas() {
   echo "== herramientas: lychee $LYCHEE_VERSION, mermaid (lockfile), markdownlint-cli2 $MARKDOWNLINT_CLI2_VERSION"
   # Cada orden lleva su «|| return 1»: «set -e» no rige dentro de una función llamada desde «||».
@@ -73,19 +79,20 @@ mermaid() { node "$MERMAID_DIR/mermaid-parse.mjs" "$@"; }
 
 # Cada grupo devuelve 0 (verde) o distinto de 0 (rojo). Se corren todos sus controles aunque uno falle.
 enlaces() {
-  echo "== PR-1 enlaces: lychee --offline --include-fragments y relativos fuera del repo ($RUTA)"
+  echo "== PR-1 enlaces: lychee --offline --include-fragments y relativos fuera del repo ($RUTA ${PUNTEROS[*]})"
   local rc=0
-  lychee_offline "$RUTA" || rc=1
-  py fuera "$RUTA" || rc=1
+  [[ ${#PUNTEROS[@]} -eq 0 ]] && echo "aviso: no hay AGENTS.md en la raíz del repositorio (CL-03)"
+  lychee_offline "$RUTA" "${PUNTEROS[@]}" || rc=1
+  py fuera "$RUTA" "${PUNTEROS[@]}" || rc=1
   return $rc
 }
 esquema()    { echo "== PR-2 esquema ($RUTA)"; py esquema "$RUTA"; }
-ai()         { echo "== PR-3 anti-inyección ($RUTA)"; py ai "$RUTA"; }
+ai()         { echo "== PR-3 anti-inyección ($RUTA ${PUNTEROS[*]})"; py ai "$RUTA" "${PUNTEROS[@]}"; }
 estructura() {
-  echo "== PR-4 estructura: markdownlint-cli2 y mermaid ($RUTA)"
+  echo "== PR-4 estructura: markdownlint-cli2 y mermaid ($RUTA ${PUNTEROS[*]})"
   local rc=0
-  markdownlint "$RUTA/**/*.md" || rc=1
-  mermaid "$RUTA" || rc=1
+  markdownlint "$RUTA/**/*.md" "${PUNTEROS[@]}" || rc=1
+  mermaid "$RUTA" "${PUNTEROS[@]}" || rc=1
   return $rc
 }
 trazas()     { echo "== PR-5 trazas ($RUTA)"; py trazas "$RUTA"; }

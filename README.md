@@ -39,6 +39,7 @@ metodologías, despliegue, pruebas e IA. Todo está escrito en Markdown y se lee
 | [`scripts/`](scripts/) | Verificación local de la documentación |
 | [`tools/docs-guard/`](tools/docs-guard/README.md) | Controles de la compuerta de documentación y del carril programado |
 | [`CHANGELOG.md`](CHANGELOG.md) | Cambios del repositorio y delegaciones vigentes |
+| [`AGENTS.md`](AGENTS.md) | Puntero para agentes de código: ruta de lectura, validación y qué no pueden cambiar solos |
 
 ## Compuerta de documentación
 

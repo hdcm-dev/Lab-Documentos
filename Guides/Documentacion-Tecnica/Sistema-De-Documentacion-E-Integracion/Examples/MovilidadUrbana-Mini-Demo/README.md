@@ -134,7 +134,7 @@ seis (`ID`, `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras d
   su versión.
 
 ```text
-| RD-05 | persona usuaria | Completar el paso 1 de la encuesta | CL-06, [`docs/ayuda/encuesta.md`](ayuda/encuesta.md) | `RN-ENC-01@1.0`, `RN-ENC-02@1.0` | Dado el paso 1 de la encuesta, cuando la persona lee la ayuda, entonces cada número coincide con el de la ficha; instrumento: `traces-resolve` | pendiente | PO, pendiente |
+| RD-05 | persona usuaria | Completar el paso 1 de la encuesta | CL-06, [`docs/ayuda/encuesta.md`](ayuda/encuesta.md) | `RN-ENC-01@1.0`, `RN-ENC-02@1.0`, … (una por regla) | Dado el paso 1 de la encuesta, cuando la persona lee la ayuda, entonces cada número coincide con el de la ficha; instrumento: `traces-resolve` | pendiente | PO, pendiente |
 ```
 
 ### 5.2 Escribir la ficha de cada regla que la página nombre
@@ -143,8 +143,10 @@ seis (`ID`, `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras d
 una unicidad, que un campo sea obligatorio o que su valor tenga que salir de una lista. Cada una con un ID
 `RN-<ÁREA>-nn` nuevo (los asigna la demo; ver §8). La fila RD-04 del RRD no cambia: su pieza es la carpeta de fichas.
 
-Qué cuenta como **una** regla: las restricciones de un mismo campo que se comprueban juntas van en una sola ficha (que
-la edad sea un número entero y esté entre 16 y 110 es una regla: RN-ENC-02, por ejemplo). Las reglas que valen para
+Qué cuenta como **una** regla: las restricciones sobre un mismo campo van en una sola ficha, aunque cada una se
+compruebe o se imponga por un camino distinto; los caminos son filas de la tabla de anclas. Que la edad sea un número
+entero y esté entre 16 y 110 es una regla; que el nombre tenga entre 3 y 60 caracteres, también, aunque el máximo no lo
+compruebe nadie (RN-LOC-01); que la localidad sea obligatoria y salga de la lista, también. Las reglas que valen para
 toda la app y no las impone esta pantalla, como que cada sesión ve sólo sus datos, no llevan ficha en la pantalla; si
 la persona las nota, la ayuda las dice en «Antes de empezar», como en
 [alta-de-localidad §1](docs/ayuda/alta-de-localidad.md#1-antes-de-empezar). Copiá
@@ -180,7 +182,7 @@ orden:
 | ¿Divergen? | `No`, `Leve` o `De fondo`, y en qué. **Leve**: la letra y el código difieren en algo que no cambia qué se acepta, qué se rechaza ni qué se guarda (una palabra, o un rótulo que pide más de lo que se valida, como «Nombre y apellido» cuando alcanza una palabra). **De fondo**: la letra promete algo que cambia alguna de esas tres cosas, como el 60/80. **Silencio**: si la letra no nombra un límite que el código aplica, no hay divergencia; va como dato debajo de la tabla y la ayuda nombra el límite |
 | Especie | **restricción** (limita qué valores se aceptan: un largo, un rango, una unicidad, un campo obligatorio, un valor de una lista); **derivación** (un valor se calcula de otros); **alcance** (a qué objetos o casos se aplica otra regla, como «sólo las localidades de la sesión»); **estructura** (cómo se relacionan los objetos, como «una localidad tiene una provincia») |
 | Momento | **Invariant** (cierta siempre para lo guardado); **Precondition de ‹acto›** (se comprueba antes de un acto: «del alta», «de pasar al paso 2»); **completitud** (se exige recién al cerrar un conjunto, como al registrar la encuesta completa); **ninguno** (nadie la comprueba en un acto: sólo la impone la pantalla, por ejemplo con `MaxLength`). Si se comprueba en un acto y no en otro que la necesitaría (se valida al avanzar pero no al registrar), el Momento es el del acto donde se comprueba y el hueco va en «¿Divergen?»: «De fondo» si por ese hueco se puede guardar algo que la regla prohíbe; si no, «Leve» |
-| Grado de certeza | testimonio, letra, caso de uso, código, inferencia o conjetura |
+| Grado de certeza | **testimonio** (lo dijo una persona responsable); **letra** (lo dice un texto de la app o de un requisito); **caso de uso** (sale de un caso de uso escrito); **código** (cada paso está en una ancla de la ficha, aunque no se haya ejecutado); **inferencia** (se deduce de varias piezas y al menos un paso no tiene ancla); **conjetura** (no hay respaldo) |
 | Propuesta | Obligatoria si hay divergencia de fondo; con una leve, una propuesta o «Sin propuesta: divergencia leve»; sin divergencia, «No corresponde» |
 
 **Tabla de anclas.** Encabezado `| Rol | Ancla | Afirma |`. El código del SHA lo deja `verificar.sh fuente` en
@@ -242,6 +244,10 @@ ejemplo («Goya», «3450») no. Un mensaje de error se cita textual en la pági
 regla lo ancla en su fila `verifica`. Un mensaje general que no sale de una sola regla («Complete los datos del
 paso…») se cita sin ficha y sin ancla: es un límite conocido de la demo, y si el código lo cambia nada da rojo.
 
+**Qué divergencias cuenta la página.** Toda divergencia de fondo que la persona pueda notar, no sólo un límite contra
+una promesa (también, por ejemplo, un paso que deja avanzar sin un dato que la pantalla pide). Se cuenta en lenguaje
+llano, como en alta-de-localidad §3. Si la letra que se cita tiene jerga («ABM»), se cita textual y se explica.
+
 **Qué límites nombra la página.** Los que la persona se va a encontrar, es decir, lo que el código aplica, aunque la
 pantalla no lo prometa: si el campo corta en 80, la ayuda dice «hasta 80». Si lo que el código aplica contradice lo
 que la pantalla promete, la página dice las dos cosas, como [alta-de-localidad §3](docs/ayuda/alta-de-localidad.md#3-qué-pide-cada-campo).
@@ -293,7 +299,8 @@ En el mismo cambio, además de las piezas nuevas:
 - la tabla de §2 de este README suma una fila por pieza nueva;
 - la tabla de §3 de [`docs/tecnica/arquitectura.md`](docs/tecnica/arquitectura.md) suma una fila por regla nueva
   (es la pieza de RD-03: dónde vive cada regla; si la regla no tiene dueño en el dominio, la columna Declara dice
-  «ninguno en el dominio»), y el `traces` de esa página y la columna Fuente de RD-03 suman las
+  «ninguno en el dominio»; la columna Estado dice «Sin divergencia», «Divergencia leve» o «Divergencia de fondo»), y el
+  `traces` de esa página y la columna Fuente de RD-03 suman las
   fichas nuevas con su versión. Agregar una fuente a una fila ya decidida no la reabre; cambiar su tarea o su
   criterio sí: vuelve a `pendiente`;
 - [`CHANGELOG.md`](../../../../../CHANGELOG.md) de Lab-Documentos suma una entrada nueva arriba de todo, con la fecha y
@@ -333,7 +340,8 @@ si una página amplía lo que cubre (como `arquitectura.md` con reglas nuevas), 
 
 ### 5.6 Cuando el tutorial no cubre un caso
 
-Ningún tutorial cubre todos los casos de una pantalla real. Si te encontrás con uno que este no prevé:
+Ningún tutorial cubre todos los casos de una pantalla real, y la clasificación fina de una regla está declarada fuera
+de su alcance ([§8](#8-límites-de-la-demo)). Si te encontrás con un caso que este no prevé:
 
 1. Resolvelo por analogía con la pieza modelo más parecida (las fichas RN-LOC, la ayuda de alta, las páginas técnicas).
 2. Si el caso es sobre lo que el código hace y la letra promete, escribí lo que el código hace y no decidas la
@@ -375,3 +383,4 @@ permanente.
 | Los IDs `RN-LOC-nn` son provisionales | MovilidadUrbana no tiene registro de reglas; los asigna esta demo |
 | Las páginas no se publican en un sitio | Se leen como `.md` en el repositorio |
 | No se modifica el código | Si el repositorio del código abre un expediente que lo autorice, la documentación pasa a vivir junto al código |
+| La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos mixtos que §5.2 no resuelve (una regla con partes de especies o momentos distintos, un grado de certeza dudoso, una divergencia que no encaja en Leve o De fondo) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |

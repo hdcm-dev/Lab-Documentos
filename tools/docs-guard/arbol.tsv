@@ -1,0 +1,10 @@
+# Tabla versionada repo → ruta del workspace (N09 §8.2, corrección C-5 de 085 §D06).
+# El carril programado clona cada repo público en forma anónima y lo deja en su ruta desde la raíz del workspace, para
+# que los enlaces entre repos («/LAB/…», «/PROG2/…») resuelvan con lychee --root-dir. Sólo repos públicos de la
+# organización del runner; un repo privado no entra acá (tiene su propio carril en su organización, L10).
+#
+# repo (dueño/nombre)                     ruta desde la raíz del workspace
+hdcm-dev/Lab-Documentos                   LAB/Lab-Documentos/Lab-Documentos
+hdcm-dev/Lab-Documentos.Documentacion     LAB/Lab-Documentos/Lab-Documentos.Documentacion
+hdcm-dev/Lab-E2E.WebBlazor                LAB/Lab-E2E.WebBlazor/Lab-E2E.WebBlazor
+hdcm-dev/Lab-Geometria                    PROG2/Geometria/Lab-Geometria

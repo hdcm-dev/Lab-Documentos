@@ -1,0 +1,97 @@
+# docs-enlaces-semanal: carril programado de docs-guard (expediente 0002 de DocAsCode, E1-U2; N09 §8.2).
+#
+# Sólo avisa. Una vez por semana (y a mano, con workflow_dispatch) arma el árbol del workspace con los repos
+# públicos de tools/docs-guard/arbol.tsv (clon anónimo, tabla repo → ruta), corre lychee --root-dir con red
+# (enlaces entre repos y externos), el atraso de base_commit y source.lock, la deriva de piezas fijadas y la
+# frescura de last_review, y abre o actualiza un único issue con el informe.
+#
+# Seguridad: permisos mínimos (contents: read) más issues: write sólo para el issue del informe (excepción E-9 al
+# patrón contents: read, folio 099 §8); sin pull_request_target; actions fijadas por SHA; el GITHUB_TOKEN no se usa
+# para clonar (los clones son anónimos) y sólo viaja por un descriptor a curl; ningún otro secreto.
+# En un pull_request que toca este carril corre en seco: arma el árbol y el informe pero no toca issues.
+# Su equivalente local: tools/docs-guard/semanal.sh ARBOL INFORME [RUTA]
+
+name: docs-enlaces-semanal
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      ruta:
+        description: Carpeta de Lab-Documentos a verificar
+        type: string
+        required: false
+        default: Guides
+  pull_request:
+    paths:
+      - .github/workflows/docs-enlaces-semanal.yml
+      - tools/docs-guard/semanal.sh
+      - tools/docs-guard/arbol.tsv
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: docs-enlaces-semanal-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  enlaces-semanal:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, i7infra-dev]
+    timeout-minutes: 30
+    env:
+      RUTA: ${{ inputs.ruta || 'Guides' }}
+      TITULO: "docs-enlaces-semanal: informe del carril programado"
+    steps:
+      - name: Checkout de las herramientas
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          sparse-checkout: |
+            scripts
+            tools/docs-guard
+          persist-credentials: false
+
+      - name: herramientas
+        run: bash scripts/ci-local.sh herramientas .
+
+      - name: Árbol del workspace e informe
+        env:
+          DOCS_GUARD_CACHE: ${{ runner.temp }}/docs-guard
+          ARBOL: ${{ runner.temp }}/arbol-del-workspace
+          INFORME: ${{ runner.temp }}/docs-enlaces-semanal.md
+        run: |
+          LYCHEE="$DOCS_GUARD_CACHE/lychee-0.18.1/lychee" bash tools/docs-guard/semanal.sh "$ARBOL" "$INFORME" "$RUTA"
+          {
+            echo
+            echo "---"
+            echo "Corrida: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID} (evento ${GITHUB_EVENT_NAME}, commit ${GITHUB_SHA::7})."
+          } >> "$INFORME"
+          cat "$INFORME" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Abrir o actualizar el issue del informe
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          API: ${{ github.api_url }}
+          INFORME: ${{ runner.temp }}/docs-enlaces-semanal.md
+        run: |
+          set -uo pipefail
+          auth() { printf 'Authorization: Bearer %s\n' "$GH_TOKEN"; }
+          api() { curl -sS -H @<(auth) -H 'Accept: application/vnd.github+json' "$@"; }
+          CUERPO="$(head -c 60000 "$INFORME")"
+          N=$(api "$API/repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+                | jq -r --arg t "$TITULO" '[.[] | select(.pull_request == null and .title == $t)][0].number // empty')
+          if [ -n "$N" ]; then
+            R=$(api -X PATCH "$API/repos/$GITHUB_REPOSITORY/issues/$N" -d "$(jq -n --arg b "$CUERPO" '{body:$b}')")
+            ACCION=actualizado
+          else
+            R=$(api -X POST "$API/repos/$GITHUB_REPOSITORY/issues" -d "$(jq -n --arg t "$TITULO" --arg b "$CUERPO" '{title:$t, body:$b}')")
+            ACCION=abierto
+          fi
+          URL=$(jq -r '.html_url // empty' <<<"$R")
+          if [ -z "$URL" ]; then echo "::error::No se pudo escribir el issue: $(jq -r '.message // "sin respuesta"' <<<"$R")"; exit 1; fi
+          echo "Issue $ACCION: $URL"
+          echo "Issue $ACCION: $URL" >> "$GITHUB_STEP_SUMMARY"

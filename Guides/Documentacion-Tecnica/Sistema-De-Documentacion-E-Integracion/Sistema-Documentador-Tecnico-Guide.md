@@ -2,6 +2,7 @@
 doc_id: DOC-SDT-0001
 doc_type: study-note
 title: Sistema documentador técnico — de Markdown al portal publicado
+description: Cómo un portal de documentación nace de Markdown versionado (docs as code) y cómo montar un sistema documentador propio.
 status: borrador
 origin: ia-generated
 confidence: alta

@@ -1,0 +1,26 @@
+# Lista de dominios permitidos (AK-4) para enlaces e imágenes del corpus, incluidas las URL desnudas (AI-4).
+# Clase P con aprobación explícita (D08, corrección C-14): se agrega un dominio por PR, con el motivo en la misma
+# línea, y quien revisa lo aprueba de forma explícita. Un subdominio queda cubierto por su dominio.
+# En el anexo de referencias (archivo con «Referencias» en el nombre o doc_type anexo-referencias) AI-4 sólo avisa.
+#
+# Dominio                        Motivo
+localhost                        # ejemplos que corren en la máquina de quien lee
+0.0.0.0                          # dirección de escucha en los ejemplos de contenedor
+127.0.0.1                        # ejemplos locales
+github.com                       # repositorios públicos citados por permalink
+docs.github.com                  # documentación de GitHub Actions
+learn.microsoft.com              # documentación de .NET y ASP.NET Core
+documentation.onesignal.com      # proveedor de notificaciones citado en la guía del sistema documentador
+onesignal.mintlify.app           # mismo proveedor, sitio de la documentación servida por Mintlify
+mintlify.com                     # generador de documentación comparado en la guía
+docusaurus.io                    # generador de documentación comparado en la guía
+llmstxt.org                      # propuesta llms.txt (canal para agentes, D07)
+agents.md                        # convención AGENTS.md (canal para agentes, D07)
+genai.owasp.org                  # OWASP LLM01 (inyección indirecta, D18)
+modelcontextprotocol.io          # MCP, citado como fuera de alcance (D07)
+diataxis.fr                      # marco Diátaxis
+arc42.org                        # plantilla arc42
+cognitect.com                    # ADR de Nygard
+keepachangelog.com               # formato de CHANGELOG
+semver.org                       # versionado semántico
+code.claude.com                  # documentación del agente de código citado en la guía

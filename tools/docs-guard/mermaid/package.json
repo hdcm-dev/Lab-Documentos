@@ -1,0 +1,10 @@
+{
+  "name": "docs-guard-mermaid",
+  "private": true,
+  "description": "Parser de mermaid sin navegador para docs-guard (PR-4). Versiones exactas; el lockfile fija el árbol completo.",
+  "type": "module",
+  "dependencies": {
+    "jsdom": "25.0.1",
+    "mermaid": "11.4.1"
+  }
+}

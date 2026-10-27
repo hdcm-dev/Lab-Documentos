@@ -1,0 +1,36 @@
+# Registro cerrado de prefijos de ID (D09, N09 §7). Un prefijo nuevo entra por PR que lo agrega acá.
+# Columnas: prefijo, ámbito y descripción.
+#   interno  el ID se declara en este repositorio (doc_id o encabezado): si no resuelve, traces-resolve bloquea.
+#   externo  el ID se declara en el sistema que se documenta: resuelve contra el SHA de source.lock; sin source.lock
+#            avisa («no verificable»), con source.lock bloquea.
+#
+# Aparato de la guía (Creacion-Guias-Tecnicas, Convenciones)
+ESC     interno   escenario del marco
+CTX     interno   contexto del marco
+ACT     interno   actor del marco
+DOC     interno   documento temático por tipo de documentación
+FAM     interno   familia documental
+MET     interno   método ágil
+ARQ     interno   modelo de arquitectura
+MARCO   interno   documento del marco de referencia
+MAPA    interno   mapa conceptual
+ANX     interno   anexo
+IDX     interno   índice
+# Cuerpo de la guía del sistema documentador (N09 §7)
+TEM     interno   tema del cuerpo
+CQ      interno   criterio de calidad
+PE      interno   pregunta de evaluación
+OBJ     interno   objetivo de aprendizaje
+EJR     interno   ejercicio
+RD      interno   requerimiento documental (RRD)
+VER     interno   ítem de verificación
+# Prefijos de la industria que usan los ejemplos y los sistemas documentados
+RF      externo   requisito funcional
+RNF     externo   requisito no funcional
+RN      externo   regla de negocio
+CU      externo   caso de uso
+ADR     externo   decisión de arquitectura
+TC      externo   caso de prueba
+RSK     externo   riesgo
+FLU     externo   flujo de usuario
+NB      externo   necesidad de negocio

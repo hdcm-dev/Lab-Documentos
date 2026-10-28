@@ -9,7 +9,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, MAPA-SDEI]
 ---
@@ -72,7 +72,7 @@ flowchart TB
   R["README<br/>corpus SDEI · versión · rutas"] --> M["00 Marco<br/>escenarios · contextos · actores · convenciones"]
   M --> MAPA["01 Mapa<br/>estoy acá → qué aplico"]
   subgraph APR["Ruta aprender"]
-    T["TEM-01 … TEM-07<br/>en redacción"] --> EJ["Ejercicios"]
+    T["TEM-01 … TEM-07"] --> EJ["Ejercicios"]
   end
   subgraph INT["Ruta intervenir"]
     CI["Cómo intervenir<br/>plantilla"] --> PL["Instancia del proyecto"]
@@ -87,8 +87,7 @@ flowchart TB
   T --> ANX
 ```
 
-*Diagrama: las tres rutas. Las cajas «en redacción» todavía no tienen archivo en esta versión del cuerpo; la tabla de
-§4 dice cuáles existen.*
+*Diagrama: las tres rutas. Todas las cajas tienen archivo en esta versión del cuerpo; la tabla de §4 los enlaza.*
 
 | Ruta | Para quién | Recorrido | Sale con |
 | --- | --- | --- | --- |

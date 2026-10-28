@@ -140,6 +140,9 @@ autoprueba() {
     espera rojo  "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/rojo"  "$FX/$c/rojo"
     espera verde "${grupo[$c]} $c" py "$c" --raiz "$FX/$c/verde" "$FX/$c/verde"
   done
+  # Frontmatter que un lector YAML acepta (E1-G): un valor sin comillas con «: » da rojo en el cuerpo nuevo.
+  espera rojo  'PR-2 esquema YAML'    py esquema --raiz "$FX/esquema-yaml/rojo"  "$FX/esquema-yaml/rojo"
+  espera verde 'PR-2 esquema YAML'    py esquema --raiz "$FX/esquema-yaml/verde" "$FX/esquema-yaml/verde"
   # Anclas de nivel 2 (E1-U3): la ficha contra una fuente de prueba con su source.lock.
   espera rojo  'PR-5 anclas'          py trazas --raiz "$FX/anclas/rojo"  --fuente "$FX/anclas/rojo/fuente"  "$FX/anclas/rojo"
   # url-fecha (E1-U4f): un documento obsoleto del cuerpo nuevo avisa y no bloquea.

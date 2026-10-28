@@ -4,7 +4,7 @@ version: 2.0.0-borrador
 doc_id: IDX-SDEI
 doc_type: indice
 title: Sistema de documentación e integración — guía de estudio
-description: Puerta de entrada del cuerpo: qué enseña, tabla de contenido completa y tres rutas de lectura (aprender, intervenir y agente).
+description: "Puerta de entrada del cuerpo: qué enseña, tabla de contenido completa y tres rutas de lectura (aprender, intervenir y agente)."
 status: borrador
 origin: ia-assisted
 confidence: media
@@ -20,7 +20,7 @@ traces: [MARCO-SDEI, MAPA-SDEI]
 | --- | --- |
 | **Cuerpo** (`corpus_id`) | `SDEI` |
 | **Versión** | `2.0.0-borrador` |
-| **Estado** | Borrador: el esqueleto (README, Marco, Mapa y anexos) está escrito; los siete temas se agregan sobre él |
+| **Estado** | Borrador: README, Marco, Mapa, los siete temas, los anexos y los ejemplos están escritos; pasan a `vigente` cuando una persona los revisa |
 | **Compuerta** | `docs-guard` (grupos PR-1 a PR-7) en cada pull request; en local, `scripts/ci-local.sh` desde la raíz del repositorio |
 
 ## Índice

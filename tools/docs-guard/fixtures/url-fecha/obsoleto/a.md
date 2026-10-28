@@ -2,7 +2,7 @@
 doc_id: FIX-OBSOLETO
 doc_type: study-note
 title: Documento obsoleto
-description: Un documento obsoleto del cuerpo nuevo: sus citas incompletas avisan y no bloquean.
+description: "Un documento obsoleto del cuerpo nuevo: sus citas incompletas avisan y no bloquean."
 status: obsoleto
 origin: human
 owner: fixtures

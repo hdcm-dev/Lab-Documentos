@@ -81,7 +81,7 @@ red, clona los repos hermanos y escribe un issue.
 | Grupo | Paso de `ci-local.sh` | Controles | Herramienta |
 | --- | --- | --- | --- |
 | PR-1 | `enlaces` | Enlaces internos y anclas; relativos que salen del repositorio | lychee `--offline --include-fragments`; `dg.py fuera` |
-| PR-2 | `esquema` | Frontmatter contra [`esquemas/`](esquemas/), registro cerrado de prefijos, esquema del RRD | `dg.py esquema` |
+| PR-2 | `esquema` | Frontmatter contra [`esquemas/`](esquemas/), registro cerrado de prefijos, esquema del RRD; un valor sin comillas que contiene «: » (YAML inválido) da rojo en el cuerpo nuevo y avisa en lo heredado (`frontmatter-no-yaml`) | `dg.py esquema` |
 | PR-3 | `ai` | AI-1 a AI-5, con excepciones con huella | `dg.py ai` |
 | PR-4 | `estructura` | Markdown estructural (MD013 apagado); mermaid que parsea | markdownlint-cli2; [`mermaid/mermaid-parse.mjs`](mermaid/mermaid-parse.mjs) |
 | PR-5 | `trazas` | Cada `traces: [ID@MAYOR.MENOR]` contra el registro generado de `doc_id` y de los encabezados que empiezan con un ID | `dg.py trazas` |

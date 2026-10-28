@@ -2,6 +2,18 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-28 (compuerta E1-G: reparaciones de cierre del escalón 1)
+
+### .github/workflows/ y punteros de lectura — expediente 0002 de DocAsCode, compuerta E1-G
+
+#### Cambiado
+
+- **`docs-guard.yml`**: corre también en `push` a `main` y por `workflow_dispatch`, para que la corrida sobre el commit de merge quede registrada (criterio G-b).
+- **`framework-concept-demo.yml`**: `actions/checkout` fijada por SHA (v4.2.2), como el resto de los workflows.
+- **`README.md`** raíz y **`Guides/README.md`**: la ruta de lectura apunta al README del cuerpo `SDEI` en lugar de la guía de un solo archivo, que está `obsoleta`. El README raíz nombra `AGENTS.md` como entrada para agentes.
+- **`README.md`** del cuerpo `SDEI`: el diagrama de rutas ya no marca los temas «en redacción»; los siete tienen archivo.
+- **`00-Marco.md`** (definición de traza), **`01-Mapa.md`** §3 y **`README.md`** del cuerpo (ruta «intervenir»): aclaraciones que pidió la prueba de lectura de E1-G: qué comprueba una traza sin versión, que `traces-resolve` no depende de `corpus_id`, qué hacer con una página desactualizada que no traza a ninguna ficha y por qué ruta entra alguien que recién llega.
+
 ## 2026-10-27 (la guía de un solo archivo pasa a obsoleta; `url-fecha` ampliado)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0002 de DocAsCode, unidad E1-U4f

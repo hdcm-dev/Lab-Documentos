@@ -2,12 +2,12 @@
 doc_id: TEM-SDEI-06
 doc_type: tema
 title: Compuertas de calidad y CI — qué bloquea, qué avisa y por qué
-description: Compuertas documentales en la CI: dos carriles, la regla de cinco condiciones para bloquear, los pares rojo/verde y la seguridad del runner.
+description: "Compuertas documentales en la CI: dos carriles, la regla de cinco condiciones para bloquear, los pares rojo/verde y la seguridad del runner."
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante, docente, desarrollo, devops]
 traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-04, TEM-SDEI-05, ANX-SDEI-CQ, ANX-SDEI-VER, ANX-SDEI-REFERENCIAS]
 ---

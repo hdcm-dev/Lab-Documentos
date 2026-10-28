@@ -23,7 +23,7 @@ El comando `dotnet nuget add source` usa los parámetros `--username` y `--passw
 
 1. Ir a **GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)**
 2. Hacer clic en **Generate new token (classic)**
-3. Asignar un nombre descriptivo (ej. `nuget-push-notionsgroups`)
+3. Asignar un nombre descriptivo (ej. `nuget-push-miorg`)
 4. Seleccionar los siguientes scopes:
    - `write:packages` — para publicar paquetes
    - `read:packages` — para consumir paquetes desde la fuente privada
@@ -39,7 +39,7 @@ El comando `dotnet nuget add source` usa los parámetros `--username` y `--passw
 - Registrar la fuente una sola vez:
   ```powershell
   dotnet nuget add source https://nuget.pkg.github.com/<owner>/index.json \
-    --name NotionsGroups-GitHub \
+    --name MiOrg-GitHub \
     --username <GITHUB_USER> \
     --password <PAT>
   ```
@@ -59,7 +59,7 @@ El comando `dotnet nuget add source` usa los parámetros `--username` y `--passw
 3. **Publicar** (reemplazar nombre y versión):
    ```powershell
    dotnet nuget push NombreProyecto/bin/Release/NombreProyecto.1.0.6.nupkg \
-     --source NotionsGroups-GitHub
+     --source MiOrg-GitHub
    ```
 
 Repetir para cada paquete en orden, del menos dependiente al más dependiente.

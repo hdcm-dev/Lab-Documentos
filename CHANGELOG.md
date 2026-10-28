@@ -2,6 +2,19 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-28 (compuerta E1-G: frontmatter que un lector YAML acepta)
+
+### tools/docs-guard/ y scripts/ci-local.sh — expediente 0002 de DocAsCode, compuerta E1-G
+
+#### Añadido
+
+- **`dg.py esquema`** (grupo `PR-2`): regla `frontmatter-no-yaml`. Un valor sin comillas que contiene «: » no es YAML válido y un lector estricto (un generador de sitio, un agente) rechaza todo el frontmatter. Bloquea en el cuerpo nuevo y avisa en lo heredado. Fixtures `esquema-yaml/rojo` y `verde` en la autoprueba.
+
+#### Cambiado
+
+- **`README.md`** del cuerpo `SDEI`, **`TEM-03-Topologia-Y-Versionado.md`** y **`TEM-06-Compuertas-Y-CI.md`**: `description` entre comillas. El README además actualiza la fila «Estado»: los siete temas ya están escritos.
+- **`fixtures/url-fecha/obsoleto/a.md`**: `description` entre comillas.
+
 ## 2026-10-28 (compuerta E1-G: reparaciones de cierre del escalón 1)
 
 ### .github/workflows/ y punteros de lectura — expediente 0002 de DocAsCode, compuerta E1-G

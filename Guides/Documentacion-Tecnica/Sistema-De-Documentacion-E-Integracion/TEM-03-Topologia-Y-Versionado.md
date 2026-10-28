@@ -2,12 +2,12 @@
 doc_id: TEM-SDEI-03
 doc_type: tema
 title: Tema 03 — Topología de repositorios y versionado
-description: Dónde vive cada pieza documental respecto del código y contra qué versión vale: commit, SHA fijado o etiqueta, con la regla para elegir.
+description: "Dónde vive cada pieza documental respecto del código y contra qué versión vale: commit, SHA fijado o etiqueta, con la regla para elegir."
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-01, TEM-SDEI-02, ANX-SDEI-ESQUEMA, ANX-SDEI-REFERENCIAS, ANX-SDEI-CQ]
 ---

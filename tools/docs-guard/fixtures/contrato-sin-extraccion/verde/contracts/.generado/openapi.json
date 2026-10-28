@@ -1,0 +1,14 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Prueba",
+    "version": "1"
+  },
+  "paths": {
+    "/salas": {
+      "get": {
+        "operationId": "ListarSalas"
+      }
+    }
+  }
+}

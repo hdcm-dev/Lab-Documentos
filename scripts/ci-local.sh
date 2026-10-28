@@ -12,8 +12,10 @@
 #   esquema       PR-2  frontmatter contra su esquema, registro cerrado de prefijos, esquema RRD.
 #   ai            PR-3  anti-inyección AI-1..AI-5. AI-3 avisa; AI-4 avisa en el anexo de referencias.
 #   estructura    PR-4  markdownlint-cli2 estructural (MD013 apagado) y mermaid que parsea.
-#   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados. Las anclas
-#                       ruta#Símbolo@SHA de las fichas las verifica el workflow de su source.lock (E1-U3).
+#   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados, sobre RUTA y
+#                       los punteros de la raíz (DOCS_GUARD_TRAZAS_EXTRA; por defecto AGENTS.md, README.md y
+#                       Guides/README.md, si existen); id-duplicado: un ID declarado dos veces da rojo aunque nadie lo
+#                       trace. Las anclas ruta#Símbolo@SHA de las fichas las verifica el workflow de su source.lock (E1-U3).
 #   contrato      PR-6  diff del contrato OpenAPI (si la ruta tiene contracts/openapi.json).
 #   fijadas       PR-7  piezas fijadas con su SHA-256 (equivalente de «copiar.py --check»), reflint y url-fecha
 #                       (URL y citas por dominio con fecha de consulta o cita al anexo; E1-U4f).
@@ -46,6 +48,15 @@ py() { python3 -I "$DG/dg.py" "$@"; }
 # (AK-3). Si no existe, enlaces sólo avisa: el script lo usan también otros repositorios por el workflow reutilizable.
 PUNTEROS=()
 [[ -f AGENTS.md ]] && PUNTEROS+=(AGENTS.md)
+
+# DEF-16 (expediente 0002, vuelta de E1): las traces de los punteros de la raíz también se resuelven en PR-5. Sin
+# esto, una traza de AGENTS.md, README.md o Guides/README.md que no resuelve (o es ambigua) pasa en verde. La lista se
+# cambia con DOCS_GUARD_TRAZAS_EXTRA (rutas separadas por espacios, relativas a la raíz que se verifica); entra sólo
+# lo que existe, así que otro repositorio que llama al workflow reutilizable no necesita tener esos archivos.
+TRAZAS_EXTRA=()
+for t in ${DOCS_GUARD_TRAZAS_EXTRA-AGENTS.md README.md Guides/README.md}; do
+  [[ -f "$t" ]] && TRAZAS_EXTRA+=("$t")
+done
 
 herramientas() {
   echo "== herramientas: lychee $LYCHEE_VERSION, mermaid (lockfile), markdownlint-cli2 $MARKDOWNLINT_CLI2_VERSION"
@@ -96,7 +107,7 @@ estructura() {
   mermaid "$RUTA" "${PUNTEROS[@]}" || rc=1
   return $rc
 }
-trazas()     { echo "== PR-5 trazas ($RUTA)"; py trazas "$RUTA"; }
+trazas()     { echo "== PR-5 trazas ($RUTA ${TRAZAS_EXTRA[*]})"; py trazas "$RUTA" "${TRAZAS_EXTRA[@]}"; }
 contrato()   { echo "== PR-6 contrato ($RUTA)"; py contratos "$RUTA"; }
 fijadas() {
   echo "== PR-7 fijadas y reflint ($RUTA)"
@@ -120,6 +131,20 @@ espera() {
     printf '  ok    %-28s %s (rc=%s)\n' "$nombre" "$obtenido" "$rc"
   else
     printf '  FALLA %-28s esperaba %s y dio %s (rc=%s)\n' "$nombre" "$esperado" "$obtenido" "$rc"
+    printf '%s\n' "$salida" | tail -5 | sed 's/^/        /'
+    FALLAS_AUTO=$((FALLAS_AUTO + 1))
+  fi
+}
+# espera_regla: el caso rojo de una regla con identificador propio. No alcanza con que el grupo dé rojo: la salida
+# tiene que nombrar la regla, para que otra regla del mismo grupo no tape un control que dejó de funcionar.
+espera_regla() {
+  local regla="$1" nombre="$2"; shift 2
+  local salida rc
+  salida="$("$@" 2>&1)"; rc=$?
+  if [[ $rc -eq 1 ]] && grep -qE "(ERROR|error) ${regla}([: ]|$)|::error .*::${regla}:" <<<"$salida"; then
+    printf '  ok    %-28s rojo con %s (rc=%s)\n' "$nombre" "$regla" "$rc"
+  else
+    printf '  FALLA %-28s esperaba rojo con %s (rc=%s)\n' "$nombre" "$regla" "$rc"
     printf '%s\n' "$salida" | tail -5 | sed 's/^/        /'
     FALLAS_AUTO=$((FALLAS_AUTO + 1))
   fi
@@ -148,6 +173,21 @@ autoprueba() {
   # url-fecha (E1-U4f): un documento obsoleto del cuerpo nuevo avisa y no bloquea.
   espera verde 'PR-7 url-fecha obsoleto'  py url-fecha --raiz "$FX/url-fecha/obsoleto" "$FX/url-fecha/obsoleto"
   espera verde 'PR-5 anclas'          py trazas --raiz "$FX/anclas/verde" --fuente "$FX/anclas/verde/fuente" "$FX/anclas/verde"
+  # Reglas con identificador propio que no tenían caso (DEC-13 de la vuelta de E1; DEF-11) y las nuevas (D-17, D-18).
+  local r
+  for r in traza-mal-formada traza-ambigua traza-sin-version traza-version-desfasada id-duplicado; do
+    espera_regla "$r" "PR-5 $r" py trazas --raiz "$FX/$r/rojo" "$FX/$r/rojo"
+  done
+  espera verde 'PR-5 id-duplicado'          py trazas --raiz "$FX/id-duplicado/verde" "$FX/id-duplicado/verde"
+  espera_regla traces-vacio 'PR-2 traces-vacio' py esquema --raiz "$FX/traces-vacio/rojo" "$FX/traces-vacio/rojo"
+  espera verde 'PR-2 traces-vacio'          py esquema --raiz "$FX/traces-vacio/verde" "$FX/traces-vacio/verde"
+  for r in esquema-ayuda esquema-readme-cuerpo; do
+    espera_regla "$r" "PR-2 $r" py esquema --raiz "$FX/$r/rojo"  "$FX/$r/rojo"
+    espera verde      "PR-2 $r" py esquema --raiz "$FX/$r/verde" "$FX/$r/verde"
+  done
+  espera_regla contrato-sin-extraccion 'PR-6 contrato-sin-extraccion' \
+    py contratos --raiz "$FX/contrato-sin-extraccion/rojo" "$FX/contrato-sin-extraccion/rojo"
+  espera verde 'PR-6 contratos'             py contratos --raiz "$FX/contrato-sin-extraccion/verde" "$FX/contrato-sin-extraccion/verde"
   for c in ai-1 ai-2 ai-4 ai-5; do
     espera rojo  "PR-3 ${c^^}" py ai --raiz "$FX/$c/rojo" "$FX/$c/rojo"
   done

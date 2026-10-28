@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-07
+doc_id: FC-TEM-07
 doc_type: tema
 title: Red y autenticación con el sistema operativo — estado de red, política de acciones y sesión
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-02, TEM-04, TEM-06, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-02, FC-TEM-04, FC-TEM-06, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Red y autenticación con el sistema operativo — estado de red, política de acciones y sesión
@@ -25,8 +25,8 @@ traces: [MARCO-REFERENCIA, TEM-02, TEM-04, TEM-06, TEM-08, ANEXO-99]
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) ·
-Sigue en: [`TEM-08`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/08-Cohesion-Global.md)
+Viene de: [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) ·
+Sigue en: [`FC-TEM-08`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/08-Cohesion-Global.md)
 
 ## 1. Resumen ejecutivo
 

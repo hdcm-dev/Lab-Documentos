@@ -1,5 +1,5 @@
 ---
-doc_id: GUIA-INDICE
+doc_id: FC-GUIA-INDICE
 doc_type: indice
 title: Developer Guide — apps .NET MAUI con pantallas Blazor que se actualizan sin pasar por la tienda
 version: 1.0.0
@@ -9,7 +9,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-01, TEM-02, TEM-03, TEM-04, TEM-05, TEM-06, TEM-07, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-02, FC-TEM-03, FC-TEM-04, FC-TEM-05, FC-TEM-06, FC-TEM-07, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Developer Guide — apps .NET MAUI con pantallas Blazor que se actualizan sin pasar por la tienda
@@ -42,7 +42,7 @@ El hilo conductor es una demo que se compila y se prueba: está en
 `MovilidadUrbana.MAUI` del laboratorio Lab-E2E.WebBlazor. Todo lo que la guía afirma remite a un archivo de la demo, a
 una fuente o a un folio del expediente 0001; lo que no se pudo verificar está marcado. El antecedente es el borrador del
 PO, `Framework-APP.md`, que está en esta carpeta como insumo **fuera del conjunto**: la guía lo cita, no lo reemplaza
-ni lo enlaza como parte de ella (ver [`ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)).
+ni lo enlaza como parte de ella (ver [`FC-ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)).
 
 **Cómo leer las referencias.** Este documento es el **único índice** del conjunto (P10). Las marcas entre paréntesis
 remiten a la evidencia y están todas en el [glosario](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#1-glosario):
@@ -50,8 +50,8 @@ remiten a la evidencia y están todas en el [glosario](/LAB/Lab-Documentos/Lab-D
 | Marca | Qué es | Dónde se consulta |
 | --- | --- | --- |
 | **P1**…**P13** | Las trece decisiones de la mesa evaluadora del expediente 0001 (por ejemplo, P2 = canal de actualización) | [Folio 037](/LAB/Lab-Documentos/Lab-Documentos.Documentacion/PROMPTs/Concepts/01-Framework-Concept/OUTPUTs/Expedientes/0001-Framework-Concept-Maui-Autoactualizable/actuaciones/037-resolucion-plan-de-aplicacion-y-cierre-de-la-mesa.md), tabla de decisiones |
-| **folio NNN** | Cada actuación numerada del expediente 0001 | [`ANEXO-99` §4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#4-trazabilidad-a-folios) |
-| **E01**, **E02**, **E03** | Los tres ensayos que corrieron la técnica de verdad | [`ANEXO-99` §4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#4-trazabilidad-a-folios) |
+| **folio NNN** | Cada actuación numerada del expediente 0001 | [`FC-ANEXO-99` §4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#4-trazabilidad-a-folios) |
+| **E01**, **E02**, **E03** | Los tres ensayos que corrieron la técnica de verdad | [`FC-ANEXO-99` §4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#4-trazabilidad-a-folios) |
 | **r01**…**r18** | Los rojos provocados de la compuerta, numerados en E02 `rojos-compuerta.md` | [§7](#7-los-rojos-provocados) |
 | **PO** | El dueño del producto (quien pidió la guía y decide) | [Glosario](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#1-glosario) |
 
@@ -84,22 +84,22 @@ digital ni integración continua. Esos cuatro temas se explican acá.
 | --- | --- |
 | **Aprender** la técnica en orden | Este documento de corrido, después [`00-Marco`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) y los temas `01` a `07` |
 | **Hacerlo ahora** | [§6 Ejercicios guiados](#6-ejercicios-guiados) |
-| **Evaluar** un PR o una decisión | Las «Preguntas guía» y «Criterios de calidad» de cada tema y [`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) |
+| **Evaluar** un PR o una decisión | Las «Preguntas guía» y «Criterios de calidad» de cada tema y [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) |
 
 Los documentos del conjunto:
 
 | Documento | Id | Qué contiene |
 | --- | --- | --- |
-| [00-Marco.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) | `MARCO-REFERENCIA` | Siete escenarios, contextos, actores y mapa conceptual |
-| [01-Actualizacion-Sin-Tienda.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `TEM-01` | N1: contenido descargable, canal firmado, activación, rollback, semilla |
-| [02-Cascaron-Puente-Y-Capacidades.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) | `TEM-02` | N2: puente, catálogo, predicado de compatibilidad, base local, outbox, encuestas como datos |
-| [03-Integracion-Y-Versionado.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md) | `TEM-03` | N3: conceptos y alternativas de ramas, protección y líneas de versión |
-| [04-Estrategia-De-Pruebas.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) | `TEM-04` | N4: capas, compuerta mínima, rojos provocados |
-| [05-La-Demo-Como-Caso-De-Estudio.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md) | `TEM-05` | N5: cómo está armada la demo, el caso base, el contenedor y el guion |
-| [06-Procedimientos-PR-Integracion-Versionado.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) | `TEM-06` | Pasos: `fw-ok`, ramas, protección de `main`, las cuatro líneas de versión, fusionar y publicar |
-| [07-Red-Y-Autenticacion.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `TEM-07` | Estado de red, política de acciones, OIDC + PKCE, desbloqueo con la seguridad del teléfono |
-| [08-Cohesion-Global.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/08-Cohesion-Global.md) | `TEM-08` | Relaciones entre núcleos, contratos en cada borde, contradicciones resueltas |
-| [99-Anexos.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md) | `ANEXO-99` | Glosario, fuentes, trazabilidad a folios, mapa guía↔demo, pendientes, verificación y apartamientos |
+| [00-Marco.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) | `FC-MARCO-REFERENCIA` | Siete escenarios, contextos, actores y mapa conceptual |
+| [01-Actualizacion-Sin-Tienda.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `FC-TEM-01` | N1: contenido descargable, canal firmado, activación, rollback, semilla |
+| [02-Cascaron-Puente-Y-Capacidades.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) | `FC-TEM-02` | N2: puente, catálogo, predicado de compatibilidad, base local, outbox, encuestas como datos |
+| [03-Integracion-Y-Versionado.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md) | `FC-TEM-03` | N3: conceptos y alternativas de ramas, protección y líneas de versión |
+| [04-Estrategia-De-Pruebas.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) | `FC-TEM-04` | N4: capas, compuerta mínima, rojos provocados |
+| [05-La-Demo-Como-Caso-De-Estudio.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md) | `FC-TEM-05` | N5: cómo está armada la demo, el caso base, el contenedor y el guion |
+| [06-Procedimientos-PR-Integracion-Versionado.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) | `FC-TEM-06` | Pasos: `fw-ok`, ramas, protección de `main`, las cuatro líneas de versión, fusionar y publicar |
+| [07-Red-Y-Autenticacion.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `FC-TEM-07` | Estado de red, política de acciones, OIDC + PKCE, desbloqueo con la seguridad del teléfono |
+| [08-Cohesion-Global.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/08-Cohesion-Global.md) | `FC-TEM-08` | Relaciones entre núcleos, contratos en cada borde, contradicciones resueltas |
+| [99-Anexos.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md) | `FC-ANEXO-99` | Glosario, fuentes, trazabilidad a folios, mapa guía↔demo, pendientes, verificación y apartamientos |
 | [Demo/README.md](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/README.md) | — | Cómo se compila y se corre la demo, y su estado |
 
 Ruta de lectura sugerida:
@@ -133,7 +133,7 @@ Una app de tienda no puede actualizarse a sí misma por otro camino que la tiend
 **Qué significa para nosotros.** Lo que se actualiza tiene que correr **dentro** de un WebView y tocar el teléfono
 **indirectamente**. Por eso las pantallas son Blazor WebAssembly sin AOT (código intermedio interpretado dentro del
 WebView) y todo acceso al dispositivo pasa por un puente del cascarón. El detalle de Apple y de Play, y lo que queda sin
-verificar (`.wasm`), está en [`TEM-01` §2.4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md#24-lo-que-permiten-las-tiendas-dos-citas-y-lo-que-implican).
+verificar (`.wasm`), está en [`FC-TEM-01` §2.4](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md#24-lo-que-permiten-las-tiendas-dos-citas-y-lo-que-implican).
 
 ### 4.2 La arquitectura
 
@@ -200,7 +200,7 @@ y las de esta guía sobre una copia de la demo.
 Ocho proyectos: `Core` (dominio portado, contratos, actualizador, red y sesión como funciones puras), `Shell` (el
 cascarón MAUI), `Content` (Blazor WASM), `Tools` (claves, empaquetar, firmar, retirar, contrato), `Receptor` (doble de
 prueba del servidor) y tres suites (`Core.Tests`, `Update.Tests`, `Gate.Tests`). Detalle en
-[`TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md).
+[`FC-TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md).
 
 ### 5.2 Del caso base a pantallas descargables
 
@@ -215,14 +215,14 @@ pantallas pasaron a Razor (`src/FrameworkConcept.Content/Pages/`: `Inicio.razor`
 
 | Paso | Qué hacés | Qué pasó en la corrida real (E02 §4.2) | Tema |
 | --- | --- | --- | --- |
-| 1 | Abrir la app | «activada la semilla 1.0.0+5d5c2b4», `Listo(1.0.0)` | `TEM-01` |
-| 2 | `scripts/guion.sh parar`; tomar una encuesta | «Por enviar: 1», definición v1, `Pendiente (Connection failure)` | `TEM-02` |
-| 3 | `scripts/guion.sh publicar v2`, `scripts/guion.sh definicion v2`, `scripts/guion.sh firmar`, `scripts/guion.sh servir`; abrir en frío | Se ve 1.0.0; `Enviada (HTTP 201)`; 1.1.0 queda en staging | `TEM-01`, `TEM-02` |
-| 4 | Abrir en frío | `activada 1.1.0+5d5c2b4 (desde staging)`: cabecera azul, «Novedades»; la encuesta nueva usa v2 | `TEM-01` |
-| 5 | `scripts/guion.sh respuestas` | La respuesta v1 aceptada con `versionDefinicion: 1`, sin duplicados | `TEM-02` |
-| 6 | `scripts/guion.sh firma-invalida`; abrir en frío; `scripts/guion.sh firmar` | `Rechazado FirmaInvalida`; sigue 1.1.0 | `TEM-01` |
-| 7 | `scripts/guion.sh publicar sin-listo`, `scripts/guion.sh firmar`; abrir en frío varias veces | 1.2.0 se activa sin `Listo`; vuelve a 1.1.0 y queda como fallida | `TEM-01` |
-| 8 | Tocar «Diagnóstico» en la barra superior | Cascarón 1.0.0 (build 1), puente 1.0.0, contenido 1.1.0, definición v2, fallidas: 1.2.0 | `TEM-03` |
+| 1 | Abrir la app | «activada la semilla 1.0.0+5d5c2b4», `Listo(1.0.0)` | `FC-TEM-01` |
+| 2 | `scripts/guion.sh parar`; tomar una encuesta | «Por enviar: 1», definición v1, `Pendiente (Connection failure)` | `FC-TEM-02` |
+| 3 | `scripts/guion.sh publicar v2`, `scripts/guion.sh definicion v2`, `scripts/guion.sh firmar`, `scripts/guion.sh servir`; abrir en frío | Se ve 1.0.0; `Enviada (HTTP 201)`; 1.1.0 queda en staging | `FC-TEM-01`, `FC-TEM-02` |
+| 4 | Abrir en frío | `activada 1.1.0+5d5c2b4 (desde staging)`: cabecera azul, «Novedades»; la encuesta nueva usa v2 | `FC-TEM-01` |
+| 5 | `scripts/guion.sh respuestas` | La respuesta v1 aceptada con `versionDefinicion: 1`, sin duplicados | `FC-TEM-02` |
+| 6 | `scripts/guion.sh firma-invalida`; abrir en frío; `scripts/guion.sh firmar` | `Rechazado FirmaInvalida`; sigue 1.1.0 | `FC-TEM-01` |
+| 7 | `scripts/guion.sh publicar sin-listo`, `scripts/guion.sh firmar`; abrir en frío varias veces | 1.2.0 se activa sin `Listo`; vuelve a 1.1.0 y queda como fallida | `FC-TEM-01` |
+| 8 | Tocar «Diagnóstico» en la barra superior | Cascarón 1.0.0 (build 1), puente 1.0.0, contenido 1.1.0, definición v2, fallidas: 1.2.0 | `FC-TEM-03` |
 
 En el paso 8 el puente decía 1.0.0 porque E02 es anterior al incremento de red y autenticación, que lo subió a 1.1.0.
 
@@ -231,15 +231,15 @@ En el paso 8 el puente decía 1.0.0 porque E02 es anterior al incremento de red 
 Con el APK compilado contra el emisor de ensayo (Keycloak en contenedor), E03 mostró el ingreso por el navegador del
 sistema, el desbloqueo con huella y con PIN, la banda «Sin conexión», la banda «Sin acceso al servidor», la reconexión
 automática en 6,4 s con el outbox vaciándose solo, y el cierre de sesión que conserva lo pendiente. Se explica en
-[`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md).
+[`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md).
 
 ### 5.5 El PR que protege lo que funcionaba
 
 `scripts/ci-local.sh` corre los mismos pasos, en el mismo orden, que el workflow
 [`framework-concept-demo.yml`](/LAB/Lab-Documentos/Lab-Documentos/.github/workflows/framework-concept-demo.yml) en el
 runner `[self-hosted, i7infra-dev]`. Los parches de `etapas/` provocan rojos. Se explica en
-[`TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) y
-[`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md).
+[`FC-TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) y
+[`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md).
 
 ## 6. Ejercicios guiados
 

@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-02
+doc_id: FC-TEM-02
 doc_type: tema
 title: Cascarón y servicios nativos — puente, capacidades, base local y encuestas como datos
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-01, TEM-03, TEM-04, TEM-07, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-03, FC-TEM-04, FC-TEM-07, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Cascarón y servicios nativos — puente, capacidades, base local y encuestas como datos
@@ -25,8 +25,8 @@ traces: [MARCO-REFERENCIA, TEM-01, TEM-03, TEM-04, TEM-07, TEM-08, ANEXO-99]
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) ·
-Sigue en: [`TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md)
+Viene de: [`FC-TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) ·
+Sigue en: [`FC-TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md)
 
 ## 1. Resumen ejecutivo
 
@@ -136,7 +136,7 @@ sequenceDiagram
         Cn->>Pu: bridge.handshake
         Pu-->>Cn: versión del puente + catálogo + huella
         Cn->>Pu: Listo(version)
-        Note over Ca,Pu: sin Listo en 2 cargas → rollback por marca (TEM-01)
+        Note over Ca,Pu: sin Listo en 2 cargas → rollback por marca (FC-TEM-01)
     end
 ```
 
@@ -195,7 +195,7 @@ fila `Domain/Entities/RespuestaDeEncuesta.cs`, «Adaptado»).
 | `ESC-1` | El `handshake` le dice al contenido de la semilla qué puede usar | — |
 | `ESC-2` | `Listo(version)` es un método del puente: sin él no hay rollback por marca | — |
 | `ESC-3` | El predicado rechaza antes de activar; `optional` lo resuelve el contenido | `CTX-2`: motor < 94 → pantalla «WebView viejo»; `CTX-3`: iOS expone el catálogo sólo a la semilla (rama iOS de P12, diseño) |
-| `ESC-4` | Outbox con dueño y respuesta atada a su definición | `CTX-5`: sólo sale con la identidad de su dueño (ver [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md)) |
+| `ESC-4` | Outbox con dueño y respuesta atada a su definición | `CTX-5`: sólo sale con la identidad de su dueño (ver [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md)) |
 | `ESC-5` | La instantánea del contrato y la compuerta de definiciones bloquean en `fw-ok` | — |
 | `ESC-6` | `auth.*` del puente 1.1.0 | `CTX-4`: `auth.status` informa `modo: dispositivo` |
 | `ESC-7` | Una obligatoria no descarta ni migra pendientes | No ejecutado en la demo |
@@ -261,7 +261,7 @@ Plantilla para declarar un método nuevo del puente (criterio de esta guía):
 - Parámetros: …                            <!-- ¿Alguno es obligatorio nuevo? Entonces es MAYOR -->
 - Respuesta: …                             <!-- ¿Sólo agrega campos opcionales? Entonces es MENOR -->
 - Capacidad del catálogo: …                <!-- ¿Existe la entrada? ¿Con qué versión y qué permiso declara? -->
-- Clase de acción: SoloLocal | Encolable | SoloEnLinea   <!-- ¿Qué pasa sin red? (TEM-07) -->
+- Clase de acción: SoloLocal | Encolable | SoloEnLinea   <!-- ¿Qué pasa sin red? (FC-TEM-07) -->
 - Versión del puente: 1.1.0 → 1.2.0        <!-- ¿Coincide con versionado/puente.json y contrato.json? -->
 - Prueba: Gate.Tests/Contrato/…            <!-- ¿La instantánea quedó en rojo antes de regenerarla? -->
 ```

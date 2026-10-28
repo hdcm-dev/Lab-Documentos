@@ -2,6 +2,14 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-28 (Framework Concept: enlaces del folio 042 en el anexo)
+
+### Concepts/Framework-Concept/ — expediente 0001, constancia 043
+
+#### Añadido
+
+- **`99-Anexos.md`**, tabla «Enlaces a los folios y ensayos citados»: fila del **folio 042** (la guía lo cita en cuatro lugares y no tenía enlace) y enlace «TPR en emulador» a `E03-Red-Y-Autenticacion/P1-TPR-EN-EMULADOR.md` en la fila E03. Es lo único del PR #14 que `main` no tenía; el resto de ese PR quedó superado por el folio 042 y se cierra sin fusionar.
+
 ## 2026-10-28 (compuerta E1-G: frontmatter que un lector YAML acepta)
 
 ### tools/docs-guard/ y scripts/ci-local.sh — expediente 0002 de DocAsCode, compuerta E1-G

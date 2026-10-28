@@ -2950,7 +2950,7 @@ Hechos, no interpretaciones. Están acá porque afectan a quien use estos ejempl
   `Discord.Bot.Moderador.Core`, que está en el mismo workspace pero fuera de la lista original.
 - **OBS-3** · **Ninguna acción está anclada a un SHA de commit en los doce workflows citados**, incluidas las
   de terceros que reciben credenciales de producción. Fuera de ellos sí hay anclaje por SHA —seis
-  workflows de runners de prueba bajo `Repos-Docker/Home/Container-Runner-Services/`—, así que la
+  workflows de runners de prueba en un repositorio privado de infraestructura (`INFRA-privada/`)—, así que la
   diferencia es de criterio por repositorio y no de desconocimiento.
 - **OBS-4** · **No hay firma de artefactos ni atestaciones de procedencia** en el sentido de cadena de
   suministro. El workflow de publicación del bot lo declara como paso pendiente en un comentario.

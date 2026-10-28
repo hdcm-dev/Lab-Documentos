@@ -155,6 +155,9 @@ def frontmatter(texto):
         elif v == '':
             datos[clave] = None
         else:
+            if v[:1] not in '"\'' and (': ' in v or v.endswith(':')):
+                # Un escalar YAML sin comillas no puede contener «: »: un lector YAML estricto rechaza el frontmatter.
+                datos.setdefault('__no_yaml__', []).append(i + 1)
             datos[clave] = escalar(re.sub(r'\s+#.*$', '', v) if not v[:1] in '"\'' else v)
     return None, 0
 
@@ -315,6 +318,9 @@ def cmd_esquema(rutas, raiz):
         vistos += 1
         for n in fm.pop('__invalidas__', []):
             inf.error(ruta, n, 'frontmatter-ilegible', 'línea que no es «clave: valor» ni «- elemento»')
+        for n in fm.pop('__no_yaml__', []):
+            (inf.error if nuevo else inf.aviso)(ruta, n, 'frontmatter-no-yaml',
+                                                'valor sin comillas que contiene «: »; un lector YAML no lo acepta: entrecomillarlo')
         if f.name == 'README.md' and fm.get('corpus_id'):
             forma = 'readme-cuerpo'
         elif 'doc_id' in fm:

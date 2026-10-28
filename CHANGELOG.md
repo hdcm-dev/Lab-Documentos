@@ -12,6 +12,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **`framework-concept-demo.yml`**: `actions/checkout` fijada por SHA (v4.2.2), como el resto de los workflows.
 - **`README.md`** raíz y **`Guides/README.md`**: la ruta de lectura apunta al README del cuerpo `SDEI` en lugar de la guía de un solo archivo, que está `obsoleta`. El README raíz nombra `AGENTS.md` como entrada para agentes.
 - **`README.md`** del cuerpo `SDEI`: el diagrama de rutas ya no marca los temas «en redacción»; los siete tienen archivo.
+- **`00-Marco.md`** (definición de traza), **`01-Mapa.md`** §3 y **`README.md`** del cuerpo (ruta «intervenir»): aclaraciones que pidió la prueba de lectura de E1-G: qué comprueba una traza sin versión, que `traces-resolve` no depende de `corpus_id`, qué hacer con una página desactualizada que no traza a ninguna ficha y por qué ruta entra alguien que recién llega.
 
 ## 2026-10-27 (la guía de un solo archivo pasa a obsoleta; `url-fecha` ampliado)
 

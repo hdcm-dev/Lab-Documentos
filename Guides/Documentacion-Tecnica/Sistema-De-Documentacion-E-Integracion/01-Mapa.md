@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, IDX-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-GLOSARIO, ANX-SDEI-REFERENCIAS, ANX-SDEI-CQ, ANX-SDEI-PE, ANX-SDEI-VER, ANX-SDEI-DECIDIR, ANX-SDEI-EJERCICIOS]
 ---
@@ -68,6 +68,7 @@ Los temas `TEM-01` a `TEM-07` figuran en las tablas por su identificador; mientr
 | `CTX-SDEI-3` la pieza vive en otro repositorio que el código | El ancla deja de ser el commit: es un SHA fijado | `source.lock` o `base_commit`; el desfase lo avisa el carril programado | [Glosario](99-Anexos/Glosario.md) (ancla de versión) |
 | El código cambió y una página que lo describe quedó desactualizada, en el **mismo** repositorio | Quien cambia el código sube la versión de la ficha de la regla (de 1.0 a 1.1); la página traza a `@1.0` | `traces-resolve` da rojo en ese mismo pull request hasta que la página se revisa y traza a `@1.1`. La revisa quien propone el cambio (un agente o una persona, clase P); si el cambio altera lo que la regla promete, decide la analista. Si nadie sube la versión de la ficha, hoy ningún control lo detecta: lo cubre la revisión del pull request (`CQ-03` es parcial en este punto) | [Esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas) |
 | El código cambió y la página vive en **otro** repositorio (`CTX-SDEI-3`) | El pull request del código no ve la página | El carril programado avisa; un agente propone actualizar la ficha y el SHA fijado; una persona decide si la regla cambió | [Ejercicios](99-Anexos/Ejercicios.md) (`EJR-SDEI-04`) |
+| El código cambió y la página desactualizada **no traza** a ninguna ficha (por ejemplo, una página técnica `CL-07` que describe la arquitectura) | Ningún control la conecta con el cambio | Se agrega la traza a la ficha o al requerimiento de los que depende, con versión, para que el próximo cambio la ponga en rojo; mientras no la tenga, la revisión del pull request del código es la única defensa | [Esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas) |
 | `CTX-SDEI-4` el repositorio está fuera de la organización del runner | No puede llamar al workflow reutilizable | Copia del workflow con huella, en el runner propio | [Cómo decidir](99-Anexos/Como-Decidir.md) |
 
 ## 4. Por artefacto

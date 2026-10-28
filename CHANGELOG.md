@@ -2,6 +2,15 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-28 (Framework Concept: IDs en su propio espacio)
+
+### Concepts/Framework-Concept/ y tools/docs-guard/prefijos.txt — expediente 0001
+
+#### Cambiado
+
+- **IDs del Framework Concept** con prefijo propio: `TEM-01`…`TEM-08`, `GUIA-INDICE`, `MARCO-REFERENCIA` y `ANEXO-99` pasan a `FC-TEM-01`…`FC-TEM-08`, `FC-GUIA-INDICE`, `FC-MARCO-REFERENCIA` y `FC-ANEXO-99` (`doc_id`, `traces` y citas en el texto, 215 apariciones en 12 archivos). Chocaban con los IDs del cuerpo SDEI y de otras guías, y el control `id-duplicado` de docs-guard (PR #31) los marcaba en rojo. Se quita de `00-Marco.md` la traza a `MAPA-CONCEPTUAL`, que el Framework Concept no declara.
+- **`tools/docs-guard/prefijos.txt`**: registra el prefijo `FC` (interno).
+
 ## 2026-10-28 (Framework Concept: enlaces del folio 042 en el anexo)
 
 ### Concepts/Framework-Concept/ — expediente 0001, constancia 043

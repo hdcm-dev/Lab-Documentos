@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [GUIA-INDICE]
+traces: [FC-GUIA-INDICE]
 ---
 
 # Framework Concept — portada de la carpeta
@@ -40,4 +40,4 @@ flowchart LR
 
 El archivo `Framework-APP.md` que está en esta carpeta es el borrador del PO: es un insumo **fuera del conjunto**, no
 se edita ni forma parte de la guía (ver
-[`ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)).
+[`FC-ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)).

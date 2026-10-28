@@ -1,5 +1,5 @@
 ---
-doc_id: ANEXO-99
+doc_id: FC-ANEXO-99
 doc_type: anexo
 title: Anexos — glosario, fuentes, trazabilidad a folios, mapa guía↔demo y pendientes
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [GUIA-INDICE, MARCO-REFERENCIA, TEM-01, TEM-02, TEM-03, TEM-04, TEM-05, TEM-06, TEM-07, TEM-08]
+traces: [FC-GUIA-INDICE, FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-02, FC-TEM-03, FC-TEM-04, FC-TEM-05, FC-TEM-06, FC-TEM-07, FC-TEM-08]
 ---
 
 # Anexos — glosario, fuentes, trazabilidad a folios, mapa guía↔demo y pendientes
@@ -121,21 +121,21 @@ Expediente 0001, carpeta
 
 | Decisión | Folio | Documento de la guía |
 | --- | --- | --- |
-| P1 Modelo de contenido | 035, 036 | `TEM-01` |
-| P2 Canal de actualización | 035, 006 (forzado) | `TEM-01` |
-| P3 Puente y compatibilidad | 035 | `TEM-02` |
-| P4 Entrada del usuario | 035, 038 (entra a la demo) | `TEM-07` |
-| P5 Datos locales | 035, 023 (C-1) | `TEM-02` |
-| P6 Procedimiento de PR | 035, 023 (proteger `main`), 007 (delegación del merge) | `TEM-03`, `TEM-06` |
-| P7 Líneas de versión | 035, 023 (atribución) | `TEM-03`, `TEM-06` |
-| P8 Compuerta | 035 | `TEM-04` |
-| P9 iOS | 035, 023 | `TEM-02`, `TEM-03`, Developer-Guide |
-| P10 Estructura de la guía | 035 | Este conjunto (ver `TEM-08` §6) |
-| P11 Alcance de la demo | 035 | `TEM-05`, Developer-Guide |
-| P12 Capacidades | 035, 004 (señal del PO desde una app híbrida de referencia de la organización) | `TEM-02` |
-| P13 Encuestas entre versiones | 035, 005 | `TEM-02` |
+| P1 Modelo de contenido | 035, 036 | `FC-TEM-01` |
+| P2 Canal de actualización | 035, 006 (forzado) | `FC-TEM-01` |
+| P3 Puente y compatibilidad | 035 | `FC-TEM-02` |
+| P4 Entrada del usuario | 035, 038 (entra a la demo) | `FC-TEM-07` |
+| P5 Datos locales | 035, 023 (C-1) | `FC-TEM-02` |
+| P6 Procedimiento de PR | 035, 023 (proteger `main`), 007 (delegación del merge) | `FC-TEM-03`, `FC-TEM-06` |
+| P7 Líneas de versión | 035, 023 (atribución) | `FC-TEM-03`, `FC-TEM-06` |
+| P8 Compuerta | 035 | `FC-TEM-04` |
+| P9 iOS | 035, 023 | `FC-TEM-02`, `FC-TEM-03`, Developer-Guide |
+| P10 Estructura de la guía | 035 | Este conjunto (ver `FC-TEM-08` §6) |
+| P11 Alcance de la demo | 035 | `FC-TEM-05`, Developer-Guide |
+| P12 Capacidades | 035, 004 (señal del PO desde una app híbrida de referencia de la organización) | `FC-TEM-02` |
+| P13 Encuestas entre versiones | 035, 005 | `FC-TEM-02` |
 | Plan A1–A5 y cierre de la mesa | 037 | Developer-Guide, «Estado» |
-| Red y autenticación en la demo | 038 | `TEM-07` |
+| Red y autenticación en la demo | 038 | `FC-TEM-07` |
 
 Enlaces a los folios y ensayos citados:
 
@@ -195,7 +195,7 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 | `Permissions-Policy` en `HybridWebView` — NO VERIFICADO | Sin ensayo | P12, folio 037 |
 | Aceptación de versiones viejas en ODK Central — NO VERIFICADO | Opinión autorizada, no doc oficial | P13 |
 | Recorrido desde un clon limpio siguiendo sólo la guía — NO VERIFICADO | Esta guía corrió la compuerta sobre una copia del árbol de trabajo, no sobre un clon | P10 |
-| Comentario de `CofreDeSesion.cs` L128 contradice H-1 | Hallado al escribir esta guía | `TEM-07` §8 |
+| Comentario de `CofreDeSesion.cs` L128 contradice H-1 | Hallado al escribir esta guía | `FC-TEM-07` §8 |
 | Registro en la ia-db de `Lab-Documentos.Documentacion` (OB-IDX-02) — pendiente | Se hace con la entrega por PR | Tramo A5, folio 037 |
 | Fragmentos citados sin commit — pendiente | `Demo/` no tiene commit; cada `*Fuente:*` fija la versión con el `sha256` del archivo hasta que la entrega por PR dé un commit | Tramo A5 |
 | Paso 0 de la compuerta en un clon donde `Demo/` no está en `origin/main` — NO VERIFICADO | Esta guía corrió sobre una copia fuera de git | `Developer-Guide` §6, ejercicio 2 |
@@ -207,7 +207,7 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 Marcada el 2026-10-26 con la revisión de §9.
 
 - [x] Cada documento temático tiene Resumen ejecutivo, Definición, Aplicación por escenario, Ejemplos concretos,
-  Preguntas guía, Criterios de calidad y Anexo (`TEM-06` con la variante declarada en §8).
+  Preguntas guía, Criterios de calidad y Anexo (`FC-TEM-06` con la variante declarada en §8).
 - [x] Cada escenario `ESC-1`…`ESC-7` aparece en la tabla de aplicación de cada tema, o se dice por qué no aplica.
 - [x] Cada fragmento de código de la demo lleva su línea `*Fuente: … L<a>–L<b>*` con el `sha256` del archivo.
 - [x] Cada NO VERIFICADO lleva su motivo.
@@ -222,7 +222,7 @@ Marcada el 2026-10-26 con la revisión de §9.
 | Id | Qué | Declaración |
 | --- | --- | --- |
 | X-1 | `Framework-APP.md` | Borrador del PO en la misma carpeta. **No forma parte del conjunto**: no tiene frontmatter, tiene un enlace a un archivo que no existe y nombra un repositorio privado. No se edita (es del PO) ni se enlaza desde la guía; la decisión de dejarlo, renombrar lo privado o sacarlo es del PO |
-| X-2 | Variante de `TEM-06` | Agrega §8 «Procedimientos» después de los siete apartados comunes; Observaciones y Referencias pasan a §9 y §10 |
+| X-2 | Variante de `FC-TEM-06` | Agrega §8 «Procedimientos» después de los siete apartados comunes; Observaciones y Referencias pasan a §9 y §10 |
 | X-3 | Estructura plana | El marco y los anexos son un archivo cada uno (`00-Marco.md`, `99-Anexos.md`), no carpetas `00-Marco-de-Referencia/` y `99-Anexos/` (OB-EST-03, OB-EST-07, OB-LAB-01, OB-LAB-02). P10 no exige carpetas y el conjunto es chico |
 | X-4 | Enlaces desde la raíz del espacio de trabajo | OB-MD-08 pide rutas relativas; rige la regla del despacho de enlazar desde la raíz, porque los clones viven en rutas distintas. Precedencia: la regla del despacho sobre OB-MD-08 |
 | X-5 | Glosario sin operación ni escena | Rotulado como orientación (§1); operación y escena en `00-Marco` §2 y en los temas |

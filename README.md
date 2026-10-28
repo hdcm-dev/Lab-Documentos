@@ -6,7 +6,7 @@ status: vigente
 origin: ia-generated
 confidence: alta
 owner: ACT-09 Technical Writer
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente]
 traces: [GUIAS-INDICE, DOC-SDT-0001, GUIA-INDICE]
 ---
@@ -27,8 +27,9 @@ metodologías, despliegue, pruebas e IA. Todo está escrito en Markdown y se lee
 1. [Guías](Guides/README.md): el índice por categoría.
 2. [Guía de estudio — Documentación técnica](Guides/Documentacion-Tecnica/Creacion-Guias-Tecnicas/README.md): las
    familias de documentos, los actores y las convenciones de frontmatter que usa el resto del corpus.
-3. [Sistema documentador técnico](Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md):
-   de Markdown al portal publicado, con una prueba de concepto de ayuda por rol.
+3. [Sistema documentador e integración (cuerpo `SDEI`)](Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/README.md):
+   siete temas, mapa, anexos, la mini demo y el proceso «Cómo intervenir». Un agente de IA empieza por
+   [`AGENTS.md`](AGENTS.md).
 
 ## Estructura
 

@@ -9,7 +9,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, MAPA-SDEI]
 ---
@@ -72,7 +72,7 @@ flowchart TB
   R["README<br/>corpus SDEI · versión · rutas"] --> M["00 Marco<br/>escenarios · contextos · actores · convenciones"]
   M --> MAPA["01 Mapa<br/>estoy acá → qué aplico"]
   subgraph APR["Ruta aprender"]
-    T["TEM-01 … TEM-07<br/>en redacción"] --> EJ["Ejercicios"]
+    T["TEM-01 … TEM-07"] --> EJ["Ejercicios"]
   end
   subgraph INT["Ruta intervenir"]
     CI["Cómo intervenir<br/>plantilla"] --> PL["Instancia del proyecto"]
@@ -87,13 +87,12 @@ flowchart TB
   T --> ANX
 ```
 
-*Diagrama: las tres rutas. Las cajas «en redacción» todavía no tienen archivo en esta versión del cuerpo; la tabla de
-§4 dice cuáles existen.*
+*Diagrama: las tres rutas. Todas las cajas tienen archivo en esta versión del cuerpo; la tabla de §4 los enlaza.*
 
 | Ruta | Para quién | Recorrido | Sale con |
 | --- | --- | --- | --- |
 | **Aprender** | Quien estudia el tema desde cero | [Marco](00-Marco.md) → [Mapa](01-Mapa.md) (leído entero, como panorama) → `TEM-01` a `TEM-07` en orden → tutorial de la mini demo de `Examples/` → [Ejercicios](99-Anexos/Ejercicios.md) | Los objetivos `OBJ-SDEI-01` a `OBJ-SDEI-05` |
-| **Intervenir** | La persona del equipo que tiene que cambiar la documentación de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → [Cómo intervenir](Examples/Como-Intervenir.md) y la instancia de su proyecto ([la de este repositorio](Examples/Como-Intervenir-Lab-Documentos.md)) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
+| **Intervenir** | La persona del equipo que tiene que cambiar la documentación (alguien que recién llega hace su primer cambio por esta ruta y vuelve a los temas cuando necesita el porqué; para entender cómo se verifica una página en la CI, `TEM-06`) de un proyecto | [Mapa](01-Mapa.md) (fila de su escenario) → [Cómo intervenir](Examples/Como-Intervenir.md) y la instancia de su proyecto ([la de este repositorio](Examples/Como-Intervenir-Lab-Documentos.md)) → [Lista de verificación](99-Anexos/Lista-De-Verificacion.md) | Un pull request que la compuerta acepta |
 | **Agente** | Un agente de IA que trabaja sobre el repositorio | [`AGENTS.md`](../../../AGENTS.md) en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
 
 Los siete temas están escritos, así que la ruta «aprender» ya no pasa por la guía de un solo archivo: esa guía está

@@ -24,6 +24,10 @@ name: docs-guard
 
 on:
   pull_request:
+  # Compuerta E1-G (G-b): la corrida sobre el commit de merge queda en main.
+  push:
+    branches: [main]
+  workflow_dispatch:
   workflow_call:
     inputs:
       ruta:

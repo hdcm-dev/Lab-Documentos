@@ -2,7 +2,7 @@
 doc_id: IDX-LABDOC-AGENTS
 doc_type: indice
 title: AGENTS.md de Lab-Documentos — puntero para agentes de código
-description: Puerta de la ruta «agente»: qué es el repositorio, qué leer y en qué orden, cómo validar y qué no puede cambiar un agente.
+description: "Puerta de la ruta «agente»: qué es el repositorio, qué leer y en qué orden, cómo validar y qué no puede cambiar un agente."
 status: borrador
 origin: ia-assisted
 confidence: media

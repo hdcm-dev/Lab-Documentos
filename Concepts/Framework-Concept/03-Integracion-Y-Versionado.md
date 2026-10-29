@@ -217,7 +217,8 @@ Ficha de decisión de versionado para un PR (criterio de esta guía):
 
 ## 8. Observaciones
 
-- **Hecho.** El runner `i7infra-runner-dev` trae SDK 10.0.402 y maui-android 10.0.110 (comentario del workflow, R2 §5);
+- **Hecho.** El runner `i7infra-runner-dev` traía SDK 10.0.402 y maui-android 10.0.110 (comentario del workflow, R2 §5); el
+  que lo reemplaza desde el 2026-10-28, `hpdev-runner-dev`, trae SDK 10.0.403 y maui-android 10.0.110;
   la demo fija `MauiVersion` 10.0.20 y SDK 10.0.400 con `rollForward: latestPatch`. El riesgo de `workloadVersion`
   10.0.400.1 contra el workload del runner se midió en A5: con el SDK 10.0.403 del runner la compuerta falló (MSB4242,
   run 40432670449) y el `global.json` dejó de fijarlo; la versión de MAUI la sigue fijando `MauiVersion`.

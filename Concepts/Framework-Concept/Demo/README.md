@@ -273,8 +273,9 @@ rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; cascarón: CS0029). En el 
 semilla ya no se carga después del primer arranque; dos arranques cortados antes de cargar no cuentan; dos cargas
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
-**NO OBTENIDO.** El TPR en el g42 después de la corrección: el contenido llega a «puente Listo» a los 7,3–7,7 s, pero la marca no llega al logcat (ver «Medición del TPR», abajo). Con el desglose del
-intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. El PR en rojo con
+**NO CUMPLE.** El TPR en el g42 después de la corrección: de 6,9 a 7,3 s en régimen y 9,2 s en el primer arranque,
+con el APK Release (ver «Medición del TPR», abajo). Sacar la semilla del camino crítico ahorró cerca de 1 s, pero el
+umbral de 5 s sigue roto. El PR en rojo con
 M-13 en el runner (tramo A5).
 
 ### Incremento A4 — red y autenticación con el sistema operativo (folio 038)
@@ -403,8 +404,13 @@ Qué cambió:
 12 451 ms. Las cifras del emulador no juzgan el umbral de P1.
 
 
-**NO OBTENIDO.** El TPR en el moto g42 (2026-10-28, folio 047): 5 de 5 arranques `COLD`, con el contenido en
-«puente Listo» de 7 308 a 7 715 ms (9 661 ms en la primera corrida), pero la marca `primer-render` no llegó al logcat:
-el WebView del teléfono no reenvía los mensajes de consola. El TPR queda acotado entre 4,4 y 7,7 s y la condición de
-revisión (2) de P1 sigue abierta. Para medirlo por su definición, `puente.js` tendría que mandar la marca por el puente
-para que el cascarón la escriba con la etiqueta `FC`.
+**Marca leída por el cascarón** (folio 049). En un teléfono, con el APK Release, el WebView no pasa la consola al
+logcat y la línea de `puente.js` no aparece (folio 047; con el APK Debug sí aparece). Por eso, al llegar «Listo»,
+`ContenidoPage` le pide al WebView la hora de la marca (`performance.timeOrigin` + `startTime`) y escribe
+`FC-MARCA primer-render … tpr=Nms (leída por el cascarón)` con la etiqueta `FC`, contado desde el inicio del proceso.
+`LectorDeTpr` usa ese `tpr=` cuando está y, si no, la línea de consola. Con el APK Debug las dos lecturas difieren en
+unos 10 ms.
+
+**NO CUMPLE.** El TPR en el moto g42 (2026-10-29, folio 049), APK Release: 5 de 5 arranques `COLD` con marca; 9 152,
+7 309, 6 940, 6 928 y 6 874 ms. El máximo (9 152 ms, el primer arranque después de instalar) supera el umbral de
+5 000 ms: se abre la condición de revisión (2) de P1. Con el APK Debug que arma la CI, el TPR fue de 8,1 a 14,1 s.

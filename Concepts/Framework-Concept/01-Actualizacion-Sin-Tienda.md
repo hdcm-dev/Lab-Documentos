@@ -242,9 +242,9 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 
 - **Hecho.** El TPR medido en el moto g42 en un intento anterior fue de 8 176 a 8 741 ms con la semilla instalada
   (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el 2026-10-28 el
-  contenido tardó de 7 308 a 7 715 ms hasta «puente Listo» en el g42, pero la marca `primer-render` no llegó al logcat
-  (el WebView del teléfono no reenvía la consola): el TPR quedó **acotado entre 4,4 y 7,7 s**, sin un número por su
-  definición (folio 047). Ver el anexo de pendientes.
+  TPR medido en el g42 con el APK Release fue de **6 874 a 7 309 ms en régimen y 9 152 ms en el primer arranque**
+  (2026-10-29, folio 049): sigue por encima del umbral. La marca la escribe ahora el cascarón, porque la consola del
+  WebView no llega al logcat del teléfono (folio 047). Ver el anexo de pendientes.
 - **Hecho.** En el cierre del expediente, 5 arranques en el emulador no dieron la marca `primer-render`: la pantalla
   estaba apagada y el WebView no llegó a pedir el contenido (folio 042). `scripts/guion.sh tpr` mide ahora con la
   pantalla comprobada y calcula el TPR desde el inicio del proceso; en el emulador dio de 9 641 a 12 451 ms, cifras

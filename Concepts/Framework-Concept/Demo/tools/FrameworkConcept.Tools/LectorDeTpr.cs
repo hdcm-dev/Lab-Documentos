@@ -12,8 +12,10 @@ namespace FrameworkConcept.Tools;
 /// Cómo se calcula, por proceso (cada arranque en frío es un proceso nuevo, con su PID):
 ///   - el origen es el inicio del proceso: la hora de la primera línea «FC» menos su «t=…ms», que el cascarón cuenta
 ///     desde <c>Process.StartElapsedRealtime</c> (Shell/Bitacora.cs);
-///   - el fin es la hora de la línea de consola «FC-MARCA primer-render» (Content/wwwroot/js/puente.js), que el
-///     WebView escribe en logcat con la etiqueta «chromium» y el PID de la app.
+///   - el fin es la marca «FC-MARCA primer-render». Si el cascarón la leyó del WebView y la escribió en su bitácora
+///     (línea «FC» con «tpr=…ms», Shell/Pages/ContenidoPage), vale ese tpr, contado desde el mismo inicio del
+///     proceso; si no, la hora de la línea de consola que escribe puente.js, que el WebView pasa a logcat con la
+///     etiqueta «chromium» en el emulador pero no en un teléfono real (moto g42, constancia 047).
 ///
 /// Por qué existe (folio 042): en el cierre del expediente 0001 la marca «no llegó» en 5 arranques y el registro no
 /// decía por qué. Era la pantalla apagada: la actividad nunca pasó al frente y el WebView no pidió ni el index.html.
@@ -39,6 +41,8 @@ public static class LectorDeTpr
 
     private static readonly Regex TiempoDelCascaron = new(@"^t=(?<ms>\d+)ms ", RegexOptions.Compiled);
 
+    private static readonly Regex TprDelCascaron = new(@" tpr=(?<ms>-?\d+)ms", RegexOptions.Compiled);
+
     /// <summary>Un arranque en frío leído del logcat.</summary>
     /// <param name="TprMs">null si la marca no está en el registro.</param>
     /// <param name="CargaIniciada">Si el WebView llegó a pedir el runtime de .NET.</param>
@@ -57,6 +61,7 @@ public static class LectorDeTpr
         var orden = new List<int>();
         var origen = new Dictionary<int, DateTime>();
         var marca = new Dictionary<int, DateTime>();
+        var tprLeido = new Dictionary<int, long>();
         var carga = new HashSet<int>();
 
         foreach (var linea in lineas)
@@ -78,6 +83,9 @@ public static class LectorDeTpr
                     orden.Add(pid);
                 }
                 if (mensaje.Contains(TextoDeCargaIniciada, StringComparison.Ordinal)) carga.Add(pid);
+                if (mensaje.Contains(TextoDeLaMarca, StringComparison.Ordinal)
+                    && TprDelCascaron.Match(mensaje) is { Success: true } tpr && !tprLeido.ContainsKey(pid))
+                    tprLeido[pid] = long.Parse(tpr.Groups["ms"].Value, CultureInfo.InvariantCulture);
             }
             else if (mensaje.Contains(TextoDeLaMarca, StringComparison.Ordinal) && !marca.ContainsKey(pid))
             {
@@ -87,7 +95,8 @@ public static class LectorDeTpr
 
         return orden.Select(pid => new Corrida(
             pid,
-            marca.TryGetValue(pid, out var fin) ? (long)Math.Round((fin - origen[pid]).TotalMilliseconds) : null,
+            tprLeido.TryGetValue(pid, out var leido) ? leido
+                : marca.TryGetValue(pid, out var fin) ? (long)Math.Round((fin - origen[pid]).TotalMilliseconds) : null,
             carga.Contains(pid))).ToList();
     }
 

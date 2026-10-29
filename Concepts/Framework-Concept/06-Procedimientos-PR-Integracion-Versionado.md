@@ -40,7 +40,8 @@ Este es el documento de los pasos. Dice qué hace quien abre un PR, qué corre e
 rojo, cómo se protege `main` para que un rojo no se pueda fusionar, cómo se fusiona y qué versión sube cada cambio.
 Cada procedimiento trae sus entradas, salidas y validaciones, para que un agente también pueda ejecutarlo o
 verificarlo. La protección de `main` y la corrida en el runner son el tramo A5 del plan (folio 037): al 2026-10-26 el
-workflow existe pero no tiene una corrida con `run_id`, y `main` no está protegida.
+workflow existía pero no tenía una corrida con `run_id`, y `main` no estaba protegida. Al 2026-10-29 las dos cosas están:
+la corrida completa (compuerta y APK) tiene `run_id` `40847315104`, y `main` exige `fw-ok` (folio 048).
 
 ## 2. Definición
 
@@ -320,8 +321,11 @@ r06 de `rojos-compuerta.md`).
 
 ## 9. Observaciones
 
-- **Hecho.** No hay corrida del workflow con `run_id` ni protección de `main` al 2026-10-26 (folio 037, A5; registro
+- **Hecho.** No había corrida del workflow con `run_id` ni protección de `main` al 2026-10-26 (folio 037, A5; registro
   de la corrida, entrada 22).
+- **Hecho.** Al 2026-10-29, `main` exige `fw-ok` como check obligatorio, estricto (la rama tiene que estar al día) y
+  también para administradores (API de protección de ramas). La corrida completa del workflow, con compuerta y APK, tiene
+  `run_id` `40847315104` en `hpdev-runner-dev` (folio 048). Falta la prueba de un PR en rojo con M-13 que no se pueda fusionar.
 - **Hecho.** El runner no tiene `docker.sock` ni KVM: los pasos corren `dotnet` directo (comentario del workflow).
 - **Interpretación.** El paso «base del PR» (`git archive` de la demo en `main`) es lo que permite a `Gate.Tests`
   comparar contrato y definiciones con lo ya publicado; sin base, con `CI=true`, la compuerta falla en lugar de omitir

@@ -2,6 +2,14 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-29 (Framework Concept: estado del tramo A5)
+
+### Concepts/Framework-Concept/ — expediente 0001, folio 048
+
+#### Cambiado
+
+- **Tramo A5** (`03` §7, `06` y §9, `Developer-Guide.md`, `99-Anexos.md` §6): la guía decía que no había corrida del workflow con `run_id` y que `main` no estaba protegida. Las dos cosas ya están, verificadas por la API. La corrida completa con compuerta y APK es la `40847315104`, en `hpdev-runner-dev`; la omisión declarada (PR sin `Demo/`), la `40738280836`; y `main` exige `fw-ok` (estricto y también para administradores). Sigue pendiente la prueba de un PR en rojo con M-13.
+
 ## 2026-10-29 (Framework Concept: runner de hpdev, Keycloak y TPR en el g42)
 
 ### Concepts/Framework-Concept/ y el comentario de framework-concept-demo.yml — expediente 0001, folios 046 y 047

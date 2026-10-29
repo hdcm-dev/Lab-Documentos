@@ -462,7 +462,7 @@ Al terminar: `infra/keycloak/keycloak.sh parar`, `scripts/guion.sh parar` y, si 
 | **TPR del moto g42 no obtenido** | El umbral de arranque (≤ 5 000 ms, máximo de 5 corridas) no está demostrado. En el g42 el contenido tarda de 7,3 a 7,7 s hasta «puente Listo» y el TPR queda acotado entre 4,4 y 7,7 s (estimado: 6,7 a 7,7 s), porque la marca `primer-render` no llega al logcat: el WebView del teléfono no reenvía la consola. Si se confirma, P1 prevé evaluar el modelo de reserva. Para medirlo: APK Release y `scripts/guion.sh tpr -H <host> -P <puerto> -s <serie>`, con la pantalla encendida y sin bloqueo (folio 042); en un teléfono, además, la marca tiene que viajar por una vía que el cascarón registre (folio 047) | E02 §5 H-A; folios 042 y 047 |
 | **Apartamiento H-1** | Con PIN o patrón aceptados, enrolar otra huella no invalida la clave del Keystore; contradice el borrador §4 y fue avisado al PO | E03 §5 H-1 |
 | **iOS sólo diseño** | Nada se compiló ni se probó en iOS; los riesgos (WebAssembly ante la 2.5.2, guía 4.7, memoria del runtime WASM en WKWebView) están nombrados, no resueltos | P9, folio 023 |
-| Sin corrida del workflow ni protección de `main` | La compuerta está probada en local; en el runner y con `main` protegida es el tramo A5 | Folio 037 |
+| Falta la prueba de un PR en rojo | `main` exige `fw-ok` (estricto y también para administradores; API, 2026-10-29) y la corrida completa del workflow pasó en el runner (run `40847315104`). Todavía no se vio un PR en rojo con M-13 que no se pueda fusionar | Folios 037 y 048 |
 | Sólo emulador | Ningún recorrido completo en teléfono físico | E02 §7, E03 §7 |
 | `.wasm` ante las tiendas | Ninguna política lo nombra | P1 |
 

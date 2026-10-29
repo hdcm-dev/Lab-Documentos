@@ -183,8 +183,8 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 | **Apartamiento H-1**: una huella nueva no invalida la clave | Decisión de mesa: se mantiene P4 (PIN o patrón), avisado al PO | E03 §5 H-1 |
 | **iOS** — NO VERIFICADO | Sin Mac, sin cuenta de Apple Developer, sin job `macos-*` (folio 023) | P9 |
 | `.wasm` ante Apple y ante Play — NO VERIFICADO | Ninguna política nombra WebAssembly | P1, N1 §4.1 |
-| Corrida completa del workflow (compuerta y APK) con `run_id` en `hpdev-runner-dev` — NO VERIFICADO | Tramo A5. Hasta el 2026-10-28 la compuerta y el APK sólo corrieron en `i7infra-runner-dev`, que volvió a escuchar con la misma etiqueta | Folios 037, 043 y 046 |
-| Protección de `main` y su prueba con M-13 — pendiente | Tramo A5, después de un `fw-ok` verde | Folio 037, P6.1 |
+| Corrida completa del workflow (compuerta y APK) con `run_id` en `hpdev-runner-dev` — hecho | Run `40847315104` (2026-10-29, Lab-Documentos #34): `alcance`, `compuerta` y `apk` en `hpdev-runner-dev`, en verde. `fw-ok` cayó en `i7infra-runner-dev`, que sigue escuchando con la misma etiqueta | Folios 046 y 048 |
+| Prueba de la protección de `main` con M-13 (un PR en rojo que no se puede fusionar) — NO VERIFICADO | La protección ya está: `fw-ok` obligatorio, estricto y también para administradores (API, 2026-10-29) | Folios 037 (P6.1) y 048 |
 | Operación sin red en el teléfono de medida (criterio 3 de P11) — NO VERIFICADO | Sólo emulador | E02 §7, P0 premisas |
 | `guion.sh demo` como un solo comando — NO VERIFICADO | Se corrieron sus pasos uno por uno | E02 §7 |
 | Sobre no ASCII en el dispositivo tras el arreglo — NO VERIFICADO | La encuesta de E02 fue ASCII | E02 §7 |

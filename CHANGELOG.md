@@ -2,6 +2,15 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-29 (Framework Concept: TPR del g42 medido por el cascarón)
+
+### Concepts/Framework-Concept/ — expediente 0001, folio 049
+
+#### Cambiado
+
+- **Marca `primer-render` por el cascarón** (`Shell/Pages/ContenidoPage.xaml.cs`, `Tools/LectorDeTpr.cs`, `LectorDeTprTests`): al llegar «Listo», el cascarón lee del WebView la hora de la marca y la escribe con la etiqueta `FC` y el `tpr=` contado desde el inicio del proceso. El lector usa ese valor cuando está. No cambia el contrato del puente.
+- **TPR en el moto g42** (`99-Anexos.md` §6, `Developer-Guide.md`, `01-Actualizacion-Sin-Tienda.md`, `Demo/README.md`): pasa de **NO OBTENIDO** a **NO CUMPLE**. Con el APK Release: 6 874 a 7 309 ms en régimen y 9 152 ms en el primer arranque; el umbral es 5 000 ms. Se abre la condición de revisión (2) de P1.
+
 ## 2026-10-29 (Framework Concept: estado del tramo A5)
 
 ### Concepts/Framework-Concept/ — expediente 0001, folio 048

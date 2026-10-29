@@ -9,6 +9,7 @@ namespace FrameworkConcept.Gate.Tests.Medicion;
 /// al frente y el WebView no pidió el contenido. Estas pruebas fijan:
 ///   - el cálculo: inicio del proceso (primera línea FC menos su t=) → línea de consola de la marca, por PID;
 ///   - que una corrida sin marca se distinga según el WebView haya empezado a cargar o no;
+///   - que en un teléfono real valga el tpr que el cascarón lee del WebView (la consola no llega a logcat);
 ///   - que el texto que se busca siga siendo el que escriben puente.js y el cascarón.
 /// Las líneas son copias de logcat del emulador de referencia (2026-10-27), con los mensajes recortados.
 /// </summary>
@@ -76,6 +77,25 @@ public class LectorDeTprTests
     }
 
     [Test]
+    [Description("P1 — En un teléfono real la consola no llega a logcat: vale el tpr que el cascarón leyó del WebView")]
+    public void UsaElTprQueEscribeElCascaron()
+    {
+        string[] telefono =
+        [
+            "10-29 18:40:01.000 I/FC      ( 4321): t=500ms arranque: pantalla visible",
+            "10-29 18:40:03.000 I/FC      ( 4321): t=2500ms contenido: carga iniciada (1.0.0+5d5c2b4)",
+            "10-29 18:40:06.100 I/FC      ( 4321): t=5600ms FC-MARCA primer-render contenido=1.0.0+5d5c2b4 tpr=5120ms (leída por el cascarón)",
+            "10-29 18:40:06.200 I/chromium( 4321): [INFO:CONSOLE:83] \"FC-MARCA primer-render contenido=1.0.0+5d5c2b4 perf.now=3764ms\", source: https://0.0.0.1/js/puente.js (83)"
+        ];
+
+        var corridas = LectorDeTpr.Leer(telefono);
+
+        Assert.That(corridas, Has.Count.EqualTo(1));
+        Assert.That(corridas[0].TprMs, Is.EqualTo(5120));
+        Assert.That(corridas[0].Diagnostico, Is.EqualTo("ok"));
+    }
+
+    [Test]
     [Description("P1 — La marca que se busca es la que escribe puente.js, y la carga iniciada la que registra el cascarón")]
     public void LosTextosBuscadosSonLosQueSeEscriben()
     {
@@ -86,5 +106,7 @@ public class LectorDeTprTests
             "puente.js dejó de escribir la marca que lee «tpr»: cambiá los dos juntos (P1).");
         Assert.That(pantalla, Does.Contain(LectorDeTpr.TextoDeCargaIniciada),
             "ContenidoPage dejó de registrar la carga iniciada que lee «tpr»: cambiá los dos juntos (P1).");
+        Assert.That(pantalla, Does.Contain($"\"{LectorDeTpr.TextoDeLaMarca}\"").And.Contain("tpr={tpr}ms"),
+            "ContenidoPage dejó de escribir la marca leída del WebView que lee «tpr»: cambiá los dos juntos (P1).");
     }
 }

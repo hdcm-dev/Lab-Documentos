@@ -51,7 +51,7 @@ Todo pasa por el guion único, `scripts/guion.sh` (`scripts/guion.sh` sin argume
 esta carpeta, con `IP` = la IP con la que el dispositivo llega a esta máquina:
 
 ```bash
-IP=203.0.113.10                                  # en el laboratorio: la IP de Tailscale de i7infra
+IP=203.0.113.10                                  # la IP por la que el dispositivo llega a esta máquina
 scripts/guion.sh claves                             # par ECDSA de demostración (la privada no se versiona); ver abajo
 scripts/guion.sh publicar v1                        # contenido 1.0.0, sin AOT, archivos planos
 scripts/guion.sh definicion v1                      # encuesta-movilidad v1
@@ -273,7 +273,7 @@ rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; cascarón: CS0029). En el 
 semilla ya no se carga después del primer arranque; dos arranques cortados antes de cargar no cuentan; dos cargas
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
-**NO VERIFICADO.** El TPR en el g42 después de la corrección (reservado para otra sesión; ver «Medición del TPR», abajo). Con el desglose del
+**NO OBTENIDO.** El TPR en el g42 después de la corrección: el contenido llega a «puente Listo» a los 7,3–7,7 s, pero la marca no llega al logcat (ver «Medición del TPR», abajo). Con el desglose del
 intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. El PR en rojo con
 M-13 en el runner (tramo A5).
 
@@ -403,5 +403,8 @@ Qué cambió:
 12 451 ms. Las cifras del emulador no juzgan el umbral de P1.
 
 
-**NO VERIFICADO.** El TPR en el moto g42: el teléfono siguió tomado por otra sesión de mayor prioridad durante todo el
-folio 042. La condición de revisión (2) de P1 sigue abierta, sin número nuevo.
+**NO OBTENIDO.** El TPR en el moto g42 (2026-10-28, folio 047): 5 de 5 arranques `COLD`, con el contenido en
+«puente Listo» de 7 308 a 7 715 ms (9 661 ms en la primera corrida), pero la marca `primer-render` no llegó al logcat:
+el WebView del teléfono no reenvía los mensajes de consola. El TPR queda acotado entre 4,4 y 7,7 s y la condición de
+revisión (2) de P1 sigue abierta. Para medirlo por su definición, `puente.js` tendría que mandar la marca por el puente
+para que el cascarón la escriba con la etiqueta `FC`.

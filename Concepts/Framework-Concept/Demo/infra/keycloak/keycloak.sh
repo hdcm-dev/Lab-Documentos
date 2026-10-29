@@ -24,7 +24,7 @@
 # Emisor (issuer) resultante: https://$FC_KC_IP:$FC_KC_PUERTO/realms/fc-demo  → -p:FcOidcAutoridad del APK y
 # --oidc-emisor del receptor.
 #
-# Variables: FC_KC_IP (203.0.113.10, la IP de Tailscale de i7infra por la que llega el emulador fc-android-emu-hpdev),
+# Variables: FC_KC_IP (203.0.113.10, la IP de la máquina que sirve Keycloak, por la que llega el emulador fc-android-emu-hpdev),
 #            FC_KC_PUERTO (8443), FC_KC_NOMBRE (fc-keycloak).
 set -euo pipefail
 

@@ -54,7 +54,7 @@ las del resto, en el tema que cita cada fila.
 | **Carta muerta** | Respuesta rechazada que queda visible al usuario | No se descarta | *dead letter* | P5, P13 |
 | **Compuerta** | Pruebas que un PR debe pasar; se resumen en `fw-ok` | No es la cobertura | *gate* | P8 |
 | **`fw-ok`** | Job agregador estricto, único check requerido de `main` | No es un job de pruebas | — | P6 |
-| **Runner** | Máquina que corre el workflow; acá `[self-hosted, i7infra-dev]` (`i7infra-runner-dev`) | No tiene `docker.sock` ni KVM | — | P6, R2 |
+| **Runner** | Máquina que corre el workflow; acá `[self-hosted, i7infra-dev]`; desde el 2026-10-28 la lleva `hpdev-runner-dev` (antes, `i7infra-runner-dev`, que la conserva: leer `runner_name` en la API de jobs) | No tiene `docker.sock` ni KVM | — | P6, R2 |
 | **Rojo provocado** | Cambio mínimo que debe hacer fallar una suite | No es un error real | — | P8 |
 | **TPR** | Tiempo al primer render del contenido: marca `primer-render` desde el inicio del proceso | No es TTFD | — | P1 |
 | **Estado de red combinado** | `EnLinea`, `EnLineaMedida`, `RedSinServidor`, `SinRed` | No es sólo `Connectivity` | — | Folio 038 |
@@ -179,11 +179,11 @@ repositorio publicado de la guía, estos enlaces se resuelven contra el espacio 
 
 | Pendiente | Motivo | Fuente |
 | --- | --- | --- |
-| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO VERIFICADO; la condición de revisión (2) de P1 sigue abierta | El g42 siguió tomado por otra sesión de mayor prioridad también en el folio 042. El intento anterior midió 8,2–8,7 s y la corrección sacó ~0,7 s; el estimado (~7,5 s) seguiría fuera. La falta de `primer-render` en el cierre era la pantalla apagada del emulador, no la marca; `guion.sh tpr` ya la mide con la pantalla comprobada (emulador: 9 641–12 451 ms, que no juzgan el umbral) | E02 §4.3, §5 H-A, §7; E03 `P1-TPR-EN-EMULADOR.md`; folio 042 |
+| **TPR en el moto g42** en la condición declarada (máximo de 5 corridas ≤ 5 000 ms) — NO OBTENIDO; la condición de revisión (2) de P1 sigue abierta | Medido el 2026-10-28 (folio 047): 5/5 arranques `COLD`; el contenido llega a «puente Listo» de 7 308 a 7 715 ms en régimen (9 661 ms en la primera corrida), pero la marca `primer-render` no llega al logcat porque el WebView del g42 no reenvía la consola. El TPR queda acotado entre 4,4 y 7,7 s; con la distancia marca–Listo del emulador, el estimado es de 6,7 a 7,7 s. Indicio fuerte de que el umbral no se cumple. Para medirlo por su definición, la marca tiene que viajar por el puente | E02 §5 H-A; E03 `P1-TPR-G42.md` y `P1-TPR-EN-EMULADOR.md`; folios 042 y 047 |
 | **Apartamiento H-1**: una huella nueva no invalida la clave | Decisión de mesa: se mantiene P4 (PIN o patrón), avisado al PO | E03 §5 H-1 |
 | **iOS** — NO VERIFICADO | Sin Mac, sin cuenta de Apple Developer, sin job `macos-*` (folio 023) | P9 |
 | `.wasm` ante Apple y ante Play — NO VERIFICADO | Ninguna política nombra WebAssembly | P1, N1 §4.1 |
-| Corrida del workflow con `run_id` en `i7infra-runner-dev` — NO VERIFICADO | Tramo A5 | Folio 037 |
+| Corrida completa del workflow (compuerta y APK) con `run_id` en `hpdev-runner-dev` — NO VERIFICADO | Tramo A5. Hasta el 2026-10-28 la compuerta y el APK sólo corrieron en `i7infra-runner-dev`, que volvió a escuchar con la misma etiqueta | Folios 037, 043 y 046 |
 | Protección de `main` y su prueba con M-13 — pendiente | Tramo A5, después de un `fw-ok` verde | Folio 037, P6.1 |
 | Operación sin red en el teléfono de medida (criterio 3 de P11) — NO VERIFICADO | Sólo emulador | E02 §7, P0 premisas |
 | `guion.sh demo` como un solo comando — NO VERIFICADO | Se corrieron sus pasos uno por uno | E02 §7 |

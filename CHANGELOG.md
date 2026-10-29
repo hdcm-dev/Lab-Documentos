@@ -2,6 +2,16 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-29 (Framework Concept: runner de hpdev, Keycloak y TPR en el g42)
+
+### Concepts/Framework-Concept/ y el comentario de framework-concept-demo.yml — expediente 0001, folios 046 y 047
+
+#### Cambiado
+
+- **TPR en el moto g42** (`99-Anexos.md` §6, `Developer-Guide.md`, `01-Actualizacion-Sin-Tienda.md`, `Demo/README.md`): pasa de «sin medir» a **NO OBTENIDO**, con las cotas medidas el 2026-10-28 (folio 047). El contenido llega a «puente Listo» de 7,3 a 7,7 s, pero la marca `primer-render` no llega al logcat porque el WebView del teléfono no reenvía la consola: el TPR queda acotado entre 4,4 y 7,7 s. La condición (2) de P1 sigue abierta.
+- **Runner**: el glosario, la fila `run_id` del anexo, `03` §8, `06` §8.2 y el comentario del workflow nombran `hpdev-runner-dev`. Ese runner lleva la misma etiqueta `[self-hosted, i7infra-dev]`, que no cambia, y su entorno se verificó: SDK 10.0.403, maui-android 10.0.110, sin `docker.sock` ni KVM. `i7infra-runner-dev` volvió con la misma etiqueta: el campo `runner_name` dice cuál corrió.
+- **Keycloak** (`Demo/README.md`, `Demo/infra/keycloak/keycloak.sh`): la IP de ejemplo se describe por su función («la máquina que sirve Keycloak»), no por la máquina del laboratorio.
+
 ## 2026-10-28 (Framework Concept: IDs en su propio espacio)
 
 ### Concepts/Framework-Concept/ y tools/docs-guard/prefijos.txt — expediente 0001

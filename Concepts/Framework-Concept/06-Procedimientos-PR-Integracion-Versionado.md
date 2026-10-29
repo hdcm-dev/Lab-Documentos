@@ -239,8 +239,9 @@ secreto. `concurrency` cancela la corrida anterior del mismo PR.
 
 #### Validaciones — 8.2
 
-- En la API de corridas (`actions/runs/{id}/jobs`), los jobs corrieron en `i7infra-runner-dev` (criterio de
-  aceptación 1 de P11). NO VERIFICADO al 2026-10-26.
+- En la API de corridas (`actions/runs/{id}/jobs`), los jobs corrieron en el runner propio (criterio de aceptación 1
+  de P11): `hpdev-runner-dev` desde el 2026-10-28; antes, `i7infra-runner-dev`, que conserva la etiqueta, así que el
+  campo `runner_name` dice cuál fue. NO VERIFICADO al 2026-10-26.
 
 ### 8.3 Proteger `main` (tramo A5)
 

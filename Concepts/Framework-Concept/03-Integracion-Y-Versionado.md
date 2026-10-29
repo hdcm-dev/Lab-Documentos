@@ -180,7 +180,8 @@ Las **cuatro líneas visibles** en la pantalla de diagnóstico, para atribuir un
 **Qué demuestra.** La omisión legítima declarada.
 **Precondición.** Un PR que cambia sólo una guía fuera de `Concepts/Framework-Concept/Demo/**`.
 **Resultado esperado.** El job `alcance` escribe `demo=false` con su motivo; `compuerta` y `apk` quedan `skipped`;
-`fw-ok` sale verde «por omisión declarada». NO VERIFICADO en el runner: no hay todavía una corrida con `run_id` (A5).
+`fw-ok` sale verde «por omisión declarada». Verificado en el runner: en Lab-Documentos #33 (2026-10-28, run `40738280836`),
+un PR que sólo cambió temas de la guía dejó `compuerta` y `apk` en `skipped` y `fw-ok` en verde (folio 048).
 
 ## 5. Preguntas guía
 

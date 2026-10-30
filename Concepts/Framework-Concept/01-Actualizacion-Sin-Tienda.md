@@ -241,9 +241,9 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 ## 8. Observaciones
 
 - **Hecho.** El TPR medido en el moto g42 en un intento anterior fue de 8 176 a 8 741 ms con la semilla instalada
-  (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el 2026-10-28 el
-  TPR medido en el g42 con el APK Release fue de **6 874 a 7 309 ms en régimen y 9 152 ms en el primer arranque**
-  (2026-10-29, folio 049): sigue por encima del umbral. La marca la escribe ahora el cascarón, porque la consola del
+  (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el TPR medido en el
+  g42 con el APK Release el 2026-10-29 (folio 049) fue de **6 874 a 7 309 ms en régimen y 9 152 ms en el primer
+  arranque**: sigue por encima del umbral. La marca la escribe ahora el cascarón, porque la consola del
   WebView no llega al logcat del teléfono (folio 047). Ver el anexo de pendientes.
 - **Hecho.** En el cierre del expediente, 5 arranques en el emulador no dieron la marca `primer-render`: la pantalla
   estaba apagada y el WebView no llegó a pedir el contenido (folio 042). `scripts/guion.sh tpr` mide ahora con la
@@ -252,6 +252,7 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 - **Hecho.** El paquete de contenido pesa 3,39 MB comprimido y 9,13 MB plano (E01 §7).
 - **Interpretación.** Si el TPR medido supera el umbral, la condición de revisión (2) de P1 abre la evaluación de la
   alternativa «C-min» (renderizador compilado en el cascarón más encuestas como datos).
+- **Hecho.** La condición (2) de P1 se evaluó en el folio 050. El PO aprobó el dictamen 050: C-min no se adopta y se ensaya el arranque superpuesto. E04 (V1 dejó el régimen en ~4,8–5,2 s, pero el primer arranque siguió en 9,6 s) y V1S (V1 más la semilla firmada servida desde el APK: primer arranque recién instalado de 7,9 a 8,8 s) se midieron en ramas descartables que no se fusionaron (folios 052 y 053); `main` no contiene ninguno. Quedan abiertas para el PO: si la corrida recién instalada cuenta para el umbral, si V1 pasa a `main` y si se revisa el umbral o se mide C-min.
 
 ## 9. Referencias
 

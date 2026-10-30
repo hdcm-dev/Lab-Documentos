@@ -224,7 +224,8 @@ pantallas pasaron a Razor (`src/FrameworkConcept.Content/Pages/`: `Inicio.razor`
 | 7 | `scripts/guion.sh publicar sin-listo`, `scripts/guion.sh firmar`; abrir en frío varias veces | 1.2.0 se activa sin `Listo`; vuelve a 1.1.0 y queda como fallida | `FC-TEM-01` |
 | 8 | Tocar «Diagnóstico» en la barra superior | Cascarón 1.0.0 (build 1), puente 1.0.0, contenido 1.1.0, definición v2, fallidas: 1.2.0 | `FC-TEM-03` |
 
-En el paso 8 el puente decía 1.0.0 porque E02 es anterior al incremento de red y autenticación, que lo subió a 1.1.0.
+En el paso 8 el puente decía 1.0.0 porque E02 es anterior al incremento de red y autenticación, que lo subió a 1.1.0; el login tradicional lo llevó después a 1.2.0 (`auth.signInWithPassword`, `auth.lock`,
+`auth.session` 1.1.0).
 
 ### 5.4 Sin red y con cuenta
 
@@ -232,6 +233,15 @@ Con el APK compilado contra el emisor de ensayo (Keycloak en contenedor), E03 mo
 sistema, el desbloqueo con huella y con PIN, la banda «Sin conexión», la banda «Sin acceso al servidor», la reconexión
 automática en 6,4 s con el outbox vaciándose solo, y el cierre de sesión que conserva lo pendiente. Se explica en
 [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md).
+
+Lo vigente en `main`: por defecto el ingreso y el desbloqueo son pantallas del contenido
+(`-p:FcPantallasDeSesion=Contenido`) con formulario propio (`-p:FcModoDeIngreso=Formulario`). El contenido pide
+`auth.signInWithPassword`. El cascarón canjea la clave con Direct Access Grant (ROPC), que sólo habilita el emisor de
+ensayo; en producción corresponde OAuth 2.0 for First-Party Applications o el modo Navegador (RFC 8252). El contenido
+nunca ve tokens: el cascarón los guarda, el refresh queda sellado en el Keystore (`BIOMETRIC_STRONG|DEVICE_CREDENTIAL`)
+y el contenido sólo recibe `auth.session`. «Bloquear» (`auth.lock`) activa antes el desbloqueo si falta. La app se
+bloquea en frío y al volver de segundo plano después de 5 min. E03 midió la variante de navegador; el formulario rige
+desde el 2026-10-30. Para repetir E03 tal cual: `-p:FcModoDeIngreso=Navegador`.
 
 ### 5.5 El PR que protege lo que funcionaba
 
@@ -430,13 +440,46 @@ FC_OIDC_EMISOR=$EMISOR scripts/guion.sh servir
 FC_RID=android-x64 FC_URL_CANAL=https://<IP>:8099 FC_OIDC_EMISOR=$EMISOR scripts/guion.sh apk
 ```
 
-Ingresá como `encuestador` / `demo-encuestador` (credenciales públicas de prueba, sólo para este emisor). Después:
+La app arranca con «Cargando…» y muestra su formulario. Ingresá como `encuestador` / `demo-encuestador`
+(credenciales públicas de prueba, sólo para este emisor), aceptá «¿Usar la seguridad del teléfono?» con «Sí, usarla»,
+tocá «Bloquear» y después «Desbloquear» (el diálogo es del sistema). Si el ingreso responde «El emisor no permite el
+ingreso con clave», el realm es viejo: pará y volvé a levantar Keycloak para reimportarlo.
+
+**Modos de compilación.**
+
+| `FcPantallasDeSesion` | `FcModoDeIngreso` | Qué se ve |
+| --- | --- | --- |
+| `Contenido` (por defecto) | `Formulario` (por defecto) | Formulario del contenido → `auth.signInWithPassword` |
+| `Contenido` | `Navegador` | Panel del contenido → Custom Tab, code + PKCE (lo que midió E03) |
+| `Cascaron` | `Formulario` | Pantallas XAML; ingresan siempre por navegador |
+| `Cascaron` | `Navegador` | Pantallas XAML con Custom Tab |
+
+`guion.sh apk` no reenvía esas dos propiedades. Para un modo distinto del de por defecto, el comando completo:
+
+```bash
+dotnet build src/FrameworkConcept.Shell -c Debug -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk \
+  -p:FcCanal=dev -p:FcCanalUrl=<url> -p:FcOidcAutoridad=<emisor> -p:FcModoDeIngreso=Navegador
+```
+
+Pendiente: que el guion acepte `FC_MODO_DE_INGRESO` y `FC_PANTALLAS_DE_SESION`.
+
+Después:
 
 | Acción | Qué tiene que pasar (E03) |
 | --- | --- |
 | `adb shell cmd connectivity airplane-mode enable` | Banda «Sin conexión»; la encuesta queda «Por enviar: 1»; «Enviar ahora» deshabilitado con su motivo |
 | `scripts/guion.sh parar` y `airplane-mode disable` | «Sin acceso al servidor. Hay red pero el servidor no responde. Reintentando…» |
 | `FC_OIDC_EMISOR=$EMISOR scripts/guion.sh servir` | Vuelve sola a «En línea»; el outbox se vacía con el dueño `encuestador` |
+
+**En un teléfono real (por túnel).** El teléfono no alcanza la máquina, así que el emisor se anuncia con la URL
+pública del túnel:
+
+- `FC_KC_HOSTNAME=https://<host-publico> infra/keycloak/keycloak.sh levantar`;
+- `FC_URL_CANAL=https://<host-publico>` y `FC_RID=android-arm64` al compilar;
+- `-p:FcOidcAutoridad` a juego con ese emisor;
+- el dispositivo, preparado como dice «Preparar el dispositivo» en el
+  [README de la demo](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/README.md) (CA de usuario,
+  bloqueo de pantalla).
 
 Al terminar: `infra/keycloak/keycloak.sh parar`, `scripts/guion.sh parar` y, si querés, `scripts/guion.sh limpiar`.
 
@@ -459,11 +502,12 @@ Al terminar: `infra/keycloak/keycloak.sh parar`, `scripts/guion.sh parar` y, si 
 
 | Limitación | Qué significa para vos | Fuente |
 | --- | --- | --- |
-| **TPR del moto g42 por encima del umbral** | El umbral de arranque (≤ 5 000 ms, máximo de 5 corridas) no se cumple: con el APK Release, el TPR medido fue de 6,9 a 7,3 s en régimen y de 9,2 s en el primer arranque. P1 prevé evaluar el modelo de reserva («C-min»). Para medirlo: APK Release y `scripts/guion.sh tpr -H <host> -P <puerto> -s <serie>`, con la pantalla encendida y sin bloqueo (folio 042). En un teléfono la marca llega porque el cascarón la lee del WebView y la escribe con la etiqueta `FC` (folio 049) | E02 §5 H-A; folios 042, 047 y 049 |
+| **TPR del moto g42 por encima del umbral** | El umbral de arranque (≤ 5 000 ms, máximo de 5 corridas) no se cumple: con el APK Release, el TPR medido fue de 6,9 a 7,3 s en régimen y de 9,2 s en el primer arranque. P1 prevé evaluar el modelo de reserva («C-min»). Para medirlo: APK Release (`guion.sh apk` compila en Debug; usá `dotnet build src/FrameworkConcept.Shell -c Release -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk …`) y `scripts/guion.sh tpr -H <host> -P <puerto> -s <serie>`, con la pantalla encendida y sin bloqueo (folio 042). En un teléfono la marca llega porque el cascarón la lee del WebView y la escribe con la etiqueta `FC` (folio 049). Detalle en «Medición del TPR» del [README de la demo](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/README.md). El PO aprobó el dictamen 050: C-min no se adopta y se ensaya el arranque superpuesto. E04 (V1 dejó el régimen en ~4,8–5,2 s, pero el primer arranque siguió en 9,6 s) y V1S (V1 más la semilla firmada servida desde el APK: primer arranque recién instalado de 7,9 a 8,8 s) se midieron en ramas descartables que no se fusionaron (folios 052 y 053); `main` no contiene ninguno. Quedan abiertas para el PO: si la corrida recién instalada cuenta para el umbral, si V1 pasa a `main` y si se revisa el umbral o se mide C-min | E02 §5 H-A; folios 042, 047, 049, 050, 052 y 053 |
 | **Apartamiento H-1** | Con PIN o patrón aceptados, enrolar otra huella no invalida la clave del Keystore; contradice el borrador §4 y fue avisado al PO | E03 §5 H-1 |
 | **iOS sólo diseño** | Nada se compiló ni se probó en iOS; los riesgos (WebAssembly ante la 2.5.2, guía 4.7, memoria del runtime WASM en WKWebView) están nombrados, no resueltos | P9, folio 023 |
 | Falta la prueba de un PR en rojo | `main` exige `fw-ok` (estricto y también para administradores; API, 2026-10-29) y la corrida completa del workflow pasó en el runner (run `40847315104`). Todavía no se vio un PR en rojo con M-13 que no se pueda fusionar | Folios 037 y 048 |
-| Sólo emulador | Ningún recorrido completo en teléfono físico | E02 §7, E03 §7 |
+| Recorrido v1→v2 sólo en emulador | En el g42 físico se midió el TPR (folio 049) y se probó el ingreso con el formulario (2026-10-30); el bloqueo y el desbloqueo con el patrón están implementados pero todavía no se probaron en el teléfono; el recorrido completo v1→v2 sigue sólo en emulador | E02 §7, E03 §7, folio 049 |
+| Experiencia de actualización | El dictamen UX (folio 054) propone un flujo que nunca bloquea, con dos niveles (normal/obligatoria), consulta al ingresar con aplicación diferida y pantallas con avance y leyenda. Es una propuesta: `main` no lo implementa | Folio 054 |
 | `.wasm` ante las tiendas | Ninguna política lo nombra | P1 |
 
 La lista completa está en [`99-Anexos` §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#6-pendientes-y-no-verificado).
@@ -473,7 +517,7 @@ La lista completa está en [`99-Anexos` §6](/LAB/Lab-Documentos/Lab-Documentos/
 | Plataforma | Estado |
 | --- | --- |
 | Android, emulador Android 13 x86_64, WebView 155 | Recorridos completos de E02 y E03 |
-| Android, moto g42 | Sólo E01 (contenido descargado y servido) y un intento anterior de E02; sin recorrido completo |
+| Android, moto g42 | Sólo E01 (contenido descargado y servido), un intento anterior de E02 y el TPR con APK Release (folio 049); sin recorrido completo |
 | Android con WebView 83 | El runtime de Blazor .NET 10 no arranca (E01) |
 | iOS | Diseño sin ensayo, NO VERIFICADO — sin Mac ni cuenta de Apple Developer |
 

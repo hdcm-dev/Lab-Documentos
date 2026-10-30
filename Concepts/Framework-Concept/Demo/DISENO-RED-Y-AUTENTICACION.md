@@ -5,7 +5,7 @@
 | Pedido | Folio 038 del expediente 0001: autenticación con los mecanismos del sistema operativo; manejo de red (detección de corte, aviso al usuario, reconexión automática) con bloqueo de las acciones que requieren internet |
 | Diseño que manda | P4 del dictamen (folio 035) y el borrador del PO `../Framework-APP.md` §4, §6 y §7. Respeta P3 (contrato del puente), P5 (outbox), P12 (catálogo) |
 | Efecto del folio 038 | Sustituye, **para la demo**, la «Decisión para la demo» de P4 (sin IdP). El diseño del framework de P4 entra entero |
-| Estado | **Esqueleto.** Contrato 1.1.0, catálogo, tipos, interfaces, clases vacías cableadas, Keycloak de ensayo. La lógica la escriben dos constructores en paralelo (§8) |
+| Estado | **Implementado.** Contrato 1.2.0 (1.1.0 con el incremento de red; 1.2.0 con el login tradicional) |
 | Fecha | 2026-10-26 |
 
 Las rutas de este documento son relativas a esta carpeta (`Demo/`). Cada decisión lleva su ancla entre corchetes:
@@ -37,6 +37,7 @@ decisión de este documento que ninguna fuente fija, con su motivo.
 | Outbox | Dueño = id de instalación; sale todo | Sale sólo con la identidad de su dueño y sesión válida; cerrar o vencer la sesión no borra pendientes **[P4, P5]** |
 | Receptor | Acepta sin token | Con `--oidc-emisor`, exige un JWT del emisor validado contra su JWKS **[P4; arq: el receptor es el «servidor» del ensayo]** |
 | Puente | 1.0.0 | **1.1.0**: todo es MENOR (métodos, eventos y entrada de catálogo nuevos; campos opcionales nuevos) **[P3]** |
+| Puente, login tradicional | 1.1.0 | **1.2.0**: `auth.signInWithPassword`, `auth.lock`, `auth.session` 1.1.0 (MENOR) |
 
 Lo que **no** cambia: el esquema de la base (C-1, `EsquemaDelCascaron.Version = 1`), el transporte del puente, el
 actualizador, el canal y su firma. **[arq]** Los datos de la sesión van a la tabla de configuración (§3.6): un cambio
@@ -349,7 +350,7 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 | `SinCuenta`, modo `Formulario` | Formulario propio: usuario, clave, «Ingresar» (`sesion.ingresar`, deshabilitado + motivo sin servidor) → `auth.signInWithPassword` |
 | `SinCuenta`, modo `Navegador` | Panel «Ingresar con tu cuenta» con el botón de `sesion.ingresar` (deshabilitado + motivo sin servidor) |
 | `Ingresando` | «Ingresando…» (formulario) o «Completá el ingreso en el navegador…» |
-| `Activa` | La página, con «Bloquear» (`auth.lock`) en la línea de estado si el desbloqueo está activado. Si `DesbloqueoLocal = Disponible` y todavía no se preguntó: «¿Usar la seguridad del teléfono para entrar?» (Sí → `auth.enableUnlock`) |
+| `Activa` | La página, con «Bloquear» (`auth.lock`) en la línea de estado; si la seguridad del teléfono no está activada, el botón la activa primero (`auth.enableUnlock`) y después bloquea. Si `DesbloqueoLocal = Disponible` y todavía no se preguntó: «¿Usar la seguridad del teléfono para entrar?» (Sí → `auth.enableUnlock`) |
 | `Bloqueada` | Panel «Desbloquear» → `auth.unlock` (el diálogo es nativo, del sistema) |
 | `Vencida`, `Revocada` | La página **más** una banda «Tu sesión venció / fue revocada: ingresá para enviar lo pendiente» con el botón de reingreso. Se sigue trabajando local **[P4 sin período de gracia; sin red se opera]**. Sólo en el proceso donde hubo prueba local (corrector E03, §12) |
 

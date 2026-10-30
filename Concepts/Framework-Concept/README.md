@@ -15,8 +15,19 @@ traces: [FC-GUIA-INDICE]
 
 ## Índice
 
+0. [Empezá acá](#0-empezá-acá)
 1. [Qué hay acá](#1-qué-hay-acá)
 2. [Dónde está el índice](#2-dónde-está-el-índice)
+
+## 0. Empezá acá
+
+1. [`Developer-Guide`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Developer-Guide.md) §1 y §4: la
+   idea en una página.
+2. Ejercicio 1 de la misma guía: compilar sin instalar nada.
+3. [`Demo/README`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/README.md): para el teléfono.
+
+Vocabulario: app híbrida = cascarón nativo (native shell, App Shell model) + contenido Blazor WASM (update bundle)
+actualizado OTA (live updates / code push), offline-first con outbox.
 
 ## 1. Qué hay acá
 

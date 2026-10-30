@@ -34,8 +34,11 @@ Una app de campo trabaja con red intermitente. El cascarón combina lo que dice 
 salud propio y llega a cuatro estados (`EnLinea`, `EnLineaMedida`, `RedSinServidor`, `SinRed`), que muestra en una banda
 permanente mientras dure el problema y que usa para reconectar solo. Cada acción del usuario está declarada como
 `SoloLocal`, `Encolable` o `SoloEnLinea`; el cascarón decide si se permite, si queda pendiente o si se bloquea, y el
-botón dice por qué. La identidad entra una vez con OIDC (code + PKCE) en el navegador del sistema; después se desbloquea
-con la seguridad del teléfono (huella, rostro, PIN o patrón), que protege el refresh token en el Keystore. Cerrar o
+botón dice por qué. La identidad entra una vez. Por defecto lo hace con un formulario propio del contenido:
+`auth.signInWithPassword`, el cascarón canjea la clave y el contenido nunca ve tokens. Con `-p:FcModoDeIngreso=Navegador`
+entra con OIDC code + PKCE en el navegador del sistema (RFC 8252). El canje con clave usa ROPC sólo porque el emisor es
+de ensayo; en producción correspondería OAuth 2.0 for First-Party Applications. Después se desbloquea con la seguridad
+del teléfono (huella, rostro, PIN o patrón), que protege el refresh token en el Keystore. Cerrar o
 vencer la sesión nunca borra lo pendiente. Todo esto entró en la demo por pedido del PO (folio 038) y se ensayó en el
 emulador (E03).
 
@@ -60,7 +63,7 @@ la ejecutan; un evaluador puro decide con el estado de red y de sesión del mome
 **Un caso.** En modo avión, «Enviar ahora» (`SoloEnLinea`) queda deshabilitado con «Sin conexión», y «Registrar» la
 encuesta (`Encolable`) se ejecuta y queda pendiente (E03 paso `d`).
 
-**Desbloqueo local.** La entrada a la app con la seguridad del teléfono, separada de la sesión con el servidor: abre una
+**Desbloqueo local** (*local authentication* / *app lock* en la industria). La entrada a la app con la seguridad del teléfono, separada de la sesión con el servidor: abre una
 clave AES-256-GCM del `AndroidKeyStore` que sella el refresh token (DISENO §3.4).
 
 **Cómo se aplica.** Después del primer ingreso, la app pregunta «¿Usar la seguridad del teléfono para entrar?»; si
@@ -68,6 +71,13 @@ aceptás, los arranques siguientes muestran «Desbloquear».
 
 **Un caso.** E03 paso `b`: `am force-stop`, abrir, `Bloqueada`; huella simulada; entra como `encuestador` sin cuenta ni
 navegador.
+
+**Bloquear.** El botón «Bloquear» (`auth.lock`) lleva la sesión de `Activa` a `Bloqueada`, igual que el bloqueo de
+segundo plano: la página se desmonta, el despachador rechaza los datos con -32005 y se suelta el access token de
+memoria, pero no el refresh. No protege contra quien ya controle el proceso. Si el desbloqueo no está activado, el botón
+lo activa antes (`auth.enableUnlock`). La app se bloquea en frío y al volver de segundo plano después de 5 min
+(`ParametrosDeSesion.BloqueoTrasSegundoPlano`, `Oidc.cs` L249). Con `-p:FcPantallasDeSesion=Cascaron` las pantallas de
+ingreso y desbloqueo son XAML del cascarón (DISENO §3.7).
 
 ### 2.2 Qué problema resuelve
 
@@ -81,9 +91,10 @@ testimonio literal).
 | Se confunde con | Por qué no |
 | --- | --- |
 | La biometría como login | La biometría es la llave del refresh token guardado; la identidad la da el emisor (DISENO §3.1) |
-| Un login dentro de un WebView | Prohibido: el formulario se abre en el navegador del sistema (RFC 8252) |
+| Un login en el WebView sin control | En modo Formulario la clave se escribe en el contenido (WebView), viaja una sola vez por el puente, se borra del componente y no se registra; el contenido llega por OTA firmado. Es un apartamiento declarado de RFC 8252 §5 que pidió el PO; el modo Navegador sí lo cumple |
+| ROPC como solución de producto | No: se usa sólo con el emisor de ensayo (RFC 9700 §2.4 lo desaconseja) |
 | Un toast de «sin red» | Es una banda permanente mientras dure, que desaparece sola (DISENO §2.6) |
-| Un período de gracia local | No existe: sin red se opera sin límite; al vencer la sesión se reingresa con red antes de sincronizar (P4) |
+| Un período de gracia local | No existe: sin red se opera sin límite; al vencer la sesión se reingresa con red antes de sincronizar (P4). El trabajo local no depende de que el refresh siga vigente: al reconectar, si el emisor lo rechaza, la sesión pasa a `Vencida`/`Revocada` y se reingresa sin perder el outbox. Con alcances `openid profile` el refresh vence según la sesión SSO; en producción se evalúa `offline_access` (*offline tokens*) |
 | El contenido decide qué se bloquea | Decide el cascarón; el despachador del puente rechaza con `AccionBloqueada` (-32005) aunque el contenido se equivoque |
 
 ### 2.4 RFC 8252: la cita y su código
@@ -92,7 +103,7 @@ RFC 8252 (*OAuth 2.0 for Native Apps*, BCP 212, 2017), §5, en la síntesis del 
 
 > «native apps MUST use an external user-agent»
 
-**Qué implica.** La app no ve la clave de la persona: el formulario del emisor corre en el navegador del sistema (Custom
+**Qué implica.** En modo Navegador, la app no ve la clave de la persona: el formulario del emisor corre en el navegador del sistema (Custom
 Tab en Android) y vuelve a la app por un esquema propio con un `code` que sólo sirve junto al `code_verifier` de PKCE
 (RFC 7636). La demo lo hace con `WebAuthenticator` de MAUI Essentials y arma el pedido así:
 
@@ -105,7 +116,57 @@ Tab en Android) y vuelve a la app por un esquema propio con un `code` que sólo 
             ("prompt", ParametrosDeSesion.PromptDelIngreso)
 ```
 
-*Fuente: [`Demo/src/FrameworkConcept.Core/Auth/Oidc.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Auth/Oidc.cs) L74–L79, árbol de trabajo del 2026-10-26 sin commit; versión fijada por `sha256` 3f4114e525f1 del archivo (`sha256sum` de la ruta, primeros 12 dígitos).*
+*Fuente: [`Demo/src/FrameworkConcept.Core/Auth/Oidc.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Auth/Oidc.cs) L74–L79, commit 5b7c230.*
+
+El modo Formulario arma otro cuerpo, y el comentario dice por qué es sólo de ensayo:
+
+```csharp
+    /// El estándar para el login propio de una app first-party es el borrador IETF «OAuth 2.0 for First-Party
+    /// Applications» (draft-ietf-oauth-first-party-apps: endpoint de autorización por desafío, que devuelve un code
+    /// canjeable con PKCE y admite pasos extra como MFA). ROPC (RFC 6749 §4.3) está desaconsejado por el BCP de
+    /// seguridad (RFC 9700 §2.4) y se usa acá SÓLO porque Keycloak no trae ese endpoint y este es un emisor de ensayo
+    /// (Direct Access Grant habilitado en infra/keycloak/realm-fc-demo.json). Cambiar de emisor cambia este cuerpo y
+    /// nada más: el contenido sigue mandando usuario y clave por auth.signInWithPassword.
+    /// La clave no se registra: esta lista vive lo que dura el POST.
+    /// </summary>
+    public static IReadOnlyList<KeyValuePair<string, string>> CuerpoDelIngresoConClave(ConfiguracionOidc configuracion, string usuario, string clave) =>
+    [
+        new("grant_type", "password"),
+        new("client_id", configuracion.ClienteId),
+        new("username", usuario),
+        new("password", clave),
+        new("scope", configuracion.Alcances)
+    ];
+```
+
+*Fuente: [`Demo/src/FrameworkConcept.Core/Auth/Oidc.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Auth/Oidc.cs) L100–L115, commit 5b7c230.*
+
+### 2.4.1 Ensayo y producción
+
+| Tema | Ensayo | Producción |
+| --- | --- | --- |
+| Canje con clave | ROPC, con `directAccessGrantsEnabled` sólo en `realm-fc-demo.json` | draft-ietf-oauth-first-party-apps o modo Navegador (RFC 8252), con MFA |
+| Emisor | Keycloak 26.7.5 en contenedor con la CA de demostración | Emisor real con certificado público |
+| Alcances | `openid profile`: el refresh vence a los 30 min sin uso o a las 10 h (sesión SSO del realm) | Evaluar `offline_access` (*offline tokens*) |
+| Tiempos (5 min de segundo plano, backoff, caché) | Criterio de la demo | Política de producto |
+| `FC_KC_HOSTNAME` | Herramienta para teléfonos que llegan por túnel | — |
+
+*Fuentes: `infra/keycloak/keycloak.sh` L13–L33, `realm-fc-demo.json` (`ssoSessionIdleTimeout` 1800,
+`ssoSessionMaxLifespan` 36000), `Oidc.cs` L249 y L259.*
+
+### 2.4.2 Cara del ingreso y modo de ingreso
+
+Dos propiedades de compilación del cascarón eligen cómo se ve y cómo se hace el ingreso:
+
+| Propiedad | Valores | Qué cambia |
+| --- | --- | --- |
+| `FcPantallasDeSesion` | `Contenido` (por defecto) / `Cascaron` | Quién dibuja el ingreso y el desbloqueo: la puerta de sesión del contenido o pantallas XAML del cascarón. Con `Cascaron` el ingreso es siempre por navegador |
+| `FcModoDeIngreso` | `Formulario` (por defecto) / `Navegador` | Formulario propio con `auth.signInWithPassword`, o code + PKCE en la Custom Tab (`WebAuthenticator`, RFC 8252) con `auth.signIn` |
+
+El puente 1.2.0 suma `auth.signInWithPassword` y `auth.lock`, con `auth.session` 1.1.0. El Direct Access Grant que usa
+el modo Formulario sólo está habilitado en el emisor de ensayo: con un emisor real hay que cambiar el canje (tabla de
+§2.4.1) o compilar con `Navegador`. Detalle en [DISENO §3.7](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#37-contenido-la-puerta-de-la-sesión-p4-038) y
+[DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110-120-desde-el-login-tradicional).
 
 ### 2.5 Las dos máquinas de estado
 
@@ -154,12 +215,12 @@ Las dos son funciones puras en `Core` (`TransicionesDeRed.Siguiente`, `Transicio
             "Registrar una encuesta: se guarda con su fila del outbox y sale cuando haya red y sesión (P5)."),
         new("outbox.enviarAhora", ClaseDeAccion.SoloEnLinea, ["outbox.sendNow"],
             "«Enviar ahora»: fuerza una pasada del sincronizador. Sin servidor no tiene sentido: se bloquea con motivo."),
-        new(Ingresar, ClaseDeAccion.SoloEnLinea, ["auth.signIn"],
-            "Ingresar con la cuenta (OIDC en el navegador del sistema): necesita llegar al emisor.")
+        new(Ingresar, ClaseDeAccion.SoloEnLinea, ["auth.signIn", "auth.signInWithPassword"],
+            "Ingresar con la cuenta (formulario propio o navegador del sistema): necesita llegar al emisor.")
     ];
 ```
 
-*Fuente: [`Demo/src/FrameworkConcept.Core/Red/PoliticaDeAcciones.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Red/PoliticaDeAcciones.cs) L41–L51, árbol de trabajo del 2026-10-26 sin commit; versión fijada por `sha256` 41de31a84c05 del archivo (`sha256sum` de la ruta, primeros 12 dígitos).*
+*Fuente: [`Demo/src/FrameworkConcept.Core/Red/PoliticaDeAcciones.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Red/PoliticaDeAcciones.cs) L41–L51 (Ingresar en L49–L50), commit 5b7c230.*
 
 | Clase | Permitida si | Queda pendiente si |
 | --- | --- | --- |
@@ -255,6 +316,7 @@ new("<area>.<accion>",                 // ¿El id es estable y en el formato de 
   demostró (E03 §9).
 - **Interpretación.** Todos los tiempos de la política (5 → 60 s de backoff, 10 s de caché, 5 min para bloquear tras
   segundo plano) son criterio de la demo, no valores de producto (DISENO §2.3).
+- **Pendiente.** Dictamen UX 054: propuesta, no implementada en `main`.
 
 ## 9. Referencias
 

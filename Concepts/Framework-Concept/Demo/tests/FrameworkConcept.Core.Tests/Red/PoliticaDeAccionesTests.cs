@@ -30,6 +30,7 @@ public class PoliticaDeAccionesTests
     [TestCase("encuesta.enviar", ClaseDeAccion.Encolable, "encuestas.enqueueRespuesta")]
     [TestCase("outbox.enviarAhora", ClaseDeAccion.SoloEnLinea, "outbox.sendNow")]
     [TestCase("sesion.ingresar", ClaseDeAccion.SoloEnLinea, "auth.signIn")]
+    [TestCase("sesion.ingresar", ClaseDeAccion.SoloEnLinea, "auth.signInWithPassword")]
     public void LasCuatroAccionesDeLaDemo(string id, ClaseDeAccion clase, string metodo)
     {
         var accion = PoliticaDeAcciones.Buscar(id);

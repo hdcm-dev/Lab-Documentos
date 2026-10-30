@@ -5,7 +5,7 @@ namespace FrameworkConcept.Shell;
 
 /// <summary>
 /// La configuración del cascarón, fijada al compilar (propiedades -p:FcCanal, -p:FcCanalUrl, -p:FcReceptorUrl,
-/// -p:FcKeyId, -p:FcOidcAutoridad, -p:FcOidcClienteId y -p:FcPantallasDeSesion del .csproj). Así la misma fuente apunta a un túnel de prueba o a un servidor propio sin editar código.
+/// -p:FcKeyId, -p:FcOidcAutoridad, -p:FcOidcClienteId, -p:FcPantallasDeSesion y -p:FcModoDeIngreso del .csproj). Así la misma fuente apunta a un túnel de prueba o a un servidor propio sin editar código.
 /// </summary>
 public sealed class ConfiguracionDelCascaron
 {
@@ -16,6 +16,7 @@ public sealed class ConfiguracionDelCascaron
         ReceptorUrl = new Uri(Leer("FcReceptorUrl", CanalUrl.ToString()).TrimEnd('/') + "/");
         KeyId = Leer("FcKeyId", "demo-2026");
         PantallasDeSesionEnElCascaron = string.Equals(Leer("FcPantallasDeSesion", "Contenido"), "Cascaron", StringComparison.OrdinalIgnoreCase);
+        ModoDeIngreso = Enum.TryParse<ModoDeIngreso>(Leer("FcModoDeIngreso", "Formulario"), true, out var modo) ? modo : ModoDeIngreso.Formulario;
 
         // Folio 038, P4 — Emisor OIDC. Vacío = modo Dispositivo (la sesión por dispositivo del caso base).
         var autoridad = Leer("FcOidcAutoridad", "");
@@ -46,6 +47,13 @@ public sealed class ConfiguracionDelCascaron
     /// diálogo del sistema siguen en el cascarón (auth.session). true = las pantallas XAML del cascarón la tapan.
     /// </summary>
     public bool PantallasDeSesionEnElCascaron { get; }
+
+    /// <summary>
+    /// Login tradicional (-p:FcModoDeIngreso=Formulario|Navegador, por defecto Formulario): la puerta del contenido
+    /// muestra el formulario propio (auth.signInWithPassword) o el botón del navegador (auth.signIn). Viaja al
+    /// contenido en SesionInformada.ModoDeIngreso. Las pantallas XAML del cascarón siguen con el navegador.
+    /// </summary>
+    public ModoDeIngreso ModoDeIngreso { get; }
 
     /// <summary>keyId de la clave pública embebida (claves/publica-demo.pem).</summary>
     public string KeyId { get; }

@@ -39,6 +39,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
     private readonly EmisorDeEventos _emisor;
     private readonly IMonitorDeRed _red;
     private readonly ClienteDelEmisor? _oidc;
+    private readonly ModoDeIngreso _modoDeIngreso;
     // Corrector E03 — Un solo cerrojo para la renovación Y para el cambio de identidad (ingreso, cierre): mientras se
     // elige el token de una fila nadie cambia de dueño, y una renovación en vuelo no pisa los tokens de otra cuenta.
     private readonly SemaphoreSlim _renovacion = new(1, 1);
@@ -58,6 +59,8 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
     private string? _access;
     private DateTimeOffset _accessVence;
     private string? _refresh;
+    private int _intentosFallidosConClave;
+    private DateTimeOffset? _proximoIntentoConClave;
     private DateTimeOffset? _refreshVence;
     private string? _accessRenovadoPor401;
 
@@ -71,6 +74,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
         _cofre = cofre;
         _emisor = emisor;
         _red = red;
+        _modoDeIngreso = configuracion.ModoDeIngreso;
         _oidc = configuracion.Oidc is { } oidc ? new ClienteDelEmisor(oidc, red) : null;
         Actual = _oidc is null ? SesionInformada.PorDispositivo : Informar();
     }
@@ -231,6 +235,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
         if (_estado is not (EstadoDeSesion.SinCuenta or EstadoDeSesion.Vencida or EstadoDeSesion.Revocada)) return Actual;
 
         var antes = _estado;
+        // auth.signIn siempre abre el navegador, aunque el cascarón esté en modo Formulario (contenido 1.1, pantallas XAML).
         Transicionar(EventoDeSesion.IngresoIniciado, "Completá el ingreso en el navegador…");
         try
         {
@@ -268,30 +273,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
             var reloj = Stopwatch.StartNew();
             var tokens = await _oidc.CanjearAsync(code, verificador, ct).ConfigureAwait(false);
             var canje = reloj.ElapsedMilliseconds;
-            var (sub, usuario) = FlujoOidc.LeerIdentidad(tokens.IdToken ?? throw ExcepcionDeAutenticacion.Fallida("El emisor no devolvió id_token."));
-
-            // Corrector E03 — El cambio de identidad va bajo el cerrojo del envío: una fila elegida con otro dueño no
-            // puede salir con estos tokens.
-            await _renovacion.WaitAsync(ct).ConfigureAwait(false);
-            try
-            {
-                // Un ingreso nuevo deja el refresh viejo sin uso: el desbloqueo se vuelve a ofrecer (se sella el nuevo).
-                if (_desbloqueoActivado) await QuitarDesbloqueoAsync().ConfigureAwait(false);
-                _sub = sub;
-                _dueno = PropiedadDelOutbox.DuenoOidc(sub);
-                _usuario = usuario;
-                _accessRenovadoPor401 = null;
-                await _db.EscribirConfiguracionAsync(ClaveSub, sub, ct).ConfigureAwait(false);
-                await _db.EscribirConfiguracionAsync(ClaveDueno, _dueno, ct).ConfigureAwait(false);
-                await _db.EscribirConfiguracionAsync(ClaveUsuario, usuario ?? "", ct).ConfigureAwait(false);
-                Guardar(tokens);
-            }
-            finally
-            {
-                _renovacion.Release();
-            }
-            Bitacora.Log($"sesión: ingresó {usuario} ({_dueno}); canje {canje} ms, escrituras {reloj.ElapsedMilliseconds - canje} ms");
-            Transicionar(EventoDeSesion.IngresoExitoso, null);
+            await AdoptarIdentidadAsync(tokens, reloj, canje, ct).ConfigureAwait(false);
             return Actual;
         }
         catch (ExcepcionDeAutenticacion)
@@ -307,6 +289,122 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
             Transicionar(EventoDeSesion.IngresoFallido, MotivoDe(antes), antes);
             throw ExcepcionDeAutenticacion.Fallida("No se pudo completar el ingreso: " + ex.Message, ex);
         }
+    }
+
+    // --- auth.signInWithPassword: login tradicional (first-party) ---------------------------------------------
+
+    /// <summary>
+    /// Login tradicional (2026-10-30): el formulario propio del contenido manda usuario y clave por el puente y el
+    /// cascarón los canjea en el token endpoint del emisor (FlujoOidc.CuerpoDelIngresoConClave: ROPC sólo porque el
+    /// emisor de ensayo no trae First-Party Apps). Después, lo mismo que el flujo del navegador: tokens en memoria,
+    /// dueño, IngresoExitoso.
+    ///
+    /// La clave no se registra (ni en Bitacora ni en mensajes de excepción) ni se guarda en campos: vive en el
+    /// parámetro hasta que termina el POST. Los string de .NET no se pueden borrar; lo que sí se garantiza es que
+    /// ninguna referencia sobreviva a esta llamada.
+    /// </summary>
+    public async Task<SesionInformada> IngresarConClaveAsync(string usuario, string clave, CancellationToken ct)
+    {
+        if (_oidc is null) throw ExcepcionDeAutenticacion.Fallida("Esta app no usa cuenta.");
+        if (_modoDeIngreso != ModoDeIngreso.Formulario) throw ExcepcionDeAutenticacion.Fallida("Este cascarón ingresa por el navegador.");
+        if (_estado is not (EstadoDeSesion.SinCuenta or EstadoDeSesion.Vencida or EstadoDeSesion.Revocada)) return Actual;
+        if (string.IsNullOrWhiteSpace(usuario) || string.IsNullOrEmpty(clave))
+            throw ExcepcionDeAutenticacion.Fallida("Escribí tu usuario y tu clave.");
+        // Freno local a la prueba de claves (un contenido comprometido llega por OTA): tras cada invalid_grant la
+        // espera crece 2 s por intento fallido, hasta 30 s. El freno del emisor es bruteForceProtected del realm.
+        if (_proximoIntentoConClave is { } proximo && proximo > DateTimeOffset.UtcNow)
+            throw ExcepcionDeAutenticacion.Fallida("Esperá unos segundos antes de volver a intentar.");
+
+        var antes = _estado;
+        Transicionar(EventoDeSesion.IngresoIniciado, "Ingresando…");
+        try
+        {
+            Bitacora.Log("sesión: ingreso con usuario y clave (first-party)");
+            var reloj = Stopwatch.StartNew();
+            var tokens = await _oidc.IngresarConClaveAsync(usuario.Trim(), clave, ct).ConfigureAwait(false);
+            var canje = reloj.ElapsedMilliseconds;
+            await AdoptarIdentidadAsync(tokens, reloj, canje, ct).ConfigureAwait(false);
+            _intentosFallidosConClave = 0;
+            _proximoIntentoConClave = null;
+            return Actual;
+        }
+        catch (ErrorDelEmisorException ex)
+        {
+            // RFC 6749 §5.2: invalid_grant = usuario o clave mal; otro código (unauthorized_client: el cliente no tiene
+            // Direct Access Grant en el realm) es de configuración. El mensaje del emisor no lleva la clave.
+            Bitacora.Log($"sesión: el emisor rechazó el ingreso con clave ({(ex.EsInvalidGrant ? "invalid_grant" : "otro código")})");
+            if (ex.EsInvalidGrant)
+            {
+                _intentosFallidosConClave++;
+                _proximoIntentoConClave = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(Math.Min(2 * _intentosFallidosConClave, 30));
+            }
+            Transicionar(EventoDeSesion.IngresoFallido, MotivoDe(antes), antes);
+            // Sin «ex» como causa: su mensaje es el error_description de un emisor ajeno y no debe llegar a ningún log.
+            throw ExcepcionDeAutenticacion.Fallida(ex.EsInvalidGrant
+                ? ParametrosDeSesion.MotivoClaveIncorrecta
+                : "El emisor no permite el ingreso con clave para esta app.");
+        }
+        catch (ExcepcionDeAutenticacion)
+        {
+            Transicionar(EventoDeSesion.IngresoFallido, MotivoDe(antes), antes);
+            throw;
+        }
+        catch (Exception ex) when (FallasDelEmisor.EsFalla(ex, ct))
+        {
+            Bitacora.Error("sesión: ingreso con clave", ex);
+            Transicionar(EventoDeSesion.IngresoFallido, MotivoDe(antes), antes);
+            throw ExcepcionDeAutenticacion.Fallida("No se pudo completar el ingreso: " + ex.Message, ex);
+        }
+    }
+
+    /// <summary>
+    /// Lo común a los dos ingresos (navegador y formulario) después del canje: identidad del id_token, dueño de las
+    /// filas, escrituras de configuración, tokens en memoria e IngresoExitoso.
+    /// </summary>
+    private async Task AdoptarIdentidadAsync(RespuestaDeTokens tokens, Stopwatch reloj, long canje, CancellationToken ct)
+    {
+        var idToken = tokens.IdToken ?? throw ExcepcionDeAutenticacion.Fallida("El emisor no devolvió id_token.");
+        FlujoOidc.ValidarIdToken(idToken, (await _oidc!.DescubrirAsync(ct).ConfigureAwait(false)).Issuer, _oidc.Configuracion.ClienteId, DateTimeOffset.UtcNow);
+        var (sub, usuario) = FlujoOidc.LeerIdentidad(idToken);
+
+        // Corrector E03 — El cambio de identidad va bajo el cerrojo del envío: una fila elegida con otro dueño no
+        // puede salir con estos tokens.
+        await _renovacion.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            // Un ingreso nuevo deja el refresh viejo sin uso: el desbloqueo se vuelve a ofrecer (se sella el nuevo).
+            if (_desbloqueoActivado) await QuitarDesbloqueoAsync().ConfigureAwait(false);
+            _sub = sub;
+            _dueno = PropiedadDelOutbox.DuenoOidc(sub);
+            _usuario = usuario;
+            _accessRenovadoPor401 = null;
+            await _db.EscribirConfiguracionAsync(ClaveSub, sub, ct).ConfigureAwait(false);
+            await _db.EscribirConfiguracionAsync(ClaveDueno, _dueno, ct).ConfigureAwait(false);
+            await _db.EscribirConfiguracionAsync(ClaveUsuario, usuario ?? "", ct).ConfigureAwait(false);
+            Guardar(tokens);
+        }
+        finally
+        {
+            _renovacion.Release();
+        }
+        Bitacora.Log($"sesión: ingresó {usuario} ({_dueno}); canje {canje} ms, escrituras {reloj.ElapsedMilliseconds - canje} ms");
+        Transicionar(EventoDeSesion.IngresoExitoso, null);
+    }
+
+    // --- auth.lock: el botón «Bloquear» ------------------------------------------------------------------------
+
+    /// <summary>
+    /// Bloquea ya, igual que <see cref="AlVolverAlFrente"/> pasado el umbral: Activa → Bloqueada (ver <see cref="Bloquear"/>).
+    /// Es un bloqueo de la app, no del refresh: ver la nota de Bloquear y la §3.7 del diseño.
+    /// </summary>
+    public Task<SesionInformada> BloquearAsync(CancellationToken ct)
+    {
+        if (!ModoOidc) throw ExcepcionDeAutenticacion.Fallida("Esta app no usa cuenta.");
+        if (_estado != EstadoDeSesion.Activa) return Task.FromResult(Actual);   // Bloqueada: idempotente
+        if (!_desbloqueoActivado) throw ExcepcionDeAutenticacion.Fallida("Activá la seguridad del teléfono para poder bloquear la app.");
+        Bitacora.Log("sesión: bloqueada por la persona");
+        Bloquear();
+        return Task.FromResult(Actual);
     }
 
     // --- auth.enableUnlock / auth.unlock: la seguridad del teléfono ------------------------------------------
@@ -440,12 +538,24 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
                 ParametrosDeSesion.BloqueoTrasSegundoPlano))
         {
             Bitacora.Log("sesión: bloqueada al volver de segundo plano");
-            Transicionar(EventoDeSesion.Bloquear, "Desbloqueá con la seguridad del teléfono.");
+            Bloquear();
         }
         _pasoASegundoPlano = null;
     }
 
     // --- Auxiliares --------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Activa → Bloqueada. Se suelta el access de memoria (el desbloqueo renueva) y, mientras dure, la guardia del
+    /// despachador rechaza los datos (-32005) y la renovación no corre (sólo en Activa). El refresh de memoria NO se
+    /// suelta: con rotación de refresh el sellado puede ser más viejo que el de memoria, y re-sellarlo acá pediría el
+    /// diálogo del sistema. Por eso es un bloqueo de la app, no una protección del refresh (§3.7).
+    /// </summary>
+    private void Bloquear()
+    {
+        _access = null;
+        Transicionar(EventoDeSesion.Bloquear, "Desbloqueá con la seguridad del teléfono.");
+    }
 
     private void Guardar(RespuestaDeTokens tokens)
     {
@@ -487,6 +597,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
     private async Task<string?> LeerAsync(string clave) =>
         await _db.LeerConfiguracionAsync(clave) is { Length: > 0 } valor ? valor : null;
 
+
     private static string? MotivoDe(EstadoDeSesion estado) => estado switch
     {
         EstadoDeSesion.Vencida => "Tu sesión venció: ingresá para enviar lo pendiente.",
@@ -524,7 +635,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
         // El motivo del estado manda; sin él, por qué no se ofrece el desbloqueo (D-03 = T1). Corrector E03: en SinCuenta
         // sólo el del estado (por qué se pide la cuenta), así la pantalla de ingreso lo puede mostrar.
         var motivo = _estado == EstadoDeSesion.SinCuenta ? _motivo : _motivo ?? motivoDelDesbloqueo;
-        return new SesionInformada(ModoDeSesion.Oidc, _estado, usuario, desbloqueo, motivo);
+        return new SesionInformada(ModoDeSesion.Oidc, _estado, usuario, desbloqueo, motivo, _modoDeIngreso);
     }
 
     /// <summary>Cambia el estado informado, avisa a los suscriptores (guardia, sincronizador) y emite auth.changed.</summary>

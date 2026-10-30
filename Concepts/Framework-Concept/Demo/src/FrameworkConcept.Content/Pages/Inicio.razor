@@ -87,6 +87,15 @@
         // P12 — device.info es opcional: sólo se llama si el cascarón la trae.
         if (Sesion.Capacidad("device.info").Disponible) _dispositivo = await Puente.DeviceInfoAsync();
 
-        if (ContentInfo.ConNovedades) _cantidadDeLocalidades = (await Localidades.GetAllAsync()).Count;
+        // Login tradicional (D) — Defensa extra: la puerta ya no monta la página sin sesión, pero un auth.lock puede
+        // llegar a mitad de esta carga. Sin el conteo, la tarjeta de novedades muestra 0 y la página no se rompe.
+        try
+        {
+            if (ContentInfo.ConNovedades) _cantidadDeLocalidades = (await Localidades.GetAllAsync()).Count;
+        }
+        catch (BridgeException excepcion)
+        {
+            Console.WriteLine("inicio: no se pudo contar las localidades: " + excepcion.Message);
+        }
     }
 }

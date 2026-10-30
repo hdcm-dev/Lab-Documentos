@@ -11,17 +11,22 @@
   "ssoSessionIdleTimeout": 1800,
   "ssoSessionMaxLifespan": 36000,
   "revokeRefreshToken": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
   "clients": [
     {
       "clientId": "fc-demo-app",
       "name": "Cascarón de la demo (cliente público, PKCE)",
-      "description": "P4 del folio 035: OIDC authorization code + PKCE S256 en el navegador del sistema (RFC 8252). Sin secreto.",
+      "description": "P4 (folio 035): OIDC code + PKCE desde la app; Direct Access Grant sólo para el login tradicional del emisor de ENSAYO (ROPC; en producción, OAuth for First-Party Apps).",
       "enabled": true,
       "protocol": "openid-connect",
       "publicClient": true,
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": false,
+      "directAccessGrantsEnabled": true,
       "serviceAccountsEnabled": false,
       "frontchannelLogout": false,
       "redirectUris": [
@@ -57,7 +62,11 @@
       "firstName": "Encuestador",
       "lastName": "De Prueba",
       "credentials": [
-        { "type": "password", "value": "demo-encuestador", "temporary": false }
+        {
+          "type": "password",
+          "value": "demo-encuestador",
+          "temporary": false
+        }
       ]
     },
     {
@@ -68,7 +77,11 @@
       "firstName": "Supervisora",
       "lastName": "De Prueba",
       "credentials": [
-        { "type": "password", "value": "demo-supervisora", "temporary": false }
+        {
+          "type": "password",
+          "value": "demo-supervisora",
+          "temporary": false
+        }
       ]
     }
   ]

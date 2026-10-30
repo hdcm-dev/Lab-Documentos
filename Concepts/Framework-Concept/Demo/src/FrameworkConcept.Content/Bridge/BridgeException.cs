@@ -16,6 +16,9 @@ public sealed class BridgeException(string metodo, int code, string mensaje)
 
     public int Code { get; } = code;
 
+    /// <summary>El mensaje del cascarón, sin el método ni el código: es el texto para la persona.</summary>
+    public string Mensaje { get; } = mensaje;
+
     /// <summary>No hay cascarón: el contenido se abrió en un navegador común.</summary>
     public bool EsSinPuente { get; private init; }
 

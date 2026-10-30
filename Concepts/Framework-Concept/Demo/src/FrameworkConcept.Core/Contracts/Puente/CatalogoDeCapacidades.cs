@@ -44,7 +44,8 @@ public static class CatalogoDeCapacidades
         //   <queries> CustomTabsService: con API ≥ 30 el cascarón no ve el navegador de Custom Tabs sin declararlo
         //   (visibilidad de paquetes); WebAuthenticator abre el navegador del sistema (RFC 8252).
         //   NSFaceIDUsageDescription: rama iOS, diseño (P9, NO VERIFICADO).
-        new("auth.session", VersionSemantica.Parse("1.0.0"), ["android.permission.USE_BIOMETRIC"], ["NSFaceIDUsageDescription"],
+        // 1.1.0 (login tradicional, 2026-10-30): signInWithPassword, lock y modoDeIngreso. Menor de la entrada.
+        new("auth.session", VersionSemantica.Parse("1.1.0"), ["android.permission.USE_BIOMETRIC"], ["NSFaceIDUsageDescription"],
             ["android.support.customtabs.action.CustomTabsService"])
     ];
 

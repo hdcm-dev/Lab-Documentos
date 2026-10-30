@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "transporte": {
     "script": "_framework/hybridwebview.js",
     "rutaDeInvocacion": "POST /__hwvInvokeDotNet",
@@ -49,8 +49,43 @@
       "capacidad": "auth.session"
     },
     {
+      "nombre": "auth.lock",
+      "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
       "nombre": "auth.signIn",
       "parametros": [],
+      "respuesta": [
+        {
+          "nombre": "sesion",
+          "tipo": "SesionInformada",
+          "opcional": false
+        }
+      ],
+      "capacidad": "auth.session"
+    },
+    {
+      "nombre": "auth.signInWithPassword",
+      "parametros": [
+        {
+          "nombre": "usuario",
+          "tipo": "string",
+          "opcional": false
+        },
+        {
+          "nombre": "clave",
+          "tipo": "string",
+          "opcional": false
+        }
+      ],
       "respuesta": [
         {
           "nombre": "sesion",
@@ -423,7 +458,7 @@
   "catalogo": [
     {
       "id": "auth.session",
-      "version": "1.0.0"
+      "version": "1.1.0"
     },
     {
       "id": "device.info",

@@ -49,6 +49,7 @@ function comprobar(condicion, descripcion) {
 
 async function capturar(pagina, nombre, queMuestra, comprobado) {
     const archivo = path.join(SALIDA, `contenido-navegador-${nombre}.png`);
+    await pagina.waitForTimeout(250);   // que terminen las transiciones de borde (.15s) antes de capturar
     await pagina.screenshot({ path: archivo, fullPage: true });
     fs.writeFileSync(archivo.replace(/\.png$/, '.txt'), [
         queMuestra,
@@ -117,7 +118,7 @@ try {
         await p.waitForSelector('[data-testid=inicio-version-definicion]:has-text("v1")');
         const ok = comprobar(await texto(p, 'inicio-version-contenido') === '1.0.0', 'v1: Inicio muestra contenido 1.0.0')
             & comprobar((await texto(p, 'inicio-version-definicion')).includes('definición v1'), 'v1: Inicio muestra definición v1')
-            & comprobar(await texto(p, 'inicio-version-puente') === '1.1.0', 'v1: Inicio muestra puente 1.1.0')
+            & comprobar(await texto(p, 'inicio-version-puente') === '1.2.0', 'v1: Inicio muestra puente 1.2.0')
             & comprobar(!(await hay(p, 'novedades')), 'v1: sin tarjeta de novedades');
         await p.waitForFunction(() => window.puenteSimulado.listo() !== null);
         const listo = await sim(p, () => window.puenteSimulado.listo());
@@ -125,12 +126,12 @@ try {
         const llamadas = await sim(p, () => window.puenteSimulado.llamadas.map(s => s.method));
         comprobar(llamadas[0] === 'bridge.handshake', `el primer sobre es bridge.handshake (${llamadas.slice(0, 3).join(', ')})`);
         const sobre = await sim(p, () => window.puenteSimulado.llamadas[0]);
-        comprobar(sobre.jsonrpc === '2.0' && sobre.v === '1.1.0' && typeof sobre.id === 'string', 'sobre JSON-RPC 2.0 con v=1.1.0 e id');
+        comprobar(sobre.jsonrpc === '2.0' && sobre.v === '1.2.0' && typeof sobre.id === 'string', 'sobre JSON-RPC 2.0 con v=1.2.0 e id');
         comprobar(await hay(p, 'estado-red'), 'network.status presente → se muestra el estado de red');
         comprobar(p.csp.length === 0, `sin violaciones de CSP (${p.csp.length})`);
         comprobar(p.errores.length === 0, `sin errores de consola (${p.errores.join(' | ')})`);
         await capturar(p, '01-inicio-v1', 'Inicio del contenido v1 (1.0.0) con la definición v1: versiones de contenido, definición, puente y capacidades.',
-            `Comprobado: versiones 1.0.0 / v1 / 1.1.0, Listo(${listo}) recibido por el puente, sobre JSON-RPC 2.0 con v, CSP sin violaciones${ok ? '' : ' (hubo fallas, ver salida)'}.`);
+            `Comprobado: versiones 1.0.0 / v1 / 1.2.0, Listo(${listo}) recibido por el puente, sobre JSON-RPC 2.0 con v, CSP sin violaciones${ok ? '' : ' (hubo fallas, ver salida)'}.`);
         await p.context().close();
     }
 
@@ -427,7 +428,7 @@ try {
         await p.context().close();
 
         // S2. Oidc sin cuenta y sin conexión: «Ingresar» deshabilitado con motivo (sesion.ingresar es SoloEnLinea).
-        p = await abrirSesion('?reiniciar=1&definicion=1&sesion=oidc-sinCuenta&estado=sinRed');
+        p = await abrirSesion('?reiniciar=1&definicion=1&sesion=oidc-sinCuenta&estado=sinRed&ingreso=navegador');
         await p.waitForSelector('[data-testid=puerta][data-estado=sinCuenta]');
         comprobar(await p.locator('[data-testid=puerta-ingresar]').isDisabled(), 'Sesión: sin cuenta y sin red «Ingresar» está deshabilitado');
         comprobar((await texto(p, 'motivo-sesion.ingresar')).includes('Sin conexión'), 'Sesión: «Ingresar» dice por qué (Sin conexión)');
@@ -498,11 +499,76 @@ try {
         await p.context().close();
 
         // S7. Ingreso cancelado (la persona cierra el navegador): sigue sin cuenta y dice por qué.
-        p = await abrirSesion('?reiniciar=1&definicion=1&sesion=oidc-sinCuenta&estado=enLinea&sesionFalla=cancelar');
+        p = await abrirSesion('?reiniciar=1&definicion=1&sesion=oidc-sinCuenta&estado=enLinea&sesionFalla=cancelar&ingreso=navegador');
         await p.waitForSelector('[data-testid=puerta-ingresar]:not([disabled])');
         await p.click('[data-testid=puerta-ingresar]');
         await p.waitForSelector('[data-testid=sesion-error]');
         comprobar((await texto(p, 'sesion-error')).includes('Cerraste el navegador'), 'Sesión: ingreso cancelado (-32006) se explica y sigue sin cuenta');
+        await p.context().close();
+
+        // S8. Login tradicional (puente 1.2): formulario propio, clave incorrecta, ingreso, «Bloquear» y desbloqueo.
+        p = await abrirSesion('?reiniciar=1&definicion=1&sesion=oidc-sinCuenta&estado=sinRed&ingreso=formulario');
+        await p.waitForSelector('[data-testid=puerta-usuario]');
+        comprobar(await hay(p, 'puerta-clave') && !(await hay(p, 'inicio-version-puente')), 'Login tradicional: formulario visible y la página sin montar');
+        comprobar(await hay(p, 'puerta-tarjeta') && await hay(p, 'puerta-emblema'), 'Login tradicional: tarjeta con emblema');
+        await capturar(p, '26a-login-vacio', 'Login tradicional rediseñado: tarjeta, campos con ícono, ojito y «Ingresar» (sin red: deshabilitado con su motivo).',
+            'Comprobado: puerta-tarjeta, puerta-emblema, puerta-usuario, puerta-clave.');
+        await p.fill('[data-testid=puerta-usuario]', 'encuestador');
+        await p.fill('[data-testid=puerta-clave]', 'mal');
+        comprobar(await p.locator('[data-testid=puerta-ingresar]').isDisabled(), 'Login tradicional: sin red «Ingresar» está deshabilitado');
+        comprobar(await p.getAttribute('[data-testid=puerta-clave]', 'type') === 'password', 'Login tradicional: la clave va oculta');
+        await p.click('[data-testid=puerta-mostrar-clave]');
+        comprobar(await p.getAttribute('[data-testid=puerta-clave]', 'type') === 'text', 'Login tradicional: «Mostrar» deja ver la clave');
+        comprobar(await p.getAttribute('[data-testid=puerta-mostrar-clave]', 'aria-pressed') === 'true'
+            && await p.getAttribute('[data-testid=puerta-icono-ojo]', 'data-estado') === 'visible'
+            && (await texto(p, 'puerta-clave-visible')).includes('visible'), 'Login tradicional: el ojito alterna aria-pressed, ícono y aviso');
+        await capturar(p, '26b-login-ojito', 'Login tradicional: ojito activo, la clave se ve en monoespaciada.',
+            'Comprobado: aria-pressed=true, puerta-icono-ojo data-estado=visible, puerta-clave-visible.');
+        await sim(p, () => window.puenteSimulado.cambiarEstadoDeRed('enLinea'));
+        await p.waitForSelector('[data-testid=puerta-ingresar]:not([disabled])');
+        await p.fill('[data-testid=puerta-usuario]', '');
+        await p.fill('[data-testid=puerta-clave]', '');
+        const llamadasAntes = await sim(p, () => window.puenteSimulado.llamadas.length);
+        await p.click('[data-testid=puerta-ingresar]');
+        await p.waitForSelector('[data-testid=puerta-usuario-error]');
+        comprobar(await hay(p, 'puerta-clave-error') && !(await hay(p, 'sesion-error'))
+            && await sim(p, () => window.puenteSimulado.llamadas.length) === llamadasAntes
+            && await p.evaluate(() => document.activeElement?.id) === 'puerta-usuario',
+            'Login tradicional: vacío muestra el error junto al campo, enfoca el usuario y no llama a la sesión');
+        await capturar(p, '26c-login-campos-vacios', 'Login tradicional: enviar vacío marca los dos campos y dice qué falta.',
+            'Comprobado: puerta-usuario-error, puerta-clave-error, foco en el usuario, sin llamadas al puente.');
+        await p.fill('[data-testid=puerta-usuario]', 'encuestador');
+        await p.fill('[data-testid=puerta-clave]', 'mal');
+        await p.click('[data-testid=puerta-ingresar]');
+        await p.waitForSelector('[data-testid=sesion-error]');
+        comprobar(await p.getAttribute('[data-testid=sesion-error]', 'role') === 'alert' && await p.inputValue('[data-testid=puerta-usuario]') === 'encuestador'
+            && await p.evaluate(() => document.activeElement?.id) === 'puerta-clave', 'Login tradicional: el error tiene role=alert, conserva el usuario y enfoca la clave');
+        await capturar(p, '26d-login-error', 'Login tradicional: credenciales rechazadas, banda de error y la clave vacía con foco.',
+            'Comprobado: sesion-error role=alert, usuario conservado, foco en puerta-clave.');
+        comprobar((await texto(p, 'sesion-error')).includes('incorrectos') && await p.inputValue('[data-testid=puerta-clave]') === '',
+            'Login tradicional: clave incorrecta se explica y el campo de la clave queda vacío');
+        await p.fill('[data-testid=puerta-clave]', 'demo-encuestador');
+        await capturar(p, '26-login-tradicional', 'Login tradicional: formulario propio de la app (usuario y clave), sin navegador.',
+            'Comprobado: puerta-usuario, puerta-clave (oculta/mostrar), «Ingresar» deshabilitado sin red, error legible con clave incorrecta.');
+        await p.click('[data-testid=puerta-ingresar]');
+        if (await hay(p, 'puerta-spinner')) await capturar(p, '26e-login-ingresando', 'Login tradicional: ingresando, el formulario queda y el botón muestra el spinner.',
+            'Captura oportunista inmediatamente después del clic (el puente simulado responde enseguida).');
+        await p.waitForSelector('[data-testid=sesion-usuario]');
+        comprobar(!(await hay(p, 'sesion-bloquear')), 'Login tradicional: sin desbloqueo activado no hay «Bloquear»');
+        await p.click('[data-testid=sesion-activar-desbloqueo]');
+        await p.waitForSelector('[data-testid=sesion-bloquear]');
+        await capturar(p, '27-login-tradicional-activa', 'Sesión activa con «Bloquear» junto a «Cerrar sesión».',
+            'Comprobado: auth.signInWithPassword simulado, desbloqueo activado, sesion-bloquear visible.');
+        await p.click('[data-testid=sesion-bloquear]');
+        await p.waitForSelector('[data-testid=puerta][data-estado=bloqueada]');
+        comprobar(true, 'Login tradicional: «Bloquear» llama auth.lock y la puerta pasa a bloqueada');
+        await capturar(p, '28-login-tradicional-bloqueada', 'Login tradicional bloqueado: tarjeta con candado, leyenda de la seguridad del teléfono y «Desbloquear».',
+            'Comprobado: puerta data-estado=bloqueada, puerta-desbloquear.');
+        await p.click('[data-testid=puerta-desbloquear]');
+        await p.waitForSelector('[data-testid=sesion-usuario]');
+        comprobar(!JSON.stringify(await sim(p, () => window.puenteSimulado.sesion())).includes('demo-encuestador'),
+            'Login tradicional: la clave no vuelve en la sesión informada');
+        comprobar(p.errores.length === 0, `Login tradicional: sin errores de consola (${p.errores.join(' | ')})`);
         await p.context().close();
     } catch (e) {
         fallas.push('excepción (sesión): ' + e.message);

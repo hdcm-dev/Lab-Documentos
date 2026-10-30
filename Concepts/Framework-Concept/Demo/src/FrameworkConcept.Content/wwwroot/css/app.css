@@ -213,3 +213,103 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
 /* Vencida o revocada: se sigue trabajando; la banda dice qué hacer para enviar lo pendiente. */
 .fc-banda--aviso { background: var(--color-aviso-fondo); color: var(--color-aviso); }
 .fc-acciones--inicio { justify-content: flex-start; }
+
+/* --- Login rediseñado (jurado UX «institucional sobrio»): tarjeta, campos con ícono, ojito, botón bloque ---- */
+:root {
+    --color-borde-fuerte: #767670;   /* ≈4,5:1 sobre blanco (1.4.11) */
+    --radio-tarjeta: 12px; --alto-control: 48px; --e-6: 32px;
+}
+.fc-puerta:has(> .fc-puerta__tarjeta) { align-items: stretch; background: var(--color-fondo-3); padding: var(--e-5) 0 var(--e-6); }
+.fc-puerta__tarjeta {
+    width: 100%; max-width: 420px; margin: 0 auto; box-sizing: border-box;
+    padding: var(--e-5) var(--e-4); border: 1px solid var(--color-borde); border-radius: var(--radio-tarjeta);
+    background: var(--color-fondo); box-shadow: 0 1px 2px rgba(4,52,44,.06), 0 4px 16px rgba(4,52,44,.06);
+    display: flex; flex-direction: column; gap: var(--e-4);
+}
+.fc-puerta__encabezado { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--e-1); }
+.fc-puerta__emblema {
+    width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--color-marca-tinte); color: var(--color-marca); margin-bottom: var(--e-2);
+}
+.fc-puerta__emblema svg { width: 28px; height: 28px; }
+.fc-puerta .fc-puerta__app { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .02em; color: var(--color-texto-2); }
+.fc-puerta__tarjeta .fc-puerta__titulo { margin: 0; font-size: 22px; line-height: 1.25; font-weight: 600; color: var(--color-texto); }
+.fc-puerta .fc-puerta__subtitulo { margin: 0; font-size: 14px; color: var(--color-texto-2); }
+.fc-puerta .fc-puerta__leyenda {
+    display: flex; gap: var(--e-3); align-items: flex-start; margin: 0; padding: var(--e-3);
+    background: var(--color-marca-tinte); color: var(--color-marca-oscuro); border-radius: var(--radio); font-size: 14px;
+}
+.fc-puerta__leyenda-icono { flex: none; width: 22px; height: 22px; color: var(--color-marca); }
+.fc-puerta__leyenda-icono svg { width: 22px; height: 22px; }
+
+.fc-puerta__formulario { display: flex; flex-direction: column; gap: var(--e-4); width: 100%; }
+.fc-puerta__formulario .fc-campo { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.fc-puerta__formulario .fc-campo__etiqueta { font-size: 14px; font-weight: 600; color: var(--color-texto); }
+.fc-campo__envoltura { position: relative; display: flex; align-items: center; }
+.fc-campo__icono { position: absolute; left: 12px; width: 20px; height: 20px; display: grid; place-items: center; color: var(--color-texto-2); pointer-events: none; }
+.fc-campo__icono svg { width: 20px; height: 20px; }
+.fc-puerta__formulario .fc-input {
+    width: 100%; min-height: var(--alto-control); box-sizing: border-box;
+    padding: 12px 14px; font: 16px/1.4 var(--fuente); color: var(--color-texto); background: var(--color-fondo);
+    border: 1px solid var(--color-borde-fuerte); border-radius: var(--radio); transition: border-color .15s, box-shadow .15s;
+}
+.fc-puerta__formulario .fc-input--con-icono { padding-left: 44px; }
+.fc-puerta__formulario .fc-input--con-accion { padding-right: 52px; }
+.fc-puerta__formulario .fc-input[type="text"].fc-input--con-accion { font-family: var(--fuente-mono); }
+.fc-puerta__formulario .fc-input:hover { border-color: var(--color-texto-2); }
+.fc-puerta__formulario .fc-input:focus { outline: none; border-color: var(--color-marca); box-shadow: 0 0 0 1px var(--color-marca); }
+.fc-puerta__formulario .fc-input:focus-visible { box-shadow: 0 0 0 1px var(--color-marca), 0 0 0 4px rgba(15,110,86,.25); }
+.fc-puerta__formulario .fc-input[readonly] { background: var(--color-fondo-3); }
+.fc-puerta__formulario .fc-campo--error .fc-input { border-color: var(--color-error); box-shadow: 0 0 0 1px var(--color-error); }
+.fc-puerta__formulario .fc-campo--error .fc-campo__icono { color: var(--color-error); }
+.fc-puerta__formulario .fc-campo__mensaje { margin: 0; font-size: 14px; font-weight: 400; color: var(--color-error); }
+
+.fc-campo__ojo {
+    position: absolute; right: 0; top: 0; width: 48px; height: 48px; display: grid; place-items: center; padding: 0;
+    background: transparent; border: 0; border-radius: 0 var(--radio) var(--radio) 0; color: var(--color-texto-2); cursor: pointer;
+}
+.fc-campo__ojo-icono { display: grid; }
+.fc-campo__ojo svg { width: 22px; height: 22px; }
+.fc-campo__ojo:hover { color: var(--color-texto); }
+.fc-campo__ojo[aria-pressed="true"] { color: var(--color-marca); }
+.fc-campo__ojo:focus-visible { outline: 2px solid var(--color-marca); outline-offset: -4px; border-radius: var(--radio); }
+
+.fc-puerta__formulario .fc-accion, .fc-puerta__tarjeta > .fc-accion { display: flex; align-items: stretch; width: 100%; }
+.fc-boton--bloque {
+    width: 100%; min-height: var(--alto-control); display: inline-flex; align-items: center; justify-content: center;
+    gap: var(--e-2); font: 600 16px/1 var(--fuente); border-radius: var(--radio); margin-top: var(--e-1);
+}
+.fc-boton--bloque:hover:not(:disabled) { background: #0B5A46; }
+.fc-boton--bloque:active { background: var(--color-marca-oscuro); }
+.fc-boton--bloque[aria-busy="true"] { opacity: 1; background: var(--color-marca-oscuro); border-color: var(--color-marca-oscuro); color: #fff; cursor: progress; }
+.fc-boton:focus-visible { outline: 2px solid var(--color-marca); outline-offset: 2px; }
+.fc-boton__icono { display: inline-grid; }
+.fc-boton__icono svg { width: 18px; height: 18px; }
+
+.fc-spinner { display: inline-grid; }
+.fc-spinner svg { width: 18px; height: 18px; animation: fc-giro .8s linear infinite; }
+.fc-spinner--marca { color: var(--color-marca); margin-top: var(--e-3); }
+.fc-spinner--marca svg { width: 28px; height: 28px; }
+@keyframes fc-giro { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .fc-spinner svg { animation-duration: 2.4s; } .fc-puerta__formulario .fc-input { transition: none; } }
+@media (forced-colors: active) { .fc-puerta__formulario .fc-input:focus { outline: 2px solid Highlight; outline-offset: 1px; } .fc-campo__ojo, .fc-boton--bloque, .fc-sesion .fc-boton--fila { border: 1px solid ButtonText; } }
+
+.fc-puerta__alerta { flex-direction: row; display: flex; gap: var(--e-2); align-items: flex-start; font-size: 14px; margin: 0;
+    padding: var(--e-3); border-radius: var(--radio); border-left: 4px solid currentColor; }
+.fc-puerta__alerta svg { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+.fc-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+
+/* Barra de sesión activa: usuario a la izquierda, acciones de 44px con ícono. */
+.fc-sesion { justify-content: space-between; padding: var(--e-2) var(--e-3); background: var(--color-fondo);
+    border: 1px solid var(--color-borde); border-radius: var(--radio-tarjeta); }
+.fc-sesion__quien { display: inline-flex; align-items: center; gap: var(--e-2); min-width: 0; flex: 1 1 100%; }
+.fc-sesion__avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; flex: none;
+    background: var(--color-marca-tinte); color: var(--color-marca); }
+.fc-sesion__avatar svg { width: 18px; height: 18px; }
+.fc-sesion__etiqueta { color: var(--color-texto-2); }
+.fc-sesion__usuario { color: var(--color-texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fc-sesion .fc-boton--fila { min-height: 44px; display: inline-flex; align-items: center; gap: 6px;
+    padding: 0 var(--e-3); font-size: 14px; border: 1px solid var(--color-borde-fuerte); }
+.fc-sesion .fc-boton--fila:hover:not(:disabled) { background: var(--color-marca-tinte); }
+.fc-sesion .fc-boton--peligro { border-color: var(--color-error); color: var(--color-error); }
+.fc-banda.fc-banda--aviso .fc-puerta__formulario { margin-top: var(--e-2); }

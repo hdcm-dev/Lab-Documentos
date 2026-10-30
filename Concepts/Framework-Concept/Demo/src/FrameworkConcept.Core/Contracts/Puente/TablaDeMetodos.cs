@@ -2,7 +2,7 @@ namespace FrameworkConcept.Core.Contracts.Puente;
 
 /// <summary>
 /// La tabla de métodos del puente, versión 1 del contrato (1.1: red combinada, política de acciones y sesión,
-/// folio 038; ver DISENO-RED-Y-AUTENTICACION.md §6).
+/// folio 038; 1.2: login tradicional, auth.signInWithPassword y auth.lock; ver DISENO-RED-Y-AUTENTICACION.md §6).
 ///
 /// P3 — Clasificación de un cambio (hueco de VPI §2.6 para este objeto):
 ///   método nuevo, entrada nueva del catálogo, campo opcional nuevo en una respuesta → MENOR;
@@ -102,6 +102,21 @@ public static class TablaDeMetodos
 
         new("auth.signIn",
             "Primer ingreso o reingreso: OIDC code + PKCE en el navegador del sistema (RFC 8252). Acción sesion.ingresar (SoloEnLinea). Espera a que el navegador vuelva.",
+            [],
+            [C("sesion", "SesionInformada")],
+            Capacidad: "auth.session"),
+
+        // Puente 1.2 (login tradicional, 2026-10-30): método NUEVO y no un parámetro opcional de auth.signIn, porque
+        // un parámetro nuevo cambia la forma del sobre (MAYOR, ClasificadorDeCambios) y la credencial cruza una sola
+        // vez y por un método propio. auth.signIn sigue siendo el modo Navegador.
+        new("auth.signInWithPassword",
+            "Ingreso first-party: el cascarón canjea usuario y clave en el emisor y los descarta. Nunca se registran ni se guardan. Acción sesion.ingresar (SoloEnLinea).",
+            [C("usuario", "string"), C("clave", "string")],
+            [C("sesion", "SesionInformada")],
+            Capacidad: "auth.session"),
+
+        new("auth.lock",
+            "Bloquea ya, igual que al volver de segundo plano. Exige el desbloqueo activado. Puente 1.2.",
             [],
             [C("sesion", "SesionInformada")],
             Capacidad: "auth.session"),

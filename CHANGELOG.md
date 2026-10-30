@@ -2,6 +2,21 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-30 (Framework Concept: login tradicional y botón «Bloquear»)
+
+### Concepts/Framework-Concept/Demo — pedido del PO
+
+#### Agregado
+
+- **Login tradicional, puente 1.2.0** (`TablaDeMetodos`, `contrato.json`, `versionado/puente.json`, `auth.session` 1.1.0): la app arranca con su precarga y muestra un formulario propio de usuario y clave, sin navegador. Usa un método nuevo, `auth.signInWithPassword`. La credencial cruza una sola vez y el cascarón la canjea en el emisor y la descarta (`SesionDelUsuario`, `ClienteDelEmisor`, `FlujoOidc.CuerpoDelIngresoConClave`). Es ROPC solo porque Keycloak no trae el endpoint del borrador IETF «OAuth 2.0 for First-Party Applications». `-p:FcModoDeIngreso=Formulario|Navegador` (por defecto `Formulario`) llega al contenido como `SesionInformada.modoDeIngreso`.
+- **Revisión del login tradicional:** el id_token se valida (`iss`, `aud`/`azp`, `exp`) en los dos ingresos (`FlujoOidc.ValidarIdToken`); espera creciente tras cada `invalid_grant` y `bruteForceProtected` en el realm de ensayo; el `error_description` del emisor no llega al log; «Bloquear» suelta el access y sólo aparece con `auth.session` ≥ 1.1.0 (`SesionDelContenido.PuedeBloquear`); `auth.signIn` informa siempre «Completá el ingreso en el navegador…». La §3.7 aclara que es un bloqueo de la app y que `FcPantallasDeSesion=Cascaron` ingresa por navegador.
+- **`auth.lock` y el botón «Bloquear»** (`PuertaDeSesion.razor`): con la sesión activa y el desbloqueo activado, bloquea la app enseguida. Al desbloquear se abre el diálogo del sistema (en el g42, el patrón).
+- **Realm de ensayo** (`infra/keycloak/realm-fc-demo.json`): `directAccessGrantsEnabled` en `fc-demo-app`, solo para el emisor de ensayo. Un Keycloak ya levantado hay que reimportarlo.
+
+#### Corregido
+
+- **Las páginas tocaban datos antes de la sesión** (`PuertaDeSesion.razor`, `SesionDelContenido.cs`, `Inicio.razor`, `Localidades.razor`): mientras `auth.status` estaba en vuelo, la puerta dejaba pasar la página e `Inicio` llegaba a `documents.put` (-32005 «Ingresá con tu cuenta»). Ahora la página se monta solo cuando la sesión ya se conoce y está abierta (o en modo Dispositivo).
+
 ## 2026-10-30 (Framework Concept: el login es una página del contenido)
 
 ### Concepts/Framework-Concept/Demo — decisión del PO

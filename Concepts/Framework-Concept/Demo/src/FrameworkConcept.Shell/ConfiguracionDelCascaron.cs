@@ -5,7 +5,7 @@ namespace FrameworkConcept.Shell;
 
 /// <summary>
 /// La configuración del cascarón, fijada al compilar (propiedades -p:FcCanal, -p:FcCanalUrl, -p:FcReceptorUrl,
-/// -p:FcKeyId, -p:FcOidcAutoridad y -p:FcOidcClienteId del .csproj). Así la misma fuente apunta a un túnel de prueba o a un servidor propio sin editar código.
+/// -p:FcKeyId, -p:FcOidcAutoridad, -p:FcOidcClienteId y -p:FcPantallasDeSesion del .csproj). Así la misma fuente apunta a un túnel de prueba o a un servidor propio sin editar código.
 /// </summary>
 public sealed class ConfiguracionDelCascaron
 {
@@ -15,6 +15,7 @@ public sealed class ConfiguracionDelCascaron
         CanalUrl = new Uri(Leer("FcCanalUrl", "https://canal.invalid").TrimEnd('/') + "/");
         ReceptorUrl = new Uri(Leer("FcReceptorUrl", CanalUrl.ToString()).TrimEnd('/') + "/");
         KeyId = Leer("FcKeyId", "demo-2026");
+        PantallasDeSesionEnElCascaron = string.Equals(Leer("FcPantallasDeSesion", "Contenido"), "Cascaron", StringComparison.OrdinalIgnoreCase);
 
         // Folio 038, P4 — Emisor OIDC. Vacío = modo Dispositivo (la sesión por dispositivo del caso base).
         var autoridad = Leer("FcOidcAutoridad", "");
@@ -38,6 +39,13 @@ public sealed class ConfiguracionDelCascaron
 
     /// <summary>Adonde el outbox envía las respuestas (en la demo, el receptor didáctico).</summary>
     public Uri ReceptorUrl { get; }
+
+    /// <summary>
+    /// Quién muestra el ingreso y el desbloqueo (-p:FcPantallasDeSesion). Por defecto, el contenido: su puerta de sesión
+    /// (Content/Auth/PuertaDeSesion.razor) es la cara del login y se actualiza sin tienda; el canje, los tokens y el
+    /// diálogo del sistema siguen en el cascarón (auth.session). true = las pantallas XAML del cascarón la tapan.
+    /// </summary>
+    public bool PantallasDeSesionEnElCascaron { get; }
 
     /// <summary>keyId de la clave pública embebida (claves/publica-demo.pem).</summary>
     public string KeyId { get; }

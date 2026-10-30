@@ -295,6 +295,13 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 
 ### 3.7 Contenido: la puerta de la sesión **[P4, 038]**
 
+> **2026-10-30 — La cara del login es del contenido** (decisión del PO). Por defecto (`-p:FcPantallasDeSesion=Contenido`),
+> el cascarón ya no tapa esta puerta con `IngresoPage` y `DesbloqueoPage`: la puerta del contenido es la pantalla de
+> ingreso y de desbloqueo, y se actualiza sin tienda. El canje PKCE, los tokens (Keystore) y el diálogo del sistema
+> (huella, PIN o patrón) siguen en el cascarón por `auth.session`; el contenido nunca ve credenciales ni tokens. El
+> ingreso abre una Custom Tab (WebAuthenticator), como pide RFC 8252. `-p:FcPantallasDeSesion=Cascaron` vuelve a las
+> pantallas XAML.
+
 `Content/Auth/PuertaDeSesion.razor` envuelve `@Body` en `MainLayout` (ya montada; hoy deja pasar):
 
 | Sesión | Qué muestra |

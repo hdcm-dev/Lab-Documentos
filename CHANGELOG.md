@@ -2,6 +2,14 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-30 (Framework Concept: el login es una página del contenido)
+
+### Concepts/Framework-Concept/Demo — decisión del PO
+
+#### Cambiado
+
+- **La cara del ingreso y del desbloqueo pasa al contenido dinámico** (`Shell/Auth/PresentadorDeSesion.cs`, `ConfiguracionDelCascaron.cs`, `FrameworkConcept.Shell.csproj`, `DISENO-RED-Y-AUTENTICACION.md`): la puerta de sesión del contenido (`Content/Auth/PuertaDeSesion.razor`) ya no queda tapada por las pantallas XAML del cascarón y se actualiza sin tienda. El canje, los tokens y el diálogo del sistema siguen en el cascarón (`auth.session`). Nueva propiedad `-p:FcPantallasDeSesion=Contenido|Cascaron` (por defecto `Contenido`). Verificado en el moto g42.
+
 ## 2026-10-29 (Framework Concept: TPR del g42 medido por el cascarón)
 
 ### Concepts/Framework-Concept/ — expediente 0001, folio 049

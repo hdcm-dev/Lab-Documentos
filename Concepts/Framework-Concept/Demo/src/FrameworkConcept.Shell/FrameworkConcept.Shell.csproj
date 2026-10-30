@@ -41,6 +41,8 @@
          -p:FcKeyId=demo-2026                           keyId de claves/publica-demo.pem (lo fija FrameworkConcept.Tools)
          -p:FcOidcAutoridad=https://203.0.113.10:8443/realms/fc-demo   emisor OIDC (P4, folio 038); vacío = sesión por dispositivo
          -p:FcOidcClienteId=fc-demo-app                 cliente público del realm (infra/keycloak/)
+         -p:FcPantallasDeSesion=Contenido               quién muestra el ingreso y el desbloqueo: Contenido (la puerta de
+                                                        sesión del contenido, por defecto) o Cascaron (pantallas XAML)
        Los valores quedan grabados en el ensamblado y los lee ConfiguracionDelCascaron. -->
   <PropertyGroup>
     <FcCanal Condition="'$(FcCanal)' == ''">dev</FcCanal>
@@ -48,6 +50,7 @@
     <FcReceptorUrl Condition="'$(FcReceptorUrl)' == ''">$(FcCanalUrl)</FcReceptorUrl>
     <FcKeyId Condition="'$(FcKeyId)' == ''">demo-2026</FcKeyId>
     <FcOidcClienteId Condition="'$(FcOidcClienteId)' == ''">fc-demo-app</FcOidcClienteId>
+    <FcPantallasDeSesion Condition="'$(FcPantallasDeSesion)' == ''">Contenido</FcPantallasDeSesion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -66,6 +69,10 @@
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>FcKeyId</_Parameter1>
       <_Parameter2>$(FcKeyId)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcPantallasDeSesion</_Parameter1>
+      <_Parameter2>$(FcPantallasDeSesion)</_Parameter2>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>FcOidcAutoridad</_Parameter1>

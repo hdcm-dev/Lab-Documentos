@@ -12,6 +12,10 @@ namespace FrameworkConcept.Shell.Auth;
 ///   Activa, Vencida, Revocada          → ninguna: se trabaja en el contenido (Vencida y Revocada muestran una banda de
 ///                                        reingreso en el contenido, Content/Auth/PuertaDeSesion.razor; P4 «sin red se opera»)
 ///
+/// Sólo con -p:FcPantallasDeSesion=Cascaron. Por defecto la cara del ingreso y del desbloqueo es la puerta de sesión del
+/// contenido (Content/Auth/PuertaDeSesion.razor), que pide el trabajo al cascarón por auth.session: las credenciales,
+/// los tokens y el diálogo del sistema nunca pasan por el contenido.
+///
 /// Sólo actúa después de que el contenido está a la vista (lo marca el primer auth.status): antes, el arranque todavía
 /// está decidiendo qué mostrar (P1) y cambiar la pantalla raíz descartaría estas pantallas modales.
 /// </summary>
@@ -29,6 +33,7 @@ public static class PresentadorDeSesion
     public static void Actualizar(SesionInformada sesion)
     {
         if (!_contenidoVisible || sesion.Modo != ModoDeSesion.Oidc) return;
+        if (IPlatformApplication.Current?.Services.GetService<ConfiguracionDelCascaron>() is not { PantallasDeSesionEnElCascaron: true }) return;
         MainThread.BeginInvokeOnMainThread(async () =>
         {
             try

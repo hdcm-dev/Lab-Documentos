@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-04
+doc_id: FC-TEM-04
 doc_type: tema
 title: Estrategia de pruebas — qué se prueba en cada capa y qué es compuerta
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-01, TEM-02, TEM-03, TEM-06, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-02, FC-TEM-03, FC-TEM-06, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Estrategia de pruebas — qué se prueba en cada capa y qué es compuerta
@@ -25,8 +25,8 @@ traces: [MARCO-REFERENCIA, TEM-01, TEM-02, TEM-03, TEM-06, TEM-08, ANEXO-99]
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md) ·
-Sigue en: [`TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md)
+Viene de: [`FC-TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md) ·
+Sigue en: [`FC-TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md)
 
 ## 1. Resumen ejecutivo
 

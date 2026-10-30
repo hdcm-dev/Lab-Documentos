@@ -2,6 +2,42 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 2026-10-29 (Framework Concept: TPR del g42 medido por el cascarón)
+
+### Concepts/Framework-Concept/ — expediente 0001, folio 049
+
+#### Cambiado
+
+- **Marca `primer-render` por el cascarón** (`Shell/Pages/ContenidoPage.xaml.cs`, `Tools/LectorDeTpr.cs`, `LectorDeTprTests`): al llegar «Listo», el cascarón lee del WebView la hora de la marca y la escribe con la etiqueta `FC` y el `tpr=` contado desde el inicio del proceso. El lector usa ese valor cuando está. No cambia el contrato del puente.
+- **TPR en el moto g42** (`99-Anexos.md` §6, `Developer-Guide.md`, `01-Actualizacion-Sin-Tienda.md`, `Demo/README.md`): pasa de **NO OBTENIDO** a **NO CUMPLE**. Con el APK Release: 6 874 a 7 309 ms en régimen y 9 152 ms en el primer arranque; el umbral es 5 000 ms. Se abre la condición de revisión (2) de P1.
+
+## 2026-10-29 (Framework Concept: estado del tramo A5)
+
+### Concepts/Framework-Concept/ — expediente 0001, folio 048
+
+#### Cambiado
+
+- **Tramo A5** (`03` §7, `06` y §9, `Developer-Guide.md`, `99-Anexos.md` §6): la guía decía que no había corrida del workflow con `run_id` y que `main` no estaba protegida. Las dos cosas ya están, verificadas por la API. La corrida completa con compuerta y APK es la `40847315104`, en `hpdev-runner-dev`; la omisión declarada (PR sin `Demo/`), la `40738280836`; y `main` exige `fw-ok` (estricto y también para administradores). Sigue pendiente la prueba de un PR en rojo con M-13.
+
+## 2026-10-29 (Framework Concept: runner de hpdev, Keycloak y TPR en el g42)
+
+### Concepts/Framework-Concept/ y el comentario de framework-concept-demo.yml — expediente 0001, folios 046 y 047
+
+#### Cambiado
+
+- **TPR en el moto g42** (`99-Anexos.md` §6, `Developer-Guide.md`, `01-Actualizacion-Sin-Tienda.md`, `Demo/README.md`): pasa de «sin medir» a **NO OBTENIDO**, con las cotas medidas el 2026-10-28 (folio 047). El contenido llega a «puente Listo» de 7,3 a 7,7 s, pero la marca `primer-render` no llega al logcat porque el WebView del teléfono no reenvía la consola: el TPR queda acotado entre 4,4 y 7,7 s. La condición (2) de P1 sigue abierta.
+- **Runner**: el glosario, la fila `run_id` del anexo, `03` §8, `06` §8.2 y el comentario del workflow nombran `hpdev-runner-dev`. Ese runner lleva la misma etiqueta `[self-hosted, i7infra-dev]`, que no cambia, y su entorno se verificó: SDK 10.0.403, maui-android 10.0.110, sin `docker.sock` ni KVM. `i7infra-runner-dev` volvió con la misma etiqueta: el campo `runner_name` dice cuál corrió.
+- **Keycloak** (`Demo/README.md`, `Demo/infra/keycloak/keycloak.sh`): la IP de ejemplo se describe por su función («la máquina que sirve Keycloak»), no por la máquina del laboratorio.
+
+## 2026-10-28 (Framework Concept: IDs en su propio espacio)
+
+### Concepts/Framework-Concept/ y tools/docs-guard/prefijos.txt — expediente 0001
+
+#### Cambiado
+
+- **IDs del Framework Concept** con prefijo propio: `TEM-01`…`TEM-08`, `GUIA-INDICE`, `MARCO-REFERENCIA` y `ANEXO-99` pasan a `FC-TEM-01`…`FC-TEM-08`, `FC-GUIA-INDICE`, `FC-MARCO-REFERENCIA` y `FC-ANEXO-99` (`doc_id`, `traces` y citas en el texto, 215 apariciones en 12 archivos). Chocaban con los IDs del cuerpo SDEI y de otras guías, y el control `id-duplicado` de docs-guard (PR #31) los marcaba en rojo. Se quita de `00-Marco.md` la traza a `MAPA-CONCEPTUAL`, que el Framework Concept no declara.
+- **`tools/docs-guard/prefijos.txt`**: registra el prefijo `FC` (interno).
+
 ## 2026-10-28 (Framework Concept: enlaces del folio 042 en el anexo)
 
 ### Concepts/Framework-Concept/ — expediente 0001, constancia 043

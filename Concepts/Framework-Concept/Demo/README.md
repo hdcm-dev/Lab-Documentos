@@ -51,7 +51,7 @@ Todo pasa por el guion único, `scripts/guion.sh` (`scripts/guion.sh` sin argume
 esta carpeta, con `IP` = la IP con la que el dispositivo llega a esta máquina:
 
 ```bash
-IP=203.0.113.10                                  # en el laboratorio: la IP de Tailscale de i7infra
+IP=203.0.113.10                                  # la IP por la que el dispositivo llega a esta máquina
 scripts/guion.sh claves                             # par ECDSA de demostración (la privada no se versiona); ver abajo
 scripts/guion.sh publicar v1                        # contenido 1.0.0, sin AOT, archivos planos
 scripts/guion.sh definicion v1                      # encuesta-movilidad v1
@@ -273,8 +273,9 @@ rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; cascarón: CS0029). En el 
 semilla ya no se carga después del primer arranque; dos arranques cortados antes de cargar no cuentan; dos cargas
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
-**NO VERIFICADO.** El TPR en el g42 después de la corrección (reservado para otra sesión; ver «Medición del TPR», abajo). Con el desglose del
-intento anterior, la semilla costaba unos 0,7 s de los 8,2 s: es probable que el umbral siga roto. El PR en rojo con
+**NO CUMPLE.** El TPR en el g42 después de la corrección: de 6,9 a 7,3 s en régimen y 9,2 s en el primer arranque,
+con el APK Release (ver «Medición del TPR», abajo). Sacar la semilla del camino crítico ahorró cerca de 1 s, pero el
+umbral de 5 s sigue roto. El PR en rojo con
 M-13 en el runner (tramo A5).
 
 ### Incremento A4 — red y autenticación con el sistema operativo (folio 038)
@@ -403,5 +404,13 @@ Qué cambió:
 12 451 ms. Las cifras del emulador no juzgan el umbral de P1.
 
 
-**NO VERIFICADO.** El TPR en el moto g42: el teléfono siguió tomado por otra sesión de mayor prioridad durante todo el
-folio 042. La condición de revisión (2) de P1 sigue abierta, sin número nuevo.
+**Marca leída por el cascarón** (folio 049). En un teléfono, con el APK Release, el WebView no pasa la consola al
+logcat y la línea de `puente.js` no aparece (folio 047; con el APK Debug sí aparece). Por eso, al llegar «Listo»,
+`ContenidoPage` le pide al WebView la hora de la marca (`performance.timeOrigin` + `startTime`) y escribe
+`FC-MARCA primer-render … tpr=Nms (leída por el cascarón)` con la etiqueta `FC`, contado desde el inicio del proceso.
+`LectorDeTpr` usa ese `tpr=` cuando está y, si no, la línea de consola. Con el APK Debug las dos lecturas difieren en
+unos 10 ms.
+
+**NO CUMPLE.** El TPR en el moto g42 (2026-10-29, folio 049), APK Release: 5 de 5 arranques `COLD` con marca; 9 152,
+7 309, 6 940, 6 928 y 6 874 ms. El máximo (9 152 ms, el primer arranque después de instalar) supera el umbral de
+5 000 ms: se abre la condición de revisión (2) de P1. Con el APK Debug que arma la CI, el TPR fue de 8,1 a 14,1 s.

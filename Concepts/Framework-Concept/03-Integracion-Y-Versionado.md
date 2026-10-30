@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-03
+doc_id: FC-TEM-03
 doc_type: tema
 title: Integración, PR y versionado del producto — conceptos y alternativas
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-01, TEM-02, TEM-04, TEM-06, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-02, FC-TEM-04, FC-TEM-06, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Integración, PR y versionado del producto — conceptos y alternativas
@@ -25,10 +25,10 @@ traces: [MARCO-REFERENCIA, TEM-01, TEM-02, TEM-04, TEM-06, TEM-08, ANEXO-99]
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) ·
-Sigue en: [`TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) · El
+Viene de: [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) ·
+Sigue en: [`FC-TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) · El
 procedimiento paso a paso está en
-[`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md).
+[`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md).
 
 ## 1. Resumen ejecutivo
 
@@ -137,7 +137,7 @@ Las líneas que rigen (P7, folio 035):
 | Esquema del cascarón | Entero monótono | `Shell/Data/EsquemaDelCascaron.cs` |
 | Fase | `diseño` | `versionado/fase.json` (el dictamen la ubicaba en `rutas.json`; desvío de nombre declarado en el README de la demo) |
 
-Taxonomía de las líneas, según por dónde sale cada una (tabla anterior y `TEM-06` §8.4):
+Taxonomía de las líneas, según por dónde sale cada una (tabla anterior y `FC-TEM-06` §8.4):
 
 ```mermaid
 flowchart LR
@@ -180,7 +180,8 @@ Las **cuatro líneas visibles** en la pantalla de diagnóstico, para atribuir un
 **Qué demuestra.** La omisión legítima declarada.
 **Precondición.** Un PR que cambia sólo una guía fuera de `Concepts/Framework-Concept/Demo/**`.
 **Resultado esperado.** El job `alcance` escribe `demo=false` con su motivo; `compuerta` y `apk` quedan `skipped`;
-`fw-ok` sale verde «por omisión declarada». NO VERIFICADO en el runner: no hay todavía una corrida con `run_id` (A5).
+`fw-ok` sale verde «por omisión declarada». Verificado en el runner: en Lab-Documentos #33 (2026-10-28, run `40738280836`),
+un PR que sólo cambió temas de la guía dejó `compuerta` y `apk` en `skipped` y `fw-ok` en verde (folio 048).
 
 ## 5. Preguntas guía
 
@@ -208,7 +209,7 @@ Ficha de decisión de versionado para un PR (criterio de esta guía):
 ```markdown
 ## Versionado de este PR
 - Cascarón: 1.0.0 (1) → ¿cambia?          <!-- ¿Cambió un permiso, el SDK, MauiVersion o el XAML? Sale por tienda -->
-- Puente: 1.1.0 → ¿menor o mayor?          <!-- Usar la tabla de TEM-02 §2.6 -->
+- Puente: 1.1.0 → ¿menor o mayor?          <!-- Usar la tabla de FC-TEM-02 §2.6 -->
 - Contenido: 1.0.0 → 1.1.0                 <!-- ¿Es estrictamente mayor que lo publicado en el canal? -->
 - Definición encuesta-movilidad: 2 → 3     <!-- ¿Conserva nombre y tipo de cada campo publicado? -->
 - Esquema del cascarón: 1                  <!-- Si cambia, el PR trae su decisión sobre el sobre C-1 -->
@@ -217,7 +218,8 @@ Ficha de decisión de versionado para un PR (criterio de esta guía):
 
 ## 8. Observaciones
 
-- **Hecho.** El runner `i7infra-runner-dev` trae SDK 10.0.402 y maui-android 10.0.110 (comentario del workflow, R2 §5);
+- **Hecho.** El runner `i7infra-runner-dev` traía SDK 10.0.402 y maui-android 10.0.110 (comentario del workflow, R2 §5); el
+  que lo reemplaza desde el 2026-10-28, `hpdev-runner-dev`, trae SDK 10.0.403 y maui-android 10.0.110;
   la demo fija `MauiVersion` 10.0.20 y SDK 10.0.400 con `rollForward: latestPatch`. El riesgo de `workloadVersion`
   10.0.400.1 contra el workload del runner se midió en A5: con el SDK 10.0.403 del runner la compuerta falló (MSB4242,
   run 40432670449) y el `global.json` dejó de fijarlo; la versión de MAUI la sigue fijando `MauiVersion`.

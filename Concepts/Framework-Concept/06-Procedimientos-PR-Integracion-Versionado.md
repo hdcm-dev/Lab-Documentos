@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-06
+doc_id: FC-TEM-06
 doc_type: tema
 title: Procedimientos de PR, integración y versionado — fw-ok, ramas, protección de main y líneas de versión
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-03, TEM-04, TEM-05, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-03, FC-TEM-04, FC-TEM-05, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Procedimientos de PR, integración y versionado — fw-ok, ramas, protección de main y líneas de versión
@@ -28,11 +28,11 @@ traces: [MARCO-REFERENCIA, TEM-03, TEM-04, TEM-05, TEM-08, ANEXO-99]
 
 **Variante declarada.** Este tema agrega un apartado propio, §8 «Procedimientos», después de los siete apartados
 comunes; por eso Observaciones y Referencias pasan a §9 y §10. Es la única variante del conjunto y está registrada en
-[`ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados).
+[`FC-ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados).
 
-Viene de: [`TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md) ·
-Sigue en: [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) · Los
-conceptos están en [`TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md).
+Viene de: [`FC-TEM-05`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/05-La-Demo-Como-Caso-De-Estudio.md) ·
+Sigue en: [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) · Los
+conceptos están en [`FC-TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md).
 
 ## 1. Resumen ejecutivo
 
@@ -40,7 +40,8 @@ Este es el documento de los pasos. Dice qué hace quien abre un PR, qué corre e
 rojo, cómo se protege `main` para que un rojo no se pueda fusionar, cómo se fusiona y qué versión sube cada cambio.
 Cada procedimiento trae sus entradas, salidas y validaciones, para que un agente también pueda ejecutarlo o
 verificarlo. La protección de `main` y la corrida en el runner son el tramo A5 del plan (folio 037): al 2026-10-26 el
-workflow existe pero no tiene una corrida con `run_id`, y `main` no está protegida.
+workflow existía pero no tenía una corrida con `run_id`, y `main` no estaba protegida. Al 2026-10-29 las dos cosas están:
+la corrida completa (compuerta y APK) tiene `run_id` `40847315104`, y `main` exige `fw-ok` (folio 048).
 
 ## 2. Definición
 
@@ -198,7 +199,7 @@ flowchart LR
 
 ### 8.1 Rama y PR
 
-1. Crear una rama corta desde `main` (GitHub Flow, [`TEM-03` §2.5](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md#25-métodos-y-marcos-modelos-de-ramas)).
+1. Crear una rama corta desde `main` (GitHub Flow, [`FC-TEM-03` §2.5](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md#25-métodos-y-marcos-modelos-de-ramas)).
 2. Hacer el cambio y, si corresponde, subir la línea de versión (8.4).
 3. Correr `Concepts/Framework-Concept/Demo/scripts/ci-local.sh` (o `--hasta 4` para lo rápido).
 4. Abrir el PR contra `main` y completar la plantilla.
@@ -239,8 +240,9 @@ secreto. `concurrency` cancela la corrida anterior del mismo PR.
 
 #### Validaciones — 8.2
 
-- En la API de corridas (`actions/runs/{id}/jobs`), los jobs corrieron en `i7infra-runner-dev` (criterio de
-  aceptación 1 de P11). NO VERIFICADO al 2026-10-26.
+- En la API de corridas (`actions/runs/{id}/jobs`), los jobs corrieron en el runner propio (criterio de aceptación 1
+  de P11): `hpdev-runner-dev` desde el 2026-10-28; antes, `i7infra-runner-dev`, que conserva la etiqueta, así que el
+  campo `runner_name` dice cuál fue. NO VERIFICADO al 2026-10-26.
 
 ### 8.3 Proteger `main` (tramo A5)
 
@@ -277,7 +279,7 @@ queda bloqueado por un check que nunca corrió.
 | --- | --- | --- | --- |
 | Páginas Razor, CSS, JS del contenido | **Contenido** (SemVer; menor para algo nuevo compatible) | `versionado/contenido.json` | Canal |
 | Una encuesta | **Definición** (`version` + 1) | `definiciones/<encuestaId>/vN.json` nuevo (plantilla: en la demo, `definiciones/encuesta-movilidad/v1.json` y `v2.json`) | Canal, sin contenido nuevo |
-| La tabla de métodos, el catálogo o el transporte | **Puente** (menor o mayor, [`TEM-02` §2.6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md#26-cómo-se-clasifica-un-cambio-del-puente)) | `versionado/puente.json` + `FrameworkConcept.Tools contrato` | Tienda (lo implementa el cascarón) |
+| La tabla de métodos, el catálogo o el transporte | **Puente** (menor o mayor, [`FC-TEM-02` §2.6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md#26-cómo-se-clasifica-un-cambio-del-puente)) | `versionado/puente.json` + `FrameworkConcept.Tools contrato` | Tienda (lo implementa el cascarón) |
 | Permisos, XAML, código nativo, SDK, MAUI | **Cascarón** (`ApplicationDisplayVersion` y `ApplicationVersion` + 1) | `versionado/version-cascaron.props` | Tienda |
 
 Estas son las **cuatro líneas** que la pantalla de diagnóstico muestra juntas (folio 023, ítem 4). La instantánea de
@@ -319,8 +321,11 @@ r06 de `rojos-compuerta.md`).
 
 ## 9. Observaciones
 
-- **Hecho.** No hay corrida del workflow con `run_id` ni protección de `main` al 2026-10-26 (folio 037, A5; registro
+- **Hecho.** No había corrida del workflow con `run_id` ni protección de `main` al 2026-10-26 (folio 037, A5; registro
   de la corrida, entrada 22).
+- **Hecho.** Al 2026-10-29, `main` exige `fw-ok` como check obligatorio, estricto (la rama tiene que estar al día) y
+  también para administradores (API de protección de ramas). La corrida completa del workflow, con compuerta y APK, tiene
+  `run_id` `40847315104` en `hpdev-runner-dev` (folio 048). Falta la prueba de un PR en rojo con M-13 que no se pueda fusionar.
 - **Hecho.** El runner no tiene `docker.sock` ni KVM: los pasos corren `dotnet` directo (comentario del workflow).
 - **Interpretación.** El paso «base del PR» (`git archive` de la demo en `main`) es lo que permite a `Gate.Tests`
   comparar contrato y definiciones con lo ya publicado; sin base, con `CI=true`, la compuerta falla en lugar de omitir

@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-01
+doc_id: FC-TEM-01
 doc_type: tema
 title: Actualización dinámica sin tienda — contenido descargable, canal firmado y rollback
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, TEM-02, TEM-03, TEM-04, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-TEM-02, FC-TEM-03, FC-TEM-04, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Actualización dinámica sin tienda — contenido descargable, canal firmado y rollback
@@ -25,8 +25,8 @@ traces: [MARCO-REFERENCIA, TEM-02, TEM-03, TEM-04, TEM-08, ANEXO-99]
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`MARCO-REFERENCIA`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) · Sigue en:
-[`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md)
+Viene de: [`FC-MARCO-REFERENCIA`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) · Sigue en:
+[`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md)
 
 ## 1. Resumen ejecutivo
 
@@ -53,7 +53,7 @@ segundo plano y la muestra en el arranque en frío siguiente.
 ### 2.2 Qué problema resuelve
 
 El borrador del PO lo dice así: «Si cambio esas pantallas, la app **se autoactualiza al arrancar**, sin pasar por la
-tienda» (`Framework-APP.md` §1, insumo del PO fuera del conjunto: ver [`ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)). El
+tienda» (`Framework-APP.md` §1, insumo del PO fuera del conjunto: ver [`FC-ANEXO-99` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#8-insumos-fuera-del-conjunto-y-apartamientos-declarados)). El
 ciclo de revisión de una tienda tarda; una corrección de texto en una encuesta no debería esperar ese ciclo.
 
 ### 2.3 Qué NO es
@@ -84,7 +84,7 @@ Apple, *App Review Guidelines* 2.5.2 (versión del 16 de octubre de 2026, N1 §4
 
 **Qué implica.** Un contenido que cambie el propósito declarado en la ficha de la tienda tiene que salir también por
 tienda. En este repositorio esa pregunta es un campo obligatorio de la plantilla de PR (ver
-[`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md)).
+[`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md)).
 Ninguna de las dos políticas nombra WebAssembly: si un `.wasm` interpretado cuenta como «código interpretado» es
 **NO VERIFICADO** ante Apple y ante Play (P1, folio 035).
 
@@ -147,7 +147,7 @@ stateDiagram-v2
 | --- | --- | --- |
 | `ESC-1` Primer arranque | La semilla da contenido sin red desde el primer segundo | `CTX-2`: con WebView < 94 la semilla tampoco arranca; aparece «WebView viejo» |
 | `ESC-2` Fallo y rollback | Marca pendiente + `Listo` + lista de fallidas | Igual en `CTX-4` y `CTX-5` |
-| `ESC-3` Incompatible | El predicado se evalúa **antes** de activar (detalle en [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md)) | `CTX-3`: en iOS el motor mínimo es 16.4, diseño sin ensayo |
+| `ESC-3` Incompatible | El predicado se evalúa **antes** de activar (detalle en [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md)) | `CTX-3`: en iOS el motor mínimo es 16.4, diseño sin ensayo |
 | `ESC-4` Sin red | No aplica a la activación: sin red no se baja nada y se sigue con lo instalado | `CTX-6`: la consulta da `SinRed` sin bloquear |
 | `ESC-5` PR y release | Sólo se publica lo construido desde una etiqueta alcanzable desde `main` (P6.7) | Producción: diseño, no implantado |
 | `ESC-6` Al iniciar sesión | El ingreso con cuenta es uno de los tres disparadores de la consulta | `CTX-4`: no hay ingreso; quedan arranque en frío y reanudación |
@@ -241,8 +241,10 @@ Plantilla para registrar una publicación de contenido (criterio de esta guía):
 ## 8. Observaciones
 
 - **Hecho.** El TPR medido en el moto g42 en un intento anterior fue de 8 176 a 8 741 ms con la semilla instalada
-  (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el TPR en el g42
-  **no se volvió a medir** (teléfono reservado para otra sesión, también en el folio 042). Ver el anexo de pendientes.
+  (E02 §4.3), por encima del umbral de 5 000 ms de P1. Después de sacar la semilla del camino crítico, el 2026-10-28 el
+  TPR medido en el g42 con el APK Release fue de **6 874 a 7 309 ms en régimen y 9 152 ms en el primer arranque**
+  (2026-10-29, folio 049): sigue por encima del umbral. La marca la escribe ahora el cascarón, porque la consola del
+  WebView no llega al logcat del teléfono (folio 047). Ver el anexo de pendientes.
 - **Hecho.** En el cierre del expediente, 5 arranques en el emulador no dieron la marca `primer-render`: la pantalla
   estaba apagada y el WebView no llegó a pedir el contenido (folio 042). `scripts/guion.sh tpr` mide ahora con la
   pantalla comprobada y calcula el TPR desde el inicio del proceso; en el emulador dio de 9 641 a 12 451 ms, cifras

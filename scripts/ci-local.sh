@@ -179,7 +179,7 @@ autoprueba() {
     espera_regla "$r" "PR-5 $r" py trazas --raiz "$FX/$r/rojo" "$FX/$r/rojo"
   done
   espera verde 'PR-5 id-duplicado'          py trazas --raiz "$FX/id-duplicado/verde" "$FX/id-duplicado/verde"
-  espera_regla traces-vacio 'PR-2 traces-vacio' py esquema --raiz "$FX/traces-vacio/rojo" "$FX/traces-vacio/rojo"
+  espera verde 'PR-2 traces-vacio avisa'   py esquema --raiz "$FX/traces-vacio/aviso" "$FX/traces-vacio/aviso"
   espera verde 'PR-2 traces-vacio'          py esquema --raiz "$FX/traces-vacio/verde" "$FX/traces-vacio/verde"
   for r in esquema-ayuda esquema-readme-cuerpo; do
     espera_regla "$r" "PR-2 $r" py esquema --raiz "$FX/$r/rojo"  "$FX/$r/rojo"

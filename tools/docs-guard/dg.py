@@ -12,7 +12,7 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
 
     fuera      RUTA...            (PR-1) enlaces relativos que salen del repositorio
     esquema    RUTA...            (PR-2) frontmatter contra su esquema, registro de prefijos y esquema RRD;
-                                         traces-vacio: «traces: []» no se admite (D-17). Cuenta aparte los README.md
+                                         traces-vacio: avisa ante «traces: []» (válido por el anexo; D-17). Cuenta aparte los README.md
                                          del cuerpo sin frontmatter (readme-del-cuerpo-sin-frontmatter, D-24)
     ai         RUTA...            (PR-3) anti-inyección AI-1..AI-5; AI-3 avisa; AI-4 avisa en el anexo de referencias
     trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados;
@@ -340,10 +340,11 @@ def cmd_esquema(rutas, raiz):
             continue
         errs = validar(fm, esq[forma])
         if forma == 'cuerpo' and fm.get('traces') == []:
-            # D-17: «traces: []» no es una forma admitida; toda página traza al menos al doc_id del README del cuerpo.
+            # El anexo de esquema admite «traces: []» (Esquema-Frontmatter-Y-Prefijos.md:54; PE-2 del 290). La práctica
+            # de D-17 (trazar al menos al README del cuerpo) queda como aviso, no como bloqueo.
             errs = [e for e in errs if e != 'falta «traces»']
-            inf.error(ruta, 1, 'traces-vacio', 'traces: [] no se admite: una página sin otra dependencia traza al '
-                                               'doc_id del README de su cuerpo')
+            inf.aviso(ruta, 1, 'traces-vacio', 'traces: [] es válido, pero conviene trazar al menos al doc_id del '
+                                               'README de su cuerpo (D-17)')
         for e in errs:
             inf.error(ruta, 1, f'esquema-{forma}', e)
         if forma == 'cuerpo':

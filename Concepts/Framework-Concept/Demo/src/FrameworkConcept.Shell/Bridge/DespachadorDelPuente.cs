@@ -152,7 +152,7 @@ public sealed class DespachadorDelPuente(
                 // Sin raíz de carga también se descarta: un saludo legítimo viene del runtime ya servido, así que null es
                 // el de la página vieja que saluda entre Reiniciar() y el dotnet.js de la recarga.
                 var raiz = servidor.RaizDeLaCarga;
-                if (!string.Equals(raiz, decidido.Directorio, StringComparison.Ordinal))
+                if (!servidor.EsLaDecidida(raiz, decidido))
                     throw new SaludoDescartadoException($"El contenido cargó {raiz ?? "(sin runtime servido)"} y el actualizador decidió {decidido.Directorio}.");
 #else
                 _ = decidido;

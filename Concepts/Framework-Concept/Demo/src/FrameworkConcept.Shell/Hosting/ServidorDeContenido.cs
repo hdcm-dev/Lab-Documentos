@@ -1,4 +1,5 @@
 using System.Text;
+using FrameworkConcept.Core.Update;
 
 namespace FrameworkConcept.Shell.Hosting;
 
@@ -29,6 +30,30 @@ public sealed class ServidorDeContenido(PuertaDelArranque puerta)
     /// de arranque con la versión especulada, o la preparación cuando el actualizador decide.
     /// </summary>
     public string? Raiz { get; set; }
+
+#if FC_E04_SEMILLA
+    /// <summary>
+    /// E04 V1S — La semilla del APK verificada, servida desde memoria en el primer arranque. Se sirve mientras
+    /// <see cref="Raiz"/> sea su identificador («apk:semilla/vX»); se libera cuando el arranque decide otra cosa.
+    /// </summary>
+    public SemillaEnMemoria? Semilla { get; set; }
+#endif
+
+    /// <summary>
+    /// E04 — Si la carga servida desde <paramref name="raizServida"/> es la de la versión decidida. Sin V1S es la
+    /// comparación de directorios de siempre; con V1S también lo es la semilla del APK de la misma versión: son los mismos
+    /// bytes (el sha256 firmado del zip que el actualizador vuelve a comprobar antes de descomprimir).
+    /// </summary>
+    public bool EsLaDecidida(string? raizServida, ResultadoDeArranque decidido)
+    {
+        if (string.Equals(raizServida, decidido.Directorio, StringComparison.Ordinal)) return true;
+#if FC_E04_SEMILLA
+        return Semilla is { } s && raizServida is not null && string.Equals(raizServida, s.Raiz, StringComparison.Ordinal)
+            && s.Version.Equals(decidido.Version);
+#else
+        return false;
+#endif
+    }
 
     /// <summary>
     /// P2 — Se dispara una vez por carga, cuando el WebView pide <see cref="ArchivoDeInicioDeCarga"/>. Es la evidencia
@@ -86,6 +111,21 @@ public sealed class ServidorDeContenido(PuertaDelArranque puerta)
         _ = puerta;
 #endif
         var raiz = Raiz;
+#if FC_E04_SEMILLA
+        if (Semilla is { } semilla && raiz is not null && string.Equals(raiz, semilla.Raiz, StringComparison.Ordinal))
+        {
+            if (semilla.Leer(ruta) is not { } leido)
+            {
+                if (n <= 60) Bitacora.Log($"servidor: req#{n} {e.Method} /{ruta} → sin manejar (semilla del APK)");
+                return;
+            }
+            e.Handled = true;
+            e.SetResponse(200, "OK", TipoMime(leido.Ruta), new MemoryStream(leido.Bytes, writable: false));
+            if (n <= 60) Bitacora.Log($"servidor: req#{n} {e.Method} /{ruta} (semilla del APK)");
+            Atendido(n, ruta, raiz);
+            return;
+        }
+#endif
         var archivo = Resolver(raiz, ruta);
         if (archivo is null)
         {
@@ -96,6 +136,12 @@ public sealed class ServidorDeContenido(PuertaDelArranque puerta)
         e.Handled = true;
         e.SetResponse(200, "OK", TipoMime(archivo), File.OpenRead(archivo));
         if (n <= 60) Bitacora.Log($"servidor: req#{n} {e.Method} /{ruta}");
+        Atendido(n, ruta, raiz);
+    }
+
+    // Lo que sigue a cada pedido servido: el último _framework y el aviso de inicio de carga (P2).
+    private void Atendido(int n, string ruta, string? raiz)
+    {
         if (ruta.StartsWith("_framework/", StringComparison.Ordinal))
             Volatile.Write(ref _ultimoFramework, $"req#{n} /{ruta} t={Bitacora.MsDesdeArranque()}ms");
 

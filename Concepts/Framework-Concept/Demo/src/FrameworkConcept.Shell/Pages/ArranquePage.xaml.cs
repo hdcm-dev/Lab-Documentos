@@ -58,6 +58,17 @@ public partial class ArranquePage : ContentPage
 #if FC_E04
             var especulada = await Task.Run(LeerVersionEspeculadaAsync);
             if (especulada is not null) _servidor.Raiz = _proveedor.Almacen.DirectorioDe(especulada);
+#if FC_E04_SEMILLA
+            // V1S — Primer arranque (sin puntero.json): la semilla firmada del APK es la versión implícita. Se sirve desde
+            // el APK, verificada, mientras el actualizador la instala; la puerta sigue reteniendo el saludo (P2).
+            if (especulada is null && await Task.Run(PrepararSemillaDelApkAsync) is { } semilla)
+            {
+                _servidor.Semilla = semilla;
+                _servidor.Raiz = semilla.Raiz;
+                especulada = semilla.Version;
+                Bitacora.Log($"arranque: especulada semilla del APK v{semilla.Version}");
+            }
+#endif
             AdjuntarLaVista(especulada);
             var resultado = await Task.Run(_preparacion.PrepararAsync);
             IrE04(resultado, especulada);
@@ -127,6 +138,24 @@ public partial class ArranquePage : ContentPage
         }
     }
 
+#if FC_E04_SEMILLA
+    // V1S — Las claves y la fuente de la semilla (ObtenerAsync está memorizado: sólo adelanta lo que el actualizador
+    // haría igual) y la semilla verificada lista para servir, o null.
+    private async Task<SemillaEnMemoria?> PrepararSemillaDelApkAsync()
+    {
+        try
+        {
+            await _proveedor.ObtenerAsync();
+            return _proveedor.Semilla is { } fuente ? await fuente.ServibleAsync() : null;
+        }
+        catch (Exception ex)
+        {
+            Bitacora.Error("arranque: preparar la semilla del APK", ex);
+            return null;
+        }
+    }
+#endif
+
     private void AdjuntarLaVista(VersionSemantica? especulada)
     {
         var vista = IPlatformApplication.Current!.Services.GetRequiredService<VistaDelContenido>();
@@ -150,6 +179,9 @@ public partial class ArranquePage : ContentPage
             // Sin contenido que mostrar: la vista se va y sigue el camino de siempre (terminal, WebView viejo y su consulta).
             QuitarLaVista();
             _servidor.Raiz = null;
+#if FC_E04_SEMILLA
+            _servidor.Semilla = null;
+#endif
             Ir(resultado);
             return;
         }
@@ -160,6 +192,9 @@ public partial class ArranquePage : ContentPage
             // respondió. Se sirve la decidida y se vuelve a cargar index.html.
             Bitacora.Log($"arranque: especulación descartada (servida {especulada}, decidida {resultado.Version}); recarga");
             _servidor.Raiz = resultado.Directorio;
+#if FC_E04_SEMILLA
+            _servidor.Semilla = null;
+#endif
             _servidor.Reiniciar();
             _vista?.Recargar();
         }

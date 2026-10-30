@@ -126,11 +126,70 @@ public sealed class FuenteDeSemillaEmbebida(IVerificadorDeFirma verificador, str
     /// </summary>
     public string Huella { get; } = CalcularHuella();
 
+#if FC_E04_SEMILLA
+    // E04 V1S — Una sola verificación del índice por proceso: la comparten la especulación del primer arranque y el
+    // actualizador, que la vuelve a pedir al instalar la semilla.
+    private Task<SemillaEmbebida?>? _carga;
+
+    public async Task<ISemillaDeContenido?> CargarAsync(CancellationToken cancellationToken = default)
+    {
+        var carga = Volatile.Read(ref _carga);
+        if (carga is null)
+        {
+            var nueva = SemillaEmbebida.CargarAsync(verificador, canal, puenteMayor);
+            carga = Interlocked.CompareExchange(ref _carga, nueva, null) ?? nueva;
+        }
+        Cargada = await carga;
+        return Cargada;
+    }
+
+    /// <summary>
+    /// E04 V1S — La semilla lista para servirse desde el APK, sin copiarla: firma ES256 del índice (canal, puente, keyId)
+    /// y después tamaño y sha256 del zip completo, los mismos que el actualizador comprueba antes de descomprimir. Ningún
+    /// byte se sirve sin pasar las dos. null si algo no verifica (V1S se comporta entonces como V1).
+    /// </summary>
+    public async Task<FrameworkConcept.Shell.Hosting.SemillaEnMemoria?> ServibleAsync()
+    {
+        try
+        {
+            if (await CargarAsync() is not SemillaEmbebida semilla) return null;
+
+            await using var flujo = await semilla.AbrirAsync();
+            using var memoria = new MemoryStream(capacity: (int)Math.Min(semilla.Size + 1, int.MaxValue));
+            var bufer = new byte[81920];
+            int leidos;
+            while ((leidos = await flujo.ReadAsync(bufer)) > 0)
+            {
+                memoria.Write(bufer, 0, leidos);
+                if (memoria.Length > semilla.Size) break;   // no se lee más de Size + 1
+            }
+
+            if (memoria.Length != semilla.Size)
+            {
+                Bitacora.Log($"semilla: no servible desde el APK (el zip mide {memoria.Length}, el índice dice {semilla.Size})");
+                return null;
+            }
+            var bytes = memoria.ToArray();
+            if (Convert.ToHexStringLower(SHA256.HashData(bytes)) != semilla.Sha256.ToLowerInvariant())
+            {
+                Bitacora.Log("semilla: no servible desde el APK (el sha256 del zip no coincide con el índice firmado)");
+                return null;
+            }
+            return new FrameworkConcept.Shell.Hosting.SemillaEnMemoria(semilla.Version, bytes);
+        }
+        catch (Exception ex)
+        {
+            Bitacora.Error("semilla: no servible desde el APK", ex);
+            return null;
+        }
+    }
+#else
     public async Task<ISemillaDeContenido?> CargarAsync(CancellationToken cancellationToken = default)
     {
         Cargada = await SemillaEmbebida.CargarAsync(verificador, canal, puenteMayor);
         return Cargada;
     }
+#endif
 
     private static string CalcularHuella()
     {

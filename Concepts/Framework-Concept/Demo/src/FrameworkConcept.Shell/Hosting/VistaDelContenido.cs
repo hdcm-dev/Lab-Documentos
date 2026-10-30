@@ -148,7 +148,7 @@ public sealed class VistaDelContenido
                 _ = _contenido;   // con E04 la versión sale de la decisión, no de lo fijado
                 var resultado = await _puerta.Preparado;
                 if (resultado.Version is not { } version) return;
-                if (!string.Equals(raizServida, resultado.Directorio, StringComparison.Ordinal))
+                if (!_servidor.EsLaDecidida(raizServida, resultado))
                 {
                     Bitacora.Log($"contenido: carga de una versión especulada descartada ({raizServida}); no cuenta");
                     return;

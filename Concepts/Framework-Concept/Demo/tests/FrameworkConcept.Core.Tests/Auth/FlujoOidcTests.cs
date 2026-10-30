@@ -69,6 +69,24 @@ public partial class FlujoOidcTests
     }
 
     [Test]
+    [Description("Login tradicional: grant_type=password del cliente público, sin secreto, con los alcances de la sesión")]
+    public void ElIngresoConClaveEsRopcDelClientePublico()
+    {
+        var campos = FlujoOidc.CuerpoDelIngresoConClave(Configuracion, "encuestador", "CLAVE");
+        Assert.That(campos.Select(c => c.Key), Is.EqualTo(new[] { "grant_type", "client_id", "username", "password", "scope" }));
+        var cuerpo = campos.ToDictionary();
+        Assert.Multiple(() =>
+        {
+            Assert.That(cuerpo["grant_type"], Is.EqualTo("password"));
+            Assert.That(cuerpo["client_id"], Is.EqualTo(Configuracion.ClienteId));
+            Assert.That(cuerpo["username"], Is.EqualTo("encuestador"));
+            Assert.That(cuerpo["password"], Is.EqualTo("CLAVE"));
+            Assert.That(cuerpo["scope"], Is.EqualTo(Configuracion.Alcances));
+            Assert.That(cuerpo.ContainsKey("client_secret"), Is.False);
+        });
+    }
+
+    [Test]
     public void LeerRespuestaDeTokensCalculaVencimientosConAhora()
     {
         const string json = """{"access_token":"AAA","expires_in":300,"refresh_expires_in":1799,"refresh_token":"RRR","token_type":"Bearer","id_token":"III"}""";
@@ -104,6 +122,23 @@ public partial class FlujoOidcTests
         // Una carga cuyo base64 necesita relleno, para ver que se decodifica bien sin «=».
         var jwt = B64("""{"alg":"RS256"}""") + "." + B64("""{"sub":"2b1c-ñ","preferred_username":"encuestador","x":1}""") + ".firma";
         Assert.That(FlujoOidc.LeerIdentidad(jwt), Is.EqualTo(("2b1c-ñ", (string?)"encuestador")));
+    }
+
+    [TestCase("""{"iss":"https://e/realms/fc-demo","aud":"fc-demo-app","exp":EXP}""", true)]
+    [TestCase("""{"iss":"https://e/realms/fc-demo/","aud":["fc-demo-app","account"],"azp":"fc-demo-app","exp":EXP}""", true)]
+    [TestCase("""{"iss":"https://otro/realms/fc-demo","aud":"fc-demo-app","exp":EXP}""", false)]
+    [TestCase("""{"iss":"https://e/realms/fc-demo","aud":"otra-app","exp":EXP}""", false)]
+    [TestCase("""{"iss":"https://e/realms/fc-demo","aud":["fc-demo-app","account"],"azp":"account","exp":EXP}""", false)]
+    [TestCase("""{"iss":"https://e/realms/fc-demo","aud":"fc-demo-app","exp":VIEJO}""", false)]
+    [TestCase("""{"iss":"https://e/realms/fc-demo","aud":"fc-demo-app"}""", false)]
+    public void ElIdTokenTieneQueSerDeEsteEmisorYCliente(string carga, bool propio)
+    {
+        carga = carga.Replace("EXP", Ahora.AddMinutes(5).ToUnixTimeSeconds().ToString())
+                     .Replace("VIEJO", Ahora.AddMinutes(-5).ToUnixTimeSeconds().ToString());
+        var jwt = FlujoOidc.Base64Url("{}"u8.ToArray()) + "." + FlujoOidc.Base64Url(Encoding.UTF8.GetBytes(carga)) + ".f";
+        void Validar() => FlujoOidc.ValidarIdToken(jwt, "https://e/realms/fc-demo", "fc-demo-app", Ahora);
+        if (propio) Assert.DoesNotThrow(Validar);
+        else Assert.That(Assert.Throws<ExcepcionDeAutenticacion>(Validar)!.Message, Is.EqualTo("El emisor devolvió un id_token ajeno."));
     }
 
     [Test]

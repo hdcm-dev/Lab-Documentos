@@ -93,6 +93,27 @@ public static class FlujoOidc
         new("code_verifier", verificador)
     ];
 
+    /// <summary>
+    /// Cuerpo del ingreso con usuario y clave (login tradicional, 2026-10-30): grant_type=password, cliente público
+    /// sin secreto, scope = Alcances.
+    ///
+    /// El estándar para el login propio de una app first-party es el borrador IETF «OAuth 2.0 for First-Party
+    /// Applications» (draft-ietf-oauth-first-party-apps: endpoint de autorización por desafío, que devuelve un code
+    /// canjeable con PKCE y admite pasos extra como MFA). ROPC (RFC 6749 §4.3) está desaconsejado por el BCP de
+    /// seguridad (RFC 9700 §2.4) y se usa acá SÓLO porque Keycloak no trae ese endpoint y este es un emisor de ensayo
+    /// (Direct Access Grant habilitado en infra/keycloak/realm-fc-demo.json). Cambiar de emisor cambia este cuerpo y
+    /// nada más: el contenido sigue mandando usuario y clave por auth.signInWithPassword.
+    /// La clave no se registra: esta lista vive lo que dura el POST.
+    /// </summary>
+    public static IReadOnlyList<KeyValuePair<string, string>> CuerpoDelIngresoConClave(ConfiguracionOidc configuracion, string usuario, string clave) =>
+    [
+        new("grant_type", "password"),
+        new("client_id", configuracion.ClienteId),
+        new("username", usuario),
+        new("password", clave),
+        new("scope", configuracion.Alcances)
+    ];
+
     /// <summary>Cuerpo de la renovación (RFC 6749 §6).</summary>
     public static IReadOnlyList<KeyValuePair<string, string>> CuerpoDeRenovacion(ConfiguracionOidc configuracion, string refreshToken) =>
     [
@@ -165,6 +186,35 @@ public static class FlujoOidc
         return (sub, Texto(doc.RootElement, "preferred_username"));
     }
 
+    /// <summary>
+    /// OIDC Core §3.1.3.7 (puntos 2, 3 y 9): aunque la firma no se verifique (llegó por TLS del token endpoint), el
+    /// id_token tiene que ser de este emisor (iss), para este cliente (aud; azp si hay varias audiencias) y vigente
+    /// (exp, con un minuto de tolerancia de reloj). El ingreso con clave no manda nonce: esto es lo único que ata el
+    /// id_token a este canje. Lanza AutenticacionFallida si no cumple.
+    /// </summary>
+    public static void ValidarIdToken(string idToken, string issuer, string clienteId, DateTimeOffset ahora)
+    {
+        var partes = idToken.Split('.');
+        if (partes.Length < 2) throw ExcepcionDeAutenticacion.Fallida("El emisor devolvió un id_token ajeno.");
+        using var doc = JsonDocument.Parse(DesdeBase64Url(partes[1]));
+        var r = doc.RootElement;
+
+        var iss = Texto(r, "iss");
+        var audiencias = r.TryGetProperty("aud", out var aud)
+            ? aud.ValueKind == JsonValueKind.Array
+                ? aud.EnumerateArray().Where(a => a.ValueKind == JsonValueKind.String).Select(a => a.GetString()!).ToArray()
+                : aud.ValueKind == JsonValueKind.String ? [aud.GetString()!] : []
+            : [];
+        var azp = Texto(r, "azp");
+        var exp = r.TryGetProperty("exp", out var e) && e.TryGetInt64(out var segundos) ? DateTimeOffset.FromUnixTimeSeconds(segundos) : (DateTimeOffset?)null;
+
+        var propio = string.Equals(iss?.TrimEnd('/'), issuer.TrimEnd('/'), StringComparison.Ordinal)
+            && audiencias.Contains(clienteId, StringComparer.Ordinal)
+            && (audiencias.Length == 1 || azp == clienteId)
+            && exp is { } vence && vence + TimeSpan.FromMinutes(1) > ahora;
+        if (!propio) throw ExcepcionDeAutenticacion.Fallida("El emisor devolvió un id_token ajeno.");
+    }
+
     public static string Base64Url(byte[] datos) =>
         Convert.ToBase64String(datos).TrimEnd('=').Replace('+', '-').Replace('/', '_');
 
@@ -207,6 +257,9 @@ public static class ParametrosDeSesion
     public const string ClienteIdPorDefecto = "fc-demo-app";
 
     public const string Alcances = "openid profile";
+
+    /// <summary>invalid_grant al ingreso con clave (login tradicional).</summary>
+    public const string MotivoClaveIncorrecta = "Usuario o clave incorrectos.";
 
     /// <summary>prompt=login: el emisor re-autentica aunque tenga una sesión SSO viva (corrector E03, P0).</summary>
     public const string PromptDelIngreso = "login";

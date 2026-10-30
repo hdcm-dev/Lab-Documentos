@@ -36,6 +36,19 @@ public enum EstadoDeSesion
     Revocada
 }
 
+/// <summary>
+/// Cómo se ingresa con la cuenta (-p:FcModoDeIngreso, login tradicional 2026-10-30). Si falta en SesionInformada
+/// (cascarón 1.1), el contenido lo toma como Navegador: ese cascarón no tiene auth.signInWithPassword.
+/// </summary>
+public enum ModoDeIngreso
+{
+    /// <summary>Formulario propio de la app (usuario y clave); el cascarón canjea en el emisor (first-party).</summary>
+    Formulario,
+
+    /// <summary>OIDC code + PKCE en el navegador del sistema (Custom Tab, RFC 8252).</summary>
+    Navegador
+}
+
 /// <summary>D-03 = T1: el desbloqueo con la seguridad del teléfono se ofrece sólo con API ≥ 30 y bloqueo de pantalla.</summary>
 public enum DesbloqueoLocal
 {
@@ -58,12 +71,14 @@ public enum DesbloqueoLocal
 /// <param name="Usuario">preferred_username del id_token, si hay identidad.</param>
 /// <param name="DesbloqueoLocal">Si se ofrece, o si está activado.</param>
 /// <param name="Motivo">Texto para la persona (por qué está bloqueada, vencida o revocada; por qué no se ofrece el desbloqueo).</param>
+/// <param name="ModoDeIngreso">Puente 1.2: formulario propio o navegador. null en modo Dispositivo o con un cascarón 1.1.</param>
 public sealed record SesionInformada(
     ModoDeSesion Modo,
     EstadoDeSesion Estado,
     string? Usuario,
     DesbloqueoLocal DesbloqueoLocal,
-    string? Motivo = null)
+    string? Motivo = null,
+    ModoDeIngreso? ModoDeIngreso = null)
 {
     /// <summary>La sesión por dispositivo: siempre activa, sin usuario, sin desbloqueo local.</summary>
     public static SesionInformada PorDispositivo { get; } =

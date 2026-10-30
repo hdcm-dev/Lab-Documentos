@@ -23,6 +23,17 @@ public sealed class AtencionDeSesion(ISesionDelUsuario sesion)
                 return new { sesion = sesion.Actual };
             case "auth.signIn":
                 return new { sesion = await sesion.IngresarAsync(ct) };
+            case "auth.signInWithPassword":
+            {
+                // Regla 2 del login tradicional: la credencial cruza el puente UNA vez, por este método; se pasa al canje
+                // y se descarta. Nunca se registra (el despachador sólo anota el nombre del método) ni se guarda.
+                if (!p.TryGetProperty("usuario", out var usuario) || usuario.ValueKind != JsonValueKind.String
+                    || !p.TryGetProperty("clave", out var clave) || clave.ValueKind != JsonValueKind.String)
+                    throw ExcepcionDeAutenticacion.Fallida("Falta usuario o clave.");
+                return new { sesion = await sesion.IngresarConClaveAsync(usuario.GetString()!, clave.GetString()!, ct) };
+            }
+            case "auth.lock":
+                return new { sesion = await sesion.BloquearAsync(ct) };
             case "auth.enableUnlock":
                 return new { sesion = await sesion.ActivarDesbloqueoAsync(ct) };
             case "auth.unlock":

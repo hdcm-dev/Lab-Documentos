@@ -5,18 +5,40 @@
 @*
     P4 — La puerta de la sesión (DISENO §3.7). Envuelve la página en MainLayout:
 
+      todavía sin auth.status                → «Cargando…» y NO la página (login tradicional, D: ninguna página toca
+                                               documentos antes de saber si hay sesión)
+      auth.status falló                      → «Reintentar», sin la página
       sin «auth.session» o modo Dispositivo  → la página, como en A3
-      SinCuenta                              → «Ingresar con tu cuenta» (sesion.ingresar: sin servidor, deshabilitado + motivo)
-      Ingresando                             → «Completá el ingreso en el navegador…»
-      Bloqueada                              → «Desbloquear» (el diálogo es del sistema)
-      Activa                                 → la página; si se puede, ofrece la seguridad del teléfono
+      SinCuenta                              → modo Formulario: usuario y clave (auth.signInWithPassword); modo
+                                               Navegador: «Ingresar con tu cuenta» (auth.signIn). sesion.ingresar: sin
+                                               servidor, deshabilitado + motivo
+      Ingresando                             → «Ingresando…» o «Completá el ingreso en el navegador…»
+      Bloqueada                              → «Desbloquear» (el diálogo es del sistema; nunca lo dibuja el contenido)
+      Activa                                 → la página; «Bloquear» (auth.lock; si falta, activa antes el desbloqueo); si se
+                                               puede, ofrece la seguridad del teléfono
       Vencida, Revocada                      → la página MÁS una banda de reingreso: se sigue trabajando local (P4)
 
     En la app, el cascarón además pone sus pantallas propias de ingreso y desbloqueo encima (Shell/Auth/*.xaml); esta
     puerta es lo que ve un contenido que corre sin ellas (prueba en navegador) y lo que queda debajo.
-    data-testid: puerta-ingresar, puerta-desbloquear, puerta-reingresar, sesion-usuario, sesion-cerrar.
+    data-testid: puerta-cargando, puerta-reintentar, puerta-usuario, puerta-clave, puerta-mostrar-clave, puerta-ingresar,
+    puerta-desbloquear, puerta-sincuenta, puerta-tarjeta, puerta-emblema, puerta-campo-*, puerta-icono-ojo, puerta-*-error,
+    puerta-clave-visible, puerta-spinner, puerta-leyenda-seguridad, puerta-reingresar, sesion-usuario, sesion-bloquear, sesion-cerrar.
 *@
-@if (Sesion is null || Sesion.Modo == ModoDeSesion.Dispositivo)
+@if (!SesionDelUsuario.Conocida)
+{
+    <section class="fc-puerta" data-testid="puerta-cargando" aria-busy="true">
+        <p>Cargando…</p>
+    </section>
+}
+else if (SesionDelUsuario.FallaDeLectura is { } falla && Sesion is null)
+{
+    <section class="fc-puerta" data-testid="puerta" data-estado="falla">
+        <h1 class="fc-puerta__titulo">No se pudo saber si hay una sesión</h1>
+        <p>@falla</p>
+        <button type="button" class="fc-boton" data-testid="puerta-reintentar" @onclick="SesionDelUsuario.ReintentarAsync">Reintentar</button>
+    </section>
+}
+else if (Sesion is null || Sesion.Modo == ModoDeSesion.Dispositivo)
 {
     @ChildContent
 }
@@ -25,46 +47,97 @@ else
     @switch (Sesion.Estado)
     {
         case EstadoDeSesion.SinCuenta:
-            <section class="fc-puerta" data-testid="puerta" data-estado="sinCuenta">
-                <h1 class="fc-puerta__titulo">Ingresá con tu cuenta</h1>
-                <p>Se abre el navegador del teléfono; al terminar, volvés a la app.</p>
-                @if (SesionDelUsuario.PendientesConservados is int n && n > 0)
-                {
-                    <p class="fc-banda fc-banda--info" data-testid="sesion-pendientes-conservados">
-                        @(n == 1 ? "Quedó 1 pendiente guardado: sale" : $"Quedaron {n} pendientes guardados: salen") cuando vuelvas a ingresar con esa cuenta.
-                    </p>
-                }
-                <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-ingresar" Texto="Ingresar con tu cuenta"
-                               Deshabilitado="SesionDelUsuario.Ocupada" OnClick="SesionDelUsuario.IngresarAsync" />
-                @ErrorDeSesion
+        case EstadoDeSesion.Ingresando when SesionDelUsuario.UsaFormulario:
+            @* Ingresando con formulario: se dibuja el mismo formulario, ocupado (campos readonly, spinner en el botón). *@
+            <section class="fc-puerta" data-testid="puerta" data-estado="@(Sesion.Estado == EstadoDeSesion.Ingresando ? "ingresando" : "sinCuenta")">
+                <div class="fc-puerta__tarjeta" data-testid="puerta-tarjeta">
+                    <header class="fc-puerta__encabezado" data-testid="puerta-sincuenta">
+                        <span class="fc-puerta__emblema" data-testid="puerta-emblema" aria-hidden="true">@Icono(SvgPin)</span>
+                        <p class="fc-puerta__app">Movilidad urbana</p>
+                        <h1 class="fc-puerta__titulo" id="puerta-titulo">Ingresá con tu cuenta</h1>
+                        @if (SesionDelUsuario.UsaFormulario)
+                        {
+                            <p class="fc-puerta__subtitulo">Usá el usuario y la clave que te dio el municipio.</p>
+                        }
+                        else
+                        {
+                            <p class="fc-puerta__subtitulo">Se abre el navegador del teléfono; al terminar, volvés a la app.</p>
+                        }
+                    </header>
+                    @if (SesionDelUsuario.PendientesConservados is int n && n > 0)
+                    {
+                        <p class="fc-banda fc-banda--info fc-puerta__alerta" data-testid="sesion-pendientes-conservados">
+                            @(n == 1 ? "Quedó 1 pendiente guardado: sale" : $"Quedaron {n} pendientes guardados: salen") cuando vuelvas a ingresar con esa cuenta.
+                        </p>
+                    }
+                    @ErrorDeSesion
+                    @if (SesionDelUsuario.UsaFormulario)
+                    {
+                        @Formulario
+                    }
+                    else
+                    {
+                        <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-ingresar" Texto="Ingresar con tu cuenta"
+                                       Clase="fc-boton fc-boton--bloque" Ocupado="SesionDelUsuario.Ocupada"
+                                       Deshabilitado="SesionDelUsuario.Ocupada" OnClick="SesionDelUsuario.IngresarAsync" />
+                    }
+                </div>
             </section>
             break;
 
         case EstadoDeSesion.Ingresando:
             <section class="fc-puerta" data-testid="puerta" data-estado="ingresando">
-                <h1 class="fc-puerta__titulo">Completá el ingreso en el navegador…</h1>
-                <p>Cuando termines, el navegador te devuelve a la app.</p>
+                <div class="fc-puerta__tarjeta" data-testid="puerta-tarjeta">
+                    <header class="fc-puerta__encabezado">
+                        <span class="fc-puerta__emblema" aria-hidden="true">@Icono(SvgPin)</span>
+                        <h1 class="fc-puerta__titulo">Completá el ingreso en el navegador…</h1>
+                        <p class="fc-puerta__subtitulo">Cuando termines, el navegador te devuelve a la app.</p>
+                        <span class="fc-spinner fc-spinner--marca" data-testid="puerta-spinner" aria-hidden="true">@Icono(SvgSpinner, 2.4)</span>
+                    </header>
+                </div>
             </section>
             break;
 
         case EstadoDeSesion.Bloqueada:
             <section class="fc-puerta" data-testid="puerta" data-estado="bloqueada">
-                <h1 class="fc-puerta__titulo">Desbloqueá la app</h1>
-                @if (Sesion.Usuario is { Length: > 0 } usuario)
-                {
-                    <p>Hola, <strong>@usuario</strong>.</p>
-                }
-                <p>Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión.</p>
-                <button type="button" class="fc-boton" data-testid="puerta-desbloquear" disabled="@SesionDelUsuario.Ocupada"
-                        @onclick="SesionDelUsuario.DesbloquearAsync">Desbloquear</button>
-                @ErrorDeSesion
+                <div class="fc-puerta__tarjeta" data-testid="puerta-tarjeta">
+                    <header class="fc-puerta__encabezado">
+                        <span class="fc-puerta__emblema" data-testid="puerta-emblema" aria-hidden="true">@Icono(SvgCandado)</span>
+                        <p class="fc-puerta__app">Movilidad urbana</p>
+                        <h1 class="fc-puerta__titulo">Desbloqueá la app</h1>
+                        @if (Sesion.Usuario is { Length: > 0 } usuario)
+                        {
+                            <p class="fc-puerta__subtitulo">Hola, <strong>@usuario</strong>.</p>
+                        }
+                    </header>
+                    <p class="fc-puerta__leyenda" data-testid="puerta-leyenda-seguridad">
+                        <span class="fc-puerta__leyenda-icono" aria-hidden="true">@Icono(SvgHuella)</span>
+                        <span>Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión.</span>
+                    </p>
+                    @ErrorDeSesion
+                    <button type="button" class="fc-boton fc-boton--bloque" data-testid="puerta-desbloquear" disabled="@SesionDelUsuario.Ocupada"
+                            aria-busy="@(SesionDelUsuario.Ocupada ? "true" : "false")" @onclick="SesionDelUsuario.DesbloquearAsync">
+                        @if (SesionDelUsuario.Ocupada)
+                        {
+                            <span class="fc-spinner" aria-hidden="true">@Icono(SvgSpinner, 2.4)</span><span>Desbloqueando…</span>
+                        }
+                        else
+                        {
+                            <span class="fc-boton__icono" aria-hidden="true">@Icono(SvgCandadoAbierto)</span><span>Desbloquear</span>
+                        }
+                    </button>
+                </div>
             </section>
             break;
 
         default:
             @* Activa, Vencida o Revocada: hay entrada abierta, se trabaja. *@
             <div class="fc-sesion" data-testid="sesion">
-                <span class="fc-sesion__usuario" data-testid="sesion-usuario">@Sesion.Usuario</span>
+                <span class="fc-sesion__quien">
+                    <span class="fc-sesion__avatar" aria-hidden="true">@Icono(SvgPersona)</span>
+                    <span class="fc-sesion__etiqueta">sesión:</span>
+                    <span class="fc-sesion__usuario" data-testid="sesion-usuario">@Sesion.Usuario</span>
+                </span>
                 @if (_confirmandoCierre)
                 {
                     <span class="fc-sesion__confirmar">Lo pendiente se conserva y sale cuando vuelvas a ingresar con esta cuenta.</span>
@@ -74,8 +147,15 @@ else
                 }
                 else
                 {
+                    @if (Sesion.Estado == EstadoDeSesion.Activa && Sesion.DesbloqueoLocal != DesbloqueoLocal.NoDisponible && SesionDelUsuario.PuedeBloquear)
+                    {
+                        @* Prueba de concepto del bloqueo, al lado de «Cerrar sesión»: si la seguridad del teléfono todavía no está
+                           activada, primero la activa (el sistema pide el patrón en el g42) y después bloquea. *@
+                        <button type="button" class="fc-boton fc-boton--fila" data-testid="sesion-bloquear"
+                                disabled="@SesionDelUsuario.Ocupada" @onclick="SesionDelUsuario.BloquearAhoraAsync"><span class="fc-boton__icono" aria-hidden="true">@Icono(SvgCandado)</span><span>Bloquear</span></button>
+                    }
                     <button type="button" class="fc-boton fc-boton--fila" data-testid="sesion-cerrar"
-                            @onclick="() => _confirmandoCierre = true">Cerrar sesión</button>
+                            @onclick="() => _confirmandoCierre = true"><span class="fc-boton__icono" aria-hidden="true">@Icono(SvgSalir)</span><span>Cerrar sesión</span></button>
                 }
             </div>
 
@@ -85,9 +165,16 @@ else
                     @* El motivo del cascarón ya dice qué pasó y qué hacer; sin motivo, el texto por defecto. *@
                     <strong>@(Sesion.Motivo ?? (Sesion.Estado == EstadoDeSesion.Vencida ? "Tu sesión venció: ingresá para enviar lo pendiente." : "Tu sesión fue cerrada: ingresá de nuevo para enviar lo pendiente."))</strong>
                     <span>Mientras tanto podés seguir trabajando: lo que hagas queda guardado.</span>
-                    <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-reingresar" Texto="Ingresar de nuevo"
-                                   Clase="fc-boton fc-boton--secundario" Deshabilitado="SesionDelUsuario.Ocupada"
-                                   OnClick="SesionDelUsuario.IngresarAsync" />
+                    @if (SesionDelUsuario.UsaFormulario)
+                    {
+                        @Formulario
+                    }
+                    else
+                    {
+                        <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" TestId="puerta-reingresar" Texto="Ingresar de nuevo"
+                                       Clase="fc-boton fc-boton--secundario" Deshabilitado="SesionDelUsuario.Ocupada"
+                                       OnClick="SesionDelUsuario.IngresarAsync" />
+                    }
                     @ErrorDeSesion
                 </section>
             }
@@ -126,14 +213,136 @@ else
 
     private bool _confirmandoCierre;
 
+    // Login tradicional — El formulario propio. La clave vive en el componente sólo hasta enviarla (ver IngresarConClaveAsync).
+    private string _usuario = "";
+    private string _clave = "";
+    private bool _mostrarClave;
+
+    private bool _errUsuario;
+    private bool _errClave;
+    private ElementReference _refUsuario;
+    private ElementReference _refClave;
+    private ElementReference? _enfocar;
+
+    // Ocupada: una operación de sesión en curso, o el estado Ingresando con formulario.
+    private bool FormularioOcupado => SesionDelUsuario.Ocupada || Sesion?.Estado == EstadoDeSesion.Ingresando;
+
+    // En Vencida o Revocada el usuario viene precargado: es la misma cuenta que vuelve a ingresar.
+    private RenderFragment Formulario => __builder =>
+    {
+        var ocupada = FormularioOcupado;
+        <form class="fc-puerta__formulario" data-testid="puerta-formulario" aria-labelledby="@(Sesion?.Estado is EstadoDeSesion.SinCuenta or EstadoDeSesion.Ingresando ? "puerta-titulo" : null)"
+              novalidate @onsubmit="IngresarConClaveAsync" @onsubmit:preventDefault>
+            <div class="fc-campo @(_errUsuario ? "fc-campo--error" : "")" data-testid="puerta-campo-usuario">
+                <label class="fc-campo__etiqueta" for="puerta-usuario">Usuario</label>
+                <div class="fc-campo__envoltura">
+                    <span class="fc-campo__icono" aria-hidden="true">@Icono(SvgPersona)</span>
+                    <input id="puerta-usuario" name="username" type="text" class="fc-input fc-input--con-icono" data-testid="puerta-usuario"
+                           autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="next" inputmode="text"
+                           aria-invalid="@(_errUsuario ? "true" : "false")" aria-describedby="@(_errUsuario ? "puerta-usuario-error" : null)"
+                           @bind="_usuario" @bind:event="oninput" @ref="_refUsuario" readonly="@ocupada" />
+                </div>
+                @if (_errUsuario)
+                {
+                    <p id="puerta-usuario-error" class="fc-campo__mensaje" role="alert" data-testid="puerta-usuario-error">Escribí tu usuario.</p>
+                }
+            </div>
+            <div class="fc-campo @(_errClave ? "fc-campo--error" : "")" data-testid="puerta-campo-clave">
+                <label class="fc-campo__etiqueta" for="puerta-clave">Clave</label>
+                <div class="fc-campo__envoltura">
+                    <span class="fc-campo__icono" aria-hidden="true">@Icono(SvgCandado)</span>
+                    <input id="puerta-clave" name="password" type="@(_mostrarClave ? "text" : "password")"
+                           class="fc-input fc-input--con-icono fc-input--con-accion" data-testid="puerta-clave"
+                           autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="go"
+                           aria-invalid="@(_errClave ? "true" : "false")" aria-describedby="@(_errClave ? "puerta-clave-error" : null)"
+                           @bind="_clave" @bind:event="oninput" @ref="_refClave" readonly="@ocupada" />
+                    <button type="button" class="fc-campo__ojo" data-testid="puerta-mostrar-clave"
+                            aria-label="Mostrar clave" aria-pressed="@(_mostrarClave ? "true" : "false")" aria-controls="puerta-clave" disabled="@ocupada"
+                            @onclick="() => _mostrarClave = !_mostrarClave">
+                        <span class="fc-campo__ojo-icono" data-testid="puerta-icono-ojo" data-estado="@(_mostrarClave ? "visible" : "oculta")">
+                            @Icono(_mostrarClave ? SvgOjoTachado : SvgOjo)
+                        </span>
+                    </button>
+                </div>
+                @if (_errClave)
+                {
+                    <p id="puerta-clave-error" class="fc-campo__mensaje" role="alert" data-testid="puerta-clave-error">Escribí tu clave.</p>
+                }
+                <p class="fc-sr" aria-live="polite" data-testid="puerta-clave-visible">@(_mostrarClave ? "La clave está visible." : "")</p>
+            </div>
+            <BotonDeAccion Accion="@PoliticaDeAcciones.Ingresar" Tipo="submit"
+                           TestId="@(Sesion?.Estado is EstadoDeSesion.Vencida or EstadoDeSesion.Revocada ? "puerta-reingresar" : "puerta-ingresar")"
+                           Clase="fc-boton fc-boton--bloque" Ocupado="ocupada" Deshabilitado="ocupada">
+                @if (ocupada)
+                {
+                    <span class="fc-spinner" data-testid="puerta-spinner" aria-hidden="true">@Icono(SvgSpinner, 2.4)</span><span>Ingresando…</span>
+                }
+                else
+                {
+                    <span>Ingresar</span>
+                }
+            </BotonDeAccion>
+        </form>
+    };
+
+    private async Task IngresarConClaveAsync()
+    {
+        if (FormularioOcupado) return;
+        _mostrarClave = false;
+        _errUsuario = _usuario.Trim().Length == 0;
+        _errClave = _clave.Length == 0;
+        if (_errUsuario || _errClave)
+        {
+            // Error junto al campo: no se llama a la sesión.
+            _enfocar = _errUsuario ? _refUsuario : _refClave;
+            return;
+        }
+        // La clave sale del componente ANTES del await: el campo queda vacío pase lo que pase con el ingreso.
+        var clave = _clave;
+        _clave = "";
+        // El string ya ligado por @bind sigue en el heap de WASM hasta el GC: en .NET no se puede borrar; sólo se
+        // garantiza que el componente no guarde ninguna referencia.
+        await SesionDelUsuario.IngresarConClaveAsync(_usuario.Trim(), clave);
+        // Credenciales rechazadas: el usuario se conserva y el foco vuelve a la clave (vacía).
+        if (SesionDelUsuario.Error is { Length: > 0 }) _enfocar = _refClave;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_enfocar is { } destino)
+        {
+            _enfocar = null;
+            try { await destino.FocusAsync(); } catch { /* el campo ya no está en pantalla */ }
+        }
+    }
+
     // El error de la última acción de sesión (cancelada o fallida), tal como lo explicó el cascarón.
     private RenderFragment ErrorDeSesion => __builder =>
     {
         if (SesionDelUsuario.Error is { Length: > 0 } error)
         {
-            <span class="fc-accion__motivo fc-accion__motivo--bloqueada" data-testid="sesion-error">@error</span>
+            <div class="fc-banda fc-banda--error fc-puerta__alerta" role="alert" data-testid="sesion-error">
+                @Icono(SvgAlerta)
+                <span>@error</span>
+            </div>
         }
     };
+
+    // Íconos inline (la CSP no deja cargar nada remoto). Todos 24×24, trazo, decorativos.
+    private static MarkupString Icono(string trazos, double grosor = 1.8) => new(
+        $"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"{grosor.ToString(System.Globalization.CultureInfo.InvariantCulture)}\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\">{trazos}</svg>");
+
+    private const string SvgPin = "<path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/>";
+    private const string SvgOjo = "<path d=\"M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>";
+    private const string SvgOjoTachado = "<path d=\"M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.1\"/><path d=\"M6.6 6.6C3.7 8.5 2 12 2 12s3.6 7 10 7a9.7 9.7 0 0 0 5.4-1.6\"/><path d=\"M9.9 9.9a3 3 0 0 0 4.2 4.2\"/><path d=\"M3 3l18 18\"/>";
+    private const string SvgPersona = "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7\"/>";
+    private const string SvgCandado = "<rect x=\"4\" y=\"10\" width=\"16\" height=\"11\" rx=\"2\"/><path d=\"M8 10V7a4 4 0 0 1 8 0v3\"/>";
+    private const string SvgCandadoAbierto = "<rect x=\"4\" y=\"10\" width=\"16\" height=\"11\" rx=\"2\"/><path d=\"M8 10V7a4 4 0 0 1 7.7-1.5\"/>";
+    private const string SvgHuella = "<path d=\"M12 11v3a6 6 0 0 1-1 3.3\"/><path d=\"M8.5 8.6A4 4 0 0 1 16 11v2\"/><path d=\"M8 12v1a10 10 0 0 1-.8 4\"/><path d=\"M5 9a7 7 0 0 1 13.5-1.5\"/><path d=\"M19 11v1.5\"/><path d=\"M16 16.5a14 14 0 0 1-1 3.5\"/>";
+    private const string SvgSalir = "<path d=\"M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3\"/><path d=\"M10 17l5-5-5-5\"/><path d=\"M15 12H4\"/>";
+    private const string SvgAlerta = "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7.5v5.5\"/><path d=\"M12 16.5h.01\"/>";
+    private const string SvgSpinner = "<circle cx=\"12\" cy=\"12\" r=\"9\" opacity=\".25\"/><path d=\"M21 12a9 9 0 0 0-9-9\"/>";
 
     private SesionInformada? Sesion => SesionDelUsuario.Sesion;
 
@@ -151,7 +360,12 @@ else
         await SesionDelUsuario.CerrarAsync();
     }
 
-    private void AlCambiar() => InvokeAsync(StateHasChanged);
+    private void AlCambiar() => InvokeAsync(() =>
+    {
+        // Vencida o Revocada: el formulario compacto trae precargado el usuario de la misma cuenta.
+        if (_usuario.Length == 0 && Sesion?.Usuario is { Length: > 0 } usuario) _usuario = usuario;
+        StateHasChanged();
+    });
 
     public void Dispose() => SesionDelUsuario.Cambio -= AlCambiar;
 }

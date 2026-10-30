@@ -46,8 +46,8 @@ public static class PoliticaDeAcciones
             "Registrar una encuesta: se guarda con su fila del outbox y sale cuando haya red y sesión (P5)."),
         new("outbox.enviarAhora", ClaseDeAccion.SoloEnLinea, ["outbox.sendNow"],
             "«Enviar ahora»: fuerza una pasada del sincronizador. Sin servidor no tiene sentido: se bloquea con motivo."),
-        new(Ingresar, ClaseDeAccion.SoloEnLinea, ["auth.signIn"],
-            "Ingresar con la cuenta (OIDC en el navegador del sistema): necesita llegar al emisor.")
+        new(Ingresar, ClaseDeAccion.SoloEnLinea, ["auth.signIn", "auth.signInWithPassword"],
+            "Ingresar con la cuenta (formulario propio o navegador del sistema): necesita llegar al emisor.")
     ];
 
     public static AccionDeclarada? Buscar(string id) =>

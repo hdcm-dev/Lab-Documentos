@@ -36,6 +36,13 @@ public sealed class ClienteDelEmisor(ConfiguracionOidc configuracion, IMonitorDe
     public async Task<RespuestaDeTokens> CanjearAsync(string code, string verificador, CancellationToken ct) =>
         await PostearAsync((await DescubrirAsync(ct)).TokenEndpoint, FlujoOidc.CuerpoDelCanje(Configuracion, code, verificador), ct);
 
+    /// <summary>
+    /// Login tradicional (first-party, ROPC en el emisor de ensayo; ver FlujoOidc.CuerpoDelIngresoConClave). La clave
+    /// sólo viaja en el cuerpo del POST: ni esta clase ni ManejadorDeRed registran cuerpos (sólo URL y código HTTP).
+    /// </summary>
+    public async Task<RespuestaDeTokens> IngresarConClaveAsync(string usuario, string clave, CancellationToken ct) =>
+        await PostearAsync((await DescubrirAsync(ct)).TokenEndpoint, FlujoOidc.CuerpoDelIngresoConClave(Configuracion, usuario, clave), ct);
+
     /// <summary>grant_type=refresh_token (RFC 6749 §6). invalid_grant llega como <see cref="ErrorDelEmisorException"/>.</summary>
     public async Task<RespuestaDeTokens> RenovarAsync(string refreshToken, CancellationToken ct) =>
         await PostearAsync((await DescubrirAsync(ct)).TokenEndpoint, FlujoOidc.CuerpoDeRenovacion(Configuracion, refreshToken), ct);

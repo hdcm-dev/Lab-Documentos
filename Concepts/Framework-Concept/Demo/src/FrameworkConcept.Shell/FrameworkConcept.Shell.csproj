@@ -43,6 +43,8 @@
          -p:FcOidcClienteId=fc-demo-app                 cliente público del realm (infra/keycloak/)
          -p:FcPantallasDeSesion=Contenido               quién muestra el ingreso y el desbloqueo: Contenido (la puerta de
                                                         sesión del contenido, por defecto) o Cascaron (pantallas XAML)
+         -p:FcModoDeIngreso=Formulario                  cómo se ingresa con la cuenta: Formulario (usuario y clave en la app,
+                                                        por defecto) o Navegador (Custom Tab, OIDC code + PKCE)
        Los valores quedan grabados en el ensamblado y los lee ConfiguracionDelCascaron. -->
   <PropertyGroup>
     <FcCanal Condition="'$(FcCanal)' == ''">dev</FcCanal>
@@ -51,6 +53,7 @@
     <FcKeyId Condition="'$(FcKeyId)' == ''">demo-2026</FcKeyId>
     <FcOidcClienteId Condition="'$(FcOidcClienteId)' == ''">fc-demo-app</FcOidcClienteId>
     <FcPantallasDeSesion Condition="'$(FcPantallasDeSesion)' == ''">Contenido</FcPantallasDeSesion>
+    <FcModoDeIngreso Condition="'$(FcModoDeIngreso)' == ''">Formulario</FcModoDeIngreso>
   </PropertyGroup>
 
   <ItemGroup>
@@ -73,6 +76,10 @@
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>FcPantallasDeSesion</_Parameter1>
       <_Parameter2>$(FcPantallasDeSesion)</_Parameter2>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcModoDeIngreso</_Parameter1>
+      <_Parameter2>$(FcModoDeIngreso)</_Parameter2>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>FcOidcAutoridad</_Parameter1>

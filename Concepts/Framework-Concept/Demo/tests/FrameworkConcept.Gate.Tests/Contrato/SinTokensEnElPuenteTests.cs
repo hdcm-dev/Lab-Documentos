@@ -23,11 +23,31 @@ public class SinTokensEnElPuenteTests
     [Description("P3 — Ningún parámetro, respuesta ni evento de la tabla de métodos nombra un token o una credencial")]
     public void LaTablaNoLlevaTokens()
     {
+        // Login tradicional (puente 1.2): la única excepción es el método del ingreso first-party; sus campos se
+        // revisan en LaCredencialCruzaUnaSolaVez. Su respuesta sí entra en la revisión general.
         var campos = TablaDeMetodos.Metodos
-            .SelectMany(m => m.Parametros.Concat(m.Respuesta).Select(c => $"{m.Nombre}: {c.Nombre} ({c.Tipo})"))
+            .SelectMany(m => (m.Nombre == MetodoDeLaCredencial ? m.Respuesta : m.Parametros.Concat(m.Respuesta))
+                .Select(c => $"{m.Nombre.Replace(MetodoDeLaCredencial, "")}: {c.Nombre} ({c.Tipo})"))
             .Concat(TablaDeMetodos.Eventos.SelectMany(e => e.Parametros.Select(c => $"evento {e.Nombre}: {c.Nombre} ({c.Tipo})")));
 
         Assert.That(campos.Where(Prohibido).ToList(), Is.Empty);
+    }
+
+    private const string MetodoDeLaCredencial = "auth.signInWithPassword";
+
+    [Test]
+    [Description("Login tradicional, regla 2 — La credencial cruza el puente UNA vez, en un método específico, y nunca vuelve")]
+    public void LaCredencialCruzaUnaSolaVez()
+    {
+        var metodo = TablaDeMetodos.Buscar(MetodoDeLaCredencial);
+        Assert.That(metodo, Is.Not.Null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(metodo!.Parametros.Select(c => c.Nombre), Is.EqualTo(new[] { "usuario", "clave" }));
+            Assert.That(metodo.Respuesta.Select(c => c.Tipo), Is.EqualTo(new[] { "SesionInformada" }));
+            Assert.That(TablaDeMetodos.Metodos.Where(m => m.Parametros.Any(c => c.Nombre == "clave")).Select(m => m.Nombre),
+                Is.EqualTo(new[] { MetodoDeLaCredencial }), "otro método recibe «clave»");
+        });
     }
 
     [TestCase(typeof(SesionInformada))]

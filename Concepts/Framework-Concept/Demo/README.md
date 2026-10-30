@@ -333,7 +333,22 @@ Al terminar: `infra/keycloak/keycloak.sh parar` (el realm se reimporta al levant
   (D-03 = T1). En un emulador: `adb shell locksettings set-pin 1234`. Después se enrola una huella en Ajustes,
   apoyando el dedo simulado con `adb emu finger touch 1` cuando lo pide.
 
-#### Cómo se prueba el desbloqueo
+#### Login tradicional (por defecto)
+
+El APK se compila con `-p:FcModoDeIngreso=Formulario` (es el valor por defecto; `Navegador` vuelve a la Custom Tab). Con `-p:FcPantallasDeSesion=Cascaron` las pantallas XAML ingresan siempre por navegador.
+La app arranca con «Cargando…» y muestra su propio formulario: usuario **`encuestador`**, clave
+**`demo-encuestador`**, «Ingresar». Después:
+
+1. Acepta «¿Usar la seguridad del teléfono?» → «Sí, usarla» → patrón (o PIN, o huella). Sin este paso no aparece el
+   botón «Bloquear».
+2. «Bloquear», junto a «Cerrar sesión», bloquea la app ya, igual que al volver de segundo plano.
+3. «Desbloquear» abre el diálogo del sistema: en el moto g42, el patrón.
+
+El realm tiene que tener el Direct Access Grant habilitado (`infra/keycloak/realm-fc-demo.json`, sólo para este
+emisor de ensayo). Un Keycloak levantado con el realm anterior contesta «El emisor no permite el ingreso con clave para
+esta app.»: `infra/keycloak/keycloak.sh parar` y `levantar` para reimportarlo.
+
+#### Cómo se prueba el desbloqueo (modo Navegador)
 
 1. Abrir la app → «Ingresar con tu cuenta» → formulario de Keycloak en el navegador del sistema → vuelve a la app
    como `encuestador` y pregunta «¿Usar la seguridad del teléfono para entrar?» → «Sí, usarla» → diálogo del sistema

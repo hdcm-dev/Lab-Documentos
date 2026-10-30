@@ -10,7 +10,7 @@
     contenido viejo no la mostrara, el cascarón rechaza el método igual (AccionBloqueada): es un doble cerrojo.
 *@
 <span class="fc-accion">
-    <button type="button" class="@Clase" data-testid="@TestId" data-accion="@Accion"
+    <button type="@Tipo" class="@Clase" aria-busy="@(Ocupado ? "true" : null)" data-testid="@TestId" data-accion="@Accion"
             disabled="@(Deshabilitado || !Permitida)" title="@Evaluacion?.Motivo" @onclick="OnClick">
         @if (ChildContent is not null)
         {
@@ -33,6 +33,12 @@
     [Parameter, EditorRequired] public string Accion { get; set; } = "";
 
     [Parameter] public string? Texto { get; set; }
+
+    /// <summary>Tipo del botón: «button» (por defecto) o «submit» dentro de un formulario.</summary>
+    [Parameter] public string Tipo { get; set; } = "button";
+
+    /// <summary>true mientras la acción está en curso: aria-busy y estilo de ocupado.</summary>
+    [Parameter] public bool Ocupado { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 

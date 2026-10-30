@@ -10,12 +10,13 @@
 //
 // Se configura con la dirección de la página (se recuerda en sessionStorage):
 //   ?definicion=1|2        versión vigente de encuesta-movilidad (archivo definiciones/encuesta-movilidad/vN.json)
-//   ?puente=1.1.0          versión del puente que informa el handshake
+//   ?puente=1.2.0          versión del puente que informa el handshake
 //   ?catalogo=a,b          ids del catálogo (por defecto device.info,network.status,auth.session; «ninguno» = vacío)
 //   ?red=0|1               conectividad que informa network.status
 //   ?estado=enLinea        estado combinado de red (folio 038): sinRed, redSinServidor, enLinea, enLineaMedida
 //   ?sesion=dispositivo    modo y estado de la sesión (folio 038): dispositivo, o oidc-<estado> (oidc-sinCuenta, oidc-activa…)
 //   ?sesionFalla=cancelar  auth.signIn y auth.unlock contestan AutenticacionCancelada (-32006)
+//   ?ingreso=formulario   modo de ingreso que informa auth.status (login tradicional): formulario o navegador
 //   ?sinpuente=1           no define window.HybridWebView (el contenido abierto fuera del cascarón)
 //   ?reiniciar=1           borra los datos guardados
 // Y expone window.puenteSimulado para que la prueba mire y provoque cosas (eventos, outbox, llamadas).
@@ -28,7 +29,7 @@
     // --- Configuración -----------------------------------------------------------------------------------
     const consulta = new URLSearchParams(location.search);
     const config = Object.assign(
-        { definicion: '1', puente: '1.1.0', catalogo: 'device.info,network.status,auth.session', red: '1', estado: '', sinpuente: '0', sesion: 'dispositivo', sesionFalla: '' },
+        { definicion: '1', puente: '1.2.0', ingreso: 'formulario', catalogo: 'device.info,network.status,auth.session', red: '1', estado: '', sinpuente: '0', sesion: 'dispositivo', sesionFalla: '' },
         JSON.parse(sessionStorage.getItem(CLAVE_CONFIG) || '{}'));
     for (const clave of Object.keys(config)) {
         if (consulta.has(clave)) config[clave] = consulta.get(clave);
@@ -42,8 +43,8 @@
     const llamadas = [];       // cada sobre recibido, para que la prueba lo mire
     let listo = null;          // la versión que avisó bridge.ready
 
-    // Versión de cada entrada como en Core/Contracts/Puente/CatalogoDeCapacidades.cs (puente 1.1).
-    const versionDeEntrada = { 'device.info': '1.0.0', 'network.status': '1.1.0', 'auth.session': '1.0.0' };
+    // Versión de cada entrada como en Core/Contracts/Puente/CatalogoDeCapacidades.cs (puente 1.2).
+    const versionDeEntrada = { 'device.info': '1.0.0', 'network.status': '1.1.0', 'auth.session': '1.1.0' };
     const catalogo = config.catalogo === 'ninguno' ? [] : config.catalogo.split(',').filter(Boolean)
         .map(id => ({ id: id, version: versionDeEntrada[id] || '1.0.0' }));
     const tiene = id => catalogo.some(e => e.id === id);
@@ -127,6 +128,20 @@
             if (config.sesionFalla === 'cancelar') throw new ErrorDelPuente(-32006, 'Cerraste el navegador sin terminar el ingreso.');
             return { sesion: cambiarSesion({ estado: 'activa', usuario: 'encuestador', motivo: undefined }) };
         },
+        // Login tradicional (puente 1.2): la clave de prueba es la del realm de ensayo. No se guarda ni se registra.
+        'auth.signInWithPassword': p => {
+            exigirOidc();
+            if (!p || !p.usuario || !p.clave) throw new ErrorDelPuente(-32007, 'Falta usuario o clave.');
+            if (p.clave !== 'demo-encuestador') throw new ErrorDelPuente(-32007, 'Usuario o clave incorrectos.');
+            return { sesion: cambiarSesion({ estado: 'activa', usuario: p.usuario, motivo: undefined }) };
+        },
+        'auth.lock': () => {
+            exigirOidc();
+            const actual = sesionSimulada();
+            if (actual.estado !== 'activa') return { sesion: actual };
+            if (actual.desbloqueoLocal !== 'activado') throw new ErrorDelPuente(-32007, 'Activá la seguridad del teléfono para poder bloquear la app.');
+            return { sesion: cambiarSesion({ estado: 'bloqueada', motivo: 'Desbloqueá con la seguridad del teléfono.' }) };
+        },
         'auth.enableUnlock': () => {
             exigirOidc();
             return { sesion: cambiarSesion({ desbloqueoLocal: 'activado' }) };
@@ -147,13 +162,15 @@
     const capacidadDe = {
         'device.info': 'device.info', 'network.status': 'network.status',
         'auth.status': 'auth.session', 'auth.signIn': 'auth.session', 'auth.enableUnlock': 'auth.session',
+        'auth.signInWithPassword': 'auth.session', 'auth.lock': 'auth.session',
         'auth.unlock': 'auth.session', 'auth.signOut': 'auth.session'
     };
 
     // Folio 038 (red) — Doble cerrojo, como DespachadorDelPuente: un método que ejecuta una acción no permitida se
     // rechaza con AccionBloqueada (-32005) aunque el contenido no haya deshabilitado el botón.
     const metodosDeAccion = { 'documents.put': 'localidades.guardar', 'documents.delete': 'localidades.guardar',
-        'encuestas.enqueueRespuesta': 'encuesta.enviar', 'outbox.sendNow': 'outbox.enviarAhora', 'auth.signIn': 'sesion.ingresar' };
+        'encuestas.enqueueRespuesta': 'encuesta.enviar', 'outbox.sendNow': 'outbox.enviarAhora', 'auth.signIn': 'sesion.ingresar',
+        'auth.signInWithPassword': 'sesion.ingresar' };
     for (const [metodo, accion] of Object.entries(metodosDeAccion)) {
         const ejecutar = metodos[metodo];
         metodos[metodo] = p => {
@@ -246,7 +263,8 @@
         const motivos = { vencida: 'Tu sesión venció: ingresá para enviar lo pendiente.', revocada: 'El servidor cerró tu sesión: ingresá de nuevo para enviar lo pendiente.' };
         return (sesion = {
             modo: 'oidc', estado: estado, usuario: estado === 'sinCuenta' ? undefined : 'encuestador',
-            desbloqueoLocal: estado === 'bloqueada' ? 'activado' : 'disponible', motivo: motivos[estado]
+            desbloqueoLocal: estado === 'bloqueada' ? 'activado' : 'disponible', motivo: motivos[estado],
+            modoDeIngreso: config.ingreso === 'navegador' ? 'navegador' : 'formulario'
         });
     }
 

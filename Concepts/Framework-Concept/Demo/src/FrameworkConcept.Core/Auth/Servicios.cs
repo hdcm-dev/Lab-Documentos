@@ -43,6 +43,15 @@ public interface ISesionDelUsuario
     /// <summary>auth.signIn — OIDC code + PKCE en el navegador del sistema.</summary>
     Task<SesionInformada> IngresarAsync(CancellationToken ct);
 
+    /// <summary>
+    /// auth.signInWithPassword — login tradicional (first-party): canjea usuario y clave en el emisor y los descarta.
+    /// La clave nunca se registra ni se guarda.
+    /// </summary>
+    Task<SesionInformada> IngresarConClaveAsync(string usuario, string clave, CancellationToken ct);
+
+    /// <summary>auth.lock — bloquea ya (Activa → Bloqueada), igual que al volver de segundo plano. Exige el desbloqueo activado.</summary>
+    Task<SesionInformada> BloquearAsync(CancellationToken ct);
+
     /// <summary>auth.enableUnlock — sella el refresh token con una clave del Keystore atada a la autenticación del dispositivo.</summary>
     Task<SesionInformada> ActivarDesbloqueoAsync(CancellationToken ct);
 

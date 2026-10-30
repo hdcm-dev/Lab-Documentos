@@ -12,7 +12,10 @@
 # Qué levanta (todo en el contenedor, nada en la máquina):
 #   imagen   quay.io/keycloak/keycloak:26.7.5 fijada por digest (publicada el 2026-09-30)
 #   realm    infra/keycloak/realm-fc-demo.json, importado al arrancar (--import-realm):
-#              cliente público fc-demo-app, sólo authorization code, PKCE S256 obligatorio,
+#              cliente público fc-demo-app, authorization code con PKCE S256 obligatorio y, SÓLO en este emisor de
+#              ensayo, Direct Access Grant (grant_type=password) para el login tradicional de la demo
+#              (-p:FcModoDeIngreso=Formulario). Un Keycloak ya levantado con el realm viejo contesta
+#              unauthorized_client: «parar» y «levantar» para reimportarlo, o activarlo en la consola de admin,
 #              redirect com.frameworkconcept.demo://callback (RFC 8252 §7.1),
 #              mapper de audiencia «fc-receptor» (lo exige el receptor, DISENO §5),
 #              access token 5 min, sesión 30 min sin uso / 10 h máximo,
@@ -26,6 +29,8 @@
 #
 # Variables: FC_KC_IP (203.0.113.10, la IP de la máquina que sirve Keycloak, por la que llega el emulador fc-android-emu-hpdev),
 #            FC_KC_PUERTO (8443), FC_KC_NOMBRE (fc-keycloak).
+#            FC_KC_HOSTNAME: URL pública con la que se anuncia el emisor si llega por un túnel (p. ej. un teléfono real
+#            que no alcanza la máquina); vacía = https://$FC_KC_IP:$FC_KC_PUERTO.
 set -euo pipefail
 
 DEMO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -81,7 +86,7 @@ cmd_levantar() {
       --https-certificate-file=/opt/keycloak/conf/tls/keycloak.crt \
       --https-certificate-key-file=/opt/keycloak/conf/tls/keycloak.key \
       --http-enabled=false \
-      --hostname="https://$IP:$PUERTO" >/dev/null
+      --hostname="${FC_KC_HOSTNAME:-https://$IP:$PUERTO}" >/dev/null
   local i
   for i in $(seq 1 90); do
     if curl -fsS --cacert "$TLS/ca_demo_tls.crt" "$EMISOR/.well-known/openid-configuration" >/dev/null 2>&1; then

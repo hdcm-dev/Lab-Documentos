@@ -223,11 +223,31 @@ cambia.
    escrituras corren fuera del hilo principal (`ConfigureAwait(false)`) y se registran sus tiempos (H-3, §12).
 6. **Identidad:** `sub` y `preferred_username` de las claims del `id_token`. **[arq]** Sin validar la firma del
    id_token en el teléfono: llegó por TLS directo del token endpoint (OIDC Core 1.0 §3.1.3.7, punto 6). El que valida
-   firmas es el receptor (§5).
+   firmas es el receptor (§5). **2026-10-30:** sí se validan `iss` (el del descubrimiento), `aud`/`azp`
+   (`fc-demo-app`) y `exp` (`FlujoOidc.ValidarIdToken`, §3.1.3.7 puntos 2, 3 y 9), en los dos ingresos; el de
+   usuario y clave no manda `nonce` y esto es lo que ata el id_token al canje.
 7. Estado `Activa`. Si `DesbloqueoLocal = Disponible`, el contenido ofrece **«¿Usar la seguridad del teléfono para
    entrar?»** **[§4 paso 2]**.
 
 `auth.signIn` es la acción `sesion.ingresar`, `SoloEnLinea` (§4): sin servidor, el botón dice por qué.
+
+#### Variante first-party (por defecto desde 2026-10-30, `-p:FcModoDeIngreso=Formulario`)
+
+Pedido del PO: «login tradicional», con usuario y clave en un formulario propio de la app y sin navegador. El contenido
+manda la credencial **una vez** por `auth.signInWithPassword(usuario, clave)`. El cascarón la canjea en el
+`token_endpoint` del descubrimiento (`FlujoOidc.CuerpoDelIngresoConClave`: `grant_type=password`, `client_id`,
+`username`, `password`, `scope`) y la descarta. La credencial no se registra en `Bitacora`, en excepciones ni en el
+despachador (que sólo anota el método), y no se persiste. Después del canje el camino es el mismo que el del navegador
+(`AdoptarIdentidadAsync`: identidad, dueño, tokens en memoria, `IngresoExitoso`). El contenido sigue sin ver tokens.
+
+Para el login propio de una app first-party el estándar es el borrador IETF **OAuth 2.0 for First-Party Applications**
+(`draft-ietf-oauth-first-party-apps`). Define un endpoint de autorización por desafío que devuelve un code canjeable con
+PKCE y admite pasos extra como MFA. Keycloak no trae ese endpoint, así que el emisor de ensayo usa **ROPC** (RFC 6749
+§4.3). ROPC está desaconsejado por el BCP RFC 9700 §2.4 y se habilita (`directAccessGrantsEnabled`) **sólo** en
+`infra/keycloak/realm-fc-demo.json`. Límites del ensayo: no hay MFA, y la clave pasa por el WebView de un contenido que
+se actualiza OTA (lo atenúa la firma del canal). `invalid_grant` → «Usuario o clave incorrectos.»; otro código (por
+ejemplo `unauthorized_client` con el realm viejo) → «El emisor no permite el ingreso con clave para esta app.».
+`-p:FcModoDeIngreso=Navegador` vuelve al flujo de esta sección (Custom Tab).
 
 **La CA de demostración y el navegador.** **[arq; NO VERIFICADO]** El `HttpClient` del cascarón confía en la CA de
 demostración por `network_security_config` (sólo Debug), pero **el navegador del sistema no lee esa configuración**.
@@ -302,19 +322,41 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 > ingreso abre una Custom Tab (WebAuthenticator), como pide RFC 8252. `-p:FcPantallasDeSesion=Cascaron` vuelve a las
 > pantallas XAML.
 
-`Content/Auth/PuertaDeSesion.razor` envuelve `@Body` en `MainLayout` (ya montada; hoy deja pasar):
+> **2026-10-30 — Login tradicional** (pedido del PO). En modo `Formulario` (por defecto) `SinCuenta` muestra un
+> formulario propio (usuario, clave con «Mostrar/Ocultar», «Ingresar» deshabilitado sin servidor con su motivo). La
+> clave se borra del componente antes de enviarla. Con la sesión `Activa` y el desbloqueo activado aparece «Bloquear»
+> (`auth.lock`) junto a «Cerrar sesión». Al desbloquear se abre el diálogo del sistema (en el g42, el patrón). **Arreglo:**
+> mientras `auth.status` está en vuelo la puerta mostraba la página y `Inicio` llegaba a `documents.put` sin sesión
+> (-32005 «Ingresá con tu cuenta»). Ahora la página no se monta hasta conocer la sesión, ni en `SinCuenta`,
+> `Ingresando` o `Bloqueada`. Al pasar a `Activa` se monta y carga con la sesión abierta.
+
+> **Qué es «Bloquear».** Un bloqueo de la app, igual que el de segundo plano: la página se desmonta (lo no guardado
+> de una pantalla abierta se pierde; lo encolado no), el despachador rechaza los datos (-32005) y la renovación no corre.
+> Se suelta el access de memoria; el refresh de memoria **no**, porque re-sellarlo pediría el diálogo del sistema y con
+> rotación el sellado puede ser más viejo. No protege el refresh contra quien ya controle el proceso. El botón sólo
+> aparece si el cascarón trae `auth.session` 1.1.0 (puente 1.2). Contra la prueba de claves: espera creciente en el
+> cascarón tras cada `invalid_grant` (2 s por intento, hasta 30 s) y `bruteForceProtected` en el realm de ensayo.
+> Con `-p:FcPantallasDeSesion=Cascaron` el ingreso es siempre por navegador (`IngresoPage`), aunque el modo sea
+> `Formulario`.
+
+`Content/Auth/PuertaDeSesion.razor` envuelve `@Body` en `MainLayout`:
 
 | Sesión | Qué muestra |
 | --- | --- |
+| Todavía sin respuesta de `auth.status` | «Cargando…» (`puerta-cargando`), **sin** la página |
+| `auth.status` falló | «Reintentar» (`puerta-reintentar`), sin la página |
 | Sin `auth.session` en el catálogo, o modo Dispositivo | La página (como A3) |
-| `SinCuenta` | Panel «Ingresar con tu cuenta» con el botón de `sesion.ingresar` (deshabilitado + motivo sin servidor) |
-| `Ingresando` | «Completá el ingreso en el navegador…» |
-| `Activa` | La página. Si `DesbloqueoLocal = Disponible` y todavía no se preguntó: «¿Usar la seguridad del teléfono para entrar?» (Sí → `auth.enableUnlock`) |
+| `SinCuenta`, modo `Formulario` | Formulario propio: usuario, clave, «Ingresar» (`sesion.ingresar`, deshabilitado + motivo sin servidor) → `auth.signInWithPassword` |
+| `SinCuenta`, modo `Navegador` | Panel «Ingresar con tu cuenta» con el botón de `sesion.ingresar` (deshabilitado + motivo sin servidor) |
+| `Ingresando` | «Ingresando…» (formulario) o «Completá el ingreso en el navegador…» |
+| `Activa` | La página, con «Bloquear» (`auth.lock`) en la línea de estado si el desbloqueo está activado. Si `DesbloqueoLocal = Disponible` y todavía no se preguntó: «¿Usar la seguridad del teléfono para entrar?» (Sí → `auth.enableUnlock`) |
 | `Bloqueada` | Panel «Desbloquear» → `auth.unlock` (el diálogo es nativo, del sistema) |
 | `Vencida`, `Revocada` | La página **más** una banda «Tu sesión venció / fue revocada: ingresá para enviar lo pendiente» con el botón de reingreso. Se sigue trabajando local **[P4 sin período de gracia; sin red se opera]**. Sólo en el proceso donde hubo prueba local (corrector E03, §12) |
 
 En la línea de estado: el usuario y «Cerrar sesión», con una confirmación que dice que lo pendiente se conserva.
-`data-testid` previstos: `puerta-ingresar`, `puerta-desbloquear`, `sesion-usuario`, `sesion-cerrar`.
+`data-testid`: `puerta-cargando`, `puerta-usuario`, `puerta-clave`, `puerta-mostrar-clave`, `puerta-ingresar`,
+`puerta-desbloquear`, `puerta-reingresar`, `sesion-usuario`, `sesion-bloquear`, `sesion-cerrar`. En `Vencida` y
+`Revocada`, modo `Formulario`, la banda de reingreso trae el mismo formulario con el usuario precargado.
 
 ### 3.8 Cierre de sesión **[P4, §4]**
 
@@ -367,7 +409,7 @@ permitida, «Ya ingresaste».
 | `localidades.guardar` | `SoloLocal` | `documents.put`, `documents.delete` | Localidades: Guardar, Eliminar |
 | `encuesta.enviar` | `Encolable` | `encuestas.enqueueRespuesta` | Encuesta: Registrar |
 | `outbox.enviarAhora` | `SoloEnLinea` | `outbox.sendNow` | Línea de estado: «Enviar ahora» junto a «Por enviar: N» — **la que demuestra el bloqueo** |
-| `sesion.ingresar` | `SoloEnLinea` | `auth.signIn` | Puerta de sesión: «Ingresar con tu cuenta» |
+| `sesion.ingresar` | `SoloEnLinea` | `auth.signIn`, `auth.signInWithPassword` (puente 1.2) | Puerta de sesión: «Ingresar con tu cuenta» o «Ingresar» del formulario |
 
 ### 4.5 Interfaz **[§7 «botón deshabilitado + motivo»]**
 
@@ -396,7 +438,12 @@ cuatro acciones. Una `Encolable` pendiente se ejecuta igual y la página dice «
 - **Red:** el receptor corre en el contenedor `fc-demo-receptor` y llega al emisor por `https://203.0.113.10:8443`.
   NO VERIFICADO desde dentro del contenedor (el emulador sí llega, §9).
 
-## 6. Contrato del puente 1.1.0
+## 6. Contrato del puente 1.1.0 (1.2.0 desde el login tradicional)
+
+> **1.2.0 (2026-10-30):** `auth.signInWithPassword` y `auth.lock`, métodos nuevos (MENOR); `auth.session` 1.1.0;
+> `SesionInformada.modoDeIngreso?`. Se eligió un método nuevo en lugar de parámetros opcionales en `auth.signIn`
+> porque un parámetro nuevo, aunque sea opcional, cambia la forma del sobre: es MAYOR (`ClasificadorDeCambios`). Además,
+> la credencial cruza por un método propio.
 
 **Clasificación [P3]:** todo es MENOR. Comprobado con la compuerta contra una base 1.0.0 (el `contrato.json` de A3):
 `LaVersionSubeSegunLaClasificacionFrenteALaBase` en verde con `FC_GATE_BASE` armada a mano.
@@ -414,6 +461,8 @@ cuatro acciones. Una `Encolable` pendiente se ejecuta igual y la página dice «
 | `auth.enableUnlock` | — | `sesion: SesionInformada` | `auth.session` | `AtencionDeSesion` |
 | `auth.unlock` | — | `sesion: SesionInformada` | `auth.session` | `AtencionDeSesion` |
 | `auth.signOut` | — | `sesion: SesionInformada`, `pendientesConservados: int` | `auth.session` | `AtencionDeSesion` |
+| `auth.signInWithPassword` (1.2) | `usuario: string`, `clave: string` | `sesion: SesionInformada` | `auth.session` 1.1.0 | `AtencionDeSesion` (la clave no se registra ni se guarda) |
+| `auth.lock` (1.2) | — | `sesion: SesionInformada` | `auth.session` 1.1.0 | `AtencionDeSesion` (exige el desbloqueo activado) |
 
 Nombres: área del framework en inglés (`actions`, `auth`, como `bridge`, `documents`, `outbox`, `network`);
 tipos y valores del dominio en español.
@@ -432,7 +481,7 @@ tipos y valores del dominio en español.
 | --- | --- | --- |
 | `EstadoDeRed` | `sinRed`, `redSinServidor`, `enLinea`, `enLineaMedida` | `Core/Red/EstadoDeRed.cs` |
 | `EvaluacionDeAccion` | `accion`, `clase` (`soloLocal`, `encolable`, `soloEnLinea`, `soloWiFi`), `permitida`, `quedaPendiente`, `motivo?` | `Core/Red/PoliticaDeAcciones.cs` |
-| `SesionInformada` | `modo` (`dispositivo`, `oidc`), `estado` (`sinCuenta`, `ingresando`, `activa`, `bloqueada`, `vencida`, `revocada`), `usuario?`, `desbloqueoLocal` (`noDisponible`, `disponible`, `activado`), `motivo?` | `Core/Auth/Sesion.cs` |
+| `SesionInformada` | `modo` (`dispositivo`, `oidc`), `estado` (`sinCuenta`, `ingresando`, `activa`, `bloqueada`, `vencida`, `revocada`), `usuario?`, `desbloqueoLocal` (`noDisponible`, `disponible`, `activado`), `motivo?`, `modoDeIngreso?` (`formulario`, `navegador`; 1.2, falta = navegador) | `Core/Auth/Sesion.cs` |
 
 ### 6.4 Códigos de error nuevos (`Core/Contracts/Puente/Sobre.cs`)
 
@@ -442,7 +491,7 @@ tipos y valores del dominio en español.
 | -32006 | `AutenticacionCancelada` | La persona cerró el navegador o canceló el diálogo del sistema |
 | -32007 | `AutenticacionFallida` | `invalid_grant`, clave invalidada, sin bloqueo de pantalla, emisor inalcanzable durante el ingreso |
 
-### 6.5 Fuentes de la versión (las tres dicen 1.1.0)
+### 6.5 Fuentes de la versión (las tres dicen 1.2.0 desde el login tradicional)
 
 `ContratoDelPuente.Version`, `versionado/puente.json` y `src/FrameworkConcept.Core/Contracts/contrato.json`
 (regenerado con `FrameworkConcept.Tools contrato`). El contenido declara `compatibleConPuente: ">=1.1.0 <2.0.0"`

@@ -15,7 +15,7 @@ namespace FrameworkConcept.Core.Contracts.Puente;
 public static class ContratoDelPuente
 {
     /// <summary>P7 — SemVer del puente. El mayor es la identidad del contrato. Coincide con versionado/puente.json.</summary>
-    public static VersionSemantica Version { get; } = VersionSemantica.Parse("1.1.0");
+    public static VersionSemantica Version { get; } = VersionSemantica.Parse("1.2.0");
 
     /// <summary>Lo que se compara: sin descripciones (cambiar un comentario no cambia el contrato).</summary>
     public sealed record Instantanea(

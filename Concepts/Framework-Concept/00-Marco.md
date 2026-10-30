@@ -1,5 +1,5 @@
 ---
-doc_id: MARCO-REFERENCIA
+doc_id: FC-MARCO-REFERENCIA
 doc_type: marco-de-referencia
 title: Marco de referencia — escenarios, contextos y actores del framework
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [GUIA-INDICE, MAPA-CONCEPTUAL, TEM-01, TEM-02, TEM-03, TEM-04, TEM-05, TEM-06, TEM-07, TEM-08, ANEXO-99]
+traces: [FC-GUIA-INDICE, FC-TEM-01, FC-TEM-02, FC-TEM-03, FC-TEM-04, FC-TEM-05, FC-TEM-06, FC-TEM-07, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # Marco de referencia — escenarios, contextos y actores del framework
@@ -49,7 +49,7 @@ contiene pantallas de negocio.
 catálogo no tiene: si sí, es del cascarón y viaja por tienda; si no, es contenido.
 
 **Un caso.** Agregar la cámara a la encuesta pide un permiso en el AndroidManifest: es un cambio del cascarón, con
-versión nueva en la tienda (`TEM-02`, P12).
+versión nueva en la tienda (`FC-TEM-02`, P12).
 
 **Contenido.** Las pantallas de negocio: páginas Razor compiladas a Blazor WebAssembly, empaquetadas, firmadas y
 bajadas por el cascarón.
@@ -57,7 +57,7 @@ bajadas por el cascarón.
 **Cómo se aplica.** Se publica con `scripts/guion.sh publicar`, se firma el índice y el teléfono lo activa en el próximo
 arranque en frío.
 
-**Un caso.** En E02, la versión 1.1.0 cambió la cabecera a azul y agregó «Novedades» sin pasar por la tienda (`TEM-01`).
+**Un caso.** En E02, la versión 1.1.0 cambió la cabecera a azul y agregó «Novedades» sin pasar por la tienda (`FC-TEM-01`).
 
 **Definición.** Una encuesta escrita como datos JSON (`encuestaId` + `version`) que dibujan las páginas genéricas del
 contenido.
@@ -86,7 +86,7 @@ verifica o si venció.
 (`Developer-Guide` §6, ejercicio 3).
 
 El resto del vocabulario está en el glosario
-([`ANEXO-99` §1](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#1-glosario)), que es de **orientación**: una línea por término, sin operación ni
+([`FC-ANEXO-99` §1](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#1-glosario)), que es de **orientación**: una línea por término, sin operación ni
 escena; la operación y la escena de cada uno están en el tema que la cita.
 
 ## 3. Escenarios
@@ -209,13 +209,13 @@ flowchart LR
 
 | Estoy en… | Leo primero | Y la parte de la demo |
 | --- | --- | --- |
-| `ESC-1` | [`TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `semilla/`, `scripts/guion.sh semilla` |
-| `ESC-2` | [`TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `src/FrameworkConcept.Core/Update/Actualizador.cs` |
-| `ESC-3` | [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) | `src/FrameworkConcept.Core/Update/PredicadoDeCompatibilidad.cs` |
-| `ESC-4` | [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md), [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `definiciones/encuesta-movilidad/`, `Shell/Sync/` |
-| `ESC-5` | [`TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md), [`TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md), [`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) | `scripts/ci-local.sh`, `etapas/` |
-| `ESC-6` | [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `Shell/Auth/`, `infra/keycloak/` |
-| `ESC-7` | [`TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `Contracts/ParametrosDeProducto.cs` |
+| `ESC-1` | [`FC-TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `semilla/`, `scripts/guion.sh semilla` |
+| `ESC-2` | [`FC-TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `src/FrameworkConcept.Core/Update/Actualizador.cs` |
+| `ESC-3` | [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) | `src/FrameworkConcept.Core/Update/PredicadoDeCompatibilidad.cs` |
+| `ESC-4` | [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md), [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `definiciones/encuesta-movilidad/`, `Shell/Sync/` |
+| `ESC-5` | [`FC-TEM-03`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/03-Integracion-Y-Versionado.md), [`FC-TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md), [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) | `scripts/ci-local.sh`, `etapas/` |
+| `ESC-6` | [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) | `Shell/Auth/`, `infra/keycloak/` |
+| `ESC-7` | [`FC-TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) | `Contracts/ParametrosDeProducto.cs` |
 
 ### 6.2 Por contexto
 
@@ -223,20 +223,20 @@ flowchart LR
 | --- | --- |
 | `CTX-1` | Todo el recorrido del [Developer-Guide](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Developer-Guide.md) |
 | `CTX-2` | `scripts/guion.sh dispositivo` antes de instalar; si da < 94, actualizar el WebView del sistema |
-| `CTX-3` | Leer las limitaciones de iOS en [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md); nada se compila |
+| `CTX-3` | Leer las limitaciones de iOS en [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md); nada se compila |
 | `CTX-4` | Recorrido v1 → v2 del [Developer-Guide](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Developer-Guide.md) |
-| `CTX-5` | [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md), con el emisor de ensayo |
-| `CTX-6` | La política de acciones de [`TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) |
+| `CTX-5` | [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md), con el emisor de ensayo |
+| `CTX-6` | La política de acciones de [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md) |
 
 ### 6.3 Por artefacto
 
 | Voy a tocar… | Línea de versión que sube | Documento |
 | --- | --- | --- |
-| Una página Razor | Contenido (`versionado/contenido.json`) | [`TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) |
-| Una pregunta de la encuesta | Definición (`version` del JSON) | [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) |
-| Un método del puente | Puente (`versionado/puente.json` y `contrato.json`) | [`TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) |
-| El cascarón (permisos, XAML, SDK) | Cascarón (`versionado/version-cascaron.props`), por tienda | [`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) |
-| El workflow o una prueba | Ninguna; lo cuida `fw-ok` | [`TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) |
+| Una página Razor | Contenido (`versionado/contenido.json`) | [`FC-TEM-01`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md) |
+| Una pregunta de la encuesta | Definición (`version` del JSON) | [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) |
+| Un método del puente | Puente (`versionado/puente.json` y `contrato.json`) | [`FC-TEM-02`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/02-Cascaron-Puente-Y-Capacidades.md) |
+| El cascarón (permisos, XAML, SDK) | Cascarón (`versionado/version-cascaron.props`), por tienda | [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) |
+| El workflow o una prueba | Ninguna; lo cuida `fw-ok` | [`FC-TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) |
 
 ## 7. Observaciones
 

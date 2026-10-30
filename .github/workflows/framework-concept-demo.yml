@@ -9,7 +9,8 @@
 #   P8    la compuerta mínima: build sin MAUI con avisos como error, Core.Tests, Update.Tests, Gate.Tests,
 #         publish y empaquetado del contenido, APK del cascarón.
 #
-# El runner i7infra-runner-dev no tiene docker.sock ni KVM: los pasos corren dotnet directo, no contenedores.
+# Los runners con la etiqueta i7infra-dev (hpdev-runner-dev; antes i7infra-runner-dev) no tienen docker.sock ni KVM:
+# los pasos corren dotnet directo, no contenedores.
 # Trae SDK 10.0.402, maui-android 10.0.110 y JDK 21 (relevamiento R2 §5). El SDK lo fija global.json de la
 # demo (10.0.400 con rollForward latestPatch: acepta 10.0.402); la versión de MAUI la fija MauiVersion en
 # Directory.Build.props, no el runner.

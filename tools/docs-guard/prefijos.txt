@@ -16,6 +16,8 @@ MARCO   interno   documento del marco de referencia
 MAPA    interno   mapa conceptual
 ANX     interno   anexo
 IDX     interno   índice
+# Framework Concept (Concepts/Framework-Concept): espacio propio para no chocar con los cuerpos de Guides/
+FC      interno   documento del Framework Concept (FC-TEM-nn, FC-GUIA-INDICE, FC-MARCO-REFERENCIA, FC-ANEXO-99)
 # Cuerpo de la guía del sistema documentador (N09 §7)
 TEM     interno   tema del cuerpo
 CQ      interno   criterio de calidad

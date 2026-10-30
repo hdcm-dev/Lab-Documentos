@@ -1,5 +1,5 @@
 ---
-doc_id: TEM-05
+doc_id: FC-TEM-05
 doc_type: tema
 title: La demo como caso de estudio — del caso base a una app autoactualizable
 status: borrador
@@ -8,7 +8,7 @@ confidence: media
 owner: Lab-Documentos
 last_review: 2026-10-26
 audience: [humano, agente]
-traces: [MARCO-REFERENCIA, GUIA-INDICE, TEM-01, TEM-02, TEM-04, TEM-06, TEM-08, ANEXO-99]
+traces: [FC-MARCO-REFERENCIA, FC-GUIA-INDICE, FC-TEM-01, FC-TEM-02, FC-TEM-04, FC-TEM-06, FC-TEM-08, FC-ANEXO-99]
 ---
 
 # La demo como caso de estudio — del caso base a una app autoactualizable
@@ -25,8 +25,8 @@ traces: [MARCO-REFERENCIA, GUIA-INDICE, TEM-01, TEM-02, TEM-04, TEM-06, TEM-08, 
 8. [Observaciones](#8-observaciones)
 9. [Referencias](#9-referencias)
 
-Viene de: [`TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) ·
-Sigue en: [`TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md)
+Viene de: [`FC-TEM-04`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/04-Estrategia-De-Pruebas.md) ·
+Sigue en: [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md)
 
 ## 1. Resumen ejecutivo
 
@@ -48,7 +48,7 @@ sus scripts y sus parches de rojo provocado.
 
 **Cómo se aplica.** La usás para ver funcionando lo que la guía explica: cada tema remite a un archivo de la demo.
 
-**Un caso.** Para entender el rollback, leés [`TEM-01` §4.3](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md#43-contenido-que-no-avisa-listo-corrida-real)
+**Un caso.** Para entender el rollback, leés [`FC-TEM-01` §4.3](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/01-Actualizacion-Sin-Tienda.md#43-contenido-que-no-avisa-listo-corrida-real)
 y después corrés `scripts/guion.sh publicar sin-listo`.
 
 **Caso base.** La app de la que se portaron dominio, reglas y pruebas: `MovilidadUrbana.MAUI`, commit `8fb4c3a` de

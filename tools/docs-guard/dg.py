@@ -11,17 +11,22 @@ recibe y termina con un código de salida:
 Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
 
     fuera      RUTA...            (PR-1) enlaces relativos que salen del repositorio
-    esquema    RUTA...            (PR-2) frontmatter contra su esquema, registro de prefijos y esquema RRD
+    esquema    RUTA...            (PR-2) frontmatter contra su esquema, registro de prefijos y esquema RRD;
+                                         traces-vacio: avisa ante «traces: []» (válido por el anexo; D-17). Cuenta aparte los README.md
+                                         del cuerpo sin frontmatter (readme-del-cuerpo-sin-frontmatter, D-24)
     ai         RUTA...            (PR-3) anti-inyección AI-1..AI-5; AI-3 avisa; AI-4 avisa en el anexo de referencias
     trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados;
-                                         con --fuente DIR, además las anclas ruta#Símbolo@SHA de las fichas (nivel 2)
+                                         con --fuente DIR, además las anclas ruta#Símbolo@SHA de las fichas (nivel 2);
+                                         id-duplicado: un ID que un archivo de RUTA declara y otro archivo también
+                                         declara da rojo aunque nadie lo trace todavía (D-18)
     contrato   ESPERADO GENERADO  (PR-6) diff semántico de dos contratos OpenAPI (JSON)
     contratos  RUTA...            (PR-6) busca contracts/openapi.json; sin extracción declarada, «no aplica»
     fijadas    RUTA...            (PR-7) equivalente de «copiar.py --check»: cada pieza de BASE-FIJADA.md con su SHA-256
     reflint    RUTA...            (PR-7) formato de referencias APA con ancla ref-…; bloquea sólo en el cuerpo nuevo
     url-fecha  RUTA...            (PR-7) URL y citas por dominio en code spans sin fecha de consulta ni cita a #ref-…;
                                          bloquea en el cuerpo nuevo salvo status: obsoleto (E-F7, D28)
-    avisos     RUTA...            (aviso) url-fecha y cita-linea sobre lo heredado; nunca bloquea
+    avisos     RUTA...            (aviso) url-fecha y cita-linea sobre lo heredado; nunca bloquea. Las raíces del
+                                         workspace de cita-linea salen de DOCS_GUARD_RAICES o de raices.local.txt
     frescura   RUTA...            (carril programado) last_review con más de 365 días (--dias N); nunca bloquea
 
 Opciones comunes: --raiz DIR (raíz del repositorio que se verifica; por defecto, la de git o el directorio actual).
@@ -303,7 +308,7 @@ def cmd_esquema(rutas, raiz):
     esq = {n: json.loads((AQUI / 'esquemas' / f'{n}.schema.json').read_text(encoding='utf-8'))
            for n in ('cuerpo', 'ayuda', 'readme-cuerpo')}
     reg = prefijos()
-    vistos = sin = 0
+    vistos = sin = readme_sin = 0
     for f in markdowns(rutas):
         texto = leer(f)
         ruta = rel(f, raiz)
@@ -312,6 +317,8 @@ def cmd_esquema(rutas, raiz):
         if fm is None:
             if nuevo and f.name != 'README.md':
                 inf.error(ruta, 1, 'sin-frontmatter', 'todo documento del cuerpo abre con frontmatter (N09 §7)')
+            elif nuevo:
+                readme_sin += 1  # README.md de una subcarpeta del cuerpo: no se le exige frontmatter
             else:
                 sin += 1
             continue
@@ -331,7 +338,14 @@ def cmd_esquema(rutas, raiz):
             (inf.error if nuevo else inf.aviso)(ruta, 1, 'frontmatter-sin-forma',
                                                 'no tiene doc_id ni roles/translation_of: no se sabe qué esquema aplica')
             continue
-        for e in validar(fm, esq[forma]):
+        errs = validar(fm, esq[forma])
+        if forma == 'cuerpo' and fm.get('traces') == []:
+            # El anexo de esquema admite «traces: []» (Esquema-Frontmatter-Y-Prefijos.md:54; PE-2 del 290). La práctica
+            # de D-17 (trazar al menos al README del cuerpo) queda como aviso, no como bloqueo.
+            errs = [e for e in errs if e != 'falta «traces»']
+            inf.aviso(ruta, 1, 'traces-vacio', 'traces: [] es válido, pero conviene trazar al menos al doc_id del '
+                                               'README de su cuerpo (D-17)')
+        for e in errs:
             inf.error(ruta, 1, f'esquema-{forma}', e)
         if forma == 'cuerpo':
             pre = str(fm.get('doc_id', '')).split('-', 1)[0]
@@ -339,7 +353,8 @@ def cmd_esquema(rutas, raiz):
                 inf.error(ruta, 1, 'prefijo', f'«{pre}-» no está en el registro (prefijos.txt)')
             if fm.get('doc_type') == 'rrd' or f.name == '_requisitos.md':
                 validar_rrd(texto, inf, ruta)
-    return inf.cerrar(f' archivos-con-frontmatter={vistos} sin-frontmatter-fuera-del-cuerpo={sin}')
+    return inf.cerrar(f' archivos-con-frontmatter={vistos} sin-frontmatter-fuera-del-cuerpo={sin}'
+                      f' readme-del-cuerpo-sin-frontmatter={readme_sin}')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -438,35 +453,44 @@ def en_fixtures(p):
     return FIXTURES in r.parents or any(partes[i:i + 3] == ('tools', 'docs-guard', 'fixtures') for i in range(len(partes)))
 
 
+def declaraciones(f, texto=None):
+    """[(ID, versión o None, línea)] que declara un archivo: doc_id del frontmatter, filas RD-nn de un RRD y
+    encabezados que empiezan con un ID (con la **Versión:** que los sigue)."""
+    texto = leer(f) if texto is None else texto
+    decl = []
+    fm, _ = frontmatter(texto)
+    if fm and fm.get('doc_id'):
+        v = str(fm.get('version', '')) or None
+        decl.append([str(fm['doc_id']), '.'.join(v.split('.')[:2]) if v else None, 1])
+    if f.name == '_requisitos.md' or (fm or {}).get('doc_type') == 'rrd':
+        for n, l, cod in fuera_de_codigo(texto):  # las filas RD-nn del RRD también declaran su ID
+            m = None if cod else re.match(r'^\|\s*(RD-\d{2,})\s*\|', l)
+            if m:
+                decl.append([m.group(1), None, n])
+    actual = None
+    for n, l, cod in fuera_de_codigo(texto):
+        if cod:
+            continue
+        m = RE_ENCABEZADO_ID.match(l)
+        if m:
+            actual = [m.group(1), None, n]
+            decl.append(actual)
+            continue
+        m = RE_VERSION.match(l)
+        if m and actual is not None and actual[1] is None:
+            actual[1] = f'{m.group(1)}.{m.group(2)}'
+    return decl
+
+
 def registro(directorios):
-    """ID → [(archivo, versión)] desde doc_id del frontmatter y desde los encabezados que empiezan con un ID."""
+    """ID → [(archivo, versión, línea)] desde doc_id del frontmatter y desde los encabezados que empiezan con un ID."""
     reg = {}
     for d in directorios:
         for f in markdowns([d]):
             if en_fixtures(f) and not en_fixtures(Path(d) / '_'):
                 continue  # los fixtures declaran IDs de prueba: no entran al registro del repositorio
-            texto = leer(f)
-            fm, _ = frontmatter(texto)
-            if fm and fm.get('doc_id'):
-                v = str(fm.get('version', '')) or None
-                reg.setdefault(str(fm['doc_id']), []).append((f, '.'.join(v.split('.')[:2]) if v else None))
-            if f.name == '_requisitos.md' or (fm or {}).get('doc_type') == 'rrd':
-                for n, l, cod in fuera_de_codigo(texto):  # las filas RD-nn del RRD también declaran su ID
-                    m = None if cod else re.match(r'^\|\s*(RD-\d{2,})\s*\|', l)
-                    if m:
-                        reg.setdefault(m.group(1), []).append((f, None))
-            actual = None
-            for n, l, cod in fuera_de_codigo(texto):
-                if cod:
-                    continue
-                m = RE_ENCABEZADO_ID.match(l)
-                if m:
-                    actual = [f, None]
-                    reg.setdefault(m.group(1), []).append(actual)
-                    continue
-                m = RE_VERSION.match(l)
-                if m and actual is not None and actual[1] is None:
-                    actual[1] = f'{m.group(1)}.{m.group(2)}'
+            for ident, v, n in declaraciones(f):
+                reg.setdefault(ident, []).append((f, v, n))
     return reg
 
 
@@ -623,10 +647,22 @@ def cmd_trazas(rutas, raiz, fuentes, deriva=False):
         return 0
     reg = registro([raiz] + [Path(x) for x in fuentes])
     pre = prefijos()
-    total = ok = 0
+    total = ok = duplicados = 0
     n_a = ok_a = sin_verificar = 0
     for f in markdowns(rutas):
-        fm, _ = frontmatter(leer(f))
+        texto = leer(f)
+        fm, _ = frontmatter(texto)
+        # D-18: un ID que este archivo declara y que otro también declara da rojo aunque nadie lo trace todavía.
+        # La traza que llegue después sería traza-ambigua; así se ve en el PR que introduce el duplicado.
+        if not (en_fixtures(f) and not en_fixtures(raiz / '_')):
+            ruta_f = rel(f, raiz)
+            for ident, _, n in declaraciones(f, texto):
+                otros = [h for h in reg.get(ident, []) if not (h[0].resolve() == f.resolve() and h[2] == n)]
+                if otros:
+                    duplicados += 1
+                    inf.error(ruta_f, n, 'id-duplicado', f'{ident}: también declarado en '
+                              + ', '.join(f'{rel(h[0], raiz)}:{h[2]}' for h in otros[:3])
+                              + (f' y {len(otros) - 3} más' if len(otros) > 3 else ''))
         if es_ficha(f, fm):
             if fuentes:
                 t, o = anclas(f, raiz, fuentes[0], False, inf)
@@ -667,7 +703,7 @@ def cmd_trazas(rutas, raiz, fuentes, deriva=False):
             ok += 1
     if sin_verificar:
         print(f'anclas: {sin_verificar} fichas sin --fuente; sus anclas las verifica el workflow de su source.lock')
-    return inf.cerrar(f' trazas={total} resueltas={ok} anclas={n_a} anclas-resueltas={ok_a}')
+    return inf.cerrar(f' trazas={total} resueltas={ok} ids-duplicados={duplicados} anclas={n_a} anclas-resueltas={ok_a}')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -794,7 +830,23 @@ def cmd_reflint(rutas, raiz):
 # --------------------------------------------------------------------------------------------------------------------
 # Avisos sobre lo heredado: url-fecha y cita-linea (D18: avisan)
 
-RAICES_WS = re.compile(r'^/(LAB|IA|PROG2|Ng|Repos-Docker|Host|Research)/')
+# Raíces del workspace que reconoce cita-linea. No se listan acá (el repositorio es público y los nombres de las
+# carpetas del workspace son de cada instalación): por defecto, toda ruta absoluta cuyo primer componente empieza con
+# mayúscula, que es la convención de las raíces del workspace y deja afuera las del sistema (/etc, /usr, /tmp…). Una
+# instalación puede fijar su lista exacta, sin publicarla, en la variable DOCS_GUARD_RAICES (nombres separados por
+# espacios o comas) o en raices.local.txt al lado de este archivo (uno por línea; está en .gitignore).
+def raices_ws():
+    nombres = re.split(r'[\s,]+', os.environ.get('DOCS_GUARD_RAICES', '').strip())
+    local = AQUI / 'raices.local.txt'
+    if not any(nombres) and local.is_file():
+        nombres = leer_lista('raices.local.txt')
+    nombres = [n.strip('/') for n in nombres if n.strip('/')]
+    if nombres:
+        return re.compile(r'^/(' + '|'.join(map(re.escape, nombres)) + r')/')
+    return re.compile(r'^/[A-Z][\w.-]*/')
+
+
+RAICES_WS = raices_ws()
 
 
 def cmd_avisos(rutas, raiz):

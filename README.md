@@ -8,7 +8,7 @@ confidence: alta
 owner: ACT-09 Technical Writer
 last_review: 2026-10-28
 audience: [humano, agente]
-traces: [GUIAS-INDICE, DOC-SDT-0001, GUIA-INDICE]
+traces: [GUIAS-INDICE, DOC-SDT-0001]
 ---
 
 # Lab-Documentos

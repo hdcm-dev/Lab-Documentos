@@ -8,7 +8,8 @@
 #   PR-2 esquema    frontmatter contra su esquema (tools/docs-guard/esquemas), registro de prefijos, esquema RRD.
 #   PR-3 ai         anti-inyección AI-1..AI-5 (AI-3 avisa; AI-4 avisa en el anexo de referencias).
 #   PR-4 estructura markdownlint-cli2 estructural y mermaid que parsea.
-#   PR-5 trazas     traces-resolve.
+#   PR-5 trazas     traces-resolve e id-duplicado, sobre «ruta» y los punteros de la raíz («trazas-extra»: AGENTS.md,
+#                   README.md y Guides/README.md, los que existan; DEF-16 de la vuelta de E1).
 #   PR-6 contrato   diff del contrato OpenAPI, si la ruta tiene uno.
 #   PR-7 fijadas    piezas fijadas con su SHA-256 y reflint.
 #   autoprueba      par rojo/verde de cada control (G-c) y fixture permanente AK-7, que tiene que dar rojo.
@@ -40,6 +41,11 @@ on:
         type: string
         required: false
         default: main
+      trazas-extra:
+        description: Archivos de la raíz cuyas traces también resuelve PR-5 (separados por espacios; entran los que existen)
+        type: string
+        required: false
+        default: AGENTS.md README.md Guides/README.md
 
 permissions:
   contents: read
@@ -55,6 +61,7 @@ jobs:
     timeout-minutes: 10
     env:
       RUTA: ${{ inputs.ruta || 'Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion' }}
+      DOCS_GUARD_TRAZAS_EXTRA: ${{ inputs.trazas-extra || 'AGENTS.md README.md Guides/README.md' }}
       GUARD: ${{ github.workspace }}/.docs-guard
     steps:
       - name: Checkout del repositorio que se verifica

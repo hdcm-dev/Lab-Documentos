@@ -73,6 +73,7 @@ cada paso (pantalla, logcat, salida de prueba) y permite provocar las fallas que
 | Una referencia al caso base | Es una **copia** con mapa: no se comparten proyectos entre apps, y el original es `net10.0-android` (MAPA-CASO-BASE) |
 | Una app que corre en iOS | iOS es diseño sin ensayo (P9) |
 | Una demo con todos los escenarios ejecutados | `ESC-6` (consulta disparada por el ingreso) y `ESC-7` (obligatoria) no se ejecutaron |
+| Una app que arranca en ≤ 5 s en el g42 | NO CUMPLE: TPR de 6,9 a 7,3 s en régimen (folio 049); E04 y V1S, en ramas no fusionadas, no bajan el primer arranque de 5 s; decide el PO (folios 050, 052 y 053) |
 
 ### 2.4 Cómo está armada
 
@@ -121,6 +122,9 @@ guía la imagen vigente era `fc-demo-build:f327f6144f9b`.
 | `ESC-5` | `ci-local.sh` y `etapas/` | Verificado en local; runner NO VERIFICADO (A5) |
 | `ESC-6` | Ingreso con Keycloak (E03) | La consulta disparada por el ingreso no se observó |
 | `ESC-7` | — | No ejecutado |
+
+El folio 054 propone (no implementado) un flujo que nunca bloquea, dos niveles normal/obligatoria, consulta al
+ingresar con aplicación diferida y pantallas con avance y leyenda.
 
 ## 4. Ejemplos concretos
 

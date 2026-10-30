@@ -49,13 +49,13 @@ tomó. Le sirve a quien escribe el cascarón y a quien escribe el contenido, por
 **Cómo se aplica.** Desde una página Razor llamás, por ejemplo, `network.status`; el cascarón responde con
 `{conectado, estado, motivo}`.
 
-**Un caso.** Al cargar, el contenido hace `bridge.handshake` y recibe la versión del puente (1.1.0) y el catálogo con la
+**Un caso.** Al cargar, el contenido hace `bridge.handshake` y recibe la versión del puente (1.2.0) y el catálogo con la
 versión de cada entrada; con eso decide si muestra o esconde funciones `optional`.
 
 **Catálogo de capacidades.** Lista constante en el código del cascarón, una entrada por capacidad del dispositivo, con
-id estable y versión propia (P12). En la demo: `device.info` 1.0.0, `network.status` 1.1.0 y `auth.session` 1.0.0
+id estable y versión propia (P12). En la demo: `device.info` 1.0.0, `network.status` 1.1.0 y `auth.session` 1.1.0
 ([`CatalogoDeCapacidades.cs`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/src/FrameworkConcept.Core/Contracts/Puente/CatalogoDeCapacidades.cs)
-L37–L47).
+L37–L49).
 
 **Cómo se aplica.** Si tu contenido necesita una capacidad, la declarás en su manifiesto como `requires` (sin ella no
 se activa) u `optional` (sin ella degrada).
@@ -169,7 +169,9 @@ diagnóstico diga todo lo que falta (comentario de la L13). El motor mínimo nun
 
 El incremento de red y autenticación fue todo menor: 1.0.0 → 1.1.0, con métodos `actions.*`, `outbox.sendNow`,
 `auth.*` y campos opcionales `estado`, `motivo` en `network.status`
-([DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110)).
+([DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110-120-desde-el-login-tradicional)).
+El login tradicional sumó otro incremento menor, 1.1.0 → 1.2.0: los métodos `auth.signInWithPassword` y
+`auth.lock`, y `auth.session` 1.1.0 (DISENO §6).
 
 ### 2.7 Encuestas tomadas con una versión cuando llega otra (P13)
 
@@ -197,7 +199,7 @@ fila `Domain/Entities/RespuestaDeEncuesta.cs`, «Adaptado»).
 | `ESC-3` | El predicado rechaza antes de activar; `optional` lo resuelve el contenido | `CTX-2`: motor < 94 → pantalla «WebView viejo»; `CTX-3`: iOS expone el catálogo sólo a la semilla (rama iOS de P12, diseño) |
 | `ESC-4` | Outbox con dueño y respuesta atada a su definición | `CTX-5`: sólo sale con la identidad de su dueño (ver [`FC-TEM-07`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md)) |
 | `ESC-5` | La instantánea del contrato y la compuerta de definiciones bloquean en `fw-ok` | — |
-| `ESC-6` | `auth.*` del puente 1.1.0 | `CTX-4`: `auth.status` informa `modo: dispositivo` |
+| `ESC-6` | `auth.*` del puente 1.2.0 | `CTX-4`: `auth.status` informa `modo: dispositivo` |
 | `ESC-7` | Una obligatoria no descarta ni migra pendientes | No ejecutado en la demo |
 
 ## 4. Ejemplos concretos

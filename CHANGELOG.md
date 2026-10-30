@@ -17,6 +17,17 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 - **Las páginas tocaban datos antes de la sesión** (`PuertaDeSesion.razor`, `SesionDelContenido.cs`, `Inicio.razor`, `Localidades.razor`): mientras `auth.status` estaba en vuelo, la puerta dejaba pasar la página e `Inicio` llegaba a `documents.put` (-32005 «Ingresá con tu cuenta»). Ahora la página se monta solo cuando la sesión ya se conoce y está abierta (o en modo Dispositivo).
 
+### Concepts/Framework-Concept — documentación para desarrolladores
+
+#### Cambiado
+
+- Guía, demo y capítulos al día con `main` 5b7c230: puente 1.2.0 y `auth.session` 1.1.0; ingreso por defecto con el formulario del contenido (`FcPantallasDeSesion=Contenido`, `FcModoDeIngreso=Formulario`), variantes Navegador (RFC 8252) y Cascaron; ROPC sólo con el emisor de ensayo (en producción, OAuth 2.0 for First-Party Applications); «Bloquear» y bloqueo a los 5 min en segundo plano; `FC_KC_HOSTNAME` para teléfonos por túnel.
+- TPR del g42 con APK Release (folio 049, NO CUMPLE); dictamen 050 aprobado (C-min no se adopta); E04 y V1S registrados como ensayos en ramas no fusionadas, con las decisiones abiertas del PO (folios 050, 052, 053); dictamen UX 054 registrado como propuesta sin implementar.
+
+#### Agregado
+
+- «Empezá acá» en la portada, tabla de modos de compilación, receta para teléfono real por túnel, tabla ensayo/producción (FC-TEM-07) y equivalentes de la industria en el glosario.
+
 ## 2026-10-30 (Framework Concept: el login es una página del contenido)
 
 ### Concepts/Framework-Concept/Demo — decisión del PO

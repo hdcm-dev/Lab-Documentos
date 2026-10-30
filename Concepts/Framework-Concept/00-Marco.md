@@ -159,11 +159,11 @@ recorrido. `ParametrosDeProducto.ArranquesHastaAplicarUnaObligatoria = 1` fija l
 
 | Id | Contexto | Qué cambia en las respuestas | Estado |
 | --- | --- | --- | --- |
-| `CTX-1` | **Android con WebView ≥ 94** | Todo el recorrido funciona; es el contexto de referencia | Verificado en el emulador `fc-android-emu-hpdev` (Android 13, WebView 155). En teléfono físico (moto g42): contenido descargado y servido en E01, y un intento anterior de E02 con mediciones de TPR (E02 §4.3); sin recorrido completo |
+| `CTX-1` | **Android con WebView ≥ 94** | Todo el recorrido funciona; es el contexto de referencia | Verificado en el emulador `fc-android-emu-hpdev` (Android 13, WebView 155). En teléfono físico (moto g42): contenido descargado y servido en E01, y un intento anterior de E02 con mediciones de TPR (E02 §4.3), y TPR medido con APK Release el 2026-10-29: 6,9–7,3 s en régimen y 9,2 s en el primer arranque; NO CUMPLE el umbral de 5 s (folio 049). Sin recorrido completo |
 | `CTX-2` | **Android con WebView < 94** | El contenido Blazor no arranca: el cascarón muestra su pantalla «WebView viejo» | Medido en E01 (WebView 83 no arranca el runtime de .NET 10) |
 | `CTX-3` | **iOS** | Mismo diseño, otras API (Keychain, `app://`), otras reglas de tienda | Diseño sin ensayo, NO VERIFICADO — no hay Mac ni cuenta de Apple Developer (folio 023) |
 | `CTX-4` | **Modo Dispositivo** (APK sin emisor OIDC) | No hay cuenta: el dueño del outbox es el id de instalación | Verificado en E02 |
-| `CTX-5` | **Modo con cuenta** (APK con `FC_OIDC_EMISOR`) | Primer ingreso por navegador, desbloqueo con la seguridad del teléfono, outbox con dueño | Verificado en E03 en el emulador |
+| `CTX-5` | **Modo con cuenta** (APK con `FC_OIDC_EMISOR`) | Ingreso con el formulario del contenido (por defecto; variante: navegador RFC 8252), desbloqueo con la seguridad del teléfono, bloqueo a los 5 min en segundo plano, outbox con dueño | E03 lo verificó en el emulador con ingreso por navegador |
 | `CTX-6` | **Estado de la red**: `EnLinea`, `EnLineaMedida`, `RedSinServidor`, `SinRed` | Qué acciones se permiten, cuáles quedan pendientes y cuáles se bloquean | Verificado en E03 salvo `EnLineaMedida` (el emulador no tiene datos móviles) |
 
 ## 5. Actores
@@ -243,6 +243,9 @@ flowchart LR
 - **Hecho.** Los siete escenarios salen de P10 del folio 035; `ESC-6` y `ESC-7` nacen de los folios 004 y 006.
 - **Hecho.** Las cifras del emulador (TPR de 29 a 36 s, E02 §4.3) no sirven para juzgar el umbral de arranque del
   teléfono de medida.
+- **Hecho.** En el moto g42, con el APK Release, el TPR fue de 6,9 a 7,3 s en régimen y 9,2 s en el primer arranque
+  (folio 049): no cumple el umbral de 5 s. La cifra completa está en el
+  [anexo de pendientes](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md) (§6).
 - **Interpretación (criterio de esta guía).** Los actores `ACT-04` a `ACT-07` separan roles que en un equipo chico
   puede cumplir la misma persona; se separan para que quede claro qué decide cada pieza.
 

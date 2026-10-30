@@ -130,7 +130,7 @@ Las líneas que rigen (P7, folio 035):
 | Línea | Gramática | Fuente única en la demo |
 | --- | --- | --- |
 | Cascarón | `ApplicationDisplayVersion` `MAYOR.MENOR.PARCHE` + `ApplicationVersion` entero monótono | `versionado/version-cascaron.props` (1.0.0 / 1) |
-| Puente | SemVer; el mayor es la identidad del contrato | `versionado/puente.json` (1.1.0) y `contrato.json` |
+| Puente | SemVer; el mayor es la identidad del contrato (≈ *runtime version* de EAS Update) | `versionado/puente.json` (1.2.0) y `contrato.json` |
 | Contenido | SemVer + `+<commit>`, sin pre-release | `versionado/contenido.json` (1.0.0) |
 | Definición | `encuestaId` + `version` entero | `definiciones/encuesta-movilidad/vN.json` (plantilla: hoy `v1.json` y `v2.json`) |
 | Catálogo | Una versión por entrada | `CatalogoDeCapacidades.cs` |
@@ -173,7 +173,7 @@ Las **cuatro líneas visibles** en la pantalla de diagnóstico, para atribuir un
 **Qué demuestra.** Que la compuerta clasifica el cambio contra la base del PR.
 **Precondición.** `FC_GATE_BASE` armada a mano con el `contrato.json` 1.0.0 de A3.
 **Resultado.** `LaVersionSubeSegunLaClasificacionFrenteALaBase` en verde: todo el incremento fue MENOR
-([DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110)).
+([DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110-120-desde-el-login-tradicional)).
 
 ### 4.2 Un PR que no toca la demo
 

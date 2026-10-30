@@ -296,6 +296,9 @@ Contrato del puente **1.1.0**. Todo el cambio es MENOR:
 
 Catálogo: `network.status` 1.1.0 y `auth.session` 1.0.0, nueva. El manifiesto declara `USE_BIOMETRIC` y `<queries>`.
 
+Desde el login tradicional el contrato es **1.2.0** (`auth.signInWithPassword`, `auth.lock`; `auth.session` 1.1.0).
+Por defecto se ingresa con el formulario propio; `-p:FcModoDeIngreso=Navegador` vuelve a code + PKCE en la Custom Tab.
+
 #### Cómo se levanta con cuenta (emisor de ensayo)
 
 Desde esta carpeta, después de `guion.sh tls` (la CA de demostración firma también el certificado del emisor):
@@ -309,6 +312,9 @@ infra/keycloak/keycloak.sh probar                   # code + PKCE por curl; rech
 FC_OIDC_EMISOR=$EMISOR scripts/guion.sh servir      # el receptor exige un JWT válido del emisor
 FC_RID=android-x64 FC_URL_CANAL=https://$IP:8099 FC_OIDC_EMISOR=$EMISOR scripts/guion.sh apk
 ```
+
+En un teléfono real que llega por un túnel: `FC_KC_HOSTNAME=https://<host-publico> infra/keycloak/keycloak.sh levantar`,
+con `FC_URL_CANAL=https://<host-publico>`, `FC_RID=android-arm64` y `-p:FcOidcAutoridad` a juego con ese emisor.
 
 Sin `FC_OIDC_EMISOR` el APK queda en modo Dispositivo (sin cuenta, como en A3) y el receptor no pide token.
 
@@ -336,6 +342,8 @@ Al terminar: `infra/keycloak/keycloak.sh parar` (el realm se reimporta al levant
 #### Login tradicional (por defecto)
 
 El APK se compila con `-p:FcModoDeIngreso=Formulario` (es el valor por defecto; `Navegador` vuelve a la Custom Tab). Con `-p:FcPantallasDeSesion=Cascaron` las pantallas XAML ingresan siempre por navegador.
+`guion.sh apk` no pasa `FcModoDeIngreso` ni `FcPantallasDeSesion`; para otro modo, el comando completo:
+`dotnet build src/FrameworkConcept.Shell -c Debug -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk -p:FcCanal=dev -p:FcCanalUrl=<url> -p:FcOidcAutoridad=<emisor> -p:FcModoDeIngreso=Navegador`.
 La app arranca con «Cargando…» y muestra su propio formulario: usuario **`encuestador`**, clave
 **`demo-encuestador`**, «Ingresar». Después:
 
@@ -429,3 +437,5 @@ unos 10 ms.
 **NO CUMPLE.** El TPR en el moto g42 (2026-10-29, folio 049), APK Release: 5 de 5 arranques `COLD` con marca; 9 152,
 7 309, 6 940, 6 928 y 6 874 ms. El máximo (9 152 ms, el primer arranque después de instalar) supera el umbral de
 5 000 ms: se abre la condición de revisión (2) de P1. Con el APK Debug que arma la CI, el TPR fue de 8,1 a 14,1 s.
+
+El PO aprobó el dictamen 050: C-min no se adopta y se ensaya el arranque superpuesto. E04 (V1 dejó el régimen en ~4,8–5,2 s, pero el primer arranque siguió en 9,6 s) y V1S (V1 más la semilla firmada servida desde el APK: primer arranque recién instalado de 7,9 a 8,8 s) se midieron en ramas descartables que no se fusionaron (folios 052 y 053); `main` no contiene ninguno. Quedan abiertas para el PO: si la corrida recién instalada cuenta para el umbral, si V1 pasa a `main` y si se revisa el umbral o se mide C-min.

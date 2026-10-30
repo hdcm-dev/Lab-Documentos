@@ -112,6 +112,7 @@ N1 (contenido nuevo) y quizás a N2 (capacidad nueva, por tienda).
 | `minShellVersion` | Borrador y N3 §6 contra P3 | Sale del teléfono: rango con techo + predicado; el piso del cascarón es política de soporte | P3 |
 | `sqlite-net-pcl` | Inclinación del borrador (D-05) contra P5 | EF Core SQLite 10.0.11 detrás de `IDb` | P5 |
 | Comentario de `CofreDeSesion.cs` L128 | Código contra H-1 | **Sin resolver**: el comentario dice que una huella nueva invalida la clave; lo medido dice que no | [`FC-TEM-07` §8](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/07-Red-Y-Autenticacion.md#8-observaciones) |
+| Arranque ≤ 5 s | P1 contra el TPR medido en el g42 (folio 049) | **Abierta**: el PO aprobó el dictamen 050 (no C-min; arranque superpuesto); E04 y V1S, medidos en ramas no fusionadas, no bajan el primer arranque de 5 s (052, 053); decide el PO si esa corrida cuenta, si V1 pasa a `main` o si se revisa el umbral | [Anexos §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/99-Anexos.md#6-pendientes-y-no-verificado) |
 
 ## 7. Preguntas guía
 

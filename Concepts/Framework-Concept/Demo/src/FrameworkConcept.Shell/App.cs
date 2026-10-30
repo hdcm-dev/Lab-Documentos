@@ -9,8 +9,9 @@ using FrameworkConcept.Shell.Sync;
 namespace FrameworkConcept.Shell;
 
 /// <summary>
-/// La aplicación del cascarón. Arranca siempre por su pantalla XAML de arranque (P1): nunca abre el contenido sin que
-/// el actualizador haya decidido antes qué versión mostrar.
+/// La aplicación del cascarón. Arranca siempre por su pantalla XAML de arranque (P1): nunca le habla al contenido sin
+/// que el actualizador haya decidido antes qué versión mostrar. Con E04 (-p:FcE04, folio 050) el contenido se carga
+/// debajo de esa pantalla mientras el actualizador decide, pero su saludo se retiene hasta la decisión.
 /// </summary>
 public sealed class App(IServiceProvider servicios) : Application
 {

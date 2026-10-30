@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Pantalla propia del cascarón (XAML, P1): se ve mientras se abre la base y el actualizador decide qué versión
-     del contenido mostrar. No usa la red: la consulta al canal va después, en segundo plano (P2, N = 0). -->
+     del contenido mostrar. No usa la red: la consulta al canal va después, en segundo plano (P2, N = 0).
+     E04 (folio 050) — Con -p:FcE04 la pantalla hospeda además el contenido («Superficie»), que carga debajo de la capa
+     nativa mientras el actualizador decide; la capa se retira con «Listo». El WebView nunca se oculta (Chromium frena
+     el render): sólo se retira la capa. Sin E04 «Contenedor» queda vacío y la pantalla es la de siempre. -->
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FrameworkConcept.Shell.Pages.ArranquePage"
              NavigationPage.HasNavigationBar="False"
              Title="Framework Concept">
-    <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
-        <Label Text="Framework Concept" FontSize="24" HorizontalOptions="Center" />
-        <ActivityIndicator IsRunning="True" HorizontalOptions="Center" />
-        <Label x:Name="Estado" Text="Arrancando…" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-    </VerticalStackLayout>
+    <Grid>
+        <Grid x:Name="Superficie" RowDefinitions="Auto,*">
+            <Border x:Name="AvisoCartaMuerta" Grid.Row="0" IsVisible="False" Padding="12,8" BackgroundColor="#FFF4E5" StrokeThickness="0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="AlAbrirDiagnostico" />
+                </Border.GestureRecognizers>
+                <Label x:Name="TextoCartaMuerta" TextColor="#7A4100" FontSize="13" />
+            </Border>
+            <Grid x:Name="Contenedor" Grid.Row="1" />
+        </Grid>
+        <Grid x:Name="CapaNativa" BackgroundColor="{AppThemeBinding Light=White, Dark=Black}">
+            <VerticalStackLayout Padding="24" Spacing="12" VerticalOptions="Center">
+                <Label Text="Framework Concept" FontSize="24" HorizontalOptions="Center" />
+                <ActivityIndicator IsRunning="True" HorizontalOptions="Center" />
+                <Label x:Name="Estado" Text="Arrancando…" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+        </Grid>
+    </Grid>
 </ContentPage>

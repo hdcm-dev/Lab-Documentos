@@ -15,6 +15,7 @@ public sealed class ConfiguracionDelCascaron
         CanalUrl = new Uri(Leer("FcCanalUrl", "https://canal.invalid").TrimEnd('/') + "/");
         ReceptorUrl = new Uri(Leer("FcReceptorUrl", CanalUrl.ToString()).TrimEnd('/') + "/");
         KeyId = Leer("FcKeyId", "demo-2026");
+        VarianteE04 = Leer("FcE04", "—");
 
         // Folio 038, P4 — Emisor OIDC. Vacío = modo Dispositivo (la sesión por dispositivo del caso base).
         var autoridad = Leer("FcOidcAutoridad", "");
@@ -41,6 +42,9 @@ public sealed class ConfiguracionDelCascaron
 
     /// <summary>keyId de la clave pública embebida (claves/publica-demo.pem).</summary>
     public string KeyId { get; }
+
+    /// <summary>E04 (folio 050) — V1, V2 o «—» (el arranque de siempre). Se elige con -p:FcE04 al compilar.</summary>
+    public string VarianteE04 { get; }
 
     private static string Leer(string clave, string porDefecto) =>
         typeof(ConfiguracionDelCascaron).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()

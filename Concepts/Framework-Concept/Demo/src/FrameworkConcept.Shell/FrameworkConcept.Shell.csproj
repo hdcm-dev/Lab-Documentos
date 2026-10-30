@@ -75,6 +75,11 @@
       <_Parameter1>FcOidcClienteId</_Parameter1>
       <_Parameter2>$(FcOidcClienteId)</_Parameter2>
     </AssemblyAttribute>
+    <!-- E04 (folio 050) — la variante medida queda en la bitácora de cada arranque. -->
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>FcE04</_Parameter1>
+      <_Parameter2>$(FcE04)</_Parameter2>
+    </AssemblyAttribute>
   </ItemGroup>
 
   <ItemGroup>

@@ -11,7 +11,7 @@ namespace FrameworkConcept.Shell.Hosting;
 ///        puente y los sirve el propio HybridWebView;
 ///   C-4  los archivos se devuelven tal cual (el paquete trae archivos planos, sin .br ni .gz).
 /// </summary>
-public sealed class ServidorDeContenido
+public sealed class ServidorDeContenido(PuertaDelArranque puerta)
 {
     /// <summary>El origen fijo de la página en Android, medido en E01 ([C6]): https://0.0.0.1/.</summary>
     public const string HostLocal = "0.0.0.1";
@@ -21,15 +21,35 @@ public sealed class ServidorDeContenido
 
     private int _contador;
     private int _cargaAvisada;
+    private string? _ultimoFramework;
+    private string? _raizDeLaCarga;
 
-    /// <summary>Directorio de la versión activa (content/versions/vN). Lo fija la pantalla de contenido al arrancar.</summary>
+    /// <summary>
+    /// Directorio de la versión activa (content/versions/vN). Lo fija la pantalla de contenido al arrancar; con E04, la
+    /// de arranque con la versión especulada, o la preparación cuando el actualizador decide.
+    /// </summary>
     public string? Raiz { get; set; }
 
     /// <summary>
-    /// P2 — Se dispara una vez por proceso, cuando el WebView pide <see cref="ArchivoDeInicioDeCarga"/>. Es la evidencia
-    /// de que el contenido llegó a cargar: un arranque que se corta antes no cuenta para el rollback por marca.
+    /// P2 — Se dispara una vez por carga, cuando el WebView pide <see cref="ArchivoDeInicioDeCarga"/>. Es la evidencia
+    /// de que el contenido llegó a cargar: un arranque que se corta antes no cuenta para el rollback por marca. Lleva la
+    /// raíz desde la que se sirvió (E04: puede ser una versión especulada que después se descarta).
     /// </summary>
-    public event Action? CargaIniciada;
+    public event Action<string?>? CargaIniciada;
+
+    /// <summary>E04 — El último pedido atendido bajo _framework/ («req#N /ruta t=…ms»), para la bitácora del saludo y de Listo.</summary>
+    public string UltimoFramework => Volatile.Read(ref _ultimoFramework) ?? "sin _framework";
+
+    /// <summary>E04 — La raíz desde la que se sirvió el runtime de la carga en curso (null si todavía no se pidió).</summary>
+    public string? RaizDeLaCarga => Volatile.Read(ref _raizDeLaCarga);
+
+    /// <summary>E04 — Antes de recargar por una especulación descartada: la carga nueva vuelve a contar y a avisar.</summary>
+    public void Reiniciar()
+    {
+        Interlocked.Exchange(ref _contador, 0);
+        Interlocked.Exchange(ref _cargaAvisada, 0);
+        Volatile.Write(ref _raizDeLaCarga, null);
+    }
 
     public void AlPedirRecurso(object? sender, WebViewWebResourceRequestedEventArgs e)
     {
@@ -53,7 +73,20 @@ public sealed class ServidorDeContenido
         if (ruta.StartsWith("__hwv", StringComparison.Ordinal) || ruta == "_framework/hybridwebview.js")
             return;
 
-        var archivo = Resolver(ruta);
+#if FC_E04
+        // E04 — Sin versión especulada (primer arranque, R1) todavía no hay raíz: se espera la decisión del actualizador.
+        // Corre en el hilo de E/S del WebView (ShouldInterceptRequest), no en el de la interfaz.
+        if (Raiz is null && !puerta.Preparado.IsCompleted)
+        {
+            Bitacora.Log($"servidor: req#{n} /{ruta} espera la decisión del actualizador");
+            try { puerta.Preparado.Wait(TimeSpan.FromSeconds(30)); }
+            catch (AggregateException) { /* la preparación falló: la página se descarta igual */ }
+        }
+#else
+        _ = puerta;
+#endif
+        var raiz = Raiz;
+        var archivo = Resolver(raiz, ruta);
         if (archivo is null)
         {
             if (n <= 60) Bitacora.Log($"servidor: req#{n} {e.Method} /{ruta} → sin manejar");
@@ -63,25 +96,30 @@ public sealed class ServidorDeContenido
         e.Handled = true;
         e.SetResponse(200, "OK", TipoMime(archivo), File.OpenRead(archivo));
         if (n <= 60) Bitacora.Log($"servidor: req#{n} {e.Method} /{ruta}");
+        if (ruta.StartsWith("_framework/", StringComparison.Ordinal))
+            Volatile.Write(ref _ultimoFramework, $"req#{n} /{ruta} t={Bitacora.MsDesdeArranque()}ms");
 
         if (ruta == ArchivoDeInicioDeCarga && Interlocked.Exchange(ref _cargaAvisada, 1) == 0)
-            CargaIniciada?.Invoke();
+        {
+            Volatile.Write(ref _raizDeLaCarga, raiz);
+            CargaIniciada?.Invoke(raiz);
+        }
     }
 
     /// <summary>El archivo pedido dentro de la raíz, o index.html para las rutas de página de Blazor («/encuesta»).</summary>
-    private string? Resolver(string ruta)
+    private static string? Resolver(string? raiz, string ruta)
     {
-        if (Raiz is null || !Directory.Exists(Raiz)) return null;
+        if (raiz is null || !Directory.Exists(raiz)) return null;
 
-        var raizCompleta = Path.GetFullPath(Raiz) + Path.DirectorySeparatorChar;
-        var candidato = Path.GetFullPath(Path.Combine(Raiz, ruta));
+        var raizCompleta = Path.GetFullPath(raiz) + Path.DirectorySeparatorChar;
+        var candidato = Path.GetFullPath(Path.Combine(raiz, ruta));
 
         // Nada fuera de la raíz: «../» no sale del directorio de la versión.
         if (!candidato.StartsWith(raizCompleta, StringComparison.Ordinal)) return null;
         if (File.Exists(candidato)) return candidato;
 
         // Una ruta sin extensión es una página del enrutador de Blazor: se responde index.html y Blazor la resuelve.
-        var indice = Path.Combine(Raiz, "index.html");
+        var indice = Path.Combine(raiz, "index.html");
         return Path.HasExtension(ruta) || !File.Exists(indice) ? null : indice;
     }
 

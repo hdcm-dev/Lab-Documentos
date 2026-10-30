@@ -39,6 +39,9 @@ public static class MauiProgram
 
         // P1, P3 — Servidor de contenido, puente y eventos.
         s.AddSingleton<ContenidoActivo>();
+        s.AddSingleton<PuertaDelArranque>();          // E04 — la decisión del actualizador, para la página, el servidor y el puente
+        s.AddSingleton<PreparacionDelArranque>();
+        s.AddTransient<VistaDelContenido>();          // el HybridWebView y su medición, lo usen ContenidoPage o ArranquePage (E04)
         s.AddSingleton<ServidorDeContenido>();
         s.AddSingleton<EmisorDeEventos>();
         s.AddSingleton<DespachadorDelPuente>();

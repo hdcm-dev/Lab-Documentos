@@ -100,13 +100,13 @@ public class LectorDeTprTests
     public void LosTextosBuscadosSonLosQueSeEscriben()
     {
         var puente = File.ReadAllText(Repositorio.Ruta("src/FrameworkConcept.Content/wwwroot/js/puente.js"));
-        var pantalla = File.ReadAllText(Repositorio.Ruta("src/FrameworkConcept.Shell/Pages/ContenidoPage.xaml.cs"));
+        var pantalla = File.ReadAllText(Repositorio.Ruta("src/FrameworkConcept.Shell/Hosting/VistaDelContenido.cs"));   // E04: sale de ContenidoPage
 
         Assert.That(puente, Does.Contain($"'{LectorDeTpr.TextoDeLaMarca} contenido='"),
             "puente.js dejó de escribir la marca que lee «tpr»: cambiá los dos juntos (P1).");
         Assert.That(pantalla, Does.Contain(LectorDeTpr.TextoDeCargaIniciada),
-            "ContenidoPage dejó de registrar la carga iniciada que lee «tpr»: cambiá los dos juntos (P1).");
+            "VistaDelContenido dejó de registrar la carga iniciada que lee «tpr»: cambiá los dos juntos (P1).");
         Assert.That(pantalla, Does.Contain($"\"{LectorDeTpr.TextoDeLaMarca}\"").And.Contain("tpr={tpr}ms"),
-            "ContenidoPage dejó de escribir la marca leída del WebView que lee «tpr»: cambiá los dos juntos (P1).");
+            "VistaDelContenido dejó de escribir la marca leída del WebView que lee «tpr»: cambiá los dos juntos (P1).");
     }
 }

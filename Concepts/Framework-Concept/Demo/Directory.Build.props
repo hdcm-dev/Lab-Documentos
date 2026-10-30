@@ -20,6 +20,15 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
 
+  <!-- E04 (folio 050) — arranque superpuesto: -p:FcE04=V1 o -p:FcE04=V2. Sin la propiedad, el comportamiento de
+       siempre. FC_E04 cubre las dos variantes; FC_E04_V2, sólo lo que agrega V2. -->
+  <PropertyGroup Condition="'$(FcE04)' == 'V1' Or '$(FcE04)' == 'V2'">
+    <DefineConstants>$(DefineConstants);FC_E04</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(FcE04)' == 'V2'">
+    <DefineConstants>$(DefineConstants);FC_E04_V2</DefineConstants>
+  </PropertyGroup>
+
   <!-- Cadena de herramientas. Cambiar cualquiera de estas líneas, global.json o workloadVersion exige
        una prueba en dispositivo «manual: con registro» antes de fusionar (P6, punto 8). -->
   <PropertyGroup>

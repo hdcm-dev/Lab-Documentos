@@ -39,7 +39,9 @@ public sealed class DespachadorDelPuente(
     ISesionDelUsuario sesion,
     IGuardiaDeAcciones guardia,
     AtencionDeRed atencionDeRed,
-    AtencionDeSesion atencionDeSesion)
+    AtencionDeSesion atencionDeSesion,
+    PuertaDelArranque puerta,
+    ServidorDeContenido servidor)
 {
     /// <summary>Colección de documentos donde quedan las respuestas de encuesta, junto a su fila del outbox.</summary>
     public const string ColeccionDeRespuestas = "respuestas";
@@ -64,6 +66,13 @@ public sealed class DespachadorDelPuente(
         {
             var error = Validar(pedido);
             if (error is not null) return Responder(error);
+
+#if FC_E04_V2
+            // E04 V2 — La sesión se restaura en segundo plano: lo que depende de ella (outbox.status cuenta por dueño,
+            // auth.*, documents.*, la guardia de acciones) espera a que termine. El saludo y network.status no esperan.
+            if (!pedido.Method.StartsWith("bridge.", StringComparison.Ordinal) && pedido.Method != "network.status")
+                await puerta.SegundoPlano;
+#endif
 
             // Borrador §7 — La acción del negocio que ejecuta este método, si lo es, se evalúa ANTES de ejecutarla.
             if (PoliticaDeAcciones.DelMetodo(pedido.Method) is { } accion && guardia.Evaluar(accion.Id) is { Permitida: false } evaluacion)
@@ -134,8 +143,24 @@ public sealed class DespachadorDelPuente(
         {
             // --- Arranque (P2, P3) ---
             case "bridge.handshake":
+            {
+                Bitacora.Log($"puente: saludo recibido (último _framework {servidor.UltimoFramework})");
+                // E04 (folio 050) — El saludo se retiene hasta que el actualizador decidió (P2). Sin E04 ya está abierta.
+                var decidido = await puerta.Preparado;
+#if FC_E04
+                // La página que carga una versión especulada distinta de la decidida no habla con el cascarón: se recarga.
+                // Sin raíz de carga también se descarta: un saludo legítimo viene del runtime ya servido, así que null es
+                // el de la página vieja que saluda entre Reiniciar() y el dotnet.js de la recarga.
+                var raiz = servidor.RaizDeLaCarga;
+                if (!string.Equals(raiz, decidido.Directorio, StringComparison.Ordinal))
+                    throw new SaludoDescartadoException($"El contenido cargó {raiz ?? "(sin runtime servido)"} y el actualizador decidió {decidido.Directorio}.");
+#else
+                _ = decidido;
+#endif
                 emisor.Habilitado = true;   // desde acá el contenido ya tiene su función de eventos
+                Bitacora.Log("puente: saludo respondido");
                 return new RespuestaDeHandshake(ContratoDelPuente.Version, CatalogoDeCapacidades.Versionadas(), ContratoDelPuente.Huella());
+            }
 
             case "bridge.ready":
             {
@@ -146,6 +171,7 @@ public sealed class DespachadorDelPuente(
                 await db.AnotarVersionDeContenidoAsync(version.ToString(), "listo");
                 var aceptado = version.Equals(contenido.Version);
                 Bitacora.Log($"puente Listo({version}){(aceptado ? "" : $" — la activa es {contenido.Version}")}");
+                Bitacora.Log($"servidor: último _framework {servidor.UltimoFramework}");
                 ListoRecibido?.Invoke(version);
                 return new { aceptado };
             }
@@ -267,3 +293,6 @@ public sealed class DespachadorDelPuente(
 
     private static string Responder(SobreRespuesta respuesta) => JsonDelContrato.Escribir(respuesta);
 }
+
+/// <summary>E04 — El saludo llegó de una versión especulada que el actualizador no eligió: responde ErrorInterno y se recarga.</summary>
+public sealed class SaludoDescartadoException(string mensaje) : Exception(mensaje);

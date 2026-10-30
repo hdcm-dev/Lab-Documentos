@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [agente, humano]
 traces: [IDX-SDEI, MARCO-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-GLOSARIO, ANX-SDEI-VER, ANX-SDEI-DECIDIR]
 ---
@@ -51,7 +51,7 @@ publicado. La portada humana es el [README](README.md). Las carpetas que importa
 | [`Guides/`](Guides/README.md) | Las demás guías, por categoría; son anteriores al cuerpo y la compuerta las trata como heredadas | Si el cambio cae ahí |
 | [`tools/docs-guard/`](tools/docs-guard/README.md) | Los controles de la compuerta, sus datos y sus fixtures | Si un control da rojo y no se entiende por qué |
 | [`scripts/ci-local.sh`](scripts/ci-local.sh) | La compuerta en local, con los mismos pasos que la CI | Antes de proponer cualquier cambio |
-| [`CHANGELOG.md`](CHANGELOG.md) | Cambios del repositorio y la delegación del merge vigente | Antes de abrir o fusionar un pull request |
+| [`CHANGELOG.md`](CHANGELOG.md) | Cambios del repositorio y las delegaciones del merge vigentes, cada una con su alcance (qué expediente y qué repositorios cubre) | Antes de abrir o fusionar un pull request: vale la delegación cuyo alcance incluye el PR |
 
 ## 3. Ruta de lectura del agente
 

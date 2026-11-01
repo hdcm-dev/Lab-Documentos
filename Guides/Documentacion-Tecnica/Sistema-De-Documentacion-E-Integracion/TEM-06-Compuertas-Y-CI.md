@@ -12,7 +12,7 @@ audience: [humano, agente, estudiante, docente, desarrollo, devops]
 traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-04, TEM-SDEI-05, ANX-SDEI-CQ, ANX-SDEI-VER, ANX-SDEI-REFERENCIAS]
 ---
 
-# TEM-06 Compuertas de calidad y CI
+# Tema 06 — Compuertas de calidad y CI
 
 Una documentación que se escribe como código se verifica como código: en cada pull request corre un conjunto de
 controles que termina con un código de salida, y si alguno da rojo, el cambio no entra. Este tema explica qué
@@ -28,6 +28,7 @@ nuevo, si tiene que bloquear, y leer el resultado de una corrida para saber qué
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -309,5 +310,16 @@ tiene que responder.
 
 ---
 
-Anterior: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) · Siguiente:
-[Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md) · Volver al [Mapa](01-Mapa.md#4-por-artefacto)
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+Write the Docs (s. f.), GitLab (s. f., «Documentation testing» y «Documentation workflow») y Winters et al. (2020).
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | El bloque del workflow se cita del commit `4750354`; la etiqueta de runner va como parámetro, porque la fija el caso por plataforma |
+| Hecho | La salida registrada del ensayo de §3.3 es de la corrida del 2026-10-27 en la rama del tema |
+| Criterio propio | Un cambio que llega desde un fork no se fusiona solo: alguien con permiso lo lleva a una rama del repositorio y abre el pull request desde ahí |
+
+Documento anterior: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md). Siguiente documento:
+[Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md).

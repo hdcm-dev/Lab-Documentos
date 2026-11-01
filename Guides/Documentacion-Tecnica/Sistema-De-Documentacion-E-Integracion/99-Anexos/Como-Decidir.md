@@ -79,7 +79,7 @@ puntuar y se guarda su huella: si se fijan después, el resultado se contrasta c
 
 | Filtro | Excluye la alternativa que… |
 | --- | --- |
-| F1 | no corre en el runner que fija el caso (`[self-hosted, i7infra-dev]`) |
+| F1 | no corre en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60` |
 | F2 | escribe rutas del equipo, usuarios o hosts en lo versionado |
 | F3 | nombra un repositorio privado (se usa su alias) |
 | F4 | modifica material del dueño del caso sin mandato |

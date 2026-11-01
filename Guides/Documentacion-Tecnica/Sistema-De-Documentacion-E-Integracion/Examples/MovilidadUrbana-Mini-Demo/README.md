@@ -335,7 +335,7 @@ git push -u origin demo-mu/encuesta-paso-1
 
 El PR se abre desde la página del repositorio en GitHub (botón «Compare & pull request») o con la herramienta que use
 el equipo; la base es `main`. En el PR
-corren `docs-guard` y `mini-demo-movilidad` en el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los
+corren `docs-guard` y `mini-demo-movilidad` en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`; el PR se fusiona sólo con los
 dos en verde. El cuerpo del PR lleva: qué pantalla se documentó, la lista de piezas nuevas y cambiadas, las
 divergencias que quedan para decidir (con su ficha), los supuestos de §5.6 y el final de las dos salidas de §5.4.
 
@@ -390,3 +390,6 @@ permanente.
 | Las páginas no se publican en un sitio | Se leen como `.md` en el repositorio |
 | No se modifica el código | Si el repositorio del código abre un expediente que lo autorice, la documentación pasa a vivir junto al código |
 | La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos de borde que §5.2 no resuelve (qué cuenta como una regla, una regla con partes de especies o momentos distintos, un grado de certeza mixto o dudoso, una divergencia que no encaja en Leve o De fondo, un hueco común a toda la pantalla) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |
+
+Documento anterior: [Tema 07 — Integración con un marco SDD](../../TEM-07-Marco-SDD.md). Siguiente documento:
+[Ejercicios](../../99-Anexos/Ejercicios.md).

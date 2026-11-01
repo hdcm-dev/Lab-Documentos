@@ -127,4 +127,5 @@ propone actualizar la ficha y el `source.lock`; si el número de la regla es cor
 
 La acepta, rechaza o difiere el rol `ACT-SDEI-2`; en este corpus lo ocupa la responsable de la guía o quien el PO designe por delegación asentada. Es la fase de evaluación del ciclo, de clase H.
 
-Volver al [Mapa](../01-Mapa.md#6-anexos).
+Documento anterior: [tutorial de la mini demo](../Examples/MovilidadUrbana-Mini-Demo/README.md). Fin de la ruta
+«aprender»: volver al [Mapa](../01-Mapa.md#6-anexos) para elegir el anexo que haga falta.

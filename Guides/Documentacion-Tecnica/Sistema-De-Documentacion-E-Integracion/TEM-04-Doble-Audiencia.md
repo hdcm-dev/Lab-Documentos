@@ -12,7 +12,7 @@ audience: [humano, agente, estudiante, docente, desarrollo]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS]
 ---
 
-# TEM-04 Doble audiencia
+# Tema 04 — Doble audiencia
 
 Una página de documentación hoy tiene dos lectores: una persona que la abre en el navegador y un agente de IA que la
 lee para trabajar sobre el repositorio o para responderle a alguien. Este tema explica cómo se escribe **una sola
@@ -28,6 +28,7 @@ escenario y revisar si una página está lista para los dos lectores.
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -275,5 +276,17 @@ Lista corta para el `AGENTS.md` de un repositorio (la ruta «agente»):
 
 ---
 
-Anterior: [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md) · Siguiente:
-[Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) · Volver al [Mapa](01-Mapa.md#4-por-artefacto)
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+AGENTS.md (s. f.), Chatlatanagulchai et al. (2025), Chen et al. (2025), Howard (s. f.), OWASP GenAI Security Project
+(2025), Wang et al. (2025) y Yamasaki et al. (2026).
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | Las dos salidas registradas del tema son de corridas del 2026-10-27 sobre la carpeta del cuerpo |
+| Criterio propio | El tope de 50 000 *tokens* del archivo que agrega todo el contenido, en `CTX-SDEI-1` con sitio, es del diseño de este cuerpo, sin fuente externa |
+| Criterio propio | Lo que hace quien recibe un aviso AI-3: reescribir la frase, pedir una excepción con huella o declarar una reserva |
+
+Documento anterior: [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md). Siguiente
+documento: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md).

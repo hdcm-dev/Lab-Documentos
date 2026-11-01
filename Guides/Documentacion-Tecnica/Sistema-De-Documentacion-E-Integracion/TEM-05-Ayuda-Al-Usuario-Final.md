@@ -12,7 +12,7 @@ audience: [humano, agente, estudiante, docente, desarrollo, analista]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS, DEMO-MU-21, DEMO-MU-11]
 ---
 
-# TEM-05 Ayuda al usuario final
+# Tema 05 — Ayuda al usuario final
 
 La ayuda al usuario final es la documentación que lee quien usa el producto: cómo hacer una tarea, qué pide cada
 campo, qué hacer si algo sale mal. Es la única pieza del sistema documentador que lee alguien que no forma parte del
@@ -29,6 +29,7 @@ ayuda que la compuerta acepta y revisar si la de otro respeta la regla y el rol.
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -281,5 +282,17 @@ contra el esquema de páginas de ayuda del [anexo del esquema](99-Anexos/Esquema
 
 ---
 
-Anterior: [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md) · Siguiente:
-[Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md) · Volver al [Mapa](01-Mapa.md#4-por-artefacto)
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y Carroll (1995).
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | La salida registrada de §3.2 es de la corrida del 2026-11-01; los ocho avisos que omite son las trazas de la prueba de ayuda por rol, que no tiene `source.lock` |
+| Hecho | Las páginas de la prueba de ayuda por rol trazan a la unidad Web de Lab-Geometria en `5f07b12`; con ese SDD como fuente, las ocho trazas resuelven |
+| Criterio propio | La línea «releída contra la versión nueva, sin cambios» en la descripción del pull request |
+| Criterio propio | El control de traducción atrasada por commit es de la propuesta de ayuda por rol y no existe todavía en `docs-guard` |
+
+Documento anterior: [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md). Siguiente documento:
+[Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md).

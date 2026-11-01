@@ -51,7 +51,7 @@ que encuentra los identificadores estables en un solo archivo.
 | Carril programado | Corrida semanal de la CI que sólo avisa (abre o actualiza un issue): enlaces externos rotos, anclas atrasadas, documentos sin revisar hace más de un año |
 | Guarda de merge | Comprobación que hace un agente antes de fusionar su propio pull request: abierto, sin conflictos, con todos los controles en verde y sin una duda declarada. Sólo vale si la persona responsable dejó **asentada por escrito** la delegación del merge en el repositorio; con una duda (una **reserva**), el merge vuelve a la persona |
 | Repositorio hermano | Repositorio `.Documentacion` que acompaña a uno de código con el mismo nombre (por ejemplo, Lab-Documentos y Lab-Documentos.Documentacion) y guarda índices, expedientes y bitácoras |
-| Runner | Máquina que ejecuta los trabajos de la CI. Se elige por etiqueta: `[self-hosted, i7infra-dev]` es la etiqueta del runner del laboratorio, no una dirección |
+| Runner | Máquina que ejecuta los trabajos de la CI. Se elige por etiqueta: la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`. La etiqueta no es una dirección: qué máquina la sirve lo decide la organización |
 
 ## 2. Escenarios
 
@@ -78,7 +78,7 @@ flowchart LR
 Un repositorio dedicado a documentación formativa: lo que contiene son guías, y el código que aparece (las
 pruebas de concepto de `Examples/`) existe para ilustrarlas, no es un producto que se documente. El ejemplo es este
 repositorio, Lab-Documentos, que aloja varias guías; este cuerpo es una de ellas. Las audiencias son quien estudia, quien enseña y los agentes. La versión se ancla con la
-versión del cuerpo en su README y una etiqueta por compuerta.
+versión del cuerpo en su README y una etiqueta por versión.
 
 ### ESC-SDEI-2 — App cliente sin roles
 
@@ -138,8 +138,9 @@ detecta con un aviso programado.
 
 ### CTX-SDEI-4 — Dentro o fuera de la organización del runner
 
-Los repositorios de la organización que tiene el runner `[self-hosted, i7infra-dev]` llaman al workflow reutilizable
-`docs-guard.yml` de Lab-Documentos. Un repositorio de otra organización no puede llamarlo con ese runner: copia el
+Los repositorios de la organización que tiene el runner llaman al workflow reutilizable `docs-guard.yml` de
+Lab-Documentos, que corre con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este
+repositorio, la de `.github/workflows/docs-guard.yml:60`. Un repositorio de otra organización no puede llamarlo con ese runner: copia el
 workflow junto con su huella (el SHA-256 del archivo, que permite comprobar que la copia no cambió) y lo corre en el
 runner de su organización de GitHub.
 
@@ -175,6 +176,7 @@ los controles de la compuerta, que el agente no escribió en ese pull request, y
 | Estados | `borrador` → `vigente` → `obsoleto`; pasar a vigente es acto H | [README](README.md#6-versión-y-estado) |
 | Repositorios privados | Se nombran por un alias (el servicio push privado es **SDD-B**); en lo versionado no van rutas del equipo, direcciones IP, hosts ni usuarios | — |
 | Idioma | Castellano rioplatense claro, con voseo, sin regionalismos que traben la lectura; los términos de una API o de un formato van en su idioma original (`traces`, `pull request`) | — |
+| Estilo y lengua | Tres niveles, en este orden: (1) las convenciones de este cuerpo, voseo incluido; (2) para la lengua, las obras de la RAE y la ASALE, *Ortografía de la lengua española* (2010) y *Diccionario panhispánico de dudas*; (3) la *Spanish (Neutral) Style Guide* de Microsoft, tomada por la lengua y no por su alcance. Si chocan, manda el nivel 1 | — |
 
 ## 6. Un caso que recorre el marco
 

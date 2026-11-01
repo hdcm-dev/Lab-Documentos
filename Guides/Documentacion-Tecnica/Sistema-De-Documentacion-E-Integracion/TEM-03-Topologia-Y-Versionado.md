@@ -59,7 +59,7 @@ El **ancla de versión** es el dato que dice contra qué estado del código vale
 | El commit | La pieza vive en el mismo repositorio que el código: el commit que la contiene es el ancla. Si el repositorio publica versiones, la etiqueta de cada una marca juntos el código y su documentación | Nada extra: el mismo pull request cambia las dos cosas |
 | SHA fijado (`source.lock`, `base_commit`) | La pieza vive en otro repositorio que el código | La existencia del SHA bloquea; el atraso frente a la rama principal del código avisa |
 | Etiqueta (`base_tag`, `v1.2.0`) | Hay una versión publicada con nombre | La etiqueta anotada; el CHANGELOG de esa versión |
-| Versión del cuerpo | Una guía de estudio | El campo `version` del README del cuerpo, en SemVer, y una etiqueta anotada por compuerta |
+| Versión del cuerpo | Una guía de estudio | El campo `version` del README del cuerpo, en SemVer, y una etiqueta anotada por versión |
 
 Dónde se escribe cada ancla, para que la compuerta la lea:
 
@@ -141,7 +141,7 @@ varios productos) va a uno dedicado.*
 
 | Escenario | Topología dominante | Ancla | Qué aporta decidirlo bien |
 | --- | --- | --- | --- |
-| `ESC-SDEI-1` Corpus de guías | Repositorio dedicado | Versión del cuerpo en el README y etiqueta por compuerta | Que una cita a la guía diga a qué versión se refiere |
+| `ESC-SDEI-1` Corpus de guías | Repositorio dedicado | Versión del cuerpo en el README y una etiqueta por versión | Que una cita a la guía diga a qué versión se refiere |
 | `ESC-SDEI-2` App sin roles | La ayuda y la técnica, en el repositorio de la app; en la mini demo de este laboratorio, en un repositorio dedicado con `source.lock` | Commit, o SHA fijado en la demo | Que la ayuda diga lo mismo que el código del SHA que documenta |
 | `ESC-SDEI-3` Panel con roles | Especificación y manual por rol en el repositorio del código; índices para agentes y guías para trabajar en ese proyecto, en el hermano | Las piezas del repositorio del código, el commit, y la etiqueta de cada versión publicada marca código y documentación juntos; los índices del hermano, `base_commit` (SHA) y `base_tag` | Que una pantalla y su ayuda cambien en el mismo pull request |
 | `ESC-SDEI-4` Servicio con paquetes | Mismo repositorio, con una línea de documentación por línea de versión del paquete | El commit; además, la etiqueta de cada versión publicada del paquete (`v1.4.2`), que congela código y documentación de esa línea | Que quien integra la versión 1 no lea la documentación de la 2 |

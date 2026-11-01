@@ -38,6 +38,7 @@ nombra por su alias.
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -331,6 +332,19 @@ proyecto, la página de cada proyecto que completa esa plantilla con sus datos (
 
 El paso a paso para intervenir la documentación de un proyecto, con entradas, salidas y validaciones, está en la
 plantilla [Cómo intervenir](Examples/Como-Intervenir.md).
+
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+Böckeler (2025), GitHub (2026), Kiro (s. f.), Nygard (2011), Tan et al. (2024) y Thoughtworks (2025). IA.SDD y
+Lab-Geometria se citan por SHA.
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | El ensayo de trazas se corrió el 2026-10-27 sobre Lab-Geometria en `5f07b12`, con el `dg.py` de «PR #19, merge `e3841b6`»; repetido el 2026-11-01 en un clon nuevo, da los mismos cuatro resultados |
+| Hecho | El conocimiento de lógica de decisión de IA.SDD y las dos líneas de norma que mandan correrlo se midieron en `bac7e48` el 2026-11-01 |
+| Criterio propio | La frontera en una línea por clase: el sistema documentador cita lo que el SDD ya tiene y agrega lo que el SDD declara fuera de alcance |
+| Criterio propio | Las capas A y B de las lecciones de decisión y el paso del ensayo a la CI están en borrador hasta el escalón 2 |
 
 Documento anterior: [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md). Siguiente documento: el
 [tutorial de la mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md), que cierra la ruta «aprender» antes de los

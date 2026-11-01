@@ -3,6 +3,19 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-01 (SDEI: ajustes de coherencia del cuerpo)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0003 de DocAsCode, ajustes AC-01 a AC-36 (salvo AC-24)
+
+#### Cambiado
+
+- **Términos (AC-01 a AC-10, P-13 y P-14):** el «comentario» de `TEM-01` pasa a «nombre de una localidad»; el ejemplo de fila del RRD es la `RD-01` real; letra, intención y comportamiento quedan fijados; «deriva» es contenido frente a código y el SHA frente a la rama principal es «atraso» (las 12 apariciones de «desfase»); control, compuerta y compuerta de escalón; PR-7 «fijadas y referencias» y «siete grupos más `autoprueba`»; fila `FC` en el registro del anexo; glosario con seis familias de siglas, los `AK` que existen y 17 entradas nuevas, en orden alfabético.
+- **Datos vencidos (AC-11 a AC-17, P-10 y P-12):** `traces: []` contado en pasado; cita del workflow por SHA y bloque; enlace al tema 07; sin «en redacción»; motivo de `TEM-SDEI-nn` con el caso vigente; `080f158` pasa a «PR #19, merge `e3841b6`» con nota de equivalencia, y el guion de `TEM-07` hace `checkout` de `e3841b6`; las remisiones a `evidencia/E1-U4b/` llevan URL al SHA de la corrida U25 de Lab-Documentos.Documentacion, y la fila de Docusaurus de `04-adopciones.sh` queda «no reproducido».
+- **Ayuda por rol (AC-18 y AC-19, P-15):** `TEM-05` dice a qué traza la página según el escenario y suma la pregunta por la unidad de la pantalla; las siete páginas en castellano de `Prueba-Ayuda-Por-Rol` trazan a `CU-1000x@versión` de la unidad Web de Lab-Geometria en `5f07b12`, con RRD propio (`RD-21` a `RD-27`), `translation_of` alineado, el paso de previsualizar y el aviso de la baja.
+- **Marco y temas (AC-20 a AC-23, P-16 a P-18 y P-21):** escenarios compuestos por unión; fila «Clases activas por defecto» con altas y bajas con motivo y lo no presente en el ejemplo, medido en su SHA; quién decide 1b en `ESC-SDEI-1` (`ACT-SDEI-2`); el carril programado cuenta atraso y A1 mide la deriva por símbolo (deuda: A1 sin programar); `TEM-07` con el hecho fechado de IA.SDD@`bac7e48`.
+- **Ejemplos (AC-25 a AC-31):** línea del error de la demo (`:63`); clases CL-05 y CL-01 en la tabla de la demo; frontmatter, ancla y encabezado de ficha reales en el anexo del esquema y en `TEM-03`; marca `[Salida registrada: …]`; `Como-Decidir` cita `PE-02`; el Marco cuenta las tres aplicaciones de MovilidadUrbana; `Examples/Lanzar-Example.md` reescrito como guía práctica genérica, con versiones fijas y sin datos del entorno (el tool-prompt saneado vive en Lab-Documentos.Documentacion).
+- **Forma (AC-32 a AC-36, P-05 y P-11):** «una etiqueta por versión»; la etiqueta de runner deja de escribirse en la prosa del cuerpo y se nombra como parámetro por plataforma; H1 «Tema 0n — …» y sección «Fuentes y observaciones» en los siete temas; pie de navegación uniforme e índice en la instancia de «Cómo intervenir»; fila «Estilo y lengua» en las convenciones del Marco.
+
 ## 2026-11-01 (Framework Concept: libro unificado y Conocimiento)
 
 ### Concepts/Framework-Concept/ — prompt 04 del PO

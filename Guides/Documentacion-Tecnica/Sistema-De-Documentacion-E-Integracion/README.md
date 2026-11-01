@@ -134,7 +134,8 @@ El cuerpo va de lo general a lo particular. El **Marco** fija una sola vez el vo
 todos los documentos: escenarios, contextos, actores y convenciones. El **Mapa** cruza ese vocabulario con las
 situaciones del lector. Cada **tema** sigue la misma estructura interna de seis secciones (definición, aplicación por
 escenario, ejemplos concretos, preguntas guía, criterios de calidad y anexo), para que se aprenda una sola forma de
-leer. Los **anexos** guardan el material de consulta, separado del recorrido.
+leer, más una séptima, «Fuentes y observaciones», que separa los hechos de las interpretaciones y del criterio
+propio. Los **anexos** guardan el material de consulta, separado del recorrido.
 
 ```text
 Sistema-De-Documentacion-E-Integracion/

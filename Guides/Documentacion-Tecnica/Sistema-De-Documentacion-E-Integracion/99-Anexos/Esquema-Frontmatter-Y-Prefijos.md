@@ -71,8 +71,8 @@ Una traza dice de qué otro identificador depende un documento. Tiene dos nivele
 
 | Nivel | Dónde | Forma | Ejemplo |
 | --- | --- | --- | --- |
-| 1 | En el frontmatter de la página | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]` | `traces: [RN-LOC-01@1.0]` |
-| 2 | En la ficha del ID | `ruta#Símbolo@SHA` de dónde se declara, se verifica y se aplica en el código | `Pantalla.cs#LargoMaximo@8fb4c3a` |
+| 1 | En el frontmatter de la página | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]` | `traces: [RN-LOC-01@1.1]` (la ayuda de la mini demo) |
+| 2 | En la ficha del ID | `ruta#Símbolo@SHA` de dónde se declara, se verifica y se aplica en el código | `src/MovilidadUrbana.MAUI/Domain/Rules/LocalidadRules.cs#LocalidadRules.LargoMaximoDelNombre@8fb4c3a` (la ficha `RN-LOC-01`; el símbolo va como `Clase.Miembro`) |
 
 El registro contra el que se resuelven se genera solo: lo forman los `doc_id` de todo el repositorio y los
 encabezados que empiezan con un identificador (por ejemplo, el encabezado `### ESC-SDEI-2 — App cliente sin roles`
@@ -161,21 +161,22 @@ Ejemplo de fila válida: la primera del RRD de la mini demo
 
 ## 7. Un ejemplo completo y sus errores
 
-Frontmatter válido de un tema [Fragmento ilustrativo: muestra la forma]:
+Frontmatter válido de un tema, el de `TEM-03` de este cuerpo, con la lista de `audience` y de `traces` recortada
+[Compilado: `TEM-03-Topologia-Y-Versionado.md`, l. 1-13; recortado]:
 
 ```yaml
 ---
-doc_id: TEM-03
+doc_id: TEM-SDEI-03
 doc_type: tema
-title: Topología de repositorios y versionado
-description: Dónde vive cada pieza documental respecto del código y contra qué versión vale.
+title: Tema 03 — Topología de repositorios y versionado
+description: "Dónde vive cada pieza documental respecto del código y contra qué versión vale: commit, SHA fijado o etiqueta, con la regla para elegir."
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante]
-traces: [MARCO-SDEI, TEM-02]
+traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-02]
 ---
 ```
 
@@ -184,7 +185,7 @@ traces: [MARCO-SDEI, TEM-02]
 | `status: aprobado` | `esquema-cuerpo`: valor fuera del vocabulario | PR-2 |
 | Borrás `confidence` con `origin: ia-assisted` | `esquema-cuerpo`: falta `confidence` | PR-2 |
 | `doc_id: TOP-03` | `prefijo`: «TOP-» no está en el registro | PR-2 |
-| `traces: [TEM-99]` | `traza-no-resuelve` | PR-5 |
+| `traces: [TEM-SDEI-99]` | `traza-no-resuelve` | PR-5 |
 | Borrás el bloque entero | `sin-frontmatter`: todo documento del cuerpo abre con frontmatter | PR-2 |
 
 ## 8. Dónde vive la fuente de verdad

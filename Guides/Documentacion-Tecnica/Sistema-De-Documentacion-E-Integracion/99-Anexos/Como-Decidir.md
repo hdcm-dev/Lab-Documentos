@@ -106,7 +106,7 @@ flowchart TB
 ## 5. Una matriz trabajada
 
 **Pregunta.** ¿La guía del sistema documentador es un cuerpo de varios documentos o un archivo único? Es la decisión
-que dio forma a este cuerpo, y por eso sirve de ejemplo (`PE-01`, problema conductor).
+que dio forma a este cuerpo, y por eso sirve de ejemplo trabajado (`PE-02`).
 
 | Alternativa | K1 | K2 | K3 | K4 | K5 | K6 | K7 | Total | Filtro |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

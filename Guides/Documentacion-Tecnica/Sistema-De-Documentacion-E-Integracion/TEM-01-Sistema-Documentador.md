@@ -242,7 +242,7 @@ workflows que corren compuertas: docs-enlaces-semanal.yml, docs-guard.yml, frame
 
 Leído con el tema: el cuerpo de estudio (`indice`, `marco-de-referencia`, `mapa`, `anexo`) es CL-10; las doce
 páginas de ayuda de las pruebas de concepto son CL-06; la `rrd` y las dos `ficha` son la mini demo de MovilidadUrbana
-(CL-02 y fichas de reglas); el `openapi.json` es CL-05 y el `source.lock` es su ancla. Cuatro workflows ejecutan
+(CL-02, y CL-01 como fichas propias sin SDD, en un repositorio dedicado con `source.lock`); el `openapi.json` es CL-05 y el `source.lock` es su ancla. Cuatro workflows ejecutan
 controles: dos bloquean en cada pull request (`docs-guard.yml` y el de la mini demo) y uno sólo avisa por semana.
 
 ### Ensayo reproducible: adopciones con fecha

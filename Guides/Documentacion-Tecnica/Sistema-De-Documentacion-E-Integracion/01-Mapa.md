@@ -78,7 +78,7 @@ se abre una clase nueva por expediente, no se improvisa.
 
 | Clase | Artefacto | Dónde vive | Ancla | Control (bloquea salvo indicación) | Intervención | Tema |
 | --- | --- | --- | --- | --- | --- | --- |
-| CL-01 | Especificación: necesidad, caso de uso, regla, decisión de arquitectura | Repo de código | Commit y versión del ID | Esquema, enlaces, registro de IDs | P redacta; H acepta la decisión | `TEM-02` |
+| CL-01 | Especificación: necesidad, caso de uso, regla, decisión de arquitectura | Repo de código; sin SDD, la ficha propia puede vivir en un repositorio dedicado con `source.lock` (la mini demo) | Commit y versión del ID | Esquema, enlaces, registro de IDs | P redacta; H acepta la decisión | `TEM-02` |
 | CL-02 | Registro de requerimientos documentales | Con la especificación o en `docs/_requisitos.md` | Commit | Esquema del registro | P propone; H evalúa | `TEM-02` |
 | CL-03 | `AGENTS.md` | Raíz de cada repositorio | Commit | Existe y sus enlaces resuelven; excluido del aviso AI-3 por huella | H | `TEM-04` |
 | CL-04 | Referencia .NET (comentarios XML) | En el código | Commit | Build con avisos como error | D | `TEM-01`, `TEM-06` |

@@ -83,8 +83,9 @@ versión del cuerpo en su README y una etiqueta por compuerta.
 ### ESC-SDEI-2 — App cliente sin roles
 
 Una aplicación que usa una sola clase de persona usuaria, sin perfiles con permisos distintos. El ejemplo es
-MovilidadUrbana (repositorio Lab-E2E.WebBlazor): una app MAUI con una API web. La ayuda al usuario final es una sola
-para todos; la documentación técnica y el contrato REST salen del código. La versión se ancla con el SHA del código
+MovilidadUrbana (repositorio Lab-E2E.WebBlazor), que tiene tres aplicaciones (web, API y móvil), cada una con sus
+propias capas; las fichas de la demo anclan la app móvil, y la copia de la regla en la API no tiene ancla, así que un
+cambio ahí no da rojo. La ayuda al usuario final es una sola para todos; la documentación técnica y el contrato REST salen del código. La versión se ancla con el SHA del código
 fijado en un archivo `source.lock`.
 
 ### ESC-SDEI-3 — Panel con roles

@@ -52,10 +52,10 @@ ancla SHA entre repositorios con aviso de deriva y trazas de dos niveles.
 | --- | --- | --- | --- |
 | [`source.lock`](source.lock) | — | todos | Repositorio, SHA, rutas y proyecto de la API |
 | [`verificar.sh`](verificar.sh) | — | desarrollo, CI | Baja el código, extrae el contrato y corre los controles |
-| [`contracts/openapi.json`](contracts/openapi.json) | contrato | desarrollo | Contrato de la API extraído en ejecución del SHA |
+| [`contracts/openapi.json`](contracts/openapi.json) | CL-05 | desarrollo | Contrato de la API extraído en ejecución del SHA |
 | [`docs/_requisitos.md`](docs/_requisitos.md) | CL-02 (RRD) | analista, PO | Qué documentación hace falta y cómo se comprueba |
-| [`docs/fichas/RN-LOC-01.md`](docs/fichas/RN-LOC-01.md) | anexo | analista | Largo del nombre (con divergencia 60/80) |
-| [`docs/fichas/RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) | anexo | analista | Localidad única por nombre y provincia |
+| [`docs/fichas/RN-LOC-01.md`](docs/fichas/RN-LOC-01.md) | CL-01 (ficha propia, sin SDD) | analista | Largo del nombre (con divergencia 60/80) |
+| [`docs/fichas/RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) | CL-01 (ficha propia, sin SDD) | analista | Localidad única por nombre y provincia |
 | [`docs/ayuda/alta-de-localidad.md`](docs/ayuda/alta-de-localidad.md) | CL-06 | persona usuaria | Cómo dar de alta una localidad |
 | [`docs/tecnica/arquitectura.md`](docs/tecnica/arquitectura.md) | CL-07 | desarrollo | Capas y dónde vive cada regla |
 | [`docs/tecnica/compilar-y-primer-pedido.md`](docs/tecnica/compilar-y-primer-pedido.md) | CL-07 | desarrollo | Compilar la API, pedir el contrato, primer alta |
@@ -112,7 +112,7 @@ El final de una corrida en orden:
 ```
 
 Si un control da rojo, la línea anterior al agregador dice qué archivo y qué fila. Por ejemplo:
-`docs/fichas/RN-LOC-01.md:62: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80`.
+`docs/fichas/RN-LOC-01.md:63: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80`.
 
 ## 5. Tutorial: documentar una pantalla nueva
 

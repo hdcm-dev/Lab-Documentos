@@ -84,11 +84,11 @@ La **traza** une las dos ideas dentro del texto. Una página que depende de una 
 el identificador apunta a la ficha, no a la ruta, y `@1.1` dice contra qué versión de la ficha vale la página. La
 compuerta busca el identificador en un registro que arma sola con los `doc_id` y los encabezados del repositorio: una
 ficha declara su regla con un encabezado que empieza con el identificador y, debajo, una línea con su versión
-(`## RN-LOC-01 Largo máximo del nombre` y `**Versión:** 1.1`; detalle en el
+(`# RN-LOC-01 — Largo del nombre de la localidad` y `**Versión:** 1.1`; detalle en el
 [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas)). El
 registro es uno para todo el repositorio: por eso los identificadores de este cuerpo llevan su `corpus_id`
-(`TEM-SDEI-03`, no `TEM-03`), porque otra guía del mismo repositorio ya declara `TEM-03` y una traza a un ID declarado
-dos veces es ambigua.
+(`TEM-SDEI-03`, no `TEM-03`), porque otras guías del mismo repositorio ya chocaron en él (`MARCO-CONVENCIONES` está
+declarado cuatro veces) y una traza a un ID declarado dos veces es ambigua.
 
 ### Qué problema resuelve
 

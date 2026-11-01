@@ -11,7 +11,10 @@
 #   enlaces       PR-1  lychee --offline --include-fragments; enlaces relativos que salen del repositorio.
 #   esquema       PR-2  frontmatter contra su esquema, registro cerrado de prefijos, esquema RRD.
 #   ai            PR-3  anti-inyección AI-1..AI-5. AI-3 avisa; AI-4 avisa en el anexo de referencias.
-#   estructura    PR-4  markdownlint-cli2 estructural (MD013 apagado) y mermaid que parsea.
+#   estructura    PR-4  markdownlint-cli2 estructural (MD013 apagado), mermaid que parsea y mermaid-arroba: una arroba
+#                       seguida de un nombre con punto en un bloque mermaid, que el dibujo toma como autoenlace de correo,
+#                       y «ID#64;1.0» en una etiqueta con HTML («<br/>», «<b>»), donde la entidad vuelve a ser arroba;
+#                       se escribe «ID#64;1.0» en una etiqueta sin HTML (expediente 0003, P-20 y AC-24).
 #   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados, sobre RUTA y
 #                       los punteros de la raíz (DOCS_GUARD_TRAZAS_EXTRA; por defecto AGENTS.md, README.md y
 #                       Guides/README.md, si existen); id-duplicado: un ID declarado dos veces da rojo aunque nadie lo
@@ -101,10 +104,11 @@ enlaces() {
 esquema()    { echo "== PR-2 esquema ($RUTA)"; py esquema "$RUTA"; }
 ai()         { echo "== PR-3 anti-inyección ($RUTA ${PUNTEROS[*]})"; py ai "$RUTA" "${PUNTEROS[@]}"; }
 estructura() {
-  echo "== PR-4 estructura: markdownlint-cli2 y mermaid ($RUTA ${PUNTEROS[*]})"
+  echo "== PR-4 estructura: markdownlint-cli2, mermaid y mermaid-arroba ($RUTA ${PUNTEROS[*]})"
   local rc=0
   markdownlint "$RUTA/**/*.md" "${PUNTEROS[@]}" || rc=1
   mermaid "$RUTA" "${PUNTEROS[@]}" || rc=1
+  py mermaid-arroba "$RUTA" "${PUNTEROS[@]}" || rc=1
   return $rc
 }
 trazas()     { echo "== PR-5 trazas ($RUTA ${TRAZAS_EXTRA[*]})"; py trazas "$RUTA" "${TRAZAS_EXTRA[@]}"; }
@@ -198,6 +202,14 @@ autoprueba() {
   espera verde 'PR-4 markdownlint'    markdownlint "$FX/estructura/verde/**/*.md"
   espera rojo  'PR-4 mermaid'         mermaid "$FX/mermaid/rojo"
   espera verde 'PR-4 mermaid'         mermaid "$FX/mermaid/verde"
+  # mermaid-arroba (expediente 0003, P-20): «ID@1.0», o «ID#64;1.0» junto a «<br/>», en una etiqueta da rojo;
+  # «ID @ 1.0», y «ID#64;1.0» en una etiqueta sin HTML, dan verde.
+  # Un fixture rojo por llamada: si se rompe la detección de uno, el otro no la tapa.
+  espera_regla mermaid-arroba 'PR-4 mermaid-arroba a.md' \
+    py mermaid-arroba --raiz "$FX/mermaid-arroba/rojo" "$FX/mermaid-arroba/rojo/a.md"
+  espera_regla mermaid-arroba 'PR-4 mermaid-arroba b.md' \
+    py mermaid-arroba --raiz "$FX/mermaid-arroba/rojo" "$FX/mermaid-arroba/rojo/b.md"
+  espera verde 'PR-4 mermaid-arroba'  py mermaid-arroba --raiz "$FX/mermaid-arroba/verde" "$FX/mermaid-arroba/verde"
   espera rojo  'PR-6 contrato'        py contrato "$FX/contrato/rojo/esperado.json" "$FX/contrato/rojo/generado.json"
   espera verde 'PR-6 contrato'        py contrato "$FX/contrato/verde/esperado.json" "$FX/contrato/verde/generado.json"
   # AK-7: el fixture permanente da rojo y cada chequeo que bloquea lo detecta; AI-3 lo ve como aviso.

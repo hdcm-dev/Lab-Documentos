@@ -55,7 +55,8 @@ revisa la página.
 
 ```mermaid
 flowchart LR
-  RD["RD-01<br/>persona usuaria"] --> P["docs/ayuda/alta-de-localidad.md<br/>traces: RD-01, RN-LOC-01@1.1, RN-LOC-02@1.0"]
-  P --> F1["Ficha RN-LOC-01 1.1"] --> C["Código en el SHA de source.lock"]
-  P --> F2["Ficha RN-LOC-02 1.0"] --> C
+  RD["RD-01<br/>persona usuaria"] --> P["docs/ayuda/alta-de-localidad.md"]
+  P -->|declara| T["traces: RD-01, RN-LOC-01#64;1.1, RN-LOC-02#64;1.0"]
+  T --> F1["Ficha RN-LOC-01 1.1"] --> C["Código en el SHA de source.lock"]
+  T --> F2["Ficha RN-LOC-02 1.0"] --> C
 ```

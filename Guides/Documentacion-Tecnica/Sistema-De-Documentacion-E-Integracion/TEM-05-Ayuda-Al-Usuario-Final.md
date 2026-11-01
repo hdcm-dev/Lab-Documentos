@@ -12,7 +12,7 @@ audience: [humano, agente, estudiante, docente, desarrollo, analista]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS, DEMO-MU-21, DEMO-MU-11]
 ---
 
-# TEM-05 Ayuda al usuario final
+# Tema 05 — Ayuda al usuario final
 
 La ayuda al usuario final es la documentación que lee quien usa el producto: cómo hacer una tarea, qué pide cada
 campo, qué hacer si algo sale mal. Es la única pieza del sistema documentador que lee alguien que no forma parte del
@@ -29,6 +29,7 @@ ayuda que la compuerta acepta y revisar si la de otro respeta la regla y el rol.
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -45,7 +46,7 @@ análisis de audiencia y de tareas y con mantenimiento ([ISO/IEC/IEEE, 2022](99-
 | Rol | Perfil del producto con permisos distintos (alumno, administrador). En este cuerpo el rol **no es un escenario**: dentro de `ESC-SDEI-3`, decide qué página se sirve |
 | Unidad | En un proyecto con SDD, el módulo de la especificación al que pertenece una pantalla, con sus propios casos de uso y reglas (detalle en `TEM-07`) |
 | Visibilidad y acceso | Ocultar una página en la navegación es visibilidad; no entregarla es acceso. Sólo lo segundo protege |
-| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a un `RD-` |
+| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a lo que pide su escenario (tabla de [Aplicación por escenario](#aplicación-por-escenario)); la regla de `ESC-SDEI-3` está en la l. 89 |
 
 **Qué problema resuelve.** La taxonomía de problemas documentales que surge de 878 artefactos (listas de correo,
 preguntas, *issues* y pull requests) pone la desactualización, junto con la incorrección y la incompletitud, entre los
@@ -140,9 +141,9 @@ del repositorio y revierte la edición al final. Primero simula que la ficha sub
 después, una traza a una regla que no existe.
 
 ```text
-[Salida registrada: corrida del 2026-10-27; GUIA-DIR es la carpeta del cuerpo; se omiten 9 avisos ajenos]
+[Salida registrada: corrida del 2026-11-01; GUIA-DIR es la carpeta del cuerpo; se omiten 8 avisos ajenos y la línea de anclas]
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # sin cambios
-== PR-5 traces-resolve: verde (errores=0 avisos=9) trazas=121 resueltas=112
+== PR-5 traces-resolve: verde (errores=0 avisos=8) trazas=122 resueltas=114 ids-duplicados=0 anclas=0 anclas-resueltas=0
 rc=0
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # traces: [RD-01, RN-LOC-01@1.0, RN-LOC-02@1.0]
 GUIA-DIR/Examples/MovilidadUrbana-Mini-Demo/docs/ayuda/alta-de-localidad.md:1: ERROR traza-version-desfasada: RN-LOC-01@1.0: la declaración está en 1.1
@@ -152,7 +153,7 @@ GUIA-DIR/Examples/MovilidadUrbana-Mini-Demo/docs/ayuda/alta-de-localidad.md:1: E
 rc=1
 ```
 
-Los nueve avisos omitidos son de la prueba de concepto de ayuda por rol: trazan a casos de uso de otro sistema sin un
+Los ocho avisos omitidos son de la prueba de concepto de ayuda por rol: trazan a casos de uso de otro sistema sin un
 `source.lock` que diga contra qué SHA resolverlos, y la compuerta los marca como «no verificables» en lugar de
 bloquear. Es el comportamiento esperado, no un defecto de la mini demo.
 
@@ -189,7 +190,10 @@ Si la página no está traducida, se sirve la del idioma fuente con un aviso vis
 traducción no puede quitarle la ayuda a nadie. Cada traducción declara de qué commit de la página fuente se tradujo
 (`translation_of: es/alumno/enviar-un-trabajo.md@a1b2c3d`), y un control de la CI avisa que la traducción está atrasada
 si la fuente cambió después de ese commit **[criterio propio de la propuesta de ayuda por rol; el control no existe
-todavía en `docs-guard`]**.
+todavía en `docs-guard`]**. Las dos traducciones de la prueba de concepto no usan esa forma: anclan `translation_of` a
+la versión del caso de uso que traza la página fuente (`es/alumno/enviar-un-trabajo.md@CU-10005@1.2`), que es la que
+hoy admite el esquema de las páginas de ayuda (`tools/docs-guard/esquemas/ayuda.schema.json`). Así, cuando exista el
+control, avisará que cambió el caso y no la página.
 
 ## Preguntas guía
 
@@ -219,6 +223,7 @@ Para **evaluar** una página:
 2. Con una sesión del rol que no corresponde, ¿la página, su `.md` y el índice devuelven nada?
 3. ¿Una persona sin conocimiento del sistema hace la tarea sin ayuda (prueba de lectura)?
 4. ¿Algo de la página es un criterio de aceptación o un flujo interno que no debería estar ahí?
+5. ¿La página traza también al caso de uso de la unidad de su pantalla?
 
 ## Criterios de calidad
 
@@ -277,5 +282,19 @@ contra el esquema de páginas de ayuda del [anexo del esquema](99-Anexos/Esquema
 
 ---
 
-Anterior: [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md) · Siguiente:
-[Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md) · Volver al [Mapa](01-Mapa.md#4-por-artefacto)
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y Carroll (1995).
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | La salida registrada de §3.2 es de la corrida del 2026-11-01; los ocho avisos que omite son las trazas de la prueba de ayuda por rol, que no tiene `source.lock` |
+| Hecho | Las páginas de la prueba de ayuda por rol trazan a la unidad Web de Lab-Geometria en `5f07b12`; con ese SDD como fuente, las ocho trazas resuelven |
+| Hecho | El ejemplo une cada página con su fila `RD-` por la columna «Pieza» del RRD de la prueba y no por `traces`, como pide la regla de `ESC-SDEI-3`: el esquema de las páginas de ayuda (`ayuda.schema.json`) sólo admite trazas con versión. El cambio del esquema queda para el expediente de herramienta |
+| Hecho | La prueba de ayuda por rol no tiene `source.lock`; sus ocho trazas se comprobaron con `--fuente` contra el SDD de Lab-Geometria en `5f07b12` (8 de 8 resueltas). Llevar esa comprobación a la CI queda como deuda del expediente de herramienta que agregue el trabajo con `--fuente` y el `source.lock` de la prueba |
+| Criterio propio | La línea «releída contra la versión nueva, sin cambios» en la descripción del pull request |
+| Criterio propio | El control de traducción atrasada por commit es de la propuesta de ayuda por rol y no existe todavía en `docs-guard` |
+
+Documento anterior: [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md). Siguiente documento:
+[Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md).

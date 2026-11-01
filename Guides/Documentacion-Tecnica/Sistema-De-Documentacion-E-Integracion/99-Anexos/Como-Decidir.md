@@ -44,8 +44,8 @@ una escala donde cada punto tiene un observable, y dice cuándo la decisión es 
 ## 2. Los criterios
 
 Los tres primeros son los que un sistema documentador tiene que mostrar por pedido del caso: simplicidad, practicidad y
-escalabilidad. Los demás salen del mismo pedido (audiencia, coherencia con los marcos existentes, desfase de
-versiones), salvo el costo, que es **[criterio propio]** y por eso pesa menos.
+escalabilidad. Los demás salen del mismo pedido (audiencia, coherencia con los marcos existentes, deriva entre
+documentación y código), salvo el costo, que es **[criterio propio]** y por eso pesa menos.
 
 | K | Criterio | Qué mide | Fuente de industria |
 | --- | --- | --- | --- |
@@ -79,7 +79,7 @@ puntuar y se guarda su huella: si se fijan después, el resultado se contrasta c
 
 | Filtro | Excluye la alternativa que… |
 | --- | --- |
-| F1 | no corre en el runner que fija el caso (`[self-hosted, i7infra-dev]`) |
+| F1 | no corre en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60` |
 | F2 | escribe rutas del equipo, usuarios o hosts en lo versionado |
 | F3 | nombra un repositorio privado (se usa su alias) |
 | F4 | modifica material del dueño del caso sin mandato |
@@ -106,7 +106,7 @@ flowchart TB
 ## 5. Una matriz trabajada
 
 **Pregunta.** ¿La guía del sistema documentador es un cuerpo de varios documentos o un archivo único? Es la decisión
-que dio forma a este cuerpo, y por eso sirve de ejemplo (`PE-01`, problema conductor).
+que dio forma a este cuerpo, y por eso sirve de ejemplo trabajado (`PE-02`).
 
 | Alternativa | K1 | K2 | K3 | K4 | K5 | K6 | K7 | Total | Filtro |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

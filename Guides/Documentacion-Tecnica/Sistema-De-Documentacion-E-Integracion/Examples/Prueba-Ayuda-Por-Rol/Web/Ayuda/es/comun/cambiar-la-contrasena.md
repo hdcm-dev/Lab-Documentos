@@ -3,7 +3,7 @@ title: Cambiar la contraseña
 description: Cuándo el laboratorio te la pide y cómo se cambia.
 roles: [Student, Administrator]
 order: 2
-traces: [CU-00022@1.1, CU-00024@1.1]
+traces: [CU-10003@1.5]
 topic: contrasena
 ---
 # Cambiar la contraseña

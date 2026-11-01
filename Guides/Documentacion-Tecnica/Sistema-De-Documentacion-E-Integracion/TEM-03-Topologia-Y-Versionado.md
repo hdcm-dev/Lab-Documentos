@@ -44,10 +44,11 @@ La **topología** de una pieza dice dónde vive respecto del código. Hay cuatro
 | Repositorio dedicado | Un repositorio cuyo producto es la documentación | Lab-Documentos, que guarda este cuerpo |
 | Artefacto del build | La pieza no se versiona como archivo de prosa: la emite el build del código | El contrato `openapi.json` emitido por la API |
 
-Los controles que se nombran en este tema son parte de una **compuerta**: un conjunto de controles que corre en la
-integración continua en cada pull request y termina en verde o en rojo. En este laboratorio la corre el workflow
-`docs-guard`, con siete grupos de controles (PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4 estructura,
-PR-5 trazas, PR-6 contrato, PR-7 referencias); `traces-resolve` es el control del grupo PR-5. El **carril
+Los controles que se nombran en este tema son parte de la **compuerta**: el carril PR, el conjunto de controles que
+corre en la integración continua en cada pull request y termina en verde o en rojo. En este laboratorio la corre el
+workflow `docs-guard`, con siete grupos más `autoprueba` (PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4
+estructura, PR-5 trazas, PR-6 contrato, PR-7 fijadas y referencias con `reflint` y `url-fecha`); `traces-resolve` es
+el control del grupo PR-5. El **carril
 programado** es otra corrida, semanal, que no bloquea: sólo avisa con un issue cuando algo derivó. Localmente, todo
 se corre con `scripts/ci-local.sh` desde la raíz del repositorio.
 
@@ -56,9 +57,9 @@ El **ancla de versión** es el dato que dice contra qué estado del código vale
 | Ancla | Cuándo se usa | Qué la verifica |
 | --- | --- | --- |
 | El commit | La pieza vive en el mismo repositorio que el código: el commit que la contiene es el ancla. Si el repositorio publica versiones, la etiqueta de cada una marca juntos el código y su documentación | Nada extra: el mismo pull request cambia las dos cosas |
-| SHA fijado (`source.lock`, `base_commit`) | La pieza vive en otro repositorio que el código | La existencia del SHA bloquea; el desfase con la rama principal del código avisa |
+| SHA fijado (`source.lock`, `base_commit`) | La pieza vive en otro repositorio que el código | La existencia del SHA bloquea; el atraso frente a la rama principal del código avisa |
 | Etiqueta (`base_tag`, `v1.2.0`) | Hay una versión publicada con nombre | La etiqueta anotada; el CHANGELOG de esa versión |
-| Versión del cuerpo | Una guía de estudio | El campo `version` del README del cuerpo, en SemVer, y una etiqueta anotada por compuerta |
+| Versión del cuerpo | Una guía de estudio | El campo `version` del README del cuerpo, en SemVer, y una etiqueta anotada por versión |
 
 Dónde se escribe cada ancla, para que la compuerta la lea:
 
@@ -83,17 +84,17 @@ La **traza** une las dos ideas dentro del texto. Una página que depende de una 
 el identificador apunta a la ficha, no a la ruta, y `@1.1` dice contra qué versión de la ficha vale la página. La
 compuerta busca el identificador en un registro que arma sola con los `doc_id` y los encabezados del repositorio: una
 ficha declara su regla con un encabezado que empieza con el identificador y, debajo, una línea con su versión
-(`## RN-LOC-01 Largo máximo del nombre` y `**Versión:** 1.1`; detalle en el
+(`# RN-LOC-01 — Largo del nombre de la localidad` y `**Versión:** 1.1`; detalle en el
 [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas)). El
 registro es uno para todo el repositorio: por eso los identificadores de este cuerpo llevan su `corpus_id`
-(`TEM-SDEI-03`, no `TEM-03`), porque otra guía del mismo repositorio ya declara `TEM-03` y una traza a un ID declarado
-dos veces es ambigua.
+(`TEM-SDEI-03`, no `TEM-03`), porque otras guías del mismo repositorio ya chocaron en él (`MARCO-CONVENCIONES` está
+declarado cuatro veces) y una traza a un ID declarado dos veces es ambigua.
 
 ### Qué problema resuelve
 
 La documentación que vive lejos del código envejece sin que nadie lo note. En más de 3000 proyectos de GitHub, la
 mayoría tuvo en algún momento al menos una referencia en la documentación a un elemento de código que ya había sido
-borrado ([Tan et al., 2024](99-Anexos/Referencias.md#ref-tan-2024)). La topología decide si ese desfase es imposible
+borrado ([Tan et al., 2024](99-Anexos/Referencias.md#ref-tan-2024)). La topología decide si esa deriva es imposible
 (mismo repositorio y mismo pull request), detectable (SHA fijado y aviso programado) o invisible (otro repositorio sin
 ancla).
 
@@ -129,7 +130,7 @@ varios productos) va a uno dedicado.*
 ### Qué no es
 
 - **No es una preferencia de orden.** Ubicar una pieza en otro repositorio tiene un costo: hay que fijar un ancla y
-  vigilar el desfase. Si no se paga ese costo, la pieza envejece.
+  vigilar su atraso. Si no se paga ese costo, la pieza envejece.
 - **No es versionar por las dudas.** Publicar varias versiones de la documentación responde a versiones del producto
   que conviven en uso, no a la cantidad de commits. Un producto con un solo despliegue vivo tiene una sola versión que
   documentar.
@@ -140,7 +141,7 @@ varios productos) va a uno dedicado.*
 
 | Escenario | Topología dominante | Ancla | Qué aporta decidirlo bien |
 | --- | --- | --- | --- |
-| `ESC-SDEI-1` Corpus de guías | Repositorio dedicado | Versión del cuerpo en el README y etiqueta por compuerta | Que una cita a la guía diga a qué versión se refiere |
+| `ESC-SDEI-1` Corpus de guías | Repositorio dedicado | Versión del cuerpo en el README y una etiqueta por versión | Que una cita a la guía diga a qué versión se refiere |
 | `ESC-SDEI-2` App sin roles | La ayuda y la técnica, en el repositorio de la app; en la mini demo de este laboratorio, en un repositorio dedicado con `source.lock` | Commit, o SHA fijado en la demo | Que la ayuda diga lo mismo que el código del SHA que documenta |
 | `ESC-SDEI-3` Panel con roles | Especificación y manual por rol en el repositorio del código; índices para agentes y guías para trabajar en ese proyecto, en el hermano | Las piezas del repositorio del código, el commit, y la etiqueta de cada versión publicada marca código y documentación juntos; los índices del hermano, `base_commit` (SHA) y `base_tag` | Que una pantalla y su ayuda cambien en el mismo pull request |
 | `ESC-SDEI-4` Servicio con paquetes | Mismo repositorio, con una línea de documentación por línea de versión del paquete | El commit; además, la etiqueta de cada versión publicada del paquete (`v1.4.2`), que congela código y documentación de esa línea | Que quien integra la versión 1 no lea la documentación de la 2 |
@@ -159,7 +160,7 @@ varios productos) va a uno dedicado.*
 La [mini demo de MovilidadUrbana](Examples/MovilidadUrbana-Mini-Demo/README.md) documenta una app cuyo código vive en
 otro repositorio. No lo copia: lo fija.
 
-[Compilado: `Examples/MovilidadUrbana-Mini-Demo/source.lock`, líneas 4–7, en el commit `080f158` de Lab-Documentos]
+[Compilado: `Examples/MovilidadUrbana-Mini-Demo/source.lock`, líneas 4–7, en «PR #19, merge `e3841b6`» de Lab-Documentos (equivalente de `080f158`)]
 
 ```text
 repo: https://github.com/hdcm-dev/Lab-E2E.WebBlazor.git
@@ -184,14 +185,16 @@ meses anteriores **[umbral de criterio propio del plan]**.
 | | Grafana ([Grafana Labs, 2026](99-Anexos/Referencias.md#ref-grafana-2026)) | `docs/sources/`, `7b102dd`, 2026-10-27 |
 | P5. Si la documentación va en un repositorio separado, una rama por versión del producto | Kubernetes ([Kubernetes, 2026](99-Anexos/Referencias.md#ref-kubernetes-website-2026)) | 33 ramas `release-1.*`, la última `release-1.36`; `content/en/`, `ed70e31`, 2026-10-26 |
 | | Istio ([Istio, 2026](99-Anexos/Referencias.md#ref-istio-2026)) | 33 ramas `release-1.*`, la última `release-1.31`; `content/`, `2100f40`, 2026-10-27 |
-| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16 |
+| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16. Corrida del 2026-11-01 con el guion: «no reproducido» (el repositorio se mudó; ver el ensayo de abajo) |
 | | Jest ([Jest, 2026](99-Anexos/Referencias.md#ref-jest-2026)) | `website/versioned_docs/` con las versiones 29.7, 30.0, 30.4 y 30.5; `ea7258e`, 2026-08-31 |
 
 Las tres prácticas no compiten: P4 es el valor por defecto; P5 y P6 son el precio de salir de él cuando el producto
 tiene versiones que conviven.
 
 [Compilado: `evidencia/E1-U4b/04-adopciones.sh` del expediente 0002 de DocAsCode, en el repositorio
-Lab-Documentos.Documentacion; corrida del 2026-10-27, recortada a las filas de este tema]
+Lab-Documentos.Documentacion; corrida del 2026-10-27, recortada a las filas de este tema. La corrida del 2026-11-01
+([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01) reproduce las filas P4 y P5; la fila P6 de Docusaurus queda «no reproducido»: el
+repositorio se mudó y el guion no sigue la redirección]
 
 ```text
 $ bash 04-adopciones.sh 2026-10-27
@@ -210,7 +213,9 @@ P6     jestjs/jest                  website/versioned_docs           ea7258e3338
 
 El ensayo arma una página de ayuda y una ficha de regla en una carpeta temporal y corre el control `traces-resolve`
 de la compuerta en tres casos. Precondición: Python 3, un clon de Lab-Documentos y el script, que está en el repositorio público
-Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta `evidencia/E1-U4b/`); se corre desde cualquier
+Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta [`evidencia/E1-U4b/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0002-Replanteo-Metodologia-DocAsCode/evidencia/E1-U4b) en el commit
+`09a4518`; la corrida vigente, medida el 2026-11-01, está en [`evidencia/U25/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25) del expediente 0003); se corre
+desde cualquier
 carpeta, con la ruta del clon como argumento. Resultado esperado: rojo, verde,
 rojo.
 
@@ -218,8 +223,9 @@ rojo.
 2. La página traza a `@1.1`.
 3. Otro documento declara el mismo identificador.
 
-[Compilado: `evidencia/E1-U4b/03-tem03-ancla.sh` del mismo expediente; salida del 2026-10-27 sobre el commit `080f158`
-de Lab-Documentos, recortada]
+[Compilado: `evidencia/E1-U4b/03-tem03-ancla.sh` del mismo expediente; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico), recortada.
+Sobre `e3841b6` se reproduce igual; sobre `main` de hoy sigue rojo, verde, rojo, y el caso 3 da `errores=5`, porque
+suma dos `id-duplicado` del control que entró después ([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
 $ bash 03-tem03-ancla.sh <clon de Lab-Documentos>
@@ -265,7 +271,7 @@ panel tiene un único despliegue vivo, una sola versión de la documentación al
 | --- | --- | --- | --- |
 | Ubicación justificada | Cada pieza fuera del repositorio del código tiene un motivo («habla del proyecto», «sirve a varios productos») | Piezas en otro repositorio por costumbre | La regla de [Definición](#la-regla-para-ubicar-una-pieza) |
 | Ancla presente | Toda pieza fuera del repositorio del código tiene un SHA o una etiqueta fijados | Documentación externa que no dice qué versión describe | Existencia de `source.lock` o `base_commit`; bloquea |
-| Desfase vigilado | Un aviso programado compara el ancla con la rama principal | El desfase se descubre cuando alguien se queja | Carril programado semanal |
+| Atraso vigilado | Un aviso programado compara el ancla con la rama principal | El atraso se descubre cuando alguien se queja | Carril programado semanal |
 | Trazas versionadas | Las páginas trazan a `ID@MAYOR.MENOR` y la ficha sube la versión cuando cambia lo que promete | Trazas sin versión a reglas que cambian | `traces-resolve` (PR-5); `CQ-03` del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#1-los-catorce-criterios) |
 | IDs únicos | Identificadores calificados por cuerpo o proyecto | IDs cortos que chocan con otras guías | Regla `traza-ambigua` de PR-5 |
 | Versionado proporcional | Una versión publicada salvo que convivan versiones del producto; CHANGELOG por versión | Varias versiones publicadas de un producto con un solo despliegue | Contar las versiones en uso antes de versionar |
@@ -316,10 +322,10 @@ se releyeron el 2026-10-27 para este tema.
 | Tipo | Observación |
 | --- | --- |
 | Hecho | Las cantidades de ramas y de versiones son las de la corrida del 2026-10-27; cambian con cada versión que publican esos proyectos |
-| Hecho | Otra guía de Lab-Documentos declara `TEM-01` a `TEM-08` como `doc_id`; por eso este cuerpo usa `TEM-SDEI-nn` |
+| Hecho | El registro de IDs es único para todo Lab-Documentos y otras guías ya chocaron en él: `MARCO-CONVENCIONES` está declarado como `doc_id` en cuatro guías de `Guides/`, y el Framework Concept tuvo que pasar sus temas al espacio propio `FC-TEM-nn`. Por eso este cuerpo usa `TEM-SDEI-nn` |
 | Interpretación | Que P4 sea «el valor por defecto» sale de la regla del mismo pull request y de Backstage; no hay una medición que compare topologías |
 | Hecho | Ningún índice versionado del laboratorio declara todavía `base_commit`; la forma de la tabla de anclas es la que busca el carril programado (`tools/docs-guard/semanal.sh`) |
-| Observación sobre la compuerta | El anexo del esquema dice que `traces` puede ser una lista vacía, pero `docs-guard` hoy la rechaza como campo faltante. Hasta que se corrija, toda página lleva al menos una traza |
+| Observación sobre la compuerta | `docs-guard` rechazaba `traces: []` como campo faltante, aunque el anexo del esquema admite la lista vacía; hoy lo acepta con el aviso `traces-vacio` (`tools/docs-guard/dg.py:342-346`), que recomienda trazar al menos al `doc_id` del README del cuerpo |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |
 
 Documento anterior: [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md). Siguiente documento:

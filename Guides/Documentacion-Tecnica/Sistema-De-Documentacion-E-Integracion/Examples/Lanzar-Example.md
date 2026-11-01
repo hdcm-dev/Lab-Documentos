@@ -2,140 +2,167 @@
 doc_id: GP-SDEI-LANZAR
 doc_type: guia-practica
 title: Lanzar el ejemplo de ayuda por rol
-description: Tool-prompt que levanta la prueba de concepto de ayuda por rol en su devcontainer, la publica por un túnel y entrega la URL.
+description: Guía práctica para levantar la prueba de ayuda por rol en su devcontainer, comprobar que responde y, si hace falta, mostrarla afuera por un túnel.
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
-audience: [agente, humano, desarrollo]
-traces: [IDX-SDEI]
+last_review: 2026-11-01
+audience: [humano, agente, desarrollo]
+traces: [IDX-SDEI, TEM-SDEI-05]
 ---
 
-# Tool-Prompt — Lanzar el ejemplo de demostración
+# Lanzar el ejemplo de ayuda por rol
 
-> **Invocación**:
-> - Leer y ejecutar `/LAB/Lab-Documentos/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Lanzar-Example.md`
-> - Variantes: `… Lanzar-Example.md --bajar` (detener todo) · `… --estado` (sólo informar)
->
-> Overview: levanta la prueba de concepto «ayuda por rol» en su devcontainer, la expone por un túnel público y entrega la URL para compartir.
+Guía práctica para levantar la [prueba de concepto de ayuda por rol](Prueba-Ayuda-Por-Rol/README.md) y comprobar que
+hace lo que el cuerpo dice de ella. Lo que la prueba demuestra está en `TEM-05` §3.3
+([Ayuda por rol, con un cruce que nadie había plantado](../TEM-05-Ayuda-Al-Usuario-Final.md#33-ayuda-por-rol-con-un-cruce-que-nadie-había-plantado)).
 
----
+## Índice
 
-## Contexto
+1. [Objetivo](#1-objetivo)
+2. [Prerrequisitos](#2-prerrequisitos)
+3. [Variables](#3-variables)
+4. [Pasos](#4-pasos)
+5. [Resultado](#5-resultado)
+6. [Validaciones](#6-validaciones)
+7. [Errores frecuentes](#7-errores-frecuentes)
+8. [Bajar la prueba](#8-bajar-la-prueba)
 
-La prueba de concepto vive en `Prueba-Ayuda-Por-Rol/`, junto a este documento (ver su `README.md`): un panel Blazor .NET 10 con ingreso simulado por papel, ayuda contextual, 404 por rol, `llms.txt` y dos idiomas. Es la evidencia de la sección 7 de `../Sistema-Documentador-Tecnico-Guide.md`.
+## 1. Objetivo
 
-Se ejecuta **dentro de su devcontainer** (`.devcontainer/devcontainer.json`, imagen `mcr.microsoft.com/devcontainers/dotnet:1-10.0`, puerto `5190`) y se publica con un **túnel rápido de Cloudflare** (`*.trycloudflare.com`), que no necesita cuenta ni DNS. La URL cambia cada vez que se recrea el túnel.
+Dejar corriendo el panel web de la prueba (Blazor, .NET 10, ingreso simulado por rol, ayuda contextual, 404 por rol,
+`llms.txt` filtrado y dos idiomas) y ver con peticiones HTTP que cada rol recibe sólo su ayuda. El ingreso es simulado
+y la prueba no tiene datos reales.
 
-Rutas y nombres fijos:
+## 2. Prerrequisitos
 
-| Cosa | Valor |
-|------|-------|
-| Carpeta del proyecto (`$P`) | `/LAB/Lab-Documentos/Lab-Documentos/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Prueba-Ayuda-Por-Rol` |
-| Proyecto web | `Web/AyudaDemo.Web.csproj` |
-| Puerto local | `5190` |
-| Contenedor del túnel | `demo-ayuda-por-rol-tunnel` |
-| Log de la app (dentro del devcontainer) | `/tmp/ayuda-demo.log` |
+| Qué | Para qué |
+| --- | --- |
+| Un clon de Lab-Documentos | La prueba vive en `Examples/Prueba-Ayuda-Por-Rol/` de este cuerpo |
+| Docker | El devcontainer y, si se usa, el túnel corren en contenedores |
+| Node.js con `npx` | Para el CLI de devcontainers, en la versión fija de §3 |
+| `curl` | Para las validaciones de §6 |
 
----
+El devcontainer de la prueba (`Prueba-Ayuda-Por-Rol/.devcontainer/devcontainer.json`) usa la imagen
+`mcr.microsoft.com/devcontainers/dotnet:1-10.0` y el puerto `5190`.
 
-## Procedimiento
+## 3. Variables
 
-Ejecutar en orden. Cada paso se verifica antes de pasar al siguiente; si uno falla, detenerse y reportar la causa.
+| Variable | Qué es | De dónde sale |
+| --- | --- | --- |
+| `$LD` | Raíz del clon de Lab-Documentos | La ruta donde quien ejecuta tiene el clon; se pregunta o se busca, no se supone |
+| `$P` | Carpeta de la prueba | `$LD/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Prueba-Ayuda-Por-Rol` |
+| `$CID` | Identificador del contenedor del devcontainer | Campo `containerId` de la salida del paso 1 |
+| `$W` | Carpeta de trabajo dentro del contenedor | Campo `remoteWorkspaceFolder` de la salida del paso 1 |
+| `$U` | URL base del panel | `http://localhost:5190`, o la URL del túnel si se hace el paso 5 |
 
-### 1. Devcontainer
+Versiones fijas:
+
+| Herramienta | Versión |
+| --- | --- |
+| CLI de devcontainers | `@devcontainers/cli@0.89.0` |
+| Imagen del túnel (sólo paso 5) | `cloudflare/cloudflared:2026.10.5` |
+
+## 4. Pasos
+
+Se ejecutan en orden. Cada paso se verifica antes del siguiente; si uno falla, se detiene y se busca la causa en §7.
+
+**Paso 1. Levantar el devcontainer.**
 
 ```bash
 cd "$P"
-npx -y @devcontainers/cli@latest up --workspace-folder .
+npx -y @devcontainers/cli@0.89.0 up --workspace-folder .
 ```
 
-Si ya existía **para esta misma carpeta**, el CLI lo reutiliza (`"outcome":"success"`). Guardar el `containerId` de la salida. Un devcontainer creado cuando la carpeta vivía en otra ruta no se reutiliza: queda huérfano con la etiqueta `devcontainer.local_folder` vieja y hay que borrarlo (`docker ps -a --filter label=devcontainer.local_folder`, luego `docker rm -f`).
+La salida es un JSON con `"outcome":"success"`, `containerId` (es `$CID`) y `remoteWorkspaceFolder` (es `$W`). Si el
+devcontainer ya existía para esta misma carpeta, el CLI lo reutiliza.
 
-### 2. Compilar
+**Paso 2. Compilar.**
 
 ```bash
-npx -y @devcontainers/cli@latest exec --workspace-folder . \
+npx -y @devcontainers/cli@0.89.0 exec --workspace-folder . \
   dotnet build Web/AyudaDemo.Web.csproj -nologo -v q
 ```
 
 Esperado: `0 Error(s)`.
 
-### 3. Lanzar la app, desacoplada de la sesión
+**Paso 3. Lanzar la app desacoplada de la sesión, en `Production`.**
 
-La app **no** se lanza como comando en segundo plano de la sesión del agente: al cerrarse la sesión, muere y el túnel queda apuntando a nada (pasó el 2026-09-19). Se lanza con `setsid nohup` dentro del contenedor, y en `Production` porque va a quedar expuesta:
+La app no se lanza como proceso en segundo plano de la terminal o del agente: al cerrarse la sesión, muere. Se lanza
+con `setsid nohup` dentro del contenedor:
 
 ```bash
+CID=<containerId del paso 1>
+W=<remoteWorkspaceFolder del paso 1>
 docker exec "$CID" pkill -f AyudaDemo.Web || true
 docker exec -d -u vscode -w "$W/Web" \
   -e ASPNETCORE_URLS=http://0.0.0.0:5190 -e ASPNETCORE_ENVIRONMENT=Production -e DOTNET_CLI_TELEMETRY_OPTOUT=1 \
   "$CID" sh -c 'setsid nohup dotnet run --no-build --project AyudaDemo.Web.csproj --no-launch-profile > /tmp/ayuda-demo.log 2>&1 &'
 ```
 
-`$CID` es el contenedor del paso 1 y `$W` la ruta del workspace dentro del contenedor (`remoteWorkspaceFolder` de esa misma salida).
-
-Verificar hasta 30 s:
+Se espera hasta 30 s y se comprueba:
 
 ```bash
 curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5190/ingresar     # 200
 docker exec "$CID" grep -E 'Catálogo de ayuda|Hosting environment' /tmp/ayuda-demo.log
 ```
 
-Esperado: `Catálogo de ayuda: 9 páginas, validador con 0 fallas` y `Hosting environment: Production`.
+**Paso 4. Validar por HTTP.** Con `U=http://localhost:5190`, se corren las validaciones de §6.
 
-### 4. Túnel público
+**Paso 5 (opcional). Mostrarla afuera por un túnel temporal.** Sólo si alguien que no está en la máquina tiene que
+verla, y sólo con la app en `Production`. El túnel rápido de Cloudflare no pide cuenta ni DNS y su URL cambia cada vez
+que se recrea:
 
 ```bash
 docker rm -f demo-ayuda-por-rol-tunnel 2>/dev/null
 docker run -d --name demo-ayuda-por-rol-tunnel --network host \
-  cloudflare/cloudflared:latest tunnel --no-autoupdate --url http://localhost:5190
-```
-
-Leer la URL del log (aparece en pocos segundos):
-
-```bash
+  cloudflare/cloudflared:2026.10.5 tunnel --no-autoupdate --url http://localhost:5190
 docker logs demo-ayuda-por-rol-tunnel 2>&1 | grep -oE 'https://[a-z0-9-]+\.trycloudflare\.com' | head -1
 ```
 
-**No tocar** los túneles `jump-host-tunnel-*`: son del usuario y no forman parte de esta demo.
+Con esa URL como `$U`, se repiten las validaciones de §6. Este paso no toca otros contenedores ni otros túneles que
+haya en la máquina: sólo el que crea, por su nombre.
 
-### 5. Verificación de punta a punta por la URL pública
+## 5. Resultado
 
-Con la URL `$U`, todo en una sesión de alumno (cookie):
+El panel responde en `$U`. El registro de la app dice `Catálogo de ayuda: 9 páginas, validador con 0 fallas` (7
+páginas en castellano y 2 traducciones) y `Hosting environment: Production`. Cada rol ve sólo su ayuda.
 
-| Petición | Esperado |
-|----------|----------|
-| `GET $U/ingresar` | `200` |
-| `GET $U/entrar/Student` (guardar cookie) | `302` |
-| `GET $U/ayuda/alumno/enviar-un-trabajo` | `200` |
-| `GET $U/ayuda/administrador/gobernar-las-cuentas` | `404` |
-| `GET $U/ayuda/llms.txt` | `200`, cuatro entradas, ninguna de administrador |
+## 6. Validaciones
 
-Un nombre nuevo de `trycloudflare.com` es **intermitente durante sus primeros minutos** (medido el 2026-09-20: respuestas `000` «could not connect» alternadas con `200`, mientras `cloudflare.com` respondía siempre). No es la app ni el túnel: es la propagación del nombre. Por eso cada petición de esta tabla se reintenta hasta cinco veces con 3 s de espera, y una petición que devuelve `000` no cuenta como fallo hasta agotar los reintentos. Conviene además avisarle al usuario que los primeros minutos pueden fallar para quien reciba el enlace.
+Todas en una sesión de alumno, con la cookie guardada entre peticiones:
 
-### 6. Entregar
+| Petición | Esperado | Qué comprueba |
+| --- | --- | --- |
+| `GET $U/ingresar` | `200` | Que la app está arriba |
+| `GET $U/entrar/Student` (guardar la cookie) | `302` | El ingreso simulado del alumno |
+| `GET $U/ayuda/alumno/enviar-un-trabajo` | `200` | La ayuda del propio rol |
+| `GET $U/ayuda/administrador/gobernar-las-cuentas` | `404` | Que el servidor no entrega la ayuda de otro rol |
+| `GET $U/ayuda/llms.txt` | `200`, cuatro entradas, ninguna de administrador | El mismo filtro en el canal para agentes |
 
-Reportar al usuario, en este orden: la URL pública, que el ingreso es simulado y sin datos reales, que la URL vive mientras sigan arriba el devcontainer y el contenedor del túnel, y cómo bajarla:
+Toda afirmación sobre la prueba sale de una validación corrida en esa misma vez: no se dice «arriba» sin el `200`.
+
+## 7. Errores frecuentes
+
+| Si ves | Causa probable | Qué hacer |
+| --- | --- | --- |
+| El paso 1 corta por tiempo | La imagen base todavía se está bajando | Bajarla aparte (`docker pull mcr.microsoft.com/devcontainers/dotnet:1-10.0`) y repetir el paso 1 |
+| El CLI no reutiliza un devcontainer que existe | Se creó cuando la carpeta estaba en otra ruta | Buscarlo (`docker ps -a --filter label=devcontainer.local_folder`) y borrarlo con `docker rm -f` |
+| `curl` devuelve `000` o el puerto no responde | La app no terminó de arrancar, o murió con la sesión | Mirar `/tmp/ayuda-demo.log` en el contenedor; relanzar el paso 3 con `setsid nohup` |
+| `Hosting environment: Development` | Faltó `ASPNETCORE_ENVIRONMENT=Production` | Relanzar el paso 3; nunca exponer la app en `Development`, que muestra trazas internas |
+| `000` intermitente por la URL del túnel en los primeros minutos | El nombre nuevo que dio el túnel todavía se propaga | Reintentar cada petición hasta cinco veces con 3 s de espera; avisar a quien reciba el enlace |
+| `0 Error(s)` no aparece en el paso 2 | El código de la prueba no compila | Reportarlo; esta guía lanza la prueba, no la modifica |
+
+## 8. Bajar la prueba
 
 ```bash
-docker rm -f demo-ayuda-por-rol-tunnel
+docker rm -f demo-ayuda-por-rol-tunnel 2>/dev/null
 docker exec "$CID" pkill -f AyudaDemo.Web
 ```
 
----
+El devcontainer se conserva parado: recrearlo cuesta minutos. Se borra con `docker rm -f "$CID"` sólo si ya no se va a
+usar.
 
-## Variantes
-
-**`--estado`**: no cambiar nada. Informar si el devcontainer existe (`docker ps --filter label=devcontainer.local_folder=$P`), si la app responde en `5190`, si el túnel está arriba y cuál es su URL, y si esa URL responde `200` en `/ingresar`.
-
-**`--bajar`**: ejecutar los dos comandos del paso 6 y, si el usuario lo pide expresamente, también `docker rm -f` del devcontainer. Por defecto el devcontainer se conserva: recrearlo cuesta minutos y no ocupa nada mientras está parado.
-
----
-
-## Reglas
-
-- No modificar el código ni el contenido de `Prueba-Ayuda-Por-Rol/`: este prompt lanza, no desarrolla. Si algo no compila, reportarlo.
-- La app se expone sólo en `Production`. Nunca publicar una URL con `ASPNETCORE_ENVIRONMENT=Development`.
-- Toda afirmación del reporte sale de una verificación ejecutada en esa corrida (`Rule-Evidences.md`): no reportar «arriba» sin el `200` correspondiente.
-- No dejar procesos atados a la sesión del agente; sólo el `docker exec -d` del paso 3 y el contenedor del paso 4.
+Volver a la [prueba de concepto](Prueba-Ayuda-Por-Rol/README.md) o a
+[`TEM-05`](../TEM-05-Ayuda-Al-Usuario-Final.md#33-ayuda-por-rol-con-un-cruce-que-nadie-había-plantado).

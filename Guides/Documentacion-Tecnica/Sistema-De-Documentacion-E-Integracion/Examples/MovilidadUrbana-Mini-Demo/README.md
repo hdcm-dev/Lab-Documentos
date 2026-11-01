@@ -42,7 +42,8 @@ ancla SHA entre repositorios con aviso de deriva y trazas de dos niveles.
 | Traza de nivel 2 | Ficha → código: cada ancla resuelve en el SHA y cumple su afirmación |
 | RRD | Registro de requerimientos documentales: [`docs/_requisitos.md`](docs/_requisitos.md). Una fila `RD-nn` por cosa que la documentación tiene que lograr |
 | CL-06, CL-07 | Clases de documento: ayuda al usuario final (CL-06) y técnica escrita (CL-07) |
-| Deriva | Diferencia entre el SHA fijado y `main` del repositorio del código. Avisa; no bloquea |
+| Atraso | Commits que el SHA fijado está detrás de `main` del repositorio del código. Avisa; no bloquea |
+| Deriva | Distancia entre lo que una pieza afirma y lo que el código hace. A1 la mide por símbolo y por contrato contra `main`; avisa, no bloquea |
 | docs-guard | Compuerta documental de Lab-Documentos ([`tools/docs-guard/`](../../../../../tools/docs-guard/README.md)) |
 
 ## 2. Qué hay en esta carpeta
@@ -51,10 +52,10 @@ ancla SHA entre repositorios con aviso de deriva y trazas de dos niveles.
 | --- | --- | --- | --- |
 | [`source.lock`](source.lock) | — | todos | Repositorio, SHA, rutas y proyecto de la API |
 | [`verificar.sh`](verificar.sh) | — | desarrollo, CI | Baja el código, extrae el contrato y corre los controles |
-| [`contracts/openapi.json`](contracts/openapi.json) | contrato | desarrollo | Contrato de la API extraído en ejecución del SHA |
+| [`contracts/openapi.json`](contracts/openapi.json) | CL-05 | desarrollo | Contrato de la API extraído en ejecución del SHA |
 | [`docs/_requisitos.md`](docs/_requisitos.md) | CL-02 (RRD) | analista, PO | Qué documentación hace falta y cómo se comprueba |
-| [`docs/fichas/RN-LOC-01.md`](docs/fichas/RN-LOC-01.md) | anexo | analista | Largo del nombre (con divergencia 60/80) |
-| [`docs/fichas/RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) | anexo | analista | Localidad única por nombre y provincia |
+| [`docs/fichas/RN-LOC-01.md`](docs/fichas/RN-LOC-01.md) | CL-01 (ficha propia, sin SDD) | analista | Largo del nombre (con divergencia 60/80) |
+| [`docs/fichas/RN-LOC-02.md`](docs/fichas/RN-LOC-02.md) | CL-01 (ficha propia, sin SDD) | analista | Localidad única por nombre y provincia |
 | [`docs/ayuda/alta-de-localidad.md`](docs/ayuda/alta-de-localidad.md) | CL-06 | persona usuaria | Cómo dar de alta una localidad |
 | [`docs/tecnica/arquitectura.md`](docs/tecnica/arquitectura.md) | CL-07 | desarrollo | Capas y dónde vive cada regla |
 | [`docs/tecnica/compilar-y-primer-pedido.md`](docs/tecnica/compilar-y-primer-pedido.md) | CL-07 | desarrollo | Compilar la API, pedir el contrato, primer alta |
@@ -111,7 +112,7 @@ El final de una corrida en orden:
 ```
 
 Si un control da rojo, la línea anterior al agregador dice qué archivo y qué fila. Por ejemplo:
-`docs/fichas/RN-LOC-01.md:62: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80`.
+`docs/fichas/RN-LOC-01.md:63: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80`.
 
 ## 5. Tutorial: documentar una pantalla nueva
 
@@ -334,7 +335,7 @@ git push -u origin demo-mu/encuesta-paso-1
 
 El PR se abre desde la página del repositorio en GitHub (botón «Compare & pull request») o con la herramienta que use
 el equipo; la base es `main`. En el PR
-corren `docs-guard` y `mini-demo-movilidad` en el runner `[self-hosted, i7infra-dev]`; el PR se fusiona sólo con los
+corren `docs-guard` y `mini-demo-movilidad` en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`; el PR se fusiona sólo con los
 dos en verde. El cuerpo del PR lleva: qué pantalla se documentó, la lista de piezas nuevas y cambiadas, las
 divergencias que quedan para decidir (con su ficha), los supuestos de §5.6 y el final de las dos salidas de §5.4.
 
@@ -389,3 +390,6 @@ permanente.
 | Las páginas no se publican en un sitio | Se leen como `.md` en el repositorio |
 | No se modifica el código | Si el repositorio del código abre un expediente que lo autorice, la documentación pasa a vivir junto al código |
 | La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos de borde que §5.2 no resuelve (qué cuenta como una regla, una regla con partes de especies o momentos distintos, un grado de certeza mixto o dudoso, una divergencia que no encaja en Leve o De fondo, un hueco común a toda la pantalla) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |
+
+Documento anterior: [Tema 07 — Integración con un marco SDD](../../TEM-07-Marco-SDD.md). Siguiente documento:
+[Ejercicios](../../99-Anexos/Ejercicios.md).

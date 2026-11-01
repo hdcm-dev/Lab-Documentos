@@ -3,7 +3,7 @@ title: Dar desenlace a una revisión
 description: Aprobar o rechazar un trabajo pendiente.
 roles: [Administrator]
 order: 22
-traces: [CU-00029@1.1]
+traces: [CU-10009@1.1]
 topic: desenlace
 ---
 # Dar desenlace a una revisión

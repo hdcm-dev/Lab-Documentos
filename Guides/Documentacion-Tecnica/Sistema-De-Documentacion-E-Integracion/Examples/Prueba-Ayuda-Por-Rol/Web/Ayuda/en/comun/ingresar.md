@@ -1,7 +1,7 @@
 ---
 title: Signing in to the lab
 description: Sign in with your email and password.
-translation_of: es/comun/ingresar.md@CU-00022@1.1
+translation_of: es/comun/ingresar.md@CU-10002@1.5
 ---
 # Signing in to the lab
 

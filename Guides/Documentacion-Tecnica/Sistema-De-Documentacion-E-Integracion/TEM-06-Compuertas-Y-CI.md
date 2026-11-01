@@ -12,7 +12,7 @@ audience: [humano, agente, estudiante, docente, desarrollo, devops]
 traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-04, TEM-SDEI-05, ANX-SDEI-CQ, ANX-SDEI-VER, ANX-SDEI-REFERENCIAS]
 ---
 
-# TEM-06 Compuertas de calidad y CI
+# Tema 06 — Compuertas de calidad y CI
 
 Una documentación que se escribe como código se verifica como código: en cada pull request corre un conjunto de
 controles que termina con un código de salida, y si alguno da rojo, el cambio no entra. Este tema explica qué
@@ -28,6 +28,7 @@ nuevo, si tiene que bloquear, y leer el resultado de una corrida para saber qué
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -161,7 +162,7 @@ dónde corre la compuerta.
 | Contexto | Qué cambia en la compuerta |
 | --- | --- |
 | `CTX-SDEI-1` con sitio | Se suma el build del sitio con avisos como error y la reproducibilidad de los canales derivados |
-| `CTX-SDEI-3` pieza en otro repositorio | El defecto ya no lo introduce el mismo pull request (falla la condición 2): el desfase se avisa en el carril programado |
+| `CTX-SDEI-3` pieza en otro repositorio | El defecto ya no lo introduce el mismo pull request (falla la condición 2): el atraso se avisa en el carril programado |
 | `CTX-SDEI-4` dentro de la organización del runner | El repositorio llama `uses: <dueño>/Lab-Documentos/.github/workflows/docs-guard.yml@<SHA>` y pasa `ruta` (la carpeta a verificar) y `herramientas-ref`. El workflow baja los scripts de Lab-Documentos en `herramientas-ref`; por eso va el mismo SHA que en `uses:`, para que el workflow y sus scripts sean de la misma versión |
 | `CTX-SDEI-4` fuera de ella | Copia sólo el `.yml` (los scripts los sigue bajando de Lab-Documentos, que es público, por SHA) y anota su SHA-256 como pieza fijada; `PR-7` comprueba en ese repositorio que la copia no cambió, y el carril programado de su organización avisa si el original avanzó |
 
@@ -195,7 +196,8 @@ la concurrencia (una corrida nueva del mismo pull request cancela la anterior), 
 tiempo máximo:
 
 ```yaml
-# [Compilado: .github/workflows/docs-guard.yml, l. 40-51]
+# [Compilado: .github/workflows/docs-guard.yml en el commit 4750354, l. 50-61: permissions: l. 50, runs-on: l. 60,
+#  timeout-minutes: l. 61; la etiqueta de runner va como parámetro, <etiqueta-de-runner>]
 permissions:
   contents: read
 
@@ -206,14 +208,15 @@ concurrency:
 jobs:
   docs-guard:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: <etiqueta-de-runner>
     timeout-minutes: 10
 ```
 
-En local, `scripts/ci-local.sh` da los mismos pasos en el mismo orden. El script recibe el paso y la carpeta (`scripts/ci-local.sh todo <carpeta>`, por defecto la de esta guía) y su paso
-`herramientas` baja lychee, markdownlint y el parser de mermaid con las mismas versiones y SHA-256 que la CI. Esa
-equivalencia es lo que permite que el paso «validar» del documento de proceso del cuerpo («Cómo intervenir», en
-redacción) use el mismo comando que la CI: si da verde en local, da verde en el pull request.
+En local, `scripts/ci-local.sh` da los mismos pasos en el mismo orden. El script recibe el paso y la carpeta
+(`scripts/ci-local.sh todo <carpeta>`, por defecto la de esta guía) y su paso `herramientas` baja lychee,
+markdownlint y el parser de mermaid con las mismas versiones y SHA-256 que la CI. Esa equivalencia es lo que permite
+que el paso «validar» del documento de proceso del cuerpo ([«Cómo intervenir»](Examples/Como-Intervenir.md)) use el
+mismo comando que la CI: si da verde en local, da verde en el pull request.
 
 ### 3.3 Ensayo reproducible: un defecto, una línea roja
 
@@ -307,5 +310,16 @@ tiene que responder.
 
 ---
 
-Anterior: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) · Siguiente:
-[Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md) · Volver al [Mapa](01-Mapa.md#4-por-artefacto)
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+Write the Docs (s. f.), GitLab (s. f., «Documentation testing» y «Documentation workflow») y Winters et al. (2020).
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | El bloque del workflow se cita del commit `4750354`; la etiqueta de runner va como parámetro, porque la fija el caso por plataforma |
+| Hecho | La salida registrada del ensayo de §3.3 es de la corrida del 2026-10-27 en la rama del tema |
+| Criterio propio | Un cambio que llega desde un fork no se fusiona solo: alguien con permiso lo lleva a una rama del repositorio y abre el pull request desde ahí |
+
+Documento anterior: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md). Siguiente documento:
+[Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md).

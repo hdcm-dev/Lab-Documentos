@@ -23,9 +23,9 @@ en tablas y en un ensayo que puede repetir.
 
 **Estado.** El sistema documentador se pone a prueba en tres **escalones**: el 1 es esta guía con su mini demo; el 2,
 una piloto sobre Lab-Geometria, el primer proyecto con SDD que adopta la compuerta en su propia CI; el 3, el SDD-B. Este
-tema queda en `borrador` hasta que el escalón 2 cierre con la compuerta corriendo en la CI de Lab-Geometria: sus reglas
-salen del diseño y de un ensayo sobre el SDD real de ese proyecto, pero todavía no corrieron en una CI de proyecto. Lo
-que cambie cuando corran se corrige acá.
+tema queda en `borrador` hasta que el escalón 2 pase su compuerta de escalón, con la compuerta corriendo en la CI de
+Lab-Geometria: sus reglas salen del diseño y de un ensayo sobre el SDD real de ese proyecto, pero todavía no corrieron
+en una CI de proyecto. Lo que cambie cuando corran se corrige acá.
 
 Los repositorios que se citan (Lab-Geometria, IA.SDD y este, Lab-Documentos) son públicos; el SDD-B es privado y se
 nombra por su alias.
@@ -38,6 +38,7 @@ nombra por su alias.
 4. [Preguntas guía](#preguntas-guía)
 5. [Criterios de calidad](#criterios-de-calidad)
 6. [Anexo](#anexo)
+7. [Fuentes y observaciones](#fuentes-y-observaciones)
 
 ## Definición
 
@@ -83,7 +84,7 @@ rojo cuando esa versión deja de existir.
 
 | Término | Definición |
 | --- | --- |
-| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de cierre: 1, esta guía y la mini demo; 2, la piloto en Lab-Geometria; 3, el SDD-B |
+| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de escalón (el hito que la cierra): 1, esta guía y la mini demo; 2, la piloto en Lab-Geometria; 3, el SDD-B |
 | Marco SDD y proyecto destino | El marco es un repositorio con las reglas y los orquestadores (IA.SDD); el proyecto destino es el que aplica el marco y guarda su especificación generada (Lab-Geometria, en `SDD/Docs/`). Las trazas resuelven contra el proyecto destino, no contra el marco |
 | Categoría (IA.SDD) | Cada una de las doce carpetas numeradas de la especificación generada: 01 necesidades, 02 especificación funcional, 05 arquitectura, 10 ejemplos, 11 documentación de entrega, entre otras |
 | Unidad de entrega (IA.SDD) | Parte del producto que se construye y se entrega por separado, con su propia especificación (en Lab-Geometria, la API y el front web). Una pantalla pertenece a la unidad del front que la dibuja |
@@ -92,7 +93,7 @@ rojo cuando esa versión deja de existir.
 | Registro de IDs del SDD | Lista de identificadores que la especificación declara, cada uno una sola vez y con su versión. En los marcos del laboratorio, el ID abre el encabezado del documento (`# CU-08002 — …`) y la versión va en una línea `**Versión:** 1.11` |
 | Versión congelada | Copia de un documento tal como estaba en una versión anterior, guardada para reconstruir la historia (en los marcos del laboratorio, carpetas `_legacy/`). Repite el ID del documento vigente |
 | Decisión de arquitectura (ADR) | Registro corto de una decisión con contexto, decisión, estado y consecuencias. Se numera, no se borra, y cuando otra decisión la reemplaza queda marcada como reemplazada ([Nygard, 2011](99-Anexos/Referencias.md#ref-nygard-2011)) |
-| Conocimiento compartido (`CL-11`) | Documento de una base de conocimiento común que varios proyectos copian. La copia se fija con su SHA-256 (su **huella**) para comprobar que no cambió. Hoy el Marco la activa sólo en `ESC-SDEI-1` y `ESC-SDEI-4`; en `ESC-SDEI-3` se activa cuando Lab-Geometria reciba la copia de la capa A de [Las lecciones de decisión, dentro del marco](#las-lecciones-de-decisión-dentro-del-marco) |
+| Conocimiento compartido (`CL-11`) | Documento de una base de conocimiento común que varios proyectos copian. La copia se fija con su SHA-256 (su **huella**) para comprobar que no cambió. Hoy el Marco la activa sólo en `ESC-SDEI-1` y `ESC-SDEI-4`; si se activa en `ESC-SDEI-3` lo decide el escalón 2 (ver [Las lecciones de decisión, dentro del marco](#las-lecciones-de-decisión-dentro-del-marco)) |
 | Lección de decisión | Registro de una decisión que un agente resolvió sin que la persona responsable tuviera que decidirla, con el nivel donde se resolvió (N1, análisis previo de un agente; N2, mesa de agentes que deliberan) o donde se elevó (N3, consulta a la persona con una sugerencia), la regla aplicada, la evidencia y el resultado. Sólo cubre lo que no es de clase H: lo de clase H siempre lo decide una persona. Sirve para que la próxima vez un agente resuelva igual sin preguntar |
 | Prefijo externo | Prefijo del registro cerrado del cuerpo (`CU`, `RN`, `ADR`, `NB`, `RF`…) pensado para IDs que declara el sistema que se documenta. Si la traza resuelve contra el registro (el del repositorio más la carpeta que se pasa en `--fuente`), da verde como cualquier otra. Si no resuelve, `dg.py` mira si la página tiene un `source.lock` en su carpeta o más arriba, o si se le pasó `--fuente`: sin ninguno de los dos, la traza es «no verificable» y sólo avisa; con alguno, da rojo. Las fichas `RN-LOC-nn` de la mini demo usan un prefijo externo pero se declaran en este repositorio, así que resuelven contra el registro propio ([Esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#5-registro-de-prefijos)) |
 | Orquestador | El agente o la persona que conduce las fases del SDD, despacha el trabajo y decide cuándo se pasa de una fase a la siguiente |
@@ -137,7 +138,7 @@ es la norma y dónde corre la compuerta.
 | Contexto | Cambia | Regla |
 | --- | --- | --- |
 | `CTX-SDEI-2` con SDD | Dónde vive el RRD y qué prefijos usan las trazas | El RRD va con la especificación, como un archivo `doc_type: rrd` del proyecto destino; agregarlo es contenido del proyecto (clase P, por pull request), no un cambio a la norma del marco. La carpeta exacta en Lab-Geometria la fija el escalón 2. Las trazas usan `CU-`, `RN-`, `ADR-` del SDD, que son prefijos externos |
-| `CTX-SDEI-3` documentación en otro repositorio | El ancla | Si la página vive fuera del repositorio del SDD, la traza resuelve contra un SHA fijado y el desfase lo avisa el carril programado |
+| `CTX-SDEI-3` documentación en otro repositorio | El ancla | Si la página vive fuera del repositorio del SDD, la traza resuelve contra un SHA fijado y el atraso lo avisa el carril programado |
 | `CTX-SDEI-4` fuera de la organización del runner | De dónde sale la compuerta | El SDD-B vive en otra organización de GitHub, con su propio runner, y no puede llamar al workflow reutilizable: copia `docs-guard.yml` con su huella y lo corre en el runner de su organización |
 
 **Una regla que no cambia en ningún escenario.** Un escenario sólo activa, quita o sustituye clases de pieza y
@@ -168,8 +169,13 @@ La cita de la categoría 11 sale de sus reglas, en la tabla de fronteras
 
 Un SDD operado por agentes toma decisiones a cada paso: qué prefijo usar, si una divergencia es de forma o de fondo,
 si un cambio necesita a la persona responsable. El diseño del sistema documentador separa esas decisiones en dos
-capas **[criterio propio del diseño del sistema documentador, en borrador hasta el escalón 2]**. Ninguna de las dos
-existe todavía: se escriben en el escalón 2.
+capas **[criterio propio del diseño del sistema documentador, en borrador hasta el escalón 2]**. Hecho, medido el
+2026-11-01: en IA.SDD@`bac7e48` hay un conocimiento de lógica de decisión 1.0
+(`Conocimiento/Knowledge-Logica-De-Decision.md`) que registra lecciones (§3.9, con la forma de §5.3), y dos líneas de
+norma mandan correrlo antes de detenerse (`SDD/Devs/Orchestrator/Master-Prompt.md`, l. 1025, y
+`SDD/Devs/Rules/Mesa-Rules.md`, l. 570). Su lección registra pregunta, análisis, salida y regla: no tiene los campos
+«evidencia» ni «resultado» que la tabla de abajo pide a la capa A. En Lab-Geometria (`5f07b12`) no hay copia, sólo una
+aplicación citada (`ADR-10010`, l. 8 y 61). Si esas piezas son las capas A y B de este diseño lo decide el escalón 2.
 
 | Capa | Qué es | Clase | Dónde |
 | --- | --- | --- | --- |
@@ -184,7 +190,8 @@ La capa B cambia una norma ajena; por eso es de clase H y la decide la persona r
 
 Una página de ayuda de Lab-Geometria traza al contrato de administración de cuentas: `traces: [CU-08002@1.11]`. El
 ensayo comprueba qué hace `traces-resolve` con esa traza según qué parte del SDD se le dé como registro. Se corrió el
-2026-10-27 sobre Lab-Geometria en el SHA `5f07b12`, con el `dg.py` de Lab-Documentos en el SHA `080f158`. La página
+2026-10-27 sobre Lab-Geometria en el SHA `5f07b12`, con el `dg.py` de Lab-Documentos en «PR #19, merge `e3841b6`» (equivalente de `080f158`, anterior a la
+reescritura de la historia; el árbol de `tools/docs-guard` es idéntico). La página
 de ensayo vive fuera del repositorio del SDD (como la mini demo vive fuera del de MovilidadUrbana): por eso el SDD se
 baja en un SHA fijado y entra por `--fuente`.
 
@@ -197,7 +204,7 @@ Lab-Documentos descartable (`https://github.com/hdcm-dev/Lab-Documentos.git`):
 ```bash
 # [Compilado: guion del ensayo del 2026-10-27; sólo cambian las carpetas de trabajo, acá bajo /tmp/ensayo]
 set -u
-git checkout --quiet 080f158                                            # el dg.py con el que se corrió
+git checkout --quiet e3841b6                                            # el dg.py con el que se corrió
 E=/tmp/ensayo; rm -rf "$E"; mkdir -p "$E/geo"
 git clone --quiet --filter=blob:none https://github.com/hdcm-dev/Lab-Geometria.git "$E/clon"
 git -C "$E/clon" archive 5f07b12 SDD/Docs | tar -x -C "$E/geo"          # el SDD entero, en el SHA fijado
@@ -325,6 +332,19 @@ proyecto, la página de cada proyecto que completa esa plantilla con sus datos (
 
 El paso a paso para intervenir la documentación de un proyecto, con entradas, salidas y validaciones, está en la
 plantilla [Cómo intervenir](Examples/Como-Intervenir.md).
+
+## Fuentes y observaciones
+
+Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
+Böckeler (2025), GitHub (2026), Kiro (s. f.), Nygard (2011), Tan et al. (2024) y Thoughtworks (2025). IA.SDD y
+Lab-Geometria se citan por SHA.
+
+| Tipo | Observación |
+| --- | --- |
+| Hecho | El ensayo de trazas se corrió el 2026-10-27 sobre Lab-Geometria en `5f07b12`, con el `dg.py` de «PR #19, merge `e3841b6`»; repetido el 2026-11-01 en un clon nuevo, da los mismos cuatro resultados |
+| Hecho | El conocimiento de lógica de decisión de IA.SDD y las dos líneas de norma que mandan correrlo se midieron en `bac7e48` el 2026-11-01 |
+| Criterio propio | La frontera en una línea por clase: el sistema documentador cita lo que el SDD ya tiene y agrega lo que el SDD declara fuera de alcance |
+| Criterio propio | Las capas A y B de las lecciones de decisión y el paso del ensayo a la CI están en borrador hasta el escalón 2 |
 
 Documento anterior: [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md). Siguiente documento: el
 [tutorial de la mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md), que cierra la ruta «aprender» antes de los

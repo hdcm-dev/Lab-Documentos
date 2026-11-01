@@ -113,8 +113,10 @@ si ambas corren en el runner del caso.
 
 **EJR-SDEI-04.** Se entra por §2, fila `ESC-SDEI-2`, y se ajusta por §3, fila `CTX-SDEI-3` (la pieza vive en otro
 repositorio que el código). Contra el SHA fijado en `source.lock`, `traces-resolve` sigue en verde: el cambio no
-entró ahí. El carril programado, que compara contra la rama principal del código, **avisa**, porque la deriva no la
-introdujo el pull request de la documentación (no cumple la segunda condición de la regla de bloqueo). Un agente
+entró ahí. Un aviso programado cuenta cuántos commits de atraso tiene el SHA fijado frente a la rama principal; la
+deriva por símbolo la mide A1 cuando corre la demo, y **avisa**, porque la deriva no la introdujo el pull request de la
+documentación (no cumple la segunda condición de la regla de bloqueo). Deuda: A1 no está programado; se cierra con el
+PR que lo programe o con el folio que decida no hacerlo. Un agente
 propone actualizar la ficha y el `source.lock`; si el número de la regla es correcto lo decide una persona (analista).
 
 **EJR-SDEI-05.** Una fila válida:
@@ -123,6 +125,7 @@ propone actualizar la ficha y el `source.lock`; si el número de la regla es cor
 | --- | --- | --- | --- | --- | --- |
 | RD-07 | estudiante | correr la compuerta en local antes de abrir un pull request | CL-10, tema `TEM-06` | Dado un clon del repositorio, cuando el estudiante sigue la sección, entonces `scripts/ci-local.sh` termina con el mismo veredicto que la CI | pendiente |
 
-La acepta, rechaza o difiere una persona (la analista o el PO): es la fase de evaluación del ciclo, de clase H.
+La acepta, rechaza o difiere el rol `ACT-SDEI-2`; en este corpus lo ocupa la responsable de la guía o quien el PO designe por delegación asentada. Es la fase de evaluación del ciclo, de clase H.
 
-Volver al [Mapa](../01-Mapa.md#6-anexos).
+Documento anterior: [tutorial de la mini demo](../Examples/MovilidadUrbana-Mini-Demo/README.md). Fin de la ruta
+«aprender»: volver al [Mapa](../01-Mapa.md#6-anexos) para elegir el anexo que haga falta.

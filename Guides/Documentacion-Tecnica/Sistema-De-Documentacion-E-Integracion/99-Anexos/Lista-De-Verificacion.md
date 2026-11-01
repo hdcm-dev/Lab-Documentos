@@ -151,7 +151,7 @@ verifica figura en la columna «Compuerta»; si el pull request está en verde, 
 | Id | Verificación | Origen |
 | --- | --- | --- |
 | `VER-W06` | Se reutilizó lo existente (guía anterior, ejemplos, conocimientos) antes de crear | Workflow |
-| `VER-W09` | El workflow de CI corre en el runner con la etiqueta exacta `[self-hosted, i7infra-dev]` | Pedido del caso |
+| `VER-W09` | El workflow de CI corre en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60` | Pedido del caso |
 | `VER-I04` | Los documentos nuevos o los cambios de estructura quedan reflejados en el índice interno (ia-db) antes de cerrar el escalón | Indexing |
 | `VER-I06` | No se duplica conocimiento entre índices | Indexing |
 

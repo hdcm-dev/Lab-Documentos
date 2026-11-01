@@ -3,14 +3,14 @@ title: Resetear una contraseña
 description: Para el alumno que olvidó la suya.
 roles: [Administrator]
 order: 21
-traces: [CU-00024@1.1]
+traces: [CU-10004@1.9]
 topic: reseteo
 ---
 # Resetear una contraseña
 
 Cuando un alumno te avisa en el aula que olvidó su contraseña:
 
-1. Accioná el reseteo sobre su cuenta.
+1. Accioná el reseteo sobre su cuenta y confirmalo.
 2. El laboratorio genera una **provisoria** y te la muestra **una vez**.
 3. Dásela al alumno en persona.
 4. En su próximo ingreso, el alumno la cambia por una suya. Sólo ese cambio levanta la marca de cambio pendiente.

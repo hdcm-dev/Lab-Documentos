@@ -12,7 +12,7 @@
   <data name="Ayuda" xml:space="preserve"><value>Help</value></data>
   <data name="Salir" xml:space="preserve"><value>Sign out</value></data>
   <data name="Ingresar" xml:space="preserve"><value>Sign in</value></data>
-  <data name="Prueba de concepto — no es Lab-Geometria. El contenido deriva de sus casos de uso CU-00022 a CU-00029." xml:space="preserve"><value>Proof of concept — this is not Lab-Geometria. The content is derived from its use cases CU-00022 to CU-00029.</value></data>
+  <data name="Prueba de concepto — no es Lab-Geometria. El contenido deriva de sus casos de uso CU-10002 a CU-10009." xml:space="preserve"><value>Proof of concept — this is not Lab-Geometria. The content is derived from its use cases CU-10002 to CU-10009.</value></data>
   <data name="Elegí con qué papel entrar" xml:space="preserve"><value>Choose a role to sign in with</value></data>
   <data name="Es un ingreso simulado. En Lab-Geometria el papel lo emite el servicio al canjear las credenciales; acá se elige con un clic para comparar lo que ve cada uno." xml:space="preserve"><value>This is a simulated sign-in. In Lab-Geometria the role is issued by the service when credentials are exchanged; here you pick it with one click to compare what each role sees.</value></data>
   <data name="Envía trabajos y lee sus observaciones." xml:space="preserve"><value>Submits work and reads its findings.</value></data>

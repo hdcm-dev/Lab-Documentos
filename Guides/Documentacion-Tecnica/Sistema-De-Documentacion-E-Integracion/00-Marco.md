@@ -41,7 +41,9 @@ que encuentra los identificadores estables en un solo archivo.
 | Clase de intervención D/P/H | **D**: la produce un generador determinista. **P**: la propone un agente o una persona y entra por la compuerta. **H**: sólo la decide una persona |
 | Ancla de versión | El dato que dice contra qué estado del código vale una pieza: el commit, un SHA fijado entre repositorios o una etiqueta |
 | Cuerpo documental | Conjunto de documentos de una guía bajo un README que declara `corpus_id` (su identificador, acá `SDEI`) y `version` |
-| Compuerta | Control que corre en la integración continua (CI) en cada pull request y termina en verde o en rojo. Las de este cuerpo las corre el workflow `docs-guard`, agrupadas de PR-1 a PR-7 (enlaces, frontmatter, anti-inyección, estructura y mermaid, trazas, contrato, referencias). Un control **bloquea** (rojo) o sólo **avisa** según la regla de bloqueo del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
+| Control | Una comprobación que corre en la integración continua (CI) y termina en verde o en rojo. Un control **bloquea** (rojo) o sólo **avisa** según la regla de bloqueo del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
+| Compuerta | El carril PR: el conjunto de controles que corre en cada pull request. La de este cuerpo la corre el workflow `docs-guard`, en siete grupos más `autoprueba`: PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4 estructura y mermaid, PR-5 trazas, PR-6 contrato y PR-7 fijadas y referencias (`reflint`, `url-fecha`) |
+| Compuerta de escalón | El hito que cierra un escalón del sistema documentador (escalón: etapa de prueba, definida en `TEM-07`); no es un control ni el carril PR |
 | Anti-inyección | Controles que buscan en el texto instrucciones escondidas para un agente de IA: comentarios HTML, caracteres invisibles, HTML oculto, enlaces a dominios fuera de una lista (AI-1 a AI-5) |
 | Traza | Declaración, en el frontmatter, de que un documento **depende de** otro identificador: si el identificador cambia de versión o desaparece, el documento hay que revisarlo. Forma `traces: [ID]` o `traces: [ID@MAYOR.MENOR]`. El identificador se declara una sola vez en el repositorio (como `doc_id` o como encabezado que empieza con el ID, con una línea `**Versión:** 1.0` si tiene versión), y de esas declaraciones sale solo el **registro de IDs** contra el que `traces-resolve` verifica. Si la ficha sube a 1.1, la página que traza a `@1.0` da rojo; una traza sin versión (`traces: [ID]`) sólo comprueba que el ID existe, y la subida de versión no la pone en rojo: por eso traza con `@MAYOR.MENOR` toda página que repite lo que dice una regla. `traces-resolve` corre sobre la carpeta que recibe la compuerta, tenga o no un README con `corpus_id`: un ID que no resuelve da rojo igual. Detalle en el [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas) |
 | Ficha | Página corta que declara una regla o un caso de uso con su identificador (`RN-LOC-01` = regla de negocio, ámbito «localización», número 01), su versión y dónde se aplica en el código, con la forma `ruta#Símbolo@SHA` (archivo, método o clase, y commit). Cuando el código cambia, quien lo cambia actualiza la ficha y sube su versión |
@@ -49,7 +51,7 @@ que encuentra los identificadores estables en un solo archivo.
 | Carril programado | Corrida semanal de la CI que sólo avisa (abre o actualiza un issue): enlaces externos rotos, anclas atrasadas, documentos sin revisar hace más de un año |
 | Guarda de merge | Comprobación que hace un agente antes de fusionar su propio pull request: abierto, sin conflictos, con todos los controles en verde y sin una duda declarada. Sólo vale si la persona responsable dejó **asentada por escrito** la delegación del merge en el repositorio; con una duda (una **reserva**), el merge vuelve a la persona |
 | Repositorio hermano | Repositorio `.Documentacion` que acompaña a uno de código con el mismo nombre (por ejemplo, Lab-Documentos y Lab-Documentos.Documentacion) y guarda índices, expedientes y bitácoras |
-| Runner | Máquina que ejecuta los trabajos de la CI. Se elige por etiqueta: `[self-hosted, i7infra-dev]` es la etiqueta del runner del laboratorio, no una dirección |
+| Runner | Máquina que ejecuta los trabajos de la CI. Se elige por etiqueta: la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`. La etiqueta no es una dirección: qué máquina la sirve lo decide la organización |
 
 ## 2. Escenarios
 
@@ -57,7 +59,8 @@ Cada escenario es un tipo de sistema real de los repositorios del laboratorio de
 `Lab-*`). El tronco común es el mismo en los cuatro: las fases del ciclo documental (1a captura y 1b evaluación de
 requerimientos, 2 análisis, 3 diseño, 4 implementación, 5 integración; las explica `TEM-02`), el frontmatter, las
 trazas, el catálogo de piezas y la compuerta; un escenario sólo activa, quita o sustituye clases de pieza
-y controles, nunca agrega fases.
+y controles, nunca agrega fases. Un proyecto con rasgos de dos escenarios activa la unión de sus clases; la
+composición no agrega fases.
 
 ```mermaid
 flowchart LR
@@ -75,13 +78,14 @@ flowchart LR
 Un repositorio dedicado a documentación formativa: lo que contiene son guías, y el código que aparece (las
 pruebas de concepto de `Examples/`) existe para ilustrarlas, no es un producto que se documente. El ejemplo es este
 repositorio, Lab-Documentos, que aloja varias guías; este cuerpo es una de ellas. Las audiencias son quien estudia, quien enseña y los agentes. La versión se ancla con la
-versión del cuerpo en su README y una etiqueta por compuerta.
+versión del cuerpo en su README y una etiqueta por versión.
 
 ### ESC-SDEI-2 — App cliente sin roles
 
 Una aplicación que usa una sola clase de persona usuaria, sin perfiles con permisos distintos. El ejemplo es
-MovilidadUrbana (repositorio Lab-E2E.WebBlazor): una app MAUI con una API web. La ayuda al usuario final es una sola
-para todos; la documentación técnica y el contrato REST salen del código. La versión se ancla con el SHA del código
+MovilidadUrbana (repositorio Lab-E2E.WebBlazor), que tiene tres aplicaciones (web, API y móvil), cada una con sus
+propias capas; las fichas de la demo anclan la app móvil, y la copia de la regla en la API no tiene ancla, así que un
+cambio ahí no da rojo. La ayuda al usuario final es una sola para todos; la documentación técnica y el contrato REST salen del código. La versión se ancla con el SHA del código
 fijado en un archivo `source.lock`.
 
 ### ESC-SDEI-3 — Panel con roles
@@ -102,10 +106,12 @@ quien integra, quien opera y los agentes; la versión se ancla con la etiqueta d
 | Parámetro | ESC-SDEI-1 Corpus de guías | ESC-SDEI-2 App sin roles | ESC-SDEI-3 Panel con roles | ESC-SDEI-4 Servicio con paquetes |
 | --- | --- | --- | --- | --- |
 | Audiencias | Estudiante, docente, agente | Persona usuaria, desarrollo, consumidor de la API, agente | Lo anterior más los roles del panel | Integrador, operador, agente |
-| Clases activas | CL-02, CL-03, CL-09, CL-10, CL-11, CL-12 | CL-02 a CL-07, CL-12 | CL-01 a CL-08, CL-12 | CL-01 a CL-05, CL-07, CL-08, CL-11 a CL-13 |
+| Clases activas por defecto | CL-02, CL-03, CL-08 a CL-13 | CL-02 a CL-08, CL-12, CL-13 | CL-01 a CL-08, CL-12 | CL-01 a CL-05, CL-07, CL-08, CL-11 a CL-13 |
+| Altas y bajas, con motivo | Altas: CL-08, porque el índice interno del repositorio hermano indexa el cuerpo; CL-13, porque el `CHANGELOG.md` registra cada cambio y la delegación del merge | Altas: CL-08 y CL-13, porque el repositorio hermano tiene índice interno y los dos repositorios llevan `CHANGELOG.md` | — | — |
+| No presente en el ejemplo, medido en su SHA | CL-11: no hay copia fijada fuera de los fixtures (Lab-Documentos `0bed863`) | CL-03: no hay `AGENTS.md`; CL-04: comentarios XML sólo en la API, no en la app MAUI; CL-12: no hay instancia de «Cómo intervenir» (Lab-E2E.WebBlazor `8fb4c3a`) | CL-02: no hay RRD; CL-04: `GenerateDocumentationFile` en `false`; CL-06: la ayuda por rol es la prueba de concepto de `Examples/`; CL-12: no hay instancia (Lab-Geometria `5f07b12`) | — (el ejemplo es privado; no se mide en lo público) |
 | Confidencialidad | No aplica | Lo que viaja en el paquete de la app instalada es visible para quien la instala | En el build y en el servidor | En el build y en los secretos |
-| Fuente generada | — | OpenAPI y comentarios XML | OpenAPI y comentarios XML | API pública de los paquetes |
-| Ancla de versión | Versión del cuerpo y etiqueta | SHA en `source.lock` | Etiqueta y SHA | Etiqueta por línea de versión |
+| Fuente generada | — | OpenAPI y comentarios XML | OpenAPI; comentarios XML previstos | API pública de los paquetes |
+| Ancla de versión | Versión del cuerpo y etiqueta | SHA en `source.lock` | Etiqueta y SHA | Etiqueta por línea de versión; una familia de versiones sin etiqueta se ancla con el SHA |
 | Registro de IDs | `doc_id` y `corpus_id` | Fichas provisionales `RN-LOC-nn` | El del SDD del proyecto | El del SDD del proyecto |
 
 ## 3. Contextos
@@ -127,13 +133,14 @@ en `docs/_requisitos.md` del árbol que se documenta y las reglas se escriben co
 ### CTX-SDEI-3 — Mismo repositorio, repositorio hermano o repositorio dedicado
 
 La topología dice dónde vive una pieza respecto del código. En el mismo repositorio, el ancla es el commit. En el
-repositorio hermano `.Documentacion` o en uno dedicado, el ancla es un SHA fijado (`base_commit`) y el desfase se
+repositorio hermano `.Documentacion` o en uno dedicado, el ancla es un SHA fijado (`base_commit`) y el atraso se
 detecta con un aviso programado.
 
 ### CTX-SDEI-4 — Dentro o fuera de la organización del runner
 
-Los repositorios de la organización que tiene el runner `[self-hosted, i7infra-dev]` llaman al workflow reutilizable
-`docs-guard.yml` de Lab-Documentos. Un repositorio de otra organización no puede llamarlo con ese runner: copia el
+Los repositorios de la organización que tiene el runner llaman al workflow reutilizable `docs-guard.yml` de
+Lab-Documentos, que corre con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este
+repositorio, la de `.github/workflows/docs-guard.yml:60`. Un repositorio de otra organización no puede llamarlo con ese runner: copia el
 workflow junto con su huella (el SHA-256 del archivo, que permite comprobar que la copia no cambió) y lo corre en el
 runner de su organización de GitHub.
 
@@ -169,6 +176,7 @@ los controles de la compuerta, que el agente no escribió en ese pull request, y
 | Estados | `borrador` → `vigente` → `obsoleto`; pasar a vigente es acto H | [README](README.md#6-versión-y-estado) |
 | Repositorios privados | Se nombran por un alias (el servicio push privado es **SDD-B**); en lo versionado no van rutas del equipo, direcciones IP, hosts ni usuarios | — |
 | Idioma | Castellano rioplatense claro, con voseo, sin regionalismos que traben la lectura; los términos de una API o de un formato van en su idioma original (`traces`, `pull request`) | — |
+| Estilo y lengua | Tres niveles, en este orden: (1) las convenciones de este cuerpo, voseo incluido; (2) para la lengua, las obras de la RAE y la ASALE, *Ortografía de la lengua española* (2010) y *Diccionario panhispánico de dudas*; (3) la *Spanish (Neutral) Style Guide* de Microsoft, tomada por la lengua y no por su alcance. Si chocan, manda el nivel 1 | — |
 
 ## 6. Un caso que recorre el marco
 
@@ -180,8 +188,10 @@ Con el marco se ubica así:
 1. **Escenario** `ESC-SDEI-2`: app cliente sin roles. La ayuda es una sola y la regla se escribe como ficha
    provisional `RN-LOC-01`, porque el proyecto no tiene SDD (`CTX-SDEI-2`, rama «sin SDD»).
 2. **Contexto** `CTX-SDEI-3`: la ayuda de la demostración vive en otro repositorio que el código, así que se ancla al
-   SHA del código en `source.lock`; contra ese SHA la traza resuelve, y contra la rama principal del código un aviso
-   programado detecta que el método que valida el largo (el «símbolo» que cita la ficha) cambió.
+   SHA del código en `source.lock`; contra ese SHA la traza resuelve. Un aviso programado cuenta cuántos commits de
+   atraso tiene el SHA fijado frente a la rama principal; la deriva por símbolo (que el método que valida el largo, el
+   «símbolo» que cita la ficha, cambió) la mide A1 cuando corre la demo. Deuda: A1 no está programado; se cierra con
+   el PR que lo programe o con el folio que decida no hacerlo.
 3. **Actores**: un agente (`ACT-SDEI-4`) propone actualizar la ficha y el `source.lock`; la compuerta corre en el pull
    request; si el número correcto es 60 u 80 es una divergencia que **decide una persona** (`ACT-SDEI-2`).
 

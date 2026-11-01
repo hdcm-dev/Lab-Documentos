@@ -51,8 +51,10 @@ Los dos patrones con más respaldo, para personas y para agentes, son `PE-03` y 
 | `[Compilado: ruta, l. x–y]` | El fragmento es copia de un archivo que compila en el repositorio | `[Compilado: Examples/Prueba-Ayuda-Por-Rol/Web/HelpCatalog.cs, l. 1–20]` |
 | `[Fragmento ilustrativo: motivo]` | El fragmento muestra una forma y no corre tal cual | `[Fragmento ilustrativo: muestra la forma del frontmatter]` |
 | `[Fragmento ilustrativo: contraejemplo]` | El fragmento muestra lo que no conviene | Un frontmatter sin `description` |
+| `[Salida registrada: corrida del AAAA-MM-DD; recorte]` | El fragmento es la salida de un comando que se corrió, no un archivo del repositorio. Lleva la fecha de la corrida y dice qué se recortó u omitió; si la salida depende de un commit, lo nombra | `[Salida registrada: corrida del 2026-11-01; GUIA-DIR es la carpeta del cuerpo; se omiten 8 avisos ajenos y la línea de anclas]` (`TEM-05` §3.2) |
 
-Las dos marcas responden lo que un lector necesita antes de confiar en un fragmento: si corre y de dónde sale.
+Las marcas responden lo que un lector necesita antes de confiar en un fragmento: si corre, de dónde sale y, si es una
+salida, cuándo se obtuvo.
 
 ## 3. Ciclo de vida de un ejemplo
 

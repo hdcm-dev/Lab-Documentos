@@ -9,7 +9,7 @@ Demuestra la propuesta de la sección 7 de [`Sistema-Documentador-Tecnico-Guide.
 | [`.devcontainer/`](.devcontainer/devcontainer.json) | Entorno reproducible: imagen `mcr.microsoft.com/devcontainers/dotnet:1-10.0`, puerto 5190 |
 | [`capturas/`](capturas/) | Lo que se ve, capturado el 2026-09-19 |
 
-No es código de Lab-Geometria. El contenido de `Web/Ayuda/` deriva de los casos de uso `CU-00022`, `CU-00023`, `CU-00024`, `CU-00026`, `CU-00028` y `CU-00029` (versión 1.1) de ese proyecto, y cada página lo declara en `traces`.
+No es código de Lab-Geometria. El contenido de `Web/Ayuda/` deriva de los casos de uso de la unidad Web de ese proyecto en el SHA `5f07b12` (`CU-10002@1.5`, `CU-10003@1.5`, `CU-10004@1.9`, `CU-10005@1.2`, `CU-10006@1.1`, `CU-10007@1.3` y `CU-10009@1.1`): cada página lo declara en `traces` y tiene su fila en el [registro de requerimientos documentales](_requisitos.md) (`RD-21` a `RD-27`).
 
 ## Levantarla
 

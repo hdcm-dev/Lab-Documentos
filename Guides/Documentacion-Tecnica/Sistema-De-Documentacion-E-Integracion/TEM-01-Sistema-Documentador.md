@@ -160,7 +160,7 @@ Los contextos cambian una respuesta dentro de cada fila:
 | --- | --- |
 | `CTX-SDEI-1` con o sin sitio | Con sitio aparecen el build del sitio y los canales derivados para agentes (una página `.md` por página, `llms.txt`); sin sitio, el canal es el propio Markdown |
 | `CTX-SDEI-2` con o sin SDD | Con un marco de desarrollo guiado por especificación, la especificación ya es pieza y fuente; sin él, las reglas se escriben como fichas propias |
-| `CTX-SDEI-3` topología | Una pieza en otro repositorio que el código necesita un ancla fijada y un aviso de desfase |
+| `CTX-SDEI-3` topología | Una pieza en otro repositorio que el código necesita un ancla fijada y un aviso de atraso |
 | `CTX-SDEI-4` organización del runner | Fuera de la organización del runner, la compuerta se copia con su huella en lugar de llamarse |
 
 ## Ejemplos concretos
@@ -210,12 +210,16 @@ de 24 meses. No prueba que sea la mejor práctica ni mide su efecto; para eso es
 El inventario de un sistema documentador se hace por comando, no de memoria: así se puede repetir y comparar. Este
 ensayo lee el frontmatter de cada página de esta guía con el mismo parser que usa la compuerta y cuenta las piezas
 por tipo. Precondición: Python 3, un clon de Lab-Documentos y el script, que está en el repositorio público
-Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta `evidencia/E1-U4b/`); se corre desde cualquier
+Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta [`evidencia/E1-U4b/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0002-Replanteo-Metodologia-DocAsCode/evidencia/E1-U4b) en el commit
+`09a4518`; la corrida vigente, medida el 2026-11-01, está en [`evidencia/U25/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25) del expediente 0003); se corre
+desde cualquier
 carpeta, con la ruta del clon como argumento. Resultado esperado: la lista de piezas por tipo, las
 piezas que no son prosa y los workflows que corren las compuertas.
 
 [Compilado: `evidencia/E1-U4b/01-tem01-inventario.sh` del expediente 0002 de DocAsCode, en el repositorio
-Lab-Documentos.Documentacion; salida sobre el commit `080f158` de Lab-Documentos, 2026-10-27, recortada]
+Lab-Documentos.Documentacion; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico), recortada. Sobre `e3841b6` la salida se reproduce
+igual; sobre `main` de hoy suma `tema 7` y `proceso 2`, los temas y los documentos de proceso que se agregaron después
+([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
 $ bash 01-tem01-inventario.sh <clon de Lab-Documentos>
@@ -238,13 +242,14 @@ workflows que corren compuertas: docs-enlaces-semanal.yml, docs-guard.yml, frame
 
 Leído con el tema: el cuerpo de estudio (`indice`, `marco-de-referencia`, `mapa`, `anexo`) es CL-10; las doce
 páginas de ayuda de las pruebas de concepto son CL-06; la `rrd` y las dos `ficha` son la mini demo de MovilidadUrbana
-(CL-02 y fichas de reglas); el `openapi.json` es CL-05 y el `source.lock` es su ancla. Cuatro workflows ejecutan
+(CL-02, y CL-01 como fichas propias sin SDD, en un repositorio dedicado con `source.lock`); el `openapi.json` es CL-05 y el `source.lock` es su ancla. Cuatro workflows ejecutan
 controles: dos bloquean en cada pull request (`docs-guard.yml` y el de la mini demo) y uno sólo avisa por semana.
 
 ### Ensayo reproducible: adopciones con fecha
 
 [Compilado: `evidencia/E1-U4b/04-adopciones.sh` del mismo expediente; corrida del 2026-10-27, recortada a las filas
-de este tema]
+de este tema. La corrida del 2026-11-01 ([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01) reproduce 16 de las 17 filas; la de
+Docusaurus, que no es de este tema, queda «no reproducido»]
 
 ```text
 $ bash 04-adopciones.sh 2026-10-27
@@ -265,7 +270,7 @@ Si se corre otro día, los commits cambian: la ventana se recalcula desde la fec
 
 ### Un cambio recorrido de punta a punta
 
-MovilidadUrbana tiene un defecto real: la pantalla promete 60 caracteres para el comentario y el campo admite 80. Así
+MovilidadUrbana tiene un defecto real: la pantalla promete 60 caracteres para el nombre de una localidad y el campo admite 80. Así
 responde el sistema documentador cuando alguien corrige el código:
 
 1. La ficha `RN-LOC-01` de la [mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md) declara la regla y dónde se
@@ -281,7 +286,7 @@ responde el sistema documentador cuando alguien corrige el código:
    sale de la ficha, y la ficha sale del código. Entre la página y la ficha manda la ficha; entre la ficha y el
    código, manda el código, porque la ficha describe lo que el código hace. Lo que esa cadena no resuelve es si el
    código hace lo que se quiso: la pantalla promete 60 y el código acepta 80. Eso es una **divergencia** entre la
-   letra (el código) y la intención (lo que el producto debía hacer), y la decide la analista (`ACT-SDEI-2`), acto de
+   letra (lo que la app promete), la intención (para qué) y el comportamiento (lo que el código hace), y la decide la analista (`ACT-SDEI-2`), acto de
    clase H. Después de su decisión, se corrige el código o la pantalla, y la cadena vuelve a mandar.
 
 ## Preguntas guía
@@ -340,7 +345,7 @@ releyeron el 2026-10-27 para este tema.
 
 | Tipo | Observación |
 | --- | --- |
-| Hecho | Las cifras del inventario son de la salida del ensayo sobre `080f158`; cambian cuando el cuerpo suma piezas |
+| Hecho | Las cifras del inventario son de la salida del ensayo sobre «PR #19, merge `e3841b6`» (equivalente de `080f158`); cambian cuando el cuerpo suma piezas |
 | Hecho | Las adopciones prueban presencia y actividad en 24 meses, no efectividad |
 | Interpretación | Que separar referencia generada y guías escritas es «la decisión que más simplifica el mantenimiento» es una lectura del caso de OneSignal y de Diátaxis, no una medición |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |

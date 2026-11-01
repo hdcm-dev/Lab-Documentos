@@ -71,8 +71,8 @@ Una traza dice de qué otro identificador depende un documento. Tiene dos nivele
 
 | Nivel | Dónde | Forma | Ejemplo |
 | --- | --- | --- | --- |
-| 1 | En el frontmatter de la página | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]` | `traces: [RN-LOC-01@1.0]` |
-| 2 | En la ficha del ID | `ruta#Símbolo@SHA` de dónde se declara, se verifica y se aplica en el código | `Pantalla.cs#LargoMaximo@8fb4c3a` |
+| 1 | En el frontmatter de la página | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]` | `traces: [RN-LOC-01@1.1]` (la ayuda de la mini demo) |
+| 2 | En la ficha del ID | `ruta#Símbolo@SHA` de dónde se declara, se verifica y se aplica en el código | `src/MovilidadUrbana.MAUI/Domain/Rules/LocalidadRules.cs#LocalidadRules.LargoMaximoDelNombre@8fb4c3a` (la ficha `RN-LOC-01`; el símbolo va como `Clase.Miembro`) |
 
 El registro contra el que se resuelven se genera solo: lo forman los `doc_id` de todo el repositorio y los
 encabezados que empiezan con un identificador (por ejemplo, el encabezado `### ESC-SDEI-2 — App cliente sin roles`
@@ -112,6 +112,7 @@ documenta y se resuelve contra el SHA de su `source.lock`.
 | `MAPA` | interno | Mapa conceptual |
 | `ANX` | interno | Anexo |
 | `IDX` | interno | Índice |
+| `FC` | interno | Documento del Framework Concept (`FC-TEM-nn`, `FC-GUIA-INDICE`, `FC-MARCO-REFERENCIA`, `FC-ANEXO-99`), espacio propio para no chocar con los cuerpos de `Guides/` |
 | `TEM` | interno | Tema del cuerpo |
 | `CQ` | interno | Criterio de calidad |
 | `PE` | interno | Patrón de ejemplo |
@@ -151,29 +152,31 @@ Un archivo `_requisitos.md` o con `doc_type: rrd` tiene una tabla con estas colu
 | `Criterio` | Forma Dado/Cuando/Entonces |
 | `Decisión` | `aceptado`, `rechazado`, `diferido` o `pendiente` |
 
-Ejemplo de fila válida [Fragmento ilustrativo: muestra la forma]:
+Ejemplo de fila válida: la primera del RRD de la mini demo
+([`docs/_requisitos.md`](../Examples/MovilidadUrbana-Mini-Demo/docs/_requisitos.md)), recortada como en `TEM-02`:
 
 | ID | Audiencia | Tarea | Pieza | Criterio | Decisión |
 | --- | --- | --- | --- | --- | --- |
-| RD-03 | persona usuaria | cargar un comentario sin que se corte | CL-06, `docs/ayuda/comentarios.md` | Dado el límite de la regla, cuando la persona lee la ayuda, entonces el número coincide con el de la ficha | aceptado |
+| RD-01 | persona usuaria | Dar de alta una localidad sin que el nombre se rechace ni quede distinto de lo esperado | CL-06, `docs/ayuda/alta-de-localidad.md` | Dado el límite de cada regla, cuando la persona lee la ayuda, entonces cada número coincide con el de la ficha; instrumento: `traces-resolve` | aceptado |
 
 ## 7. Un ejemplo completo y sus errores
 
-Frontmatter válido de un tema [Fragmento ilustrativo: muestra la forma]:
+Frontmatter válido de un tema, el de `TEM-03` de este cuerpo, con la lista de `audience` y de `traces` recortada
+[Fragmento ilustrativo: frontmatter de `TEM-03`, l. 1-13, con `audience` y `traces` recortadas]:
 
 ```yaml
 ---
-doc_id: TEM-03
+doc_id: TEM-SDEI-03
 doc_type: tema
-title: Topología de repositorios y versionado
-description: Dónde vive cada pieza documental respecto del código y contra qué versión vale.
+title: Tema 03 — Topología de repositorios y versionado
+description: "Dónde vive cada pieza documental respecto del código y contra qué versión vale: commit, SHA fijado o etiqueta, con la regla para elegir."
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-10-28
 audience: [humano, agente, estudiante]
-traces: [MARCO-SDEI, TEM-02]
+traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-02]
 ---
 ```
 
@@ -182,7 +185,7 @@ traces: [MARCO-SDEI, TEM-02]
 | `status: aprobado` | `esquema-cuerpo`: valor fuera del vocabulario | PR-2 |
 | Borrás `confidence` con `origin: ia-assisted` | `esquema-cuerpo`: falta `confidence` | PR-2 |
 | `doc_id: TOP-03` | `prefijo`: «TOP-» no está en el registro | PR-2 |
-| `traces: [TEM-99]` | `traza-no-resuelve` | PR-5 |
+| `traces: [TEM-SDEI-99]` | `traza-no-resuelve` | PR-5 |
 | Borrás el bloque entero | `sin-frontmatter`: todo documento del cuerpo abre con frontmatter | PR-2 |
 
 ## 8. Dónde vive la fuente de verdad

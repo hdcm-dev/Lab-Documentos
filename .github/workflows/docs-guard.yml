@@ -7,7 +7,7 @@
 #   PR-1 enlaces    lychee --offline --include-fragments; relativos que salen del repositorio.
 #   PR-2 esquema    frontmatter contra su esquema (tools/docs-guard/esquemas), registro de prefijos, esquema RRD.
 #   PR-3 ai         anti-inyección AI-1..AI-5 (AI-3 avisa; AI-4 avisa en el anexo de referencias).
-#   PR-4 estructura markdownlint-cli2 estructural y mermaid que parsea.
+#   PR-4 estructura markdownlint-cli2 estructural, mermaid que parsea y mermaid-arroba (expediente 0003, P-20).
 #   PR-5 trazas     traces-resolve e id-duplicado, sobre «ruta» y los punteros de la raíz («trazas-extra»: AGENTS.md,
 #                   README.md y Guides/README.md, los que existan; DEF-16 de la vuelta de E1).
 #   PR-6 contrato   diff del contrato OpenAPI, si la ruta tiene uno.

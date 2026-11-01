@@ -81,7 +81,7 @@ esa versión.
 
 ```mermaid
 flowchart LR
-  P["Página<br/>traces: [ID@1.0]"] --> R{"¿ID en el registro?"}
+  PG["Página"] -->|declara| P["traces: [ID#64;1.0]"] --> R{"¿ID en el registro?"}
   R -->|no, prefijo interno| ROJO["Rojo"]
   R -->|no, prefijo externo sin source.lock| AV["Aviso: no verificable"]
   R -->|no, prefijo externo con source.lock| ROJO

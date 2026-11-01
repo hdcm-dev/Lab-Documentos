@@ -21,7 +21,7 @@ FC      interno   documento del Framework Concept (FC-TEM-nn, FC-GUIA-INDICE, FC
 # Cuerpo de la guía del sistema documentador (N09 §7)
 TEM     interno   tema del cuerpo
 CQ      interno   criterio de calidad
-PE      interno   pregunta de evaluación
+PE      interno   patrón de ejemplo
 OBJ     interno   objetivo de aprendizaje
 EJR     interno   ejercicio
 RD      interno   requerimiento documental (RRD)

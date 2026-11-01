@@ -16,6 +16,28 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **Ejemplos (AC-25 a AC-31):** línea del error de la demo (`:63`); clases CL-05 y CL-01 en la tabla de la demo; frontmatter, ancla y encabezado de ficha reales en el anexo del esquema y en `TEM-03`; marca `[Salida registrada: …]`; `Como-Decidir` cita `PE-02`; el Marco cuenta las tres aplicaciones de MovilidadUrbana; `Examples/Lanzar-Example.md` reescrito como guía práctica genérica, con versiones fijas y sin datos del entorno (el tool-prompt saneado vive en Lab-Documentos.Documentacion).
 - **Forma (AC-32 a AC-36, P-05 y P-11):** «una etiqueta por versión»; la etiqueta de runner deja de escribirse en la prosa del cuerpo y se nombra como parámetro por plataforma; H1 «Tema 0n — …» y sección «Fuentes y observaciones» en los siete temas; pie de navegación uniforme e índice en la instancia de «Cómo intervenir»; fila «Estilo y lengua» en las convenciones del Marco.
 
+## 2026-11-01 (DocsAsCode: PR común del expediente 0003)
+
+### tools/docs-guard/, scripts/ y Guides/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 3
+
+#### Agregado
+
+- **Control `mermaid-arroba` en PR-4** (`dg.py mermaid-arroba`, llamado desde `estructura` en `scripts/ci-local.sh`; P-20): en un bloque mermaid, una arroba seguida de un nombre con punto (`ID@1.0`) da rojo. GitHub la toma como autoenlace de correo y el diagrama sale con «Unsupported markdown: link», aunque `mermaid.parse` dé verde. También da rojo `ID#64;1.0` en una etiqueta con HTML (`<br/>`, `<b>`): ahí la entidad vuelve a ser arroba antes del markdown y el diagrama se rompe igual. Se escribe `ID#64;1.0` en una etiqueta sin HTML, que dibuja el literal válido `ID@1.0`. Los comentarios `%%` no se miran. La autoprueba suma su par rojo y verde (`fixtures/mermaid-arroba/`).
+
+#### Corregido
+
+- **`prefijos.txt`: `PE` es «patrón de ejemplo»** (P-14), como dice el anexo del esquema; el registro decía «pregunta de evaluación».
+- **Dos diagramas que GitHub no dibujaba** (AC-24): las etiquetas con `ID@1.0` del anexo `Esquema-Frontmatter-Y-Prefijos.md` y de `docs/_requisitos.md` de la mini demo pasan a `ID#64;1.0`, como pide la resolución, y el texto que iba después de `<br/>` se parte en un nodo propio: con HTML en la misma etiqueta la entidad vuelve a ser arroba y el dibujo sigue roto. Sin HTML, GitHub dibuja el literal válido `traces: [ID@1.0]`.
+
+#### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0)
+
+- **Fecha:** 2026-10-25. **Decidió:** el responsable del producto (PO). **Asiento:** folio 006 §1 del expediente 0003 de DocsAsCode (`PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/actuaciones/006-providencia-delegacion-y-lote-del-po.md`, en `hdcm-dev/Lab-Documentos.Documentacion`), que responde la P-09 de la resolución 099.
+- **Testimonio del PO (regla general, literal):** «siempre para conformar los pr sigue `KB-privada/Knowledges/Knowledge-Conformacion-Pull-Request-Automatico.md`»; antes había dicho: «vos te encargas de todos los pr».
+- **Alcance:** los PR del expediente 0003 en este repositorio, incluido el primer merge (este PR común, que asienta la fila), y la creación de la etiqueta de archivo `sdei-v2.0.0-borrador` (folio 006 §1).
+- **Guarda:** G1–G4: estado `clean` y al menos un control de la cabeza, todos en éxito; techo de espera 120 minutos e intervalo de relectura 30 segundos, los de la delegación del expediente 0002 en este repositorio, que el folio 006 no cambia. Cuando corresponde, el merge se anuncia a las otras sesiones que comparten el repositorio (folio 006 §1).
+- **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual; también lo irreversible con consecuencia externa, que sale al PO con sugerencias y valor por defecto, como en la delegación del expediente 0002.
+
 ## 2026-11-01 (Framework Concept: libro unificado y Conocimiento)
 
 ### Concepts/Framework-Concept/ — prompt 04 del PO

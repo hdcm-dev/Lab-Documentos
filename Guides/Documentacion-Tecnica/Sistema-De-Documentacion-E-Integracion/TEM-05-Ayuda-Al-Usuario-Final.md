@@ -292,7 +292,7 @@ ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y 
 | Hecho | La salida registrada de §3.2 es de la corrida del 2026-11-01; los ocho avisos que omite son las trazas de la prueba de ayuda por rol, que no tiene `source.lock` |
 | Hecho | Las páginas de la prueba de ayuda por rol trazan a la unidad Web de Lab-Geometria en `5f07b12`; con ese SDD como fuente, las ocho trazas resuelven |
 | Hecho | El ejemplo une cada página con su fila `RD-` por la columna «Pieza» del RRD de la prueba y no por `traces`, como pide la regla de `ESC-SDEI-3`: el esquema de las páginas de ayuda (`ayuda.schema.json`) sólo admite trazas con versión. El cambio del esquema queda para el expediente de herramienta |
-| Desvío | La comprobación de AC-19 («`dg.py trazas` sin los avisos `traza-no-verificable`») se sustituye por la corrida con `--fuente` contra el SDD de Lab-Geometria en `5f07b12` (8 de 8 resueltas): cerrar los avisos en la CI exige un `source.lock`, que P-15 deja para cuando exista el trabajo de CI con `--fuente`. Queda como deuda; se cierra con el expediente de herramienta que agregue ese trabajo y el `source.lock` de la prueba |
+| Hecho | La prueba de ayuda por rol no tiene `source.lock`; sus ocho trazas se comprobaron con `--fuente` contra el SDD de Lab-Geometria en `5f07b12` (8 de 8 resueltas). Llevar esa comprobación a la CI queda como deuda del expediente de herramienta que agregue el trabajo con `--fuente` y el `source.lock` de la prueba |
 | Criterio propio | La línea «releída contra la versión nueva, sin cambios» en la descripción del pull request |
 | Criterio propio | El control de traducción atrasada por commit es de la propuesta de ayuda por rol y no existe todavía en `docs-guard` |
 

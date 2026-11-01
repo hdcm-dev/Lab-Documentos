@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- El «manifiesto de la app» en iOS (P10, glosario): sólo cambia por tienda. Como el AndroidManifest.xml, declara
+     sólo lo que el catálogo implementa (Core/Contracts/Puente/CatalogoDeCapacidades.cs, ClavesDeUsoIos):
+       auth.session → NSFaceIDUsageDescription (LocalAuthentication puede usar Face ID para abrir el cofre)
+     network.status y device.info no piden claves en iOS. La compuerta compara las claves NS*UsageDescription de este
+     archivo con el catálogo (Gate.Tests, InfoPlistFuenteSiExiste, P8).
+     Lo que NO está, a propósito:
+       — NSAppTransportSecurity: App Transport Security queda con sus valores por defecto (sólo HTTPS válido), igual
+         que la configuración de red de Android sin la CA de demostración. Ver FrameworkConcept.Shell.csproj.
+       — CFBundleURLTypes: el redirect OIDC lo recibe ASWebAuthenticationSession, que no necesita registrar el esquema.
+     El identificador, el nombre y las versiones los completa el build desde el .csproj (ApplicationId,
+     ApplicationTitle, versionado/version-cascaron.props); MinimumOSVersion sale de SupportedOSPlatformVersion. -->
+<plist version="1.0">
+<dict>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<!-- Pantalla de arranque vacía (la del sistema). Sin una, iOS corre la app en modo de compatibilidad, con bandas
+	     negras arriba y abajo (visto en el simulador). La pantalla de arranque propia del cascarón es ArranquePage. -->
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Usamos Face ID para abrir tu sesión guardada en este teléfono, en lugar de pedirte la clave cada vez.</string>
+</dict>
+</plist>

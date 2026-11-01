@@ -27,7 +27,7 @@ public sealed partial class BridgeClient(IJSRuntime js)
     public static VersionSemantica VersionEsperada => ContratoDelPuente.Version;
 
     /// <summary>Llama a un método de la tabla y devuelve el objeto «result» tal cual.</summary>
-    /// <exception cref="BridgeException">El cascarón contestó con «error», o no hay puente.</exception>
+    /// <exception cref="BridgeException">El cascarón contestó con «error», no hay puente, o falló el transporte.</exception>
     public async Task<JsonElement> CallAsync(string metodo, object? parametros = null)
     {
         var parametrosJson = parametros is null ? null : JsonSerializer.Serialize(parametros, JsonDelContrato.Opciones);
@@ -40,6 +40,13 @@ public sealed partial class BridgeClient(IJSRuntime js)
         catch (JSException excepcion) when (excepcion.Message.Contains(BridgeException.MarcaSinPuente, StringComparison.Ordinal))
         {
             throw BridgeException.SinPuente();
+        }
+        catch (JSException excepcion)
+        {
+            // El transporte falló (el cascarón contestó algo que no es un sobre: un 400 de MAUI, una respuesta vacía).
+            // Sale como BridgeException, que las páginas ya atienden; una JSException suelta tiraba el contenido entero
+            // («Ocurrió un error no controlado», visto en el simulador de iOS 26).
+            throw BridgeException.DelTransporte(metodo, excepcion);
         }
 
         var respuesta = JsonDelContrato.Leer<SobreRespuesta>(respuestaJson);
@@ -111,7 +118,7 @@ public sealed partial class BridgeClient(IJSRuntime js)
 
     /// <summary>
     /// Registra a <paramref name="receptor"/> para los eventos que el cascarón envía con
-    /// <c>HybridWebView.InvokeJavaScriptAsync</c> (network.changed, outbox.changed).
+    /// <c>window.puenteRecibirEvento(texto)</c>, evaluado en la página (network.changed, outbox.changed).
     /// </summary>
     public ValueTask SubscribeAsync<T>(DotNetObjectReference<T> receptor) where T : class =>
         js.InvokeVoidAsync("puente.suscribir", receptor);

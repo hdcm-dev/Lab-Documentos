@@ -130,7 +130,7 @@ Las líneas que rigen (P7, folio 035):
 | Línea | Gramática | Fuente única en la demo |
 | --- | --- | --- |
 | Cascarón | `ApplicationDisplayVersion` `MAYOR.MENOR.PARCHE` + `ApplicationVersion` entero monótono | `versionado/version-cascaron.props` (1.0.0 / 1) |
-| Puente | SemVer; el mayor es la identidad del contrato (≈ *runtime version* de EAS Update) | `versionado/puente.json` (1.2.0) y `contrato.json` |
+| Puente | SemVer; el mayor es la identidad del contrato (≈ *runtime version* de EAS Update) | `versionado/puente.json` (1.3.0) y `contrato.json` |
 | Contenido | SemVer + `+<commit>`, sin pre-release | `versionado/contenido.json` (1.0.0) |
 | Definición | `encuestaId` + `version` entero | `definiciones/encuesta-movilidad/vN.json` (plantilla: hoy `v1.json` y `v2.json`) |
 | Catálogo | Una versión por entrada | `CatalogoDeCapacidades.cs` |

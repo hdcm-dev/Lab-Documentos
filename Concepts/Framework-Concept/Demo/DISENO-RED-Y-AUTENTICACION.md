@@ -5,7 +5,7 @@
 | Pedido | Folio 038 del expediente 0001: autenticación con los mecanismos del sistema operativo; manejo de red (detección de corte, aviso al usuario, reconexión automática) con bloqueo de las acciones que requieren internet |
 | Diseño que manda | P4 del dictamen (folio 035) y el borrador del PO `../Framework-APP.md` §4, §6 y §7. Respeta P3 (contrato del puente), P5 (outbox), P12 (catálogo) |
 | Efecto del folio 038 | Sustituye, **para la demo**, la «Decisión para la demo» de P4 (sin IdP). El diseño del framework de P4 entra entero |
-| Estado | **Implementado.** Contrato 1.2.0 (1.1.0 con el incremento de red; 1.2.0 con el login tradicional) |
+| Estado | **Implementado.** Contrato 1.3.0 (1.1.0 con el incremento de red; 1.2.0 con el login tradicional; 1.3.0 con los eventos por `ScriptEnLaVista`, portado a iOS) |
 | Fecha | 2026-10-26 |
 
 Las rutas de este documento son relativas a esta carpeta (`Demo/`). Cada decisión lleva su ancla entre corchetes:
@@ -276,6 +276,13 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
   borrador §4:** enrolar una huella nueva **no** invalida la clave, porque P4 acepta PIN o patrón
   (`DEVICE_CREDENTIAL`) y Android sólo invalida por enrolamiento las claves exclusivamente biométricas (H-1, §12).
 - **Cancelación** del BiometricPrompt → `CodigosDeError.AutenticacionCancelada` (-32006), la sesión sigue `Bloqueada`.
+- **iOS** (`Shell/Platforms/iOS/Auth/CofreDeSesion.cs`, mismo contrato): clave AES-256 al azar guardada como ítem
+  genérico del Keychain con `SecAccessControl(.userPresence)` y `WhenPasscodeSetThisDeviceOnly`, leída después de
+  LocalAuthentication (`DeviceOwnerAuthentication`). **Diferencia declarada con Android:** la clave no queda atada al
+  hardware; el Keychain la entrega entera a la memoria del proceso en cada apertura y AES-GCM corre en .NET (el
+  `byte[]` se pone en cero y el `NSData` se libera). En Android la clave nunca sale del Keystore. Una clave de la
+  Secure Enclave (ECIES) cerraría la diferencia en un teléfono; el simulador no la tiene. **NO VERIFICADO** en un
+  teléfono.
 - **Después de abrir:** estado `Activa` de inmediato (la entrada no espera a la red) y renovación del access token en
   segundo plano. Sin red, se sigue trabajando; con `invalid_grant`, `Revocada`. **[P4]**
 
@@ -504,7 +511,7 @@ vuelve a subir la versión y regenerar la instantánea, y eso no se hace en para
 
 ## 7. Catálogo y manifiesto **[P12]**
 
-| Entrada | Versión | Android | iOS (diseño, P9) | Por qué |
+| Entrada | Versión | Android | iOS (simulador, P9) | Por qué |
 | --- | --- | --- | --- | --- |
 | `device.info` | 1.0.0 | — | — | sin cambios |
 | `network.status` | **1.1.0** | `ACCESS_NETWORK_STATE` | — | campos opcionales nuevos en la respuesta y el evento |
@@ -676,7 +683,8 @@ lo pide, `keycloak.sh parar`, `guion.sh parar`, borrar `bin/` y `obj/`.
 - Borrar las filas pendientes propias con confirmación que dice cuántas se pierden (P4): diseño, sin pantalla.
 - Evaluar la versión mínima del cascarón **al ingresar** (P4, fila «Versión mínima del cascarón»): sigue evaluándose en
   el arranque en frío como en A3.
-- iOS (Keychain `userPresence`, LocalAuthentication): diseño, P9.
+- iOS (Keychain `userPresence`, LocalAuthentication): verificado en el simulador (iOS 26): login con formulario,
+  sellar, bloquear, desbloquear. NO VERIFICADO: teléfono real, Secure Enclave, modo Navegador (P9).
 - Reintentos con Polly; tabla SQLite del registro de red (§2.4).
 - Política de acciones en el manifiesto del contenido (§4.2).
 - Cuenta de demostración para tiendas y borrado de cuenta (P4, fila «Tiendas»): el emisor es de ensayo.

@@ -160,6 +160,12 @@
             // Folio 038 — El cascarón no la permitió (doble cerrojo): se dice por qué.
             _aviso = ("No se guardó: " + excepcion.Message, false);
         }
+        catch (BridgeException excepcion)
+        {
+            // Cualquier otro fallo del puente (también del transporte: BridgeClient lo convierte) se avisa y la página
+            // sigue; antes salía como excepción no controlada y tiraba el contenido entero.
+            _aviso = ("No se guardó: " + excepcion.Message, false);
+        }
         finally
         {
             _ocupado = false;
@@ -199,6 +205,10 @@
             await CargarAsync();
         }
         catch (BridgeException excepcion) when (excepcion.Code == CodigosDeError.AccionBloqueada)
+        {
+            _aviso = ("No se eliminó: " + excepcion.Message, false);
+        }
+        catch (BridgeException excepcion)
         {
             _aviso = ("No se eliminó: " + excepcion.Message, false);
         }

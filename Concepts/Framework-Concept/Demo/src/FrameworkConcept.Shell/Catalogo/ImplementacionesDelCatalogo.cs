@@ -4,12 +4,13 @@ namespace FrameworkConcept.Shell.Catalogo;
 
 /// <summary>
 /// P12 — Lo que el cascarón hace por cada entrada del catálogo. El catálogo (id y versión) es la constante de Core,
-/// <see cref="CatalogoDeCapacidades"/>; acá está la implementación de Android. Toda capacidad del dispositivo pasa por
+/// <see cref="CatalogoDeCapacidades"/>; acá está la implementación, la misma en Android e iOS (MAUI Essentials). Toda capacidad del dispositivo pasa por
 /// el puente: el contenido no usa API web del WebView que pidan permisos.
 ///
 /// Catálogo de la demo: sólo lo que el contenido usa y sin permisos de tiempo de ejecución. ACCESS_NETWORK_STATE es
 /// un permiso «normal» (se concede al instalar) y está declarado en Platforms/Android/AndroidManifest.xml, que no
-/// declara nada más del catálogo (la compuerta lo compara, P8).
+/// declara nada más del catálogo (la compuerta lo compara, P8). En iOS, Platforms/iOS/Info.plist declara sólo
+/// NSFaceIDUsageDescription (auth.session), y la compuerta también lo compara.
 /// Una capacidad nueva entra «en dos tiempos» y en el mismo binario: entrada del catálogo + declaración del manifiesto
 /// + una función visible que la use (P12).
 /// </summary>

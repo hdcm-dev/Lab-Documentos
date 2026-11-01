@@ -44,6 +44,10 @@ public partial class ContenidoPage : ContentPage
         vista.SetInvokeJavaScriptTarget(puente);   // P3 — un solo objeto, un solo método: Call(sobre)
         emisor.Conectar(vista);
         Contenedor.Children.Add(vista);
+#if IOS
+        // iOS — sin esto el puente sólo anda desde «/» (MAUI exige el Referer exacto): Platforms/iOS/Hosting/RefererDelPuente.cs.
+        vista.HandlerChanged += (_, _) => RefererDelPuente.Instalar(vista);
+#endif
         Bitacora.Log($"contenido: hybridwebview agregado ({contenido.Version})");
 
         _despachador.ListoRecibido += AlRecibirListo;
@@ -80,10 +84,10 @@ public partial class ContenidoPage : ContentPage
         {
             try
             {
-                var texto = (await _vista.EvaluateJavaScriptAsync(HoraDeLaMarca))?.Trim('"');
+                var texto = (await ScriptEnLaVista.EvaluarAsync(_vista, HoraDeLaMarca))?.Trim('"');
                 if (!double.TryParse(texto, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var hora))
                 {
-                    Bitacora.Log($"contenido: el WebView no tiene la marca primer-render ({version})");
+                    Bitacora.Log($"contenido: el WebView no tiene la marca primer-render ({version}; devolvió «{texto}»)");
                     return;
                 }
                 var tpr = (long)Math.Round(hora - InicioDelProcesoEnEpocaMs());

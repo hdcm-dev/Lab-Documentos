@@ -10,7 +10,7 @@
 //
 // Se configura con la dirección de la página (se recuerda en sessionStorage):
 //   ?definicion=1|2        versión vigente de encuesta-movilidad (archivo definiciones/encuesta-movilidad/vN.json)
-//   ?puente=1.2.0          versión del puente que informa el handshake
+//   ?puente=1.3.0          versión del puente que informa el handshake
 //   ?catalogo=a,b          ids del catálogo (por defecto device.info,network.status,auth.session; «ninguno» = vacío)
 //   ?red=0|1               conectividad que informa network.status
 //   ?estado=enLinea        estado combinado de red (folio 038): sinRed, redSinServidor, enLinea, enLineaMedida
@@ -29,7 +29,7 @@
     // --- Configuración -----------------------------------------------------------------------------------
     const consulta = new URLSearchParams(location.search);
     const config = Object.assign(
-        { definicion: '1', puente: '1.2.0', ingreso: 'formulario', catalogo: 'device.info,network.status,auth.session', red: '1', estado: '', sinpuente: '0', sesion: 'dispositivo', sesionFalla: '' },
+        { definicion: '1', puente: '1.3.0', ingreso: 'formulario', catalogo: 'device.info,network.status,auth.session', red: '1', estado: '', sinpuente: '0', sesion: 'dispositivo', sesionFalla: '' },
         JSON.parse(sessionStorage.getItem(CLAVE_CONFIG) || '{}'));
     for (const clave of Object.keys(config)) {
         if (consulta.has(clave)) config[clave] = consulta.get(clave);
@@ -304,7 +304,7 @@
     }
 
     function emitir(metodo, params) {
-        // Como el cascarón con InvokeJavaScriptAsync: un sobre sin id.
+        // Como el cascarón con puenteRecibirEvento: un sobre sin id.
         setTimeout(() => window.puenteRecibirEvento && window.puenteRecibirEvento({ jsonrpc: '2.0', v: config.puente, method: metodo, params: params }), 0);
     }
 

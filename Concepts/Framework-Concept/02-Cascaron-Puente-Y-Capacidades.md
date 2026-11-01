@@ -44,12 +44,12 @@ tomó. Le sirve a quien escribe el cascarón y a quien escribe el contenido, por
 
 **Puente.** El único canal por el que el contenido del WebView le pide algo al cascarón. En la demo es un método
 `Call(sobre)` registrado con `SetInvokeJavaScriptTarget` de `HybridWebView`; los eventos vuelven por
-`InvokeJavaScriptAsync` (P3).
+`window.puenteRecibirEvento(texto)`, que el cascarón evalúa en la página (P3).
 
 **Cómo se aplica.** Desde una página Razor llamás, por ejemplo, `network.status`; el cascarón responde con
 `{conectado, estado, motivo}`.
 
-**Un caso.** Al cargar, el contenido hace `bridge.handshake` y recibe la versión del puente (1.2.0) y el catálogo con la
+**Un caso.** Al cargar, el contenido hace `bridge.handshake` y recibe la versión del puente (1.3.0) y el catálogo con la
 versión de cada entrada; con eso decide si muestra o esconde funciones `optional`.
 
 **Catálogo de capacidades.** Lista constante en el código del cascarón, una entrada por capacidad del dispositivo, con
@@ -171,7 +171,8 @@ El incremento de red y autenticación fue todo menor: 1.0.0 → 1.1.0, con méto
 `auth.*` y campos opcionales `estado`, `motivo` en `network.status`
 ([DISENO §6](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/DISENO-RED-Y-AUTENTICACION.md#6-contrato-del-puente-110-120-desde-el-login-tradicional)).
 El login tradicional sumó otro incremento menor, 1.1.0 → 1.2.0: los métodos `auth.signInWithPassword` y
-`auth.lock`, y `auth.session` 1.1.0 (DISENO §6).
+`auth.lock`, y `auth.session` 1.1.0 (DISENO §6). El portado a iOS lo llevó a 1.3.0: los eventos se entregan
+evaluando `window.puenteRecibirEvento(texto)` en la página; el receptor no cambió, y la compuerta lo clasifica menor.
 
 ### 2.7 Encuestas tomadas con una versión cuando llega otra (P13)
 

@@ -1,10 +1,10 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "transporte": {
     "script": "_framework/hybridwebview.js",
     "rutaDeInvocacion": "POST /__hwvInvokeDotNet",
     "metodoNativo": "Call(sobre)",
-    "eventos": "HybridWebView.InvokeJavaScriptAsync",
+    "eventos": "window.puenteRecibirEvento(texto) | script evaluado en la vista (ScriptEnLaVista)",
     "mauiMayor": 10
   },
   "metodos": [

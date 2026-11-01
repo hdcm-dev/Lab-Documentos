@@ -186,4 +186,12 @@ public sealed class CofreDeSesion
         // Un intento fallido (huella no reconocida): el diálogo sigue abierto y la persona puede reintentar.
         public override void OnAuthenticationFailed() => Bitacora.Log("cofre: intento no reconocido");
     }
+
+    /// <summary>
+    /// ¿Este sistema puede usar el cofre? API ≥ 30 (setUserAuthenticationParameters). SesionDelUsuario lo mira antes de
+    /// sellar o abrir; el atributo le dice al analizador de plataforma (CA1416) que es la misma guarda que
+    /// OperatingSystem.IsAndroidVersionAtLeast(30). La rama iOS (Platforms/iOS/Auth/CofreDeSesion.cs) tiene la suya.
+    /// </summary>
+    [SupportedOSPlatformGuard("android30.0")]
+    public static bool SistemaAdmite => OperatingSystem.IsAndroidVersionAtLeast(30);
 }

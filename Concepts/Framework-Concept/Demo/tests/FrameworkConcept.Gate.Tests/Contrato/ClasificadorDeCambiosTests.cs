@@ -14,7 +14,7 @@ public class ClasificadorDeCambiosTests
 {
     private static Instantanea Base => new(
         VersionSemantica.Parse("1.0.0"),
-        new TransporteDelPuente("_framework/hybridwebview.js", "POST /__hwvInvokeDotNet", "Call(sobre)", "HybridWebView.InvokeJavaScriptAsync", 10),
+        new TransporteDelPuente("_framework/hybridwebview.js", "POST /__hwvInvokeDotNet", "Call(sobre)", "window.puenteRecibirEvento(texto) | script evaluado en la vista (ScriptEnLaVista)", 10),
         [
             new FilaDeMetodo("device.info", [], [new("modelo", "string")], "device.info"),
             new FilaDeMetodo("documents.get", [new("coleccion", "string"), new("id", "string")], [new("documento", "Documento", Opcional: true)], null),
@@ -80,6 +80,23 @@ public class ClasificadorDeCambiosTests
     public void CambioDelTransporteEsMayor() =>
         Assert.That(Nivel(Base with { Transporte = Base.Transporte with { MauiMayor = Base.Transporte.MauiMayor + 1 } }),
             Is.EqualTo(NivelDeCambio.Mayor));
+
+    [Test]
+    public void OtroMecanismoDeEventosConElMismoReceptorEsMenor() =>
+        Assert.That(Nivel(Base with { Transporte = Base.Transporte with { Eventos = "window.puenteRecibirEvento(texto) | otro mecanismo" } }),
+            Is.EqualTo(NivelDeCambio.Menor));
+
+    [Test]
+    public void OtroReceptorDeEventosEsMayor() =>
+        Assert.That(Nivel(Base with { Transporte = Base.Transporte with { Eventos = "window.otroReceptor(texto) | script evaluado en la vista (ScriptEnLaVista)" } }),
+            Is.EqualTo(NivelDeCambio.Mayor));
+
+    [Test]
+    [Description("Las instantáneas hasta la 1.2.0 nombraban sólo el mecanismo; su receptor era window.puenteRecibirEvento(texto)")]
+    public void LaInstantaneaHasta120SeLeeConSuReceptor() =>
+        Assert.That(ClasificadorDeCambios.Clasificar(
+                Base with { Transporte = Base.Transporte with { Eventos = "HybridWebView.InvokeJavaScriptAsync" } }, Base).Nivel,
+            Is.EqualTo(NivelDeCambio.Menor));
 
     [Test]
     public void EntradaNuevaDelCatalogoEsMenor()

@@ -25,6 +25,7 @@ traces: [FC-GUIA-INDICE]
    idea en una página.
 2. Ejercicio 1 de la misma guía: compilar sin instalar nada.
 3. [`Demo/README`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Demo/README.md): para el teléfono.
+4. Para leerlo todo de corrido, como un libro: [`MAUI-Framework-Developer-Guide`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/MAUI-Framework-Developer-Guide.md), que reúne todos los documentos en un solo texto autocontenido. Para empezar un proyecto con estos principios: el Conocimiento [`Knowledge-App-Hibrida-OTA-Offline-First`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/Conocimientos/Knowledge-App-Hibrida-OTA-Offline-First.md).
 
 Vocabulario: app híbrida = cascarón nativo (native shell, App Shell model) + contenido Blazor WASM (update bundle)
 actualizado OTA (live updates / code push), offline-first con outbox.

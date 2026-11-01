@@ -195,7 +195,8 @@ la concurrencia (una corrida nueva del mismo pull request cancela la anterior), 
 tiempo máximo:
 
 ```yaml
-# [Compilado: .github/workflows/docs-guard.yml, l. 40-51]
+# [Compilado: .github/workflows/docs-guard.yml en el commit 4750354, l. 50-61: permissions: l. 50, runs-on: l. 60,
+#  timeout-minutes: l. 61; la etiqueta de runner va como parámetro, <etiqueta-de-runner>]
 permissions:
   contents: read
 
@@ -206,14 +207,15 @@ concurrency:
 jobs:
   docs-guard:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: <etiqueta-de-runner>
     timeout-minutes: 10
 ```
 
-En local, `scripts/ci-local.sh` da los mismos pasos en el mismo orden. El script recibe el paso y la carpeta (`scripts/ci-local.sh todo <carpeta>`, por defecto la de esta guía) y su paso
-`herramientas` baja lychee, markdownlint y el parser de mermaid con las mismas versiones y SHA-256 que la CI. Esa
-equivalencia es lo que permite que el paso «validar» del documento de proceso del cuerpo («Cómo intervenir», en
-redacción) use el mismo comando que la CI: si da verde en local, da verde en el pull request.
+En local, `scripts/ci-local.sh` da los mismos pasos en el mismo orden. El script recibe el paso y la carpeta
+(`scripts/ci-local.sh todo <carpeta>`, por defecto la de esta guía) y su paso `herramientas` baja lychee,
+markdownlint y el parser de mermaid con las mismas versiones y SHA-256 que la CI. Esa equivalencia es lo que permite
+que el paso «validar» del documento de proceso del cuerpo ([«Cómo intervenir»](Examples/Como-Intervenir.md)) use el
+mismo comando que la CI: si da verde en local, da verde en el pull request.
 
 ### 3.3 Ensayo reproducible: un defecto, una línea roja
 

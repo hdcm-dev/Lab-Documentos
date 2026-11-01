@@ -45,8 +45,8 @@ flowchart LR
 
 *Diagrama: se entra por la tabla que corresponde a lo que se sabe, se ajusta por contexto y se sale por un anexo.*
 
-Los temas `TEM-01` a `TEM-07` figuran en las tablas por su identificador; mientras estén en redacción, la columna
-«Anexo» da lo que ya se puede usar.
+Los temas `TEM-01` a `TEM-07` figuran en las tablas por su identificador; la columna «Anexo» da lo
+que ya se puede usar.
 
 ## 2. Por escenario
 

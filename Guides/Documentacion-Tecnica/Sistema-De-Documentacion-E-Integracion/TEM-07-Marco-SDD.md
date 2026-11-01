@@ -184,7 +184,8 @@ La capa B cambia una norma ajena; por eso es de clase H y la decide la persona r
 
 Una página de ayuda de Lab-Geometria traza al contrato de administración de cuentas: `traces: [CU-08002@1.11]`. El
 ensayo comprueba qué hace `traces-resolve` con esa traza según qué parte del SDD se le dé como registro. Se corrió el
-2026-10-27 sobre Lab-Geometria en el SHA `5f07b12`, con el `dg.py` de Lab-Documentos en el SHA `080f158`. La página
+2026-10-27 sobre Lab-Geometria en el SHA `5f07b12`, con el `dg.py` de Lab-Documentos en «PR #19, merge `e3841b6`» (equivalente de `080f158`, anterior a la
+reescritura de la historia; el árbol de `tools/docs-guard` es idéntico). La página
 de ensayo vive fuera del repositorio del SDD (como la mini demo vive fuera del de MovilidadUrbana): por eso el SDD se
 baja en un SHA fijado y entra por `--fuente`.
 
@@ -197,7 +198,7 @@ Lab-Documentos descartable (`https://github.com/hdcm-dev/Lab-Documentos.git`):
 ```bash
 # [Compilado: guion del ensayo del 2026-10-27; sólo cambian las carpetas de trabajo, acá bajo /tmp/ensayo]
 set -u
-git checkout --quiet 080f158                                            # el dg.py con el que se corrió
+git checkout --quiet e3841b6                                            # el dg.py con el que se corrió
 E=/tmp/ensayo; rm -rf "$E"; mkdir -p "$E/geo"
 git clone --quiet --filter=blob:none https://github.com/hdcm-dev/Lab-Geometria.git "$E/clon"
 git -C "$E/clon" archive 5f07b12 SDD/Docs | tar -x -C "$E/geo"          # el SDD entero, en el SHA fijado

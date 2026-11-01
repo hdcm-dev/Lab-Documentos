@@ -210,12 +210,16 @@ de 24 meses. No prueba que sea la mejor práctica ni mide su efecto; para eso es
 El inventario de un sistema documentador se hace por comando, no de memoria: así se puede repetir y comparar. Este
 ensayo lee el frontmatter de cada página de esta guía con el mismo parser que usa la compuerta y cuenta las piezas
 por tipo. Precondición: Python 3, un clon de Lab-Documentos y el script, que está en el repositorio público
-Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta `evidencia/E1-U4b/`); se corre desde cualquier
+Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta [`evidencia/E1-U4b/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0002-Replanteo-Metodologia-DocAsCode/evidencia/E1-U4b) en el commit
+`09a4518`; la corrida vigente, medida el 2026-11-01, está en [`evidencia/U25/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25) del expediente 0003); se corre
+desde cualquier
 carpeta, con la ruta del clon como argumento. Resultado esperado: la lista de piezas por tipo, las
 piezas que no son prosa y los workflows que corren las compuertas.
 
 [Compilado: `evidencia/E1-U4b/01-tem01-inventario.sh` del expediente 0002 de DocAsCode, en el repositorio
-Lab-Documentos.Documentacion; salida sobre el commit `080f158` de Lab-Documentos, 2026-10-27, recortada]
+Lab-Documentos.Documentacion; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico), recortada. Sobre `e3841b6` la salida se reproduce
+igual; sobre `main` de hoy suma `tema 7` y `proceso 2`, los temas y los documentos de proceso que se agregaron después
+([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
 $ bash 01-tem01-inventario.sh <clon de Lab-Documentos>
@@ -244,7 +248,8 @@ controles: dos bloquean en cada pull request (`docs-guard.yml` y el de la mini d
 ### Ensayo reproducible: adopciones con fecha
 
 [Compilado: `evidencia/E1-U4b/04-adopciones.sh` del mismo expediente; corrida del 2026-10-27, recortada a las filas
-de este tema]
+de este tema. La corrida del 2026-11-01 ([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01) reproduce 16 de las 17 filas; la de
+Docusaurus, que no es de este tema, queda «no reproducido»]
 
 ```text
 $ bash 04-adopciones.sh 2026-10-27
@@ -340,7 +345,7 @@ releyeron el 2026-10-27 para este tema.
 
 | Tipo | Observación |
 | --- | --- |
-| Hecho | Las cifras del inventario son de la salida del ensayo sobre `080f158`; cambian cuando el cuerpo suma piezas |
+| Hecho | Las cifras del inventario son de la salida del ensayo sobre «PR #19, merge `e3841b6`» (equivalente de `080f158`); cambian cuando el cuerpo suma piezas |
 | Hecho | Las adopciones prueban presencia y actividad en 24 meses, no efectividad |
 | Interpretación | Que separar referencia generada y guías escritas es «la decisión que más simplifica el mantenimiento» es una lectura del caso de OneSignal y de Diátaxis, no una medición |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |

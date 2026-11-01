@@ -153,7 +153,7 @@ aplicación y los canales para agentes.
   especificación tiene su propio ciclo; el documental lo usa como fuente y no lo reemplaza. Böckeler distingue tres
   niveles de ese marco: la especificación escrita antes de la tarea, la que se conserva para mantener la función, y
   la que pasa a ser la fuente principal y sólo se edita ella
-  ([Böckeler, 2025](99-Anexos/Referencias.md#ref-bockeler-2025)). El [tema 07](README.md#4-tabla-de-contenido) trata
+  ([Böckeler, 2025](99-Anexos/Referencias.md#ref-bockeler-2025)). El [tema 07](TEM-07-Marco-SDD.md) trata
   esa integración.
 
 ## Aplicación por escenario
@@ -211,11 +211,15 @@ devolvería a 1a.
 El ensayo arma un RRD de una fila dos veces. En la primera, la fila tiene un criterio sin la forma Dado/Cuando/Entonces
 y una decisión fuera del vocabulario («ok»): la persona no decidió nada verificable. En la segunda, la misma fila
 corregida. Precondición: Python 3, un clon de Lab-Documentos y el script, que está en el repositorio público
-Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta `evidencia/E1-U4b/`); se corre desde cualquier
+Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta [`evidencia/E1-U4b/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0002-Replanteo-Metodologia-DocAsCode/evidencia/E1-U4b) en el commit
+`09a4518`; la corrida vigente, medida el 2026-11-01, está en [`evidencia/U25/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25) del expediente 0003); se corre
+desde cualquier
 carpeta, con la ruta del clon como argumento. Resultado esperado: rojo y verde.
 
 [Compilado: `evidencia/E1-U4b/02-tem02-rrd.sh` del expediente 0002 de DocAsCode, en el repositorio
-Lab-Documentos.Documentacion; salida del 2026-10-27 sobre el commit `080f158` de Lab-Documentos]
+Lab-Documentos.Documentacion; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico). Sobre `e3841b6` se reproduce igual; sobre `main` de
+hoy da el mismo rojo y el mismo verde, y la línea de resumen suma el contador `readme-del-cuerpo-sin-frontmatter`
+([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
 $ bash 02-tem02-rrd.sh <clon de Lab-Documentos>
@@ -339,7 +343,7 @@ el 2026-10-27 para este tema.
 
 | Tipo | Observación |
 | --- | --- |
-| Hecho | El ensayo usa los controles `rrd-decision` y `rrd-criterio` de `docs-guard` tal como están en el commit `080f158` |
+| Hecho | El ensayo usa los controles `rrd-decision` y `rrd-criterio` de `docs-guard` tal como están en «PR #19, merge `e3841b6`» (equivalente de `080f158`) |
 | Hecho | El estado inicial de una fila se llama `pendiente` porque es el valor que acepta la compuerta; el documento de integración del expediente 0002 lo llama «propuesto». Son el mismo estado |
 | Hecho | La norma ISO/IEC/IEEE 26514 se cita por su página oficial de alcance; el texto completo de la norma no se consultó |
 | Interpretación | Partir la fase 1 en captura y evaluación es una decisión del expediente 0002 de DocAsCode para separar lo que un agente puede proponer de lo que una persona decide; la norma no la parte |

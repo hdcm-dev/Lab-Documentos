@@ -160,7 +160,7 @@ varios productos) va a uno dedicado.*
 La [mini demo de MovilidadUrbana](Examples/MovilidadUrbana-Mini-Demo/README.md) documenta una app cuyo código vive en
 otro repositorio. No lo copia: lo fija.
 
-[Compilado: `Examples/MovilidadUrbana-Mini-Demo/source.lock`, líneas 4–7, en el commit `080f158` de Lab-Documentos]
+[Compilado: `Examples/MovilidadUrbana-Mini-Demo/source.lock`, líneas 4–7, en «PR #19, merge `e3841b6`» de Lab-Documentos (equivalente de `080f158`)]
 
 ```text
 repo: https://github.com/hdcm-dev/Lab-E2E.WebBlazor.git
@@ -185,14 +185,16 @@ meses anteriores **[umbral de criterio propio del plan]**.
 | | Grafana ([Grafana Labs, 2026](99-Anexos/Referencias.md#ref-grafana-2026)) | `docs/sources/`, `7b102dd`, 2026-10-27 |
 | P5. Si la documentación va en un repositorio separado, una rama por versión del producto | Kubernetes ([Kubernetes, 2026](99-Anexos/Referencias.md#ref-kubernetes-website-2026)) | 33 ramas `release-1.*`, la última `release-1.36`; `content/en/`, `ed70e31`, 2026-10-26 |
 | | Istio ([Istio, 2026](99-Anexos/Referencias.md#ref-istio-2026)) | 33 ramas `release-1.*`, la última `release-1.31`; `content/`, `2100f40`, 2026-10-27 |
-| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16 |
+| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16. Corrida del 2026-11-01 con el guion: «no reproducido» (el repositorio se mudó; ver el ensayo de abajo) |
 | | Jest ([Jest, 2026](99-Anexos/Referencias.md#ref-jest-2026)) | `website/versioned_docs/` con las versiones 29.7, 30.0, 30.4 y 30.5; `ea7258e`, 2026-08-31 |
 
 Las tres prácticas no compiten: P4 es el valor por defecto; P5 y P6 son el precio de salir de él cuando el producto
 tiene versiones que conviven.
 
 [Compilado: `evidencia/E1-U4b/04-adopciones.sh` del expediente 0002 de DocAsCode, en el repositorio
-Lab-Documentos.Documentacion; corrida del 2026-10-27, recortada a las filas de este tema]
+Lab-Documentos.Documentacion; corrida del 2026-10-27, recortada a las filas de este tema. La corrida del 2026-11-01
+([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01) reproduce las filas P4 y P5; la fila P6 de Docusaurus queda «no reproducido»: el
+repositorio se mudó y el guion no sigue la redirección]
 
 ```text
 $ bash 04-adopciones.sh 2026-10-27
@@ -211,7 +213,9 @@ P6     jestjs/jest                  website/versioned_docs           ea7258e3338
 
 El ensayo arma una página de ayuda y una ficha de regla en una carpeta temporal y corre el control `traces-resolve`
 de la compuerta en tres casos. Precondición: Python 3, un clon de Lab-Documentos y el script, que está en el repositorio público
-Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta `evidencia/E1-U4b/`); se corre desde cualquier
+Lab-Documentos.Documentacion (expediente 0002 de DocAsCode, carpeta [`evidencia/E1-U4b/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0002-Replanteo-Metodologia-DocAsCode/evidencia/E1-U4b) en el commit
+`09a4518`; la corrida vigente, medida el 2026-11-01, está en [`evidencia/U25/`](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25) del expediente 0003); se corre
+desde cualquier
 carpeta, con la ruta del clon como argumento. Resultado esperado: rojo, verde,
 rojo.
 
@@ -219,8 +223,9 @@ rojo.
 2. La página traza a `@1.1`.
 3. Otro documento declara el mismo identificador.
 
-[Compilado: `evidencia/E1-U4b/03-tem03-ancla.sh` del mismo expediente; salida del 2026-10-27 sobre el commit `080f158`
-de Lab-Documentos, recortada]
+[Compilado: `evidencia/E1-U4b/03-tem03-ancla.sh` del mismo expediente; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico), recortada.
+Sobre `e3841b6` se reproduce igual; sobre `main` de hoy sigue rojo, verde, rojo, y el caso 3 da `errores=5`, porque
+suma dos `id-duplicado` del control que entró después ([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
 $ bash 03-tem03-ancla.sh <clon de Lab-Documentos>
@@ -317,10 +322,10 @@ se releyeron el 2026-10-27 para este tema.
 | Tipo | Observación |
 | --- | --- |
 | Hecho | Las cantidades de ramas y de versiones son las de la corrida del 2026-10-27; cambian con cada versión que publican esos proyectos |
-| Hecho | Otra guía de Lab-Documentos declara `TEM-01` a `TEM-08` como `doc_id`; por eso este cuerpo usa `TEM-SDEI-nn` |
+| Hecho | El registro de IDs es único para todo Lab-Documentos y otras guías ya chocaron en él: `MARCO-CONVENCIONES` está declarado como `doc_id` en cuatro guías de `Guides/`, y el Framework Concept tuvo que pasar sus temas al espacio propio `FC-TEM-nn`. Por eso este cuerpo usa `TEM-SDEI-nn` |
 | Interpretación | Que P4 sea «el valor por defecto» sale de la regla del mismo pull request y de Backstage; no hay una medición que compare topologías |
 | Hecho | Ningún índice versionado del laboratorio declara todavía `base_commit`; la forma de la tabla de anclas es la que busca el carril programado (`tools/docs-guard/semanal.sh`) |
-| Observación sobre la compuerta | El anexo del esquema dice que `traces` puede ser una lista vacía, pero `docs-guard` hoy la rechaza como campo faltante. Hasta que se corrija, toda página lleva al menos una traza |
+| Observación sobre la compuerta | `docs-guard` rechazaba `traces: []` como campo faltante, aunque el anexo del esquema admite la lista vacía; hoy lo acepta con el aviso `traces-vacio` (`tools/docs-guard/dg.py:342-346`), que recomienda trazar al menos al `doc_id` del README del cuerpo |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |
 
 Documento anterior: [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md). Siguiente documento:

@@ -66,18 +66,18 @@ Tabla 0.1. Rutas de lectura por perfil.
 
 ```mermaid
 flowchart LR
-  C1["1. Fundamentos"] --> C2["2. Marco"]
-  C2 --> C3["3. OTA"]
-  C2 --> C4["4. Puente"]
-  C2 --> C5["5. Offline"]
-  C5 --> C6["6. Red y sesión"]
-  C3 --> C7["7. Integración"]
+  C1["1 · Fundamentos"] --> C2["2 · Marco"]
+  C2 --> C3["3 · OTA"]
+  C2 --> C4["4 · Puente"]
+  C2 --> C5["5 · Offline"]
+  C5 --> C6["6 · Red y sesión"]
+  C3 --> C7["7 · Integración"]
   C4 --> C7
-  C7 --> C8["8. Pruebas"]
-  C6 --> C9["9. Seguridad"]
-  C8 --> C10["10. Demo"]
-  C10 --> C11["11. Mantenimiento"]
-  C9 --> C12["12. Industria"]
+  C7 --> C8["8 · Pruebas"]
+  C6 --> C9["9 · Seguridad"]
+  C8 --> C10["10 · Demo"]
+  C10 --> C11["11 · Mantenimiento"]
+  C9 --> C12["12 · Industria"]
 ```
 
 Figura 0.1. Dependencias de lectura entre capítulos. Mirá que todo sale del capítulo 1: ahí se define cada término.
@@ -190,7 +190,7 @@ flowchart TB
     DB[("SQLite + outbox")]
     SRV["Servidor local"]
   end
-  subgraph WV["HybridWebView en https://0.0.0.1/"]
+  subgraph WV["HybridWebView en el origen local 0.0.0.1"]
     C["Contenido Blazor WASM firmado, en disco"]
   end
   SRV -- "archivos de versions/vN" --> C
@@ -1003,12 +1003,12 @@ La compatibilidad no se decide en un solo lugar sino en tres, cada una con su mo
 
 ```mermaid
 flowchart TB
-    Predicado["1. Predicado, antes de activar"] --> Handshake["3. Contenido: handshake"]
+    Predicado["1 · Predicado, antes de activar"] --> Handshake["3 · Contenido: handshake"]
     Handshake --> Rango{"compatibleConPuente contiene la versión?"}
     Rango -- "no" --> Incompatible["Estado incompatible"]
     Rango -- "sí" --> Opcionales["optional: mostrar u ocultar"]
     Opcionales --> Ready["bridge.ready"]
-    Handshake -- "Call" --> Despachador["2. Despachador, en cada llamada"]
+    Handshake -- "Call" --> Despachador["2 · Despachador, en cada llamada"]
     Despachador --> Mayor{"mayor de v igual?"}
     Mayor -- "no" --> E1["-32001"]
     Mayor -- "sí" --> Metodo{"método en la tabla?"}

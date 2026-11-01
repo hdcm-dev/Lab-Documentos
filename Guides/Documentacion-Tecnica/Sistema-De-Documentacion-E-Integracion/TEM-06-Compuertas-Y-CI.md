@@ -161,7 +161,7 @@ dónde corre la compuerta.
 | Contexto | Qué cambia en la compuerta |
 | --- | --- |
 | `CTX-SDEI-1` con sitio | Se suma el build del sitio con avisos como error y la reproducibilidad de los canales derivados |
-| `CTX-SDEI-3` pieza en otro repositorio | El defecto ya no lo introduce el mismo pull request (falla la condición 2): el desfase se avisa en el carril programado |
+| `CTX-SDEI-3` pieza en otro repositorio | El defecto ya no lo introduce el mismo pull request (falla la condición 2): el atraso se avisa en el carril programado |
 | `CTX-SDEI-4` dentro de la organización del runner | El repositorio llama `uses: <dueño>/Lab-Documentos/.github/workflows/docs-guard.yml@<SHA>` y pasa `ruta` (la carpeta a verificar) y `herramientas-ref`. El workflow baja los scripts de Lab-Documentos en `herramientas-ref`; por eso va el mismo SHA que en `uses:`, para que el workflow y sus scripts sean de la misma versión |
 | `CTX-SDEI-4` fuera de ella | Copia sólo el `.yml` (los scripts los sigue bajando de Lab-Documentos, que es público, por SHA) y anota su SHA-256 como pieza fijada; `PR-7` comprueba en ese repositorio que la copia no cambió, y el carril programado de su organización avisa si el original avanzó |
 

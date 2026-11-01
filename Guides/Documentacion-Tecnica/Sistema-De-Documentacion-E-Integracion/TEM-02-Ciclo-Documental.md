@@ -172,7 +172,7 @@ requerimientos y qué tan pesada es cada fase.
 | --- | --- |
 | `CTX-SDEI-2` con SDD | El RRD vive con la especificación y los IDs de las trazas son los del proyecto (`CU-`, `RN-`) |
 | `CTX-SDEI-2` sin SDD | La fase 2 escribe fichas propias de reglas; el RRD va en `docs/_requisitos.md` |
-| `CTX-SDEI-3` pieza en otro repositorio | La fase 5m pesa más: el pull request del código no ve la página, y el desfase lo detecta el aviso programado |
+| `CTX-SDEI-3` pieza en otro repositorio | La fase 5m pesa más: el pull request del código no ve la página, y el atraso lo detecta el aviso programado |
 | `CTX-SDEI-1` con sitio | La fase 4 suma el build del sitio y los canales derivados |
 
 ## Ejemplos concretos

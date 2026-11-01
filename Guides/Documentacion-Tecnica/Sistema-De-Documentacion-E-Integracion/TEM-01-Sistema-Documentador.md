@@ -160,7 +160,7 @@ Los contextos cambian una respuesta dentro de cada fila:
 | --- | --- |
 | `CTX-SDEI-1` con o sin sitio | Con sitio aparecen el build del sitio y los canales derivados para agentes (una página `.md` por página, `llms.txt`); sin sitio, el canal es el propio Markdown |
 | `CTX-SDEI-2` con o sin SDD | Con un marco de desarrollo guiado por especificación, la especificación ya es pieza y fuente; sin él, las reglas se escriben como fichas propias |
-| `CTX-SDEI-3` topología | Una pieza en otro repositorio que el código necesita un ancla fijada y un aviso de desfase |
+| `CTX-SDEI-3` topología | Una pieza en otro repositorio que el código necesita un ancla fijada y un aviso de atraso |
 | `CTX-SDEI-4` organización del runner | Fuera de la organización del runner, la compuerta se copia con su huella en lugar de llamarse |
 
 ## Ejemplos concretos
@@ -265,7 +265,7 @@ Si se corre otro día, los commits cambian: la ventana se recalcula desde la fec
 
 ### Un cambio recorrido de punta a punta
 
-MovilidadUrbana tiene un defecto real: la pantalla promete 60 caracteres para el comentario y el campo admite 80. Así
+MovilidadUrbana tiene un defecto real: la pantalla promete 60 caracteres para el nombre de una localidad y el campo admite 80. Así
 responde el sistema documentador cuando alguien corrige el código:
 
 1. La ficha `RN-LOC-01` de la [mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md) declara la regla y dónde se
@@ -281,7 +281,7 @@ responde el sistema documentador cuando alguien corrige el código:
    sale de la ficha, y la ficha sale del código. Entre la página y la ficha manda la ficha; entre la ficha y el
    código, manda el código, porque la ficha describe lo que el código hace. Lo que esa cadena no resuelve es si el
    código hace lo que se quiso: la pantalla promete 60 y el código acepta 80. Eso es una **divergencia** entre la
-   letra (el código) y la intención (lo que el producto debía hacer), y la decide la analista (`ACT-SDEI-2`), acto de
+   letra (lo que la app promete), la intención (para qué) y el comportamiento (lo que el código hace), y la decide la analista (`ACT-SDEI-2`), acto de
    clase H. Después de su decisión, se corrige el código o la pantalla, y la cadena vuelve a mandar.
 
 ## Preguntas guía

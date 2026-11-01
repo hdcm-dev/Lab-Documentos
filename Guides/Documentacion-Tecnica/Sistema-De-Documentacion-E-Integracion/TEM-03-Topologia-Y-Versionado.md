@@ -44,10 +44,11 @@ La **topología** de una pieza dice dónde vive respecto del código. Hay cuatro
 | Repositorio dedicado | Un repositorio cuyo producto es la documentación | Lab-Documentos, que guarda este cuerpo |
 | Artefacto del build | La pieza no se versiona como archivo de prosa: la emite el build del código | El contrato `openapi.json` emitido por la API |
 
-Los controles que se nombran en este tema son parte de una **compuerta**: un conjunto de controles que corre en la
-integración continua en cada pull request y termina en verde o en rojo. En este laboratorio la corre el workflow
-`docs-guard`, con siete grupos de controles (PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4 estructura,
-PR-5 trazas, PR-6 contrato, PR-7 referencias); `traces-resolve` es el control del grupo PR-5. El **carril
+Los controles que se nombran en este tema son parte de la **compuerta**: el carril PR, el conjunto de controles que
+corre en la integración continua en cada pull request y termina en verde o en rojo. En este laboratorio la corre el
+workflow `docs-guard`, con siete grupos más `autoprueba` (PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4
+estructura, PR-5 trazas, PR-6 contrato, PR-7 fijadas y referencias con `reflint` y `url-fecha`); `traces-resolve` es
+el control del grupo PR-5. El **carril
 programado** es otra corrida, semanal, que no bloquea: sólo avisa con un issue cuando algo derivó. Localmente, todo
 se corre con `scripts/ci-local.sh` desde la raíz del repositorio.
 
@@ -56,7 +57,7 @@ El **ancla de versión** es el dato que dice contra qué estado del código vale
 | Ancla | Cuándo se usa | Qué la verifica |
 | --- | --- | --- |
 | El commit | La pieza vive en el mismo repositorio que el código: el commit que la contiene es el ancla. Si el repositorio publica versiones, la etiqueta de cada una marca juntos el código y su documentación | Nada extra: el mismo pull request cambia las dos cosas |
-| SHA fijado (`source.lock`, `base_commit`) | La pieza vive en otro repositorio que el código | La existencia del SHA bloquea; el desfase con la rama principal del código avisa |
+| SHA fijado (`source.lock`, `base_commit`) | La pieza vive en otro repositorio que el código | La existencia del SHA bloquea; el atraso frente a la rama principal del código avisa |
 | Etiqueta (`base_tag`, `v1.2.0`) | Hay una versión publicada con nombre | La etiqueta anotada; el CHANGELOG de esa versión |
 | Versión del cuerpo | Una guía de estudio | El campo `version` del README del cuerpo, en SemVer, y una etiqueta anotada por compuerta |
 
@@ -93,7 +94,7 @@ dos veces es ambigua.
 
 La documentación que vive lejos del código envejece sin que nadie lo note. En más de 3000 proyectos de GitHub, la
 mayoría tuvo en algún momento al menos una referencia en la documentación a un elemento de código que ya había sido
-borrado ([Tan et al., 2024](99-Anexos/Referencias.md#ref-tan-2024)). La topología decide si ese desfase es imposible
+borrado ([Tan et al., 2024](99-Anexos/Referencias.md#ref-tan-2024)). La topología decide si esa deriva es imposible
 (mismo repositorio y mismo pull request), detectable (SHA fijado y aviso programado) o invisible (otro repositorio sin
 ancla).
 
@@ -129,7 +130,7 @@ varios productos) va a uno dedicado.*
 ### Qué no es
 
 - **No es una preferencia de orden.** Ubicar una pieza en otro repositorio tiene un costo: hay que fijar un ancla y
-  vigilar el desfase. Si no se paga ese costo, la pieza envejece.
+  vigilar su atraso. Si no se paga ese costo, la pieza envejece.
 - **No es versionar por las dudas.** Publicar varias versiones de la documentación responde a versiones del producto
   que conviven en uso, no a la cantidad de commits. Un producto con un solo despliegue vivo tiene una sola versión que
   documentar.
@@ -265,7 +266,7 @@ panel tiene un único despliegue vivo, una sola versión de la documentación al
 | --- | --- | --- | --- |
 | Ubicación justificada | Cada pieza fuera del repositorio del código tiene un motivo («habla del proyecto», «sirve a varios productos») | Piezas en otro repositorio por costumbre | La regla de [Definición](#la-regla-para-ubicar-una-pieza) |
 | Ancla presente | Toda pieza fuera del repositorio del código tiene un SHA o una etiqueta fijados | Documentación externa que no dice qué versión describe | Existencia de `source.lock` o `base_commit`; bloquea |
-| Desfase vigilado | Un aviso programado compara el ancla con la rama principal | El desfase se descubre cuando alguien se queja | Carril programado semanal |
+| Atraso vigilado | Un aviso programado compara el ancla con la rama principal | El atraso se descubre cuando alguien se queja | Carril programado semanal |
 | Trazas versionadas | Las páginas trazan a `ID@MAYOR.MENOR` y la ficha sube la versión cuando cambia lo que promete | Trazas sin versión a reglas que cambian | `traces-resolve` (PR-5); `CQ-03` del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#1-los-catorce-criterios) |
 | IDs únicos | Identificadores calificados por cuerpo o proyecto | IDs cortos que chocan con otras guías | Regla `traza-ambigua` de PR-5 |
 | Versionado proporcional | Una versión publicada salvo que convivan versiones del producto; CHANGELOG por versión | Varias versiones publicadas de un producto con un solo despliegue | Contar las versiones en uso antes de versionar |

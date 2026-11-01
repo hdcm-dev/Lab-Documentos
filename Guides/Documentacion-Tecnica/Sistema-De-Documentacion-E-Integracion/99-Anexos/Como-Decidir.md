@@ -44,8 +44,8 @@ una escala donde cada punto tiene un observable, y dice cuándo la decisión es 
 ## 2. Los criterios
 
 Los tres primeros son los que un sistema documentador tiene que mostrar por pedido del caso: simplicidad, practicidad y
-escalabilidad. Los demás salen del mismo pedido (audiencia, coherencia con los marcos existentes, desfase de
-versiones), salvo el costo, que es **[criterio propio]** y por eso pesa menos.
+escalabilidad. Los demás salen del mismo pedido (audiencia, coherencia con los marcos existentes, deriva entre
+documentación y código), salvo el costo, que es **[criterio propio]** y por eso pesa menos.
 
 | K | Criterio | Qué mide | Fuente de industria |
 | --- | --- | --- | --- |

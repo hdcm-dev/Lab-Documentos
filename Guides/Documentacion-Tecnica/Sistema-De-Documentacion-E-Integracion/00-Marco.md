@@ -41,7 +41,9 @@ que encuentra los identificadores estables en un solo archivo.
 | Clase de intervención D/P/H | **D**: la produce un generador determinista. **P**: la propone un agente o una persona y entra por la compuerta. **H**: sólo la decide una persona |
 | Ancla de versión | El dato que dice contra qué estado del código vale una pieza: el commit, un SHA fijado entre repositorios o una etiqueta |
 | Cuerpo documental | Conjunto de documentos de una guía bajo un README que declara `corpus_id` (su identificador, acá `SDEI`) y `version` |
-| Compuerta | Control que corre en la integración continua (CI) en cada pull request y termina en verde o en rojo. Las de este cuerpo las corre el workflow `docs-guard`, agrupadas de PR-1 a PR-7 (enlaces, frontmatter, anti-inyección, estructura y mermaid, trazas, contrato, referencias). Un control **bloquea** (rojo) o sólo **avisa** según la regla de bloqueo del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
+| Control | Una comprobación que corre en la integración continua (CI) y termina en verde o en rojo. Un control **bloquea** (rojo) o sólo **avisa** según la regla de bloqueo del [anexo de criterios](99-Anexos/Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
+| Compuerta | El carril PR: el conjunto de controles que corre en cada pull request. La de este cuerpo la corre el workflow `docs-guard`, en siete grupos más `autoprueba`: PR-1 enlaces, PR-2 frontmatter, PR-3 anti-inyección, PR-4 estructura y mermaid, PR-5 trazas, PR-6 contrato y PR-7 fijadas y referencias (`reflint`, `url-fecha`) |
+| Compuerta de escalón | El hito que cierra un escalón del sistema documentador (escalón: etapa de prueba, definida en `TEM-07`); no es un control ni el carril PR |
 | Anti-inyección | Controles que buscan en el texto instrucciones escondidas para un agente de IA: comentarios HTML, caracteres invisibles, HTML oculto, enlaces a dominios fuera de una lista (AI-1 a AI-5) |
 | Traza | Declaración, en el frontmatter, de que un documento **depende de** otro identificador: si el identificador cambia de versión o desaparece, el documento hay que revisarlo. Forma `traces: [ID]` o `traces: [ID@MAYOR.MENOR]`. El identificador se declara una sola vez en el repositorio (como `doc_id` o como encabezado que empieza con el ID, con una línea `**Versión:** 1.0` si tiene versión), y de esas declaraciones sale solo el **registro de IDs** contra el que `traces-resolve` verifica. Si la ficha sube a 1.1, la página que traza a `@1.0` da rojo; una traza sin versión (`traces: [ID]`) sólo comprueba que el ID existe, y la subida de versión no la pone en rojo: por eso traza con `@MAYOR.MENOR` toda página que repite lo que dice una regla. `traces-resolve` corre sobre la carpeta que recibe la compuerta, tenga o no un README con `corpus_id`: un ID que no resuelve da rojo igual. Detalle en el [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas) |
 | Ficha | Página corta que declara una regla o un caso de uso con su identificador (`RN-LOC-01` = regla de negocio, ámbito «localización», número 01), su versión y dónde se aplica en el código, con la forma `ruta#Símbolo@SHA` (archivo, método o clase, y commit). Cuando el código cambia, quien lo cambia actualiza la ficha y sube su versión |
@@ -127,7 +129,7 @@ en `docs/_requisitos.md` del árbol que se documenta y las reglas se escriben co
 ### CTX-SDEI-3 — Mismo repositorio, repositorio hermano o repositorio dedicado
 
 La topología dice dónde vive una pieza respecto del código. En el mismo repositorio, el ancla es el commit. En el
-repositorio hermano `.Documentacion` o en uno dedicado, el ancla es un SHA fijado (`base_commit`) y el desfase se
+repositorio hermano `.Documentacion` o en uno dedicado, el ancla es un SHA fijado (`base_commit`) y el atraso se
 detecta con un aviso programado.
 
 ### CTX-SDEI-4 — Dentro o fuera de la organización del runner

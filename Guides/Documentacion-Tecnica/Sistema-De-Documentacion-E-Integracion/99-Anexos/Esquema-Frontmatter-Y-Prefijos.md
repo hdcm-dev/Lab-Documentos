@@ -112,6 +112,7 @@ documenta y se resuelve contra el SHA de su `source.lock`.
 | `MAPA` | interno | Mapa conceptual |
 | `ANX` | interno | Anexo |
 | `IDX` | interno | Índice |
+| `FC` | interno | Documento del Framework Concept (`FC-TEM-nn`, `FC-GUIA-INDICE`, `FC-MARCO-REFERENCIA`, `FC-ANEXO-99`), espacio propio para no chocar con los cuerpos de `Guides/` |
 | `TEM` | interno | Tema del cuerpo |
 | `CQ` | interno | Criterio de calidad |
 | `PE` | interno | Patrón de ejemplo |
@@ -151,11 +152,12 @@ Un archivo `_requisitos.md` o con `doc_type: rrd` tiene una tabla con estas colu
 | `Criterio` | Forma Dado/Cuando/Entonces |
 | `Decisión` | `aceptado`, `rechazado`, `diferido` o `pendiente` |
 
-Ejemplo de fila válida [Fragmento ilustrativo: muestra la forma]:
+Ejemplo de fila válida: la primera del RRD de la mini demo
+([`docs/_requisitos.md`](../Examples/MovilidadUrbana-Mini-Demo/docs/_requisitos.md)), recortada como en `TEM-02`:
 
 | ID | Audiencia | Tarea | Pieza | Criterio | Decisión |
 | --- | --- | --- | --- | --- | --- |
-| RD-03 | persona usuaria | cargar un comentario sin que se corte | CL-06, `docs/ayuda/comentarios.md` | Dado el límite de la regla, cuando la persona lee la ayuda, entonces el número coincide con el de la ficha | aceptado |
+| RD-01 | persona usuaria | Dar de alta una localidad sin que el nombre se rechace ni quede distinto de lo esperado | CL-06, `docs/ayuda/alta-de-localidad.md` | Dado el límite de cada regla, cuando la persona lee la ayuda, entonces cada número coincide con el de la ficha; instrumento: `traces-resolve` | aceptado |
 
 ## 7. Un ejemplo completo y sus errores
 

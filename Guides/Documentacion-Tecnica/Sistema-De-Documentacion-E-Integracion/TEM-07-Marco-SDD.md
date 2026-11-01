@@ -23,9 +23,9 @@ en tablas y en un ensayo que puede repetir.
 
 **Estado.** El sistema documentador se pone a prueba en tres **escalones**: el 1 es esta guía con su mini demo; el 2,
 una piloto sobre Lab-Geometria, el primer proyecto con SDD que adopta la compuerta en su propia CI; el 3, el SDD-B. Este
-tema queda en `borrador` hasta que el escalón 2 cierre con la compuerta corriendo en la CI de Lab-Geometria: sus reglas
-salen del diseño y de un ensayo sobre el SDD real de ese proyecto, pero todavía no corrieron en una CI de proyecto. Lo
-que cambie cuando corran se corrige acá.
+tema queda en `borrador` hasta que el escalón 2 pase su compuerta de escalón, con la compuerta corriendo en la CI de
+Lab-Geometria: sus reglas salen del diseño y de un ensayo sobre el SDD real de ese proyecto, pero todavía no corrieron
+en una CI de proyecto. Lo que cambie cuando corran se corrige acá.
 
 Los repositorios que se citan (Lab-Geometria, IA.SDD y este, Lab-Documentos) son públicos; el SDD-B es privado y se
 nombra por su alias.
@@ -83,7 +83,7 @@ rojo cuando esa versión deja de existir.
 
 | Término | Definición |
 | --- | --- |
-| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de cierre: 1, esta guía y la mini demo; 2, la piloto en Lab-Geometria; 3, el SDD-B |
+| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de escalón (el hito que la cierra): 1, esta guía y la mini demo; 2, la piloto en Lab-Geometria; 3, el SDD-B |
 | Marco SDD y proyecto destino | El marco es un repositorio con las reglas y los orquestadores (IA.SDD); el proyecto destino es el que aplica el marco y guarda su especificación generada (Lab-Geometria, en `SDD/Docs/`). Las trazas resuelven contra el proyecto destino, no contra el marco |
 | Categoría (IA.SDD) | Cada una de las doce carpetas numeradas de la especificación generada: 01 necesidades, 02 especificación funcional, 05 arquitectura, 10 ejemplos, 11 documentación de entrega, entre otras |
 | Unidad de entrega (IA.SDD) | Parte del producto que se construye y se entrega por separado, con su propia especificación (en Lab-Geometria, la API y el front web). Una pantalla pertenece a la unidad del front que la dibuja |
@@ -137,7 +137,7 @@ es la norma y dónde corre la compuerta.
 | Contexto | Cambia | Regla |
 | --- | --- | --- |
 | `CTX-SDEI-2` con SDD | Dónde vive el RRD y qué prefijos usan las trazas | El RRD va con la especificación, como un archivo `doc_type: rrd` del proyecto destino; agregarlo es contenido del proyecto (clase P, por pull request), no un cambio a la norma del marco. La carpeta exacta en Lab-Geometria la fija el escalón 2. Las trazas usan `CU-`, `RN-`, `ADR-` del SDD, que son prefijos externos |
-| `CTX-SDEI-3` documentación en otro repositorio | El ancla | Si la página vive fuera del repositorio del SDD, la traza resuelve contra un SHA fijado y el desfase lo avisa el carril programado |
+| `CTX-SDEI-3` documentación en otro repositorio | El ancla | Si la página vive fuera del repositorio del SDD, la traza resuelve contra un SHA fijado y el atraso lo avisa el carril programado |
 | `CTX-SDEI-4` fuera de la organización del runner | De dónde sale la compuerta | El SDD-B vive en otra organización de GitHub, con su propio runner, y no puede llamar al workflow reutilizable: copia `docs-guard.yml` con su huella y lo corre en el runner de su organización |
 
 **Una regla que no cambia en ningún escenario.** Un escenario sólo activa, quita o sustituye clases de pieza y

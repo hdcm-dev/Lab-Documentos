@@ -42,7 +42,8 @@ ancla SHA entre repositorios con aviso de deriva y trazas de dos niveles.
 | Traza de nivel 2 | Ficha → código: cada ancla resuelve en el SHA y cumple su afirmación |
 | RRD | Registro de requerimientos documentales: [`docs/_requisitos.md`](docs/_requisitos.md). Una fila `RD-nn` por cosa que la documentación tiene que lograr |
 | CL-06, CL-07 | Clases de documento: ayuda al usuario final (CL-06) y técnica escrita (CL-07) |
-| Deriva | Diferencia entre el SHA fijado y `main` del repositorio del código. Avisa; no bloquea |
+| Atraso | Commits que el SHA fijado está detrás de `main` del repositorio del código. Avisa; no bloquea |
+| Deriva | Distancia entre lo que una pieza afirma y lo que el código hace. A1 la mide por símbolo y por contrato contra `main`; avisa, no bloquea |
 | docs-guard | Compuerta documental de Lab-Documentos ([`tools/docs-guard/`](../../../../../tools/docs-guard/README.md)) |
 
 ## 2. Qué hay en esta carpeta

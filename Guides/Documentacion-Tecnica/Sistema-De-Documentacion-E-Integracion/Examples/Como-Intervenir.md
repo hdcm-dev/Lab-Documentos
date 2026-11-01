@@ -104,8 +104,9 @@ Se corre la compuerta en local, con el mismo guion que corre la CI. Desde la ra�
 scripts/ci-local.sh todo <carpeta-del-cuerpo-o-del-ejemplo>
 ```
 
-`scripts/ci-local.sh` corre los grupos PR-1 a PR-7 de `docs-guard` (enlaces, esquema, anti-inyección, estructura y
-mermaid, trazas, contrato y referencias) y la autoprueba de cada control, y termina en verde (código 0) o en rojo. Un
+`scripts/ci-local.sh` corre los siete grupos de `docs-guard` más `autoprueba` (PR-1 enlaces, PR-2 esquema, PR-3
+anti-inyección, PR-4 estructura y mermaid, PR-5 trazas, PR-6 contrato y PR-7 fijadas y referencias, con `reflint` y
+`url-fecha`) y la autoprueba de cada control, y termina en verde (código 0) o en rojo. Un
 grupo suelto se corre con su nombre (`scripts/ci-local.sh trazas <carpeta>`). Si el proyecto no tiene el guion, su
 instancia nombra el equivalente.
 

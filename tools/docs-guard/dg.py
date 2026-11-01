@@ -448,7 +448,8 @@ def cmd_ai(rutas, raiz, ai3_bloquea=False):
 # etiqueta de mermaid el dibujo no lo admite y sale «Unsupported markdown: link», aunque mermaid.parse dé verde.
 # La entidad «#64;» limpia sólo si la etiqueta no lleva HTML: con «<br/>» o «<b>» en la misma etiqueta, mermaid la
 # decodifica antes del markdown y el autoenlace vuelve (comprobado al dibujar, 2026-11-01). La escritura
-# que dibuja limpio en los dos casos es la arroba entre espacios: «ID @ 1.0».
+# que dibuja el literal válido «ID@1.0» es «ID#64;1.0» en una etiqueta sin HTML: si hace falta un salto de línea, el
+# texto se parte en un nodo propio (AC-24, decisión de la presidencia del expediente 0003).
 RE_MERMAID_ARROBA = re.compile(r'[\w.+-]+(?:@|(#64;))[\w-]+(?:\.[\w-]+)+')
 RE_HTML = re.compile(r'<[A-Za-z/]')
 
@@ -484,7 +485,7 @@ def cmd_mermaid_arroba(rutas, raiz):
                     continue  # «#64;» en una etiqueta sin HTML dibuja limpio
                 como = '«#64;» en una etiqueta con HTML' if a.group(1) else 'la arroba'
                 inf.error(rel(f, raiz), n, 'mermaid-arroba',
-                          f'«{a.group(0)}»: {como} se dibuja como autoenlace de correo; escribí «ID @ 1.0»')
+                          f'«{a.group(0)}»: {como} se dibuja como autoenlace de correo; escribí «ID#64;1.0» en una etiqueta sin HTML')
     return inf.cerrar(f' bloques={bloques}')
 
 

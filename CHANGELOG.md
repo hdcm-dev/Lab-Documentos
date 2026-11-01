@@ -5,16 +5,16 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 ## 2026-11-01 (DocsAsCode: PR común del expediente 0003)
 
-### tools/docs-guard/ y scripts/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 3
+### tools/docs-guard/, scripts/ y Guides/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 3
 
 #### Agregado
 
-- **Control `mermaid-arroba` en PR-4** (`dg.py mermaid-arroba`, llamado desde `estructura` en `scripts/ci-local.sh`; P-20): en un bloque mermaid, una arroba seguida de un nombre con punto (`ID@1.0`) da rojo. GitHub la toma como autoenlace de correo y el diagrama sale con «Unsupported markdown: link», aunque `mermaid.parse` dé verde. También da rojo `ID#64;1.0` en una etiqueta con HTML (`<br/>`, `<b>`): ahí la entidad vuelve a ser arroba antes del markdown y el diagrama se rompe igual. Se escribe `ID @ 1.0`, que dibuja limpio con HTML o sin él. Los comentarios `%%` no se miran. La autoprueba suma su par rojo y verde (`fixtures/mermaid-arroba/`).
+- **Control `mermaid-arroba` en PR-4** (`dg.py mermaid-arroba`, llamado desde `estructura` en `scripts/ci-local.sh`; P-20): en un bloque mermaid, una arroba seguida de un nombre con punto (`ID@1.0`) da rojo. GitHub la toma como autoenlace de correo y el diagrama sale con «Unsupported markdown: link», aunque `mermaid.parse` dé verde. También da rojo `ID#64;1.0` en una etiqueta con HTML (`<br/>`, `<b>`): ahí la entidad vuelve a ser arroba antes del markdown y el diagrama se rompe igual. Se escribe `ID#64;1.0` en una etiqueta sin HTML, que dibuja el literal válido `ID@1.0`. Los comentarios `%%` no se miran. La autoprueba suma su par rojo y verde (`fixtures/mermaid-arroba/`).
 
 #### Corregido
 
 - **`prefijos.txt`: `PE` es «patrón de ejemplo»** (P-14), como dice el anexo del esquema; el registro decía «pregunta de evaluación».
-- **Dos diagramas que GitHub no dibujaba** (AC-24): las etiquetas con `ID@1.0` del anexo `Esquema-Frontmatter-Y-Prefijos.md` y de `docs/_requisitos.md` de la mini demo pasan a `ID @ 1.0`. La resolución pedía `#64;`, pero las dos etiquetas llevan `<br/>` y con la entidad el dibujo sigue roto.
+- **Dos diagramas que GitHub no dibujaba** (AC-24): las etiquetas con `ID@1.0` del anexo `Esquema-Frontmatter-Y-Prefijos.md` y de `docs/_requisitos.md` de la mini demo pasan a `ID#64;1.0`, como pide la resolución, y el texto que iba después de `<br/>` se parte en un nodo propio: con HTML en la misma etiqueta la entidad vuelve a ser arroba y el dibujo sigue roto. Sin HTML, GitHub dibuja el literal válido `traces: [ID@1.0]`.
 
 #### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0)
 

@@ -12,8 +12,9 @@
 #   esquema       PR-2  frontmatter contra su esquema, registro cerrado de prefijos, esquema RRD.
 #   ai            PR-3  anti-inyección AI-1..AI-5. AI-3 avisa; AI-4 avisa en el anexo de referencias.
 #   estructura    PR-4  markdownlint-cli2 estructural (MD013 apagado), mermaid que parsea y mermaid-arroba: una arroba
-#                       seguida de un nombre con punto en un bloque mermaid, que el dibujo toma como autoenlace de correo
-#                       (expediente 0003, P-20).
+#                       seguida de un nombre con punto en un bloque mermaid, que el dibujo toma como autoenlace de correo,
+#                       y «ID#64;1.0» en una etiqueta con HTML («<br/>», «<b>»), donde la entidad vuelve a ser arroba;
+#                       se escribe «ID#64;1.0» en una etiqueta sin HTML (expediente 0003, P-20 y AC-24).
 #   trazas        PR-5  traces-resolve: cada ID@versión contra el registro generado de los encabezados, sobre RUTA y
 #                       los punteros de la raíz (DOCS_GUARD_TRAZAS_EXTRA; por defecto AGENTS.md, README.md y
 #                       Guides/README.md, si existen); id-duplicado: un ID declarado dos veces da rojo aunque nadie lo
@@ -203,8 +204,11 @@ autoprueba() {
   espera verde 'PR-4 mermaid'         mermaid "$FX/mermaid/verde"
   # mermaid-arroba (expediente 0003, P-20): «ID@1.0», o «ID#64;1.0» junto a «<br/>», en una etiqueta da rojo;
   # «ID @ 1.0», y «ID#64;1.0» en una etiqueta sin HTML, dan verde.
-  espera_regla mermaid-arroba 'PR-4 mermaid-arroba' \
-    py mermaid-arroba --raiz "$FX/mermaid-arroba/rojo" "$FX/mermaid-arroba/rojo"
+  # Un fixture rojo por llamada: si se rompe la detección de uno, el otro no la tapa.
+  espera_regla mermaid-arroba 'PR-4 mermaid-arroba a.md' \
+    py mermaid-arroba --raiz "$FX/mermaid-arroba/rojo" "$FX/mermaid-arroba/rojo/a.md"
+  espera_regla mermaid-arroba 'PR-4 mermaid-arroba b.md' \
+    py mermaid-arroba --raiz "$FX/mermaid-arroba/rojo" "$FX/mermaid-arroba/rojo/b.md"
   espera verde 'PR-4 mermaid-arroba'  py mermaid-arroba --raiz "$FX/mermaid-arroba/verde" "$FX/mermaid-arroba/verde"
   espera rojo  'PR-6 contrato'        py contrato "$FX/contrato/rojo/esperado.json" "$FX/contrato/rojo/generado.json"
   espera verde 'PR-6 contrato'        py contrato "$FX/contrato/verde/esperado.json" "$FX/contrato/verde/generado.json"

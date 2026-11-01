@@ -143,7 +143,7 @@ después, una traza a una regla que no existe.
 ```text
 [Salida registrada: corrida del 2026-11-01; GUIA-DIR es la carpeta del cuerpo; se omiten 8 avisos ajenos y la línea de anclas]
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # sin cambios
-== PR-5 traces-resolve: verde (errores=0 avisos=8) trazas=121 resueltas=113 ids-duplicados=0 anclas=0 anclas-resueltas=0
+== PR-5 traces-resolve: verde (errores=0 avisos=8) trazas=122 resueltas=114 ids-duplicados=0 anclas=0 anclas-resueltas=0
 rc=0
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # traces: [RD-01, RN-LOC-01@1.0, RN-LOC-02@1.0]
 GUIA-DIR/Examples/MovilidadUrbana-Mini-Demo/docs/ayuda/alta-de-localidad.md:1: ERROR traza-version-desfasada: RN-LOC-01@1.0: la declaración está en 1.1
@@ -192,8 +192,8 @@ traducción no puede quitarle la ayuda a nadie. Cada traducción declara de qué
 si la fuente cambió después de ese commit **[criterio propio de la propuesta de ayuda por rol; el control no existe
 todavía en `docs-guard`]**. Las dos traducciones de la prueba de concepto no usan esa forma: anclan `translation_of` a
 la versión del caso de uso que traza la página fuente (`es/alumno/enviar-un-trabajo.md@CU-10005@1.2`), que es la que
-hoy admite el esquema de las páginas de ayuda (`tools/docs-guard/esquemas/ayuda.schema.json`). Así se detecta que el
-caso cambió, no que cambió la página.
+hoy admite el esquema de las páginas de ayuda (`tools/docs-guard/esquemas/ayuda.schema.json`). Así, cuando exista el
+control, avisará que cambió el caso y no la página.
 
 ## Preguntas guía
 
@@ -291,6 +291,8 @@ ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y 
 | --- | --- |
 | Hecho | La salida registrada de §3.2 es de la corrida del 2026-11-01; los ocho avisos que omite son las trazas de la prueba de ayuda por rol, que no tiene `source.lock` |
 | Hecho | Las páginas de la prueba de ayuda por rol trazan a la unidad Web de Lab-Geometria en `5f07b12`; con ese SDD como fuente, las ocho trazas resuelven |
+| Hecho | El ejemplo une cada página con su fila `RD-` por la columna «Pieza» del RRD de la prueba y no por `traces`, como pide la regla de `ESC-SDEI-3`: el esquema de las páginas de ayuda (`ayuda.schema.json`) sólo admite trazas con versión. El cambio del esquema queda para el expediente de herramienta |
+| Desvío | La comprobación de AC-19 («`dg.py trazas` sin los avisos `traza-no-verificable`») se sustituye por la corrida con `--fuente` contra el SDD de Lab-Geometria en `5f07b12` (8 de 8 resueltas): cerrar los avisos en la CI exige un `source.lock`, que P-15 deja para cuando exista el trabajo de CI con `--fuente`. Queda como deuda; se cierra con el expediente de herramienta que agregue ese trabajo y el `source.lock` de la prueba |
 | Criterio propio | La línea «releída contra la versión nueva, sin cambios» en la descripción del pull request |
 | Criterio propio | El control de traducción atrasada por commit es de la propuesta de ayuda por rol y no existe todavía en `docs-guard` |
 

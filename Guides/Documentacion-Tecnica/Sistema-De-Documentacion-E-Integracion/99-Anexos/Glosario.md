@@ -56,7 +56,7 @@ Hay seis familias de siglas parecidas. No se mezclan.
 | Compuerta de escalón | — | Hito de cierre de un escalón: la revisión que lo da por cumplido y deja pasar al siguiente | `TEM-07` (escalón) |
 | Conformación automática del pull request | CPA | El agente abre el pull request, publica el informe con el enlace, espera la guarda G1–G4 y fusiona con commit de merge. Vale sólo con la delegación asentada por escrito | [Cómo decidir](Como-Decidir.md#6-quién-decide) |
 | Contexto | — | Variante que cruza los escenarios y cambia una respuesta concreta | [Marco](../00-Marco.md#3-contextos) |
-| Control | Check | Una comprobación de la CI que termina con un código de salida: 0 en orden, 1 bloquea o sólo avisa, según la regla de bloqueo | `tools/docs-guard/dg.py`; [Criterios de calidad](Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
+| Control | Check | Una comprobación de la CI que termina con un código de salida: 0 (en orden o con avisos) o 1 (bloquea), según la regla de bloqueo | `tools/docs-guard/dg.py`; [Criterios de calidad](Criterios-De-Calidad.md#2-qué-automatiza-la-compuerta) |
 | Copia fijada | Vendor | Copia de un conocimiento compartido, con su versión y su SHA-256 en `BASE-FIJADA.md`. Si el archivo cambia, la compuerta da rojo | CL-11; PR-7 |
 | Cuerpo documental | Corpus | Conjunto de documentos de una guía con un README que declara `corpus_id` y `version` | [Esquema](Esquema-Frontmatter-Y-Prefijos.md#3-readme-del-cuerpo-y-páginas-de-ayuda) |
 | Deriva | Desactualización | Distancia entre lo que una pieza afirma y lo que el código hace; instrumento `traces-resolve`. No es el atraso del SHA fijado | `traces-resolve` (PR); A1 de la [mini demo](../Examples/MovilidadUrbana-Mini-Demo/README.md) (aviso) |

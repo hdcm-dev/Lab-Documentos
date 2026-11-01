@@ -162,7 +162,7 @@ Ejemplo de fila válida: la primera del RRD de la mini demo
 ## 7. Un ejemplo completo y sus errores
 
 Frontmatter válido de un tema, el de `TEM-03` de este cuerpo, con la lista de `audience` y de `traces` recortada
-[Compilado: `TEM-03-Topologia-Y-Versionado.md`, l. 1-13; recortado]:
+[Fragmento ilustrativo: frontmatter de `TEM-03`, l. 1-13, con `audience` y `traces` recortadas]:
 
 ```yaml
 ---

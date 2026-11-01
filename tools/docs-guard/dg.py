@@ -17,7 +17,7 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
     ai         RUTA...            (PR-3) anti-inyección AI-1..AI-5; AI-3 avisa; AI-4 avisa en el anexo de referencias
     mermaid-arroba RUTA...        (PR-4) arroba seguida de un nombre con punto dentro de un bloque mermaid (autoenlace
                                          de correo de GFM, que el dibujo no admite), o «#64;» en una etiqueta con HTML;
-                                         se escribe «ID @ 1.0» (P-20 del 0003)
+                                         se escribe «ID#64;1.0» en una etiqueta sin HTML (P-20, AC-24 y F007 del 0003)
     trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados;
                                          con --fuente DIR, además las anclas ruta#Símbolo@SHA de las fichas (nivel 2);
                                          id-duplicado: un ID que un archivo de RUTA declara y otro archivo también

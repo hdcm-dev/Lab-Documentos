@@ -82,6 +82,7 @@ digital ni integración continua. Esos cuatro temas se explican acá.
 
 | Si querés… | Leé |
 | --- | --- |
+| **Leerlo todo de corrido** | El libro unificado [`MAUI-Framework-Developer-Guide`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/MAUI-Framework-Developer-Guide.md): reúne este documento y los temas en un solo texto autocontenido. Esta guía sigue siendo el índice |
 | **Aprender** la técnica en orden | Este documento de corrido, después [`00-Marco`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/00-Marco.md) y los temas `01` a `07` |
 | **Hacerlo ahora** | [§6 Ejercicios guiados](#6-ejercicios-guiados) |
 | **Evaluar** un PR o una decisión | Las «Preguntas guía» y «Criterios de calidad» de cada tema y [`FC-TEM-06`](/LAB/Lab-Documentos/Lab-Documentos/Concepts/Framework-Concept/06-Procedimientos-PR-Integracion-Versionado.md) |

@@ -2,6 +2,17 @@
 
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+
+## 2026-11-01 (Framework Concept: libro unificado y Conocimiento)
+
+### Concepts/Framework-Concept/ — prompt 04 del PO
+
+#### Agregado
+
+- **`MAUI-Framework-Developer-Guide.md` (FC-GUIA-LIBRO):** el libro unificado y autocontenido que reúne la guía, los temas 00–08, el anexo y la demo. Tiene índice, cinco partes (fundamentos, mecanismo, ingeniería, práctica e industria) y anexos A–H. Pasó por las seis intervenciones editoriales: contenido, académica, estilo, ortotipográfica con diseño editorial, y corrección de pruebas. Una mesa de especialistas lo revisó por núcleos conceptuales y lo verificó de forma adversarial. Lo que es propuesta (dictámenes 050–058, E04/V1S) o especulación (el caso BNA+) va marcado como tal.
+- **`Conocimientos/Knowledge-App-Hibrida-OTA-Offline-First.md`** y su README: conocimiento reutilizable para construir una app con estos principios.
+- La portada y el Developer-Guide enlazan al libro, y el Developer-Guide sigue siendo el índice.
+
 ## 2026-10-30 (Framework Concept: login tradicional y botón «Bloquear»)
 
 ### Concepts/Framework-Concept/Demo — pedido del PO

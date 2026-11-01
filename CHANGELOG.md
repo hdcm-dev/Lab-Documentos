@@ -3,6 +3,28 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-01 (DocsAsCode: PR común del expediente 0003)
+
+### tools/docs-guard/ y scripts/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 3
+
+#### Agregado
+
+- **Control `mermaid-arroba` en PR-4** (`dg.py mermaid-arroba`, llamado desde `estructura` en `scripts/ci-local.sh`; P-20): en un bloque mermaid, una arroba seguida de un nombre con punto (`ID@1.0`) da rojo. GitHub la toma como autoenlace de correo y el diagrama sale con «Unsupported markdown: link», aunque `mermaid.parse` dé verde. También da rojo `ID#64;1.0` en una etiqueta con HTML (`<br/>`, `<b>`): ahí la entidad vuelve a ser arroba antes del markdown y el diagrama se rompe igual. Se escribe `ID @ 1.0`, que dibuja limpio con HTML o sin él. Los comentarios `%%` no se miran. La autoprueba suma su par rojo y verde (`fixtures/mermaid-arroba/`).
+
+#### Corregido
+
+- **`prefijos.txt`: `PE` es «patrón de ejemplo»** (P-14), como dice el anexo del esquema; el registro decía «pregunta de evaluación».
+- **Dos diagramas que GitHub no dibujaba** (AC-24): las etiquetas con `ID@1.0` del anexo `Esquema-Frontmatter-Y-Prefijos.md` y de `docs/_requisitos.md` de la mini demo pasan a `ID @ 1.0`. La resolución pedía `#64;`, pero las dos etiquetas llevan `<br/>` y con la entidad el dibujo sigue roto.
+
+#### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0)
+
+- **Fecha:** 2026-10-25. **Decidió:** el responsable del producto (PO). **Asiento:** folio 006 §1 del expediente 0003 de DocsAsCode (`PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/actuaciones/006-providencia-delegacion-y-lote-del-po.md`, en `hdcm-dev/Lab-Documentos.Documentacion`), que responde la P-09 de la resolución 099.
+- **Testimonio del PO (regla general, literal):** «siempre para conformar los pr sigue `KB-privada/Knowledges/Knowledge-Conformacion-Pull-Request-Automatico.md`»; antes había dicho: «vos te encargas de todos los pr».
+- **Alcance:** los PR del expediente 0003 en este repositorio, incluido el primer merge (este PR común, que asienta la fila), y la creación de la etiqueta de archivo `sdei-v2.0.0-borrador` (folio 006 §1).
+- **Guarda:** G1–G4: estado `clean` y al menos un control de la cabeza, todos en éxito; techo de espera 120 minutos e intervalo de relectura 30 segundos, los de la delegación del expediente 0002 en este repositorio, que el folio 006 no cambia. Cuando corresponde, el merge se anuncia a las otras sesiones que comparten el repositorio (folio 006 §1).
+- **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual; también lo irreversible con consecuencia externa, que sale al PO con sugerencias y valor por defecto, como en la delegación del expediente 0002.
+
 ## 2026-11-01 (Framework Concept: libro unificado y Conocimiento)
 
 ### Concepts/Framework-Concept/ — prompt 04 del PO

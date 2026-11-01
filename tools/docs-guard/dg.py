@@ -15,6 +15,9 @@ Subcomandos (grupo del carril PR entre paréntesis; N09 §8.1):
                                          traces-vacio: avisa ante «traces: []» (válido por el anexo; D-17). Cuenta aparte los README.md
                                          del cuerpo sin frontmatter (readme-del-cuerpo-sin-frontmatter, D-24)
     ai         RUTA...            (PR-3) anti-inyección AI-1..AI-5; AI-3 avisa; AI-4 avisa en el anexo de referencias
+    mermaid-arroba RUTA...        (PR-4) arroba seguida de un nombre con punto dentro de un bloque mermaid (autoenlace
+                                         de correo de GFM, que el dibujo no admite), o «#64;» en una etiqueta con HTML;
+                                         se escribe «ID @ 1.0» (P-20 del 0003)
     trazas     RUTA...            (PR-5) traces-resolve: cada ID@versión contra el registro generado de los encabezados;
                                          con --fuente DIR, además las anclas ruta#Símbolo@SHA de las fichas (nivel 2);
                                          id-duplicado: un ID que un archivo de RUTA declara y otro archivo también
@@ -435,6 +438,54 @@ def cmd_ai(rutas, raiz, ai3_bloquea=False):
                 hallazgo('AI-5', n, 'html-oculto', m.group(0)[:60])
     extra = ' ' + ' '.join(f'{k}={v}' for k, v in cuenta.items())
     return inf.cerrar(extra)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# PR-4: mermaid-arroba (expediente 0003, P-20)
+
+# Autoenlace de correo de GFM: después de la arroba, nombres separados por puntos, con al menos un punto («Autolinks
+# (extension)», https://github.github.com/gfm/#extended-email-autolink, consultado el 2026-11-01). Dentro de una
+# etiqueta de mermaid el dibujo no lo admite y sale «Unsupported markdown: link», aunque mermaid.parse dé verde.
+# La entidad «#64;» limpia sólo si la etiqueta no lleva HTML: con «<br/>» o «<b>» en la misma etiqueta, mermaid la
+# decodifica antes del markdown y el autoenlace vuelve (comprobado al dibujar, 2026-11-01). La escritura
+# que dibuja limpio en los dos casos es la arroba entre espacios: «ID @ 1.0».
+RE_MERMAID_ARROBA = re.compile(r'[\w.+-]+(?:@|(#64;))[\w-]+(?:\.[\w-]+)+')
+RE_HTML = re.compile(r'<[A-Za-z/]')
+
+
+def etiqueta(linea, pos):
+    """El texto entre comillas que contiene la posición pos; sin comillas alrededor, la línea entera."""
+    a = linea.rfind('"', 0, pos)
+    b = linea.find('"', pos)
+    if a < 0 or b < 0 or linea.count('"', 0, a) % 2:
+        return linea
+    return linea[a + 1:b]
+
+
+def cmd_mermaid_arroba(rutas, raiz):
+    inf = Informe('PR-4 mermaid-arroba')
+    bloques = 0
+    for f in markdowns(rutas):
+        cerca = None  # cerca del bloque mermaid abierto («```» o «~~~»), o None fuera de él
+        for n, l in enumerate(leer(f).split('\n'), 1):
+            m = re.match(r'^\s*(```+|~~~+)\s*(\S*)', l)
+            if cerca is None:
+                if m and m.group(2).lower() == 'mermaid':
+                    cerca = m.group(1)
+                    bloques += 1
+                continue
+            if m and m.group(1).startswith(cerca) and not m.group(2):
+                cerca = None
+                continue
+            if l.strip().startswith('%%'):
+                continue  # comentario de mermaid: no se dibuja
+            for a in RE_MERMAID_ARROBA.finditer(l):
+                if a.group(1) and not RE_HTML.search(etiqueta(l, a.start())):
+                    continue  # «#64;» en una etiqueta sin HTML dibuja limpio
+                como = '«#64;» en una etiqueta con HTML' if a.group(1) else 'la arroba'
+                inf.error(rel(f, raiz), n, 'mermaid-arroba',
+                          f'«{a.group(0)}»: {como} se dibuja como autoenlace de correo; escribí «ID @ 1.0»')
+    return inf.cerrar(f' bloques={bloques}')
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -1011,6 +1062,7 @@ def main(argv):
             'fuera': lambda: cmd_fuera(rutas, raiz),
             'esquema': lambda: cmd_esquema(rutas, raiz),
             'ai': lambda: cmd_ai(rutas, raiz, '--ai3-bloquea' in banderas),
+            'mermaid-arroba': lambda: cmd_mermaid_arroba(rutas, raiz),
             'trazas': lambda: cmd_trazas(rutas, raiz, opts['--fuente'], '--deriva' in banderas),
             'contratos': lambda: cmd_contratos(rutas, raiz),
             'fijadas': lambda: cmd_fijadas(rutas, raiz),

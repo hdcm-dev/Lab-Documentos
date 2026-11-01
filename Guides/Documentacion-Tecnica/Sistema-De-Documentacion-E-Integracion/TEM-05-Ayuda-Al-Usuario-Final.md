@@ -46,7 +46,7 @@ análisis de audiencia y de tareas y con mantenimiento ([ISO/IEC/IEEE, 2022](99-
 | Rol | Perfil del producto con permisos distintos (alumno, administrador). En este cuerpo el rol **no es un escenario**: dentro de `ESC-SDEI-3`, decide qué página se sirve |
 | Unidad | En un proyecto con SDD, el módulo de la especificación al que pertenece una pantalla, con sus propios casos de uso y reglas (detalle en `TEM-07`) |
 | Visibilidad y acceso | Ocultar una página en la navegación es visibilidad; no entregarla es acceso. Sólo lo segundo protege |
-| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a lo que pide su escenario (tabla de [Aplicación por escenario](#aplicación-por-escenario)); la regla de `ESC-SDEI-3` está en la l. 88 |
+| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a lo que pide su escenario (tabla de [Aplicación por escenario](#aplicación-por-escenario)); la regla de `ESC-SDEI-3` está en la l. 89 |
 
 **Qué problema resuelve.** La taxonomía de problemas documentales que surge de 878 artefactos (listas de correo,
 preguntas, *issues* y pull requests) pone la desactualización, junto con la incorrección y la incompletitud, entre los

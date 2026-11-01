@@ -92,7 +92,7 @@ rojo cuando esa versión deja de existir.
 | Registro de IDs del SDD | Lista de identificadores que la especificación declara, cada uno una sola vez y con su versión. En los marcos del laboratorio, el ID abre el encabezado del documento (`# CU-08002 — …`) y la versión va en una línea `**Versión:** 1.11` |
 | Versión congelada | Copia de un documento tal como estaba en una versión anterior, guardada para reconstruir la historia (en los marcos del laboratorio, carpetas `_legacy/`). Repite el ID del documento vigente |
 | Decisión de arquitectura (ADR) | Registro corto de una decisión con contexto, decisión, estado y consecuencias. Se numera, no se borra, y cuando otra decisión la reemplaza queda marcada como reemplazada ([Nygard, 2011](99-Anexos/Referencias.md#ref-nygard-2011)) |
-| Conocimiento compartido (`CL-11`) | Documento de una base de conocimiento común que varios proyectos copian. La copia se fija con su SHA-256 (su **huella**) para comprobar que no cambió. Hoy el Marco la activa sólo en `ESC-SDEI-1` y `ESC-SDEI-4`; en `ESC-SDEI-3` se activa cuando Lab-Geometria reciba la copia de la capa A de [Las lecciones de decisión, dentro del marco](#las-lecciones-de-decisión-dentro-del-marco) |
+| Conocimiento compartido (`CL-11`) | Documento de una base de conocimiento común que varios proyectos copian. La copia se fija con su SHA-256 (su **huella**) para comprobar que no cambió. Hoy el Marco la activa sólo en `ESC-SDEI-1` y `ESC-SDEI-4`; si se activa en `ESC-SDEI-3` lo decide el escalón 2 (ver [Las lecciones de decisión, dentro del marco](#las-lecciones-de-decisión-dentro-del-marco)) |
 | Lección de decisión | Registro de una decisión que un agente resolvió sin que la persona responsable tuviera que decidirla, con el nivel donde se resolvió (N1, análisis previo de un agente; N2, mesa de agentes que deliberan) o donde se elevó (N3, consulta a la persona con una sugerencia), la regla aplicada, la evidencia y el resultado. Sólo cubre lo que no es de clase H: lo de clase H siempre lo decide una persona. Sirve para que la próxima vez un agente resuelva igual sin preguntar |
 | Prefijo externo | Prefijo del registro cerrado del cuerpo (`CU`, `RN`, `ADR`, `NB`, `RF`…) pensado para IDs que declara el sistema que se documenta. Si la traza resuelve contra el registro (el del repositorio más la carpeta que se pasa en `--fuente`), da verde como cualquier otra. Si no resuelve, `dg.py` mira si la página tiene un `source.lock` en su carpeta o más arriba, o si se le pasó `--fuente`: sin ninguno de los dos, la traza es «no verificable» y sólo avisa; con alguno, da rojo. Las fichas `RN-LOC-nn` de la mini demo usan un prefijo externo pero se declaran en este repositorio, así que resuelven contra el registro propio ([Esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#5-registro-de-prefijos)) |
 | Orquestador | El agente o la persona que conduce las fases del SDD, despacha el trabajo y decide cuándo se pasa de una fase a la siguiente |
@@ -168,8 +168,13 @@ La cita de la categoría 11 sale de sus reglas, en la tabla de fronteras
 
 Un SDD operado por agentes toma decisiones a cada paso: qué prefijo usar, si una divergencia es de forma o de fondo,
 si un cambio necesita a la persona responsable. El diseño del sistema documentador separa esas decisiones en dos
-capas **[criterio propio del diseño del sistema documentador, en borrador hasta el escalón 2]**. Ninguna de las dos
-existe todavía: se escriben en el escalón 2.
+capas **[criterio propio del diseño del sistema documentador, en borrador hasta el escalón 2]**. Hecho, medido el
+2026-11-01: en IA.SDD@`bac7e48` hay un conocimiento de lógica de decisión 1.0
+(`Conocimiento/Knowledge-Logica-De-Decision.md`) que registra lecciones (§3.9, con la forma de §5.3), y dos líneas de
+norma mandan correrlo antes de detenerse (`SDD/Devs/Orchestrator/Master-Prompt.md`, l. 1025, y
+`SDD/Devs/Rules/Mesa-Rules.md`, l. 570). Su lección registra pregunta, análisis, salida y regla: no tiene los campos
+«evidencia» ni «resultado» que la tabla de abajo pide a la capa A. En Lab-Geometria (`5f07b12`) no hay copia, sólo una
+aplicación citada (`ADR-10010`, l. 8 y 61). Si esas piezas son las capas A y B de este diseño lo decide el escalón 2.
 
 | Capa | Qué es | Clase | Dónde |
 | --- | --- | --- | --- |

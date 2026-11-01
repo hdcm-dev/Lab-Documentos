@@ -59,7 +59,8 @@ Cada escenario es un tipo de sistema real de los repositorios del laboratorio de
 `Lab-*`). El tronco común es el mismo en los cuatro: las fases del ciclo documental (1a captura y 1b evaluación de
 requerimientos, 2 análisis, 3 diseño, 4 implementación, 5 integración; las explica `TEM-02`), el frontmatter, las
 trazas, el catálogo de piezas y la compuerta; un escenario sólo activa, quita o sustituye clases de pieza
-y controles, nunca agrega fases.
+y controles, nunca agrega fases. Un proyecto con rasgos de dos escenarios activa la unión de sus clases; la
+composición no agrega fases.
 
 ```mermaid
 flowchart LR
@@ -104,10 +105,12 @@ quien integra, quien opera y los agentes; la versión se ancla con la etiqueta d
 | Parámetro | ESC-SDEI-1 Corpus de guías | ESC-SDEI-2 App sin roles | ESC-SDEI-3 Panel con roles | ESC-SDEI-4 Servicio con paquetes |
 | --- | --- | --- | --- | --- |
 | Audiencias | Estudiante, docente, agente | Persona usuaria, desarrollo, consumidor de la API, agente | Lo anterior más los roles del panel | Integrador, operador, agente |
-| Clases activas | CL-02, CL-03, CL-09, CL-10, CL-11, CL-12 | CL-02 a CL-07, CL-12 | CL-01 a CL-08, CL-12 | CL-01 a CL-05, CL-07, CL-08, CL-11 a CL-13 |
+| Clases activas por defecto | CL-02, CL-03, CL-08 a CL-13 | CL-02 a CL-08, CL-12, CL-13 | CL-01 a CL-08, CL-12 | CL-01 a CL-05, CL-07, CL-08, CL-11 a CL-13 |
+| Altas y bajas, con motivo | Altas: CL-08, porque el índice interno del repositorio hermano indexa el cuerpo; CL-13, porque el `CHANGELOG.md` registra cada cambio y la delegación del merge | Altas: CL-08 y CL-13, porque el repositorio hermano tiene índice interno y los dos repositorios llevan `CHANGELOG.md` | — | — |
+| No presente en el ejemplo, medido en su SHA | CL-11: no hay copia fijada fuera de los fixtures (Lab-Documentos `0bed863`) | CL-03: no hay `AGENTS.md`; CL-04: comentarios XML sólo en la API, no en la app MAUI; CL-12: no hay instancia de «Cómo intervenir» (Lab-E2E.WebBlazor `8fb4c3a`) | CL-02: no hay RRD; CL-04: `GenerateDocumentationFile` en `false`; CL-06: la ayuda por rol es la prueba de concepto de `Examples/`; CL-12: no hay instancia (Lab-Geometria `5f07b12`) | — (el ejemplo es privado; no se mide en lo público) |
 | Confidencialidad | No aplica | Lo que viaja en el paquete de la app instalada es visible para quien la instala | En el build y en el servidor | En el build y en los secretos |
-| Fuente generada | — | OpenAPI y comentarios XML | OpenAPI y comentarios XML | API pública de los paquetes |
-| Ancla de versión | Versión del cuerpo y etiqueta | SHA en `source.lock` | Etiqueta y SHA | Etiqueta por línea de versión |
+| Fuente generada | — | OpenAPI y comentarios XML | OpenAPI; comentarios XML previstos | API pública de los paquetes |
+| Ancla de versión | Versión del cuerpo y etiqueta | SHA en `source.lock` | Etiqueta y SHA | Etiqueta por línea de versión; una familia de versiones sin etiqueta se ancla con el SHA |
 | Registro de IDs | `doc_id` y `corpus_id` | Fichas provisionales `RN-LOC-nn` | El del SDD del proyecto | El del SDD del proyecto |
 
 ## 3. Contextos
@@ -182,8 +185,10 @@ Con el marco se ubica así:
 1. **Escenario** `ESC-SDEI-2`: app cliente sin roles. La ayuda es una sola y la regla se escribe como ficha
    provisional `RN-LOC-01`, porque el proyecto no tiene SDD (`CTX-SDEI-2`, rama «sin SDD»).
 2. **Contexto** `CTX-SDEI-3`: la ayuda de la demostración vive en otro repositorio que el código, así que se ancla al
-   SHA del código en `source.lock`; contra ese SHA la traza resuelve, y contra la rama principal del código un aviso
-   programado detecta que el método que valida el largo (el «símbolo» que cita la ficha) cambió.
+   SHA del código en `source.lock`; contra ese SHA la traza resuelve. Un aviso programado cuenta cuántos commits de
+   atraso tiene el SHA fijado frente a la rama principal; la deriva por símbolo (que el método que valida el largo, el
+   «símbolo» que cita la ficha, cambió) la mide A1 cuando corre la demo. Deuda: A1 no está programado; se cierra con
+   el PR que lo programe o con el folio que decida no hacerlo.
 3. **Actores**: un agente (`ACT-SDEI-4`) propone actualizar la ficha y el `source.lock`; la compuerta corre en el pull
    request; si el número correcto es 60 u 80 es una divergencia que **decide una persona** (`ACT-SDEI-2`).
 

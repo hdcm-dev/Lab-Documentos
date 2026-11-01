@@ -19,7 +19,7 @@ entradas, salidas y validaciones, están en la plantilla; esta página da los da
 
 | Campo | Lab-Documentos |
 | --- | --- |
-| Escenario | `ESC-SDEI-1` Corpus de guías. Clases activas: CL-02, CL-03, CL-09, CL-10, CL-11, CL-12 |
+| Escenario | `ESC-SDEI-1` Corpus de guías. Clases activas por defecto: CL-02, CL-03, CL-08 a CL-13 (tabla de §2.5 del [Marco](../00-Marco.md#25-qué-cambia-entre-escenarios)) |
 | Dónde vive cada pieza | Guías en `Guides/` y `Concepts/`; este cuerpo en `Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/`; ejemplos en su `Examples/`; controles en `tools/docs-guard/`; expedientes e índices en el repositorio hermano Lab-Documentos.Documentacion |
 | Guion de validación | `scripts/ci-local.sh todo <carpeta>` desde la raíz del repositorio. Sin `<carpeta>`, verifica este cuerpo. Requiere bash, curl, Python 3 y Node.js |
 | Compuerta en la CI | `.github/workflows/docs-guard.yml` en cada pull request, en el runner `[self-hosted, i7infra-dev]`; `docs-enlaces-semanal.yml` como carril programado |

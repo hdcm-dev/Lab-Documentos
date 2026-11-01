@@ -163,7 +163,7 @@ requerimientos y qué tan pesada es cada fase.
 
 | Escenario | De dónde salen los requerimientos (1a) | Qué pesa más | Quién decide en 1b |
 | --- | --- | --- | --- |
-| `ESC-SDEI-1` Corpus de guías | Objetivos de aprendizaje y preguntas de quien estudia | Fase 4 (redacción) y la prueba de lectura | Docente o responsable de la guía |
+| `ESC-SDEI-1` Corpus de guías | Objetivos de aprendizaje y preguntas de quien estudia | Fase 4 (redacción) y la prueba de lectura | `ACT-SDEI-2`; ocupa el rol la responsable de la guía o quien el PO designe por delegación asentada |
 | `ESC-SDEI-2` App sin roles | Pantallas, endpoints y defectos conocidos del código | Fase 2: fichas de reglas ancladas al SHA | Analista |
 | `ESC-SDEI-3` Panel con roles | Casos de uso del marco de especificación, uno por pantalla y rol | Fase 3: qué rol ve qué ayuda | Analista, con el PO para la confidencialidad |
 | `ESC-SDEI-4` Servicio con paquetes | Cambios del contrato público entre versiones | Fase 5: CHANGELOG y contrato por línea de versión | PO |

@@ -1,18 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- El cascarón (P3): app MAUI que se actualiza SÓLO por tienda. Lleva las pantallas XAML propias, el
-       actualizador (el de Core, con sus adaptadores de Android), el servidor de contenido, el puente, el
-       catálogo, la base SQLite con el outbox y un único HybridWebView.
+       actualizador (el de Core, con sus adaptadores), el servidor de contenido, el puente, el catálogo, la base
+       SQLite con el outbox y un único HybridWebView. Dos destinos con el mismo comportamiento: Android e iOS.
 
        Cómo se compila (desde la raíz de la demo):
-         scripts/contenedor.sh dotnet build src/FrameworkConcept.Shell -c Debug \
-           -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk \
-           -p:FcCanalUrl=https://<servidor-del-canal>
-       android-arm64 es para un teléfono; android-x64, para el emulador. -->
+         Android, en el contenedor (Linux):
+           scripts/contenedor.sh dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-android \
+             -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk \
+             -p:FcCanalUrl=https://<servidor-del-canal>
+           android-arm64 es para un teléfono; android-x64, para el emulador.
+         iOS, en una Mac con Xcode y el workload ios (no hay compilación de iOS fuera de macOS):
+           dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64
+           iossimulator-arm64 es para el simulador en una Mac con Apple silicon; ios-arm64, para un teléfono (pide
+           perfil de aprovisionamiento). README.md, «El cascarón en iOS», cuenta cómo se instala y se lee la bitácora. -->
   <Import Project="../../versionado/version-cascaron.props" />
 
   <PropertyGroup>
-    <TargetFramework>net10.0-android</TargetFramework>
+    <!-- Destinos: net10.0-android;net10.0-ios. La restauración de NuGet abarca TODOS los destinos de la lista aunque
+         se compile uno solo con -f, y falla (NETSDK1147) si falta el workload de alguno. Por eso la lista depende de
+         la máquina: Linux y Windows, sólo Android (el workload de iOS no compila fuera de macOS); macOS, iOS y además
+         Android si el SDK de .NET tiene instalado el workload android. Se puede fijar a mano:
+         -p:FcDestinos="net10.0-android;net10.0-ios". -->
+    <_FcAndroidEnMac Condition="Exists('$([MSBuild]::EnsureTrailingSlash($(NetCoreRoot)))packs/Microsoft.Android.Sdk.Darwin')">net10.0-android;</_FcAndroidEnMac>
+    <FcDestinos Condition="'$(FcDestinos)' == '' And $([MSBuild]::IsOSPlatform('osx'))">$(_FcAndroidEnMac)net10.0-ios</FcDestinos>
+    <FcDestinos Condition="'$(FcDestinos)' == ''">net10.0-android</FcDestinos>
+    <TargetFrameworks>$(FcDestinos)</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
@@ -23,6 +36,9 @@
     <!-- En el teléfono de medida sólo se instalan paquetes com.frameworkconcept.* -->
     <ApplicationId>com.frameworkconcept.demo</ApplicationId>
 
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'android'">
     <!-- Piso de Android del ensayo E01 (24). El piso real del contenido es el WebView ≥ 94 (P1, C-3),
          que se comprueba al arrancar, no acá. -->
     <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
@@ -33,6 +49,42 @@
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'ios'">
+    <!-- Piso de iOS: 16.4, el ParametrosDeProducto.IosMinimo de Core (P1, P9); si uno cambia, cambia el otro. En iOS
+         el motor web no se actualiza aparte: WKWebView es el WebKit del sistema, así que el piso del sistema ES el
+         piso del motor (el equivalente del «WebView ≥ 94» de Android). Por qué 16.4 y no 15: el runtime de Blazor
+         WebAssembly de .NET 10 se publica con SIMD de WebAssembly (WasmEnableSIMD, activo por defecto), que WebKit
+         trae recién con Safari 16.4; con un WebKit anterior el contenido no arranca. Como la tienda no instala por
+         debajo de MinimumOSVersion, el chequeo del motor queda hecho al instalar (Hosting/MotorWeb.cs). -->
+    <SupportedOSPlatformVersion>16.4</SupportedOSPlatformVersion>
+
+    <!-- P4 — Keychain en el simulador: sin un grupo de acceso firmado en la app, SecItemAdd devuelve
+         errSecMissingEntitlement (-34018). La compilación del simulador firma ad hoc con este archivo; en un teléfono
+         lo firma el perfil de aprovisionamiento. Ver Platforms/iOS/Entitlements.plist. -->
+    <CodesignEntitlements>Platforms/iOS/Entitlements.plist</CodesignEntitlements>
+
+    <!-- iOS no permite generar código en ejecución: sin intérprete, EF Core no puede armar el modelo del outbox y el
+         Release aborta al abrir («Model building is not supported when publishing with NativeAOT», visto en el
+         simulador el 2026-11-01; el Debug no lo muestra porque ya corre con intérprete). «-all» deja TODO compilado
+         de antemano y habilita el intérprete sólo para el código que se genera en ejecución (el de EF). Camino de
+         crecimiento: modelo compilado y consultas precompiladas de EF (dotnet ef dbcontext optimize), y sacar esto. -->
+    <MtouchInterpreter>-all</MtouchInterpreter>
+  </PropertyGroup>
+
+  <!-- En el simulador la firma es ad hoc («-»): no hace falta certificado de Apple, y las entitlements quedan igual
+       dentro del binario. Sin esto, con CodesignEntitlements el build busca una identidad en el llavero y falla. -->
+  <PropertyGroup Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'ios' And $(RuntimeIdentifier.StartsWith('iossimulator'))">
+    <CodesignKey Condition="'$(CodesignKey)' == ''">-</CodesignKey>
+  </PropertyGroup>
+
+  <!-- Archivos de Android que no viven en Platforms/Android/ (la guía los cita por ruta y línea, por eso no se movieron):
+       el cofre del Keystore y la actividad del redirect OIDC. En iOS los reemplazan Platforms/iOS/Auth/CofreDeSesion.cs
+       y ASWebAuthenticationSession (WebAuthenticator no necesita una pantalla propia para la vuelta). -->
+  <ItemGroup Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' != 'android'">
+    <Compile Remove="Auth/CofreDeSesion.cs" />
+    <Compile Remove="Auth/CallbackDeAutenticacion.cs" />
+  </ItemGroup>
 
   <!-- Configuración del canal. Se cambia al compilar, sin tocar el código:
          -p:FcCanalUrl=https://xxxx.trycloudflare.com   raíz del servidor estático del canal (P2: sólo HTTPS)
@@ -92,7 +144,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Archivos que viajan dentro del APK. FileSystem.OpenAppPackageFileAsync los lee por su LogicalName. -->
+    <!-- Archivos que viajan dentro del APK (o del .app de iOS, como recursos del bundle).
+         FileSystem.OpenAppPackageFileAsync los lee por su LogicalName en las dos plataformas. -->
     <MauiAsset Include="Resources/Raw/**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 
     <!-- P2 — La semilla: una copia de la carpeta del canal ({canal}/puente-{mayor}/: indice.json, su firma,
@@ -117,8 +170,16 @@
     <_ConfigDeRed Condition="'$(_ConfigDeRed)' == ''">SinCa</_ConfigDeRed>
   </PropertyGroup>
 
+  <!-- En iOS no hay un archivo equivalente que el binario lleve: la app usa NSUrlSession con App Transport Security
+       por defecto, sin excepciones en Info.plist (sólo HTTPS, TLS 1.2+, certificados válidos). Para llegar al receptor
+       didáctico con la CA de demostración, la CA se instala en el SIMULADOR, no en la app:
+         xcrun simctl keychain booted add-root-cert claves/tls/ca_demo_tls.crt
+       Así un binario de iOS nunca confía en la CA de demostración por sí mismo (README.md, «El cascarón en iOS»). -->
   <ItemGroup>
     <None Remove="Platforms/Android/Red/**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'android'">
     <AndroidResource Include="Platforms/Android/Red/$(_ConfigDeRed)/network_security_config.xml"
                      Link="Platforms/Android/Resources/xml/network_security_config.xml" />
     <AndroidResource Include="$(_CaDeDemo)" Condition="'$(_ConfigDeRed)' == 'ConCaDeDemo'"

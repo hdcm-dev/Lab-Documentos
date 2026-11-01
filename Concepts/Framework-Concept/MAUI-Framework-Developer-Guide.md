@@ -165,8 +165,9 @@ vista.WebResourceRequested += servidor.AlPedirRecurso;
 vista.SetInvokeJavaScriptTarget(puente);   // P3 — un solo objeto, un solo método: Call(sobre)
 ```
 
-El servidor local atiende cada pedido del WebView desde la carpeta de la versión activa y corta cualquier pedido a
+El servidor local atiende cada pedido del WebView desde la carpeta de la versión activa y, en Android, corta cualquier pedido a
 otro origen distinto de `https://0.0.0.1/` con un 403 [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:16-17,39-45].
+En iOS esos pedidos no llegan al servidor: la única barrera es la CSP del contenido [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:71-78].
 `HybridWebView` es el control de .NET MAUI que hospeda contenido web y permite llamadas entre JavaScript y C# [R4].
 
 El **puente** (*bridge*) es la única vía entre contenido y cascarón: un objeto con un solo método, `Call`, que el
@@ -481,7 +482,7 @@ Tabla 2.2. Contextos.
 |---|---|---|---|
 | CTX-1 | Android con WebView ≥ 94 | Contexto de referencia: todo el recorrido funciona | Verificado en el emulador de ensayo; en el teléfono de medida, contenido servido y tiempos de arranque medidos (Anexo H) sin recorrido completo [E01] [folio 049] |
 | CTX-2 | Android con WebView < 94 | El contenido no arranca; el cascarón muestra «WebView viejo» | Medido en E01 (WebView 83) |
-| CTX-3 | iOS | Mismo diseño, otras API (Keychain, `app://`) y otras reglas | **NO VERIFICADO** [folio 023] |
+| CTX-3 | iOS | Mismo diseño, otras API (Keychain, `app://`) y otras reglas | Ensayado en el simulador de iOS 26; teléfono real, Secure Enclave y modo Navegador **NO VERIFICADOS** [folio 023] [Demo/README.md:112-124] |
 | CTX-4 | Modo Dispositivo (sin emisor OIDC) | No hay cuenta: el dueño del outbox es el id de instalación | Verificado en E02 |
 | CTX-5 | Modo con cuenta | Ingreso, desbloqueo con la seguridad del teléfono, bloqueo a los 5 min en segundo plano, outbox con dueño | Verificado en E03 en el emulador |
 | CTX-6 | Estado de la red | Qué acciones se permiten, quedan pendientes o se bloquean | Verificado en E03 salvo `EnLineaMedida` |
@@ -699,7 +700,7 @@ Una versión recién activada puede estar rota: un error de JavaScript, un recur
 
 ##### 3.5.1 Qué cuenta como falla
 
-La marca sola no prueba nada: la persona pudo cerrar la app mientras cargaba. Por eso el cascarón anota cada arranque en que el WebView **empezó a cargar** la versión pendiente, detectado cuando pide `_framework/dotnet.js` [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:20] [Demo/src/FrameworkConcept.Shell/Pages/ContenidoPage.xaml.cs:114]. Sólo cuando eso pasó `CargasSinListoParaFallar` veces sin `Listo`, el arranque siguiente da la versión por fallida.
+La marca sola no prueba nada: la persona pudo cerrar la app mientras cargaba. Por eso el cascarón anota cada arranque en que el WebView **empezó a cargar** la versión pendiente, detectado cuando pide `_framework/dotnet.js` [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:20] [Demo/src/FrameworkConcept.Shell/Pages/ContenidoPage.xaml.cs:118]. Sólo cuando eso pasó `CargasSinListoParaFallar` veces sin `Listo`, el arranque siguiente da la versión por fallida.
 
 ```csharp
 // Demo/src/FrameworkConcept.Core/Update/Actualizador.cs:34-39
@@ -785,7 +786,7 @@ Retener una versión cuesta del orden de 9,13 MB en el teléfono, y el contenido
 
 El **tiempo hasta el primer render** (TPR) del arranque en frío se midió en el teléfono de medida en varias fechas y con varias variantes. Como son datos fechados, las cifras no van en el texto: están juntas en la Tabla H.3 del Anexo H, y ninguna es un valor normativo.
 
-El umbral del producto es TPR ≤ 5 000 ms; con la versión fusionada, la demo **no cumple** y se abrió la condición de revisión de P1 [Demo/README.md:246] [Demo/README.md:437-439].
+El umbral del producto es TPR ≤ 5 000 ms; con la versión fusionada, la demo **no cumple** y se abrió la condición de revisión de P1 [Demo/README.md:306] [Demo/README.md:497-499].
 
 #### 3.9 Práctica con `scripts/guion.sh`
 
@@ -899,7 +900,7 @@ Lo que cruza es un **sobre** (*envelope*): un mensaje JSON-RPC 2.0 [R28] con un 
 { "jsonrpc": "2.0", "v": "1.2.0", "id": "7", "method": "bridge.ready", "params": { "version": "1.1.0" } }
 ```
 
-La respuesta repite `id` y lleva `result` o `error`, nunca los dos [Sobre.cs:21-28]. Los **eventos** del cascarón al contenido son notificaciones JSON-RPC sin `id`, enviadas con `HybridWebView.InvokeJavaScriptAsync` [Sobre.cs:33-37].
+La respuesta repite `id` y lleva `result` o `error`, nunca los dos [Sobre.cs:21-28]. Los **eventos** del cascarón al contenido son notificaciones JSON-RPC sin `id`, que el cascarón entrega evaluando `window.puenteRecibirEvento(texto)` en la página [Sobre.cs:33-37].
 
 ##### 4.2.3 Códigos de error
 
@@ -919,11 +920,11 @@ Tabla 4.1. Códigos de error del puente [Sobre.cs:39-71].
 
 #### 4.3 El transporte
 
-El **transporte** es cómo viaja el sobre entre el WebView y .NET. Lo pone MAUI y forma parte del contrato [Demo/src/FrameworkConcept.Core/Contracts/Puente/TransporteDelPuente.cs:5-26]:
+El **transporte** es cómo viaja el sobre entre el WebView y .NET. Lo pone MAUI y forma parte del contrato [Demo/src/FrameworkConcept.Core/Contracts/Puente/TransporteDelPuente.cs:5-31]:
 
 - el script `_framework/hybridwebview.js`;
 - la ruta `POST /__hwvInvokeDotNet`, que el servidor de contenido acepta sólo desde la página local [PuenteDelCascaron.cs:11-12];
-- el método nativo `Call(sobre)` y los eventos por `InvokeJavaScriptAsync`;
+- el método nativo `Call(sobre)` y los eventos por `window.puenteRecibirEvento(texto)`, que el cascarón evalúa en la página (el receptor es del contenido; cambiar sólo el mecanismo es un cambio menor);
 - el **mayor de MAUI**, leído de `$(MauiVersion)`.
 
 Dos condiciones prácticas salen del transporte. Primera: en Android, `hybridwebview.js` lleva el cuerpo en un encabezado HTTP que no admite UTF-8, así que el sobre se manda en ASCII con escapes `\uXXXX` [02-Cascaron-Puente-Y-Capacidades.md:116-117]. Segunda: como `hybridwebview.js` cambia con MAUI, **subir el mayor de MAUI es un cambio mayor del puente**, y obliga a un índice nuevo `/canal/puente-N+1/` [TransporteDelPuente.cs:6-8] [R4].
@@ -1433,7 +1434,7 @@ Figura 6.3. La cadena del secreto. El texto sellado vive en la base y la clave v
 
 > **Apartamiento declarado H-1.** El borrador pedía que una huella nueva invalidara la clave. Con `BIOMETRIC_STRONG | DEVICE_CREDENTIAL` eso no ocurre: enrolar una huella nueva no invalida la clave [07-Red-Y-Autenticacion.md:302-309][E03 H-1]. Se mantuvo la combinación porque el PO pidió aceptar también PIN y patrón (P4). La invalidación al quitar el bloqueo de pantalla sigue vigente. El comentario de `CofreDeSesion.cs:128-129` todavía afirma lo contrario y se corrige en un PR de código aparte.
 
-`Framework-APP.md` advertía que `SecureStorage` no ata la lectura a la biometría y proponía evaluar un plugin [Framework-APP.md:189]. La demo cerró esa pregunta en Android con código de plataforma. En iOS (Keychain), el mecanismo equivalente está **NO VERIFICADO**.
+`Framework-APP.md` advertía que `SecureStorage` no ata la lectura a la biometría y proponía evaluar un plugin [Framework-APP.md:189]. La demo cerró esa pregunta en Android con código de plataforma. En iOS el cofre usa el Keychain con `.userPresence`, ensayado en el simulador; **no es equivalente**: la clave sale del Keychain a la memoria del proceso (apartamiento declarado) [Demo/DISENO-RED-Y-AUTENTICACION.md:279-285]. En un teléfono sigue **NO VERIFICADO**.
 
 #### 6.5 Ningún token cruza el puente
 
@@ -1476,7 +1477,7 @@ Los ensayos E03 y E05 corrieron estos mecanismos en un emulador de ensayo y en u
 - **Quitar el bloqueo de pantalla.** La clave del Keystore quedó invalidada. Después de las correcciones de E03, la sesión pasa de `Bloqueada` a `SinCuenta` [07-Red-Y-Autenticacion.md:259-265].
 - **Login en el contenido** (E05): ingreso, sesión activa, bloqueo y desbloqueo sin red, en el emulador y en el teléfono de medida [E05].
 
-Siguen **NO VERIFICADOS**: el estado `EnLineaMedida` en un dispositivo, la regresión del modo sin cuenta en el emulador, el conjunto completo en un teléfono físico y el Keychain de iOS [E03 §7][07-Red-Y-Autenticacion.md §8].
+Siguen **NO VERIFICADOS**: el estado `EnLineaMedida` en un dispositivo, la regresión del modo sin cuenta en el emulador, el conjunto completo en un teléfono físico y el Keychain de iOS en un teléfono [E03 §7][07-Red-Y-Autenticacion.md §8].
 
 #### 6.8 Decisiones abiertas
 
@@ -1615,7 +1616,7 @@ Tabla 7.3. Las líneas de versión y su fuente única.
 | Línea | Camino | Fuente única | Valor al commit `9b5b5ad` |
 |---|---|---|---|
 | Cascarón | Tienda | `Demo/versionado/version-cascaron.props` | `1.0.0` / entero `1` |
-| Puente | Tienda | `Demo/versionado/puente.json` (+ `contrato.json`) | `1.2.0` |
+| Puente | Tienda | `Demo/versionado/puente.json` (+ `contrato.json`) | `1.3.0` |
 | Contenido | Canal | `Demo/versionado/contenido.json` | `1.0.0` (+commit al empaquetar) |
 | Definición | Canal | `encuestaId` + `version` de cada `definiciones/<id>/vN.json` | por encuesta |
 | Catálogo de capacidades | interna | catálogo del contrato | — |
@@ -2392,7 +2393,7 @@ Tabla 12.1. Mapa del mercado. Afirmaciones sobre terceros **NO VERIFICADO** hast
 | .NET Blazor Hybrid [R25] | MAUI con `BlazorWebView` | Razor compilado en la app | No hay | Descartado para el contenido: lo compilado en la app no se puede bajar [01-Actualizacion-Sin-Tienda.md:63] |
 | PWA [R26] | No hay | Web con *service worker* | Propia de la web | Descartada: no da Keystore, biometría ni capacidades con control del cascarón |
 
-La elección del framework es **Blazor WebAssembly servido por `HybridWebView`**, no Blazor Hybrid: el contenido corre dentro del WebView como WASM sin AOT [Demo/src/FrameworkConcept.Content/FrameworkConcept.Content.csproj:18] y llega a Android sólo por el puente [Demo/src/FrameworkConcept.Core/Contracts/Puente/TransporteDelPuente.cs:25]. `HybridWebView` está documentado por Microsoft para .NET MAUI [R4].
+La elección del framework es **Blazor WebAssembly servido por `HybridWebView`**, no Blazor Hybrid: el contenido corre dentro del WebView como WASM sin AOT [Demo/src/FrameworkConcept.Content/FrameworkConcept.Content.csproj:18] y llega a Android sólo por el puente [Demo/src/FrameworkConcept.Core/Contracts/Puente/TransporteDelPuente.cs:30]. `HybridWebView` está documentado por Microsoft para .NET MAUI [R4].
 
 ```mermaid
 flowchart LR
@@ -2722,9 +2723,9 @@ Tabla E.1. Marcas del libro.
 | NO VERIFICADO | WASM como «código interpretado» ante Apple y Play (folio 035) | 1.2.3, 3.1, 12.4 |
 | NO VERIFICADO | Inciso del acuerdo de Apple sobre código interpretado | 12.4 |
 | NO VERIFICADO | Que el ingreso con cuenta dispare la consulta del canal (ESC-6) | 1.3.3, 2.1 |
-| NO VERIFICADO | Cascarón iOS (CTX-3; piso 16.4, diseño sin ensayo) | Tabla 2.2, 12.4 |
+| NO VERIFICADO | Cascarón iOS en un teléfono (CTX-3; piso 16.4; ensayado sólo en el simulador de iOS 26) | Tabla 2.2, 12.4 |
 | NO VERIFICADO | `requires` faltante en un dispositivo real | 4.8 |
-| NO VERIFICADO | Keychain de iOS como equivalente del cofre | 6.4, 6.7 |
+| NO VERIFICADO | Keychain de iOS en un teléfono (en el simulador funciona, y no es equivalente al Keystore: apartamiento declarado) | 6.4, 6.7 |
 | NO VERIFICADO | `EnLineaMedida` en dispositivo; regresión sin cuenta en emulador; conjunto en teléfono físico | 6.7 |
 | NO VERIFICADO | Reenvío inverso de puertos de adb como camino de red | 10.4.3 |
 | NO VERIFICADO | Afirmaciones sobre productos de terceros y tendencias | 12.2, 12.3, 12.6 |
@@ -2848,10 +2849,10 @@ Tabla H.3. TPR del arranque en frío, APK Release. «Régimen» son los arranque
 
 | Fecha o ensayo | Variante | ¿Fusionada? | TPR | Fuente |
 |---|---|---|---|---|
-| antes de la corrección | semilla en el camino crítico | histórica | ~8,2 s | [Demo/README.md:246-248] |
-| 2026-10-29 | semilla fuera del camino crítico (`main`) | sí | 6,9–7,3 s en régimen; 9,2 s en la primera corrida | [Demo/README.md:276-277] [folio 049] |
+| antes de la corrección | semilla en el camino crítico | histórica | ~8,2 s | [Demo/README.md:306-308] |
+| 2026-10-29 | semilla fuera del camino crítico (`main`) | sí | 6,9–7,3 s en régimen; 9,2 s en la primera corrida | [Demo/README.md:336-337] [folio 049] |
 | E04 | arranque superpuesto V1 | no | 4,8–5,2 s en régimen; 9,6 s en la primera corrida | [folio 052] [E04] |
 | E04 | V1 con semilla desde el APK (V1S) | no | 4,9–5,6 s en régimen; 7,9–8,8 s recién instalado | [folio 053] [E04] |
 
-El umbral es TPR ≤ 5 000 ms en el teléfono de medida; las cifras de emulador no cuentan para él [Demo/README.md:245-246].
+El umbral es TPR ≤ 5 000 ms en el teléfono de medida; las cifras de emulador no cuentan para él [Demo/README.md:305-306].
 

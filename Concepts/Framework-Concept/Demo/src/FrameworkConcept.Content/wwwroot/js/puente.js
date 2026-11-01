@@ -9,7 +9,8 @@
 // Lo llama el cliente C# (Bridge/BridgeClient.cs) por JS interop; las páginas no lo usan directo.
 //
 // Superficie que el CASCARÓN usa de este archivo (para los eventos, sin respuesta):
-//   InvokeJavaScriptAsync("puenteRecibirEvento", sobreEvento)   — sobreEvento: objeto o texto JSON
+//   window.puenteRecibirEvento(sobreEvento)                       — sobreEvento: objeto o texto JSON (el cascarón lo
+//                                                                 evalúa en la página: Shell/Bridge/EmisorDeEventos.cs)
 (function () {
     'use strict';
 
@@ -89,6 +90,6 @@
         recibirEvento: recibirEvento,
         marcarPrimerRender: marcarPrimerRender
     };
-    // Nombre sin punto para InvokeJavaScriptAsync del cascarón.
+    // Nombre sin punto: el cascarón la llama con un script evaluado en la página.
     window.puenteRecibirEvento = recibirEvento;
 })();

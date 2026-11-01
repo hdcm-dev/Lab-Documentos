@@ -13,7 +13,9 @@ namespace FrameworkConcept.Shell;
 ///
 /// El canal no lleva token: es un servidor estático público cuyo índice va firmado (P2).
 /// HttpClientHandler, en .NET para Android, usa el manejador nativo (AndroidMessageHandler) como el «new HttpClient()»
-/// de A3: respeta la configuración de red de Android (sólo HTTPS y la CA de demostración en Debug).
+/// de A3: respeta la configuración de red de Android (sólo HTTPS y la CA de demostración en Debug). En iOS usa el
+/// manejador nativo (NSUrlSessionHandler), que respeta App Transport Security con sus valores por defecto; la CA de
+/// demostración no va en la app sino en el simulador (FrameworkConcept.Shell.csproj, README «El cascarón en iOS»).
 /// El chequeo de salud del monitor NO usa esta fábrica: si pasara por ManejadorDeRed se contaría dos veces.
 /// </summary>
 public sealed class FabricaHttp(ISesionDelUsuario sesion, IMonitorDeRed red)

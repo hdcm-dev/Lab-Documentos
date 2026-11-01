@@ -109,6 +109,66 @@ en `salida/humo/claves/`: no toca `claves/` ni `semilla/`), y
 `src/FrameworkConcept.Content/Testing/probar-en-navegador.sh` prueba el contenido en Chromium headless con el puente
 simulado (40 comprobaciones).
 
+## El cascarón en iOS
+
+El mismo cascarón compila para el simulador de iOS (`net10.0-ios`) con el código de las mismas piezas que en Android.
+En Android cambió una sola cosa: los eventos del puente salen por el mismo camino que en iOS (`Hosting/ScriptEnLaVista.cs`,
+ver la tabla de abajo).
+
+- **Verificado en el simulador (iOS 26, Face ID simulado):** arranque con TPR medido, servidor de contenido local,
+  puente y eventos del puente, el login por formulario contra el Keycloak de ensayo (`infra/keycloak/`), activar el
+  desbloqueo (sellar en el Keychain), bloquear con el botón y al volver de segundo plano pasados
+  `BloqueoTrasSegundoPlano`, desbloquear (también tras reabrir la app y sin red), cancelar el desbloqueo sin perder la
+  sesión, cerrar sesión, y Localidades y Encuesta con red y sin red.
+- **NO VERIFICADO:** el modo Navegador (ASWebAuthenticationSession) y todo lo que corre en un teléfono (Secure Enclave,
+  Face ID y Touch ID reales, firma con perfil). El simulador no tiene Secure Enclave: cómo contesta el Keychain de un
+  teléfono a la consulta sin interfaz del cofre sólo se sabe corriéndolo ahí.
+
+**Cómo se compila.** Sólo en una Mac con Xcode y el workload `ios` (no hay compilación de iOS fuera de macOS):
+
+```bash
+dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64
+xcrun simctl install booted src/FrameworkConcept.Shell/bin/Debug/net10.0-ios/iossimulator-arm64/FrameworkConcept.Shell.app
+xcrun simctl launch booted com.frameworkconcept.demo
+xcrun simctl spawn booted log show --last 2m --info --style compact \
+  --predicate 'subsystem == "com.frameworkconcept.demo"'         # la bitácora «FC» (en Android, adb logcat -s FC)
+```
+
+**Para probar el ingreso con cuenta hace falta un receptor.** La pantalla de ingreso sólo se habilita con el servidor
+en línea, y eso lo decide el chequeo de salud del cascarón contra `GET /salud` de `FcReceptorUrl` (por defecto, la de
+`FcCanalUrl`). Con la URL por defecto (`https://canal.invalid`) el cascarón queda «sin acceso al servidor» y el botón
+de ingresar, deshabilitado. Hay que levantar el receptor didáctico (`scripts/guion.sh servir`, con un certificado
+cuyo nombre incluya la dirección con la que lo alcanza la Mac) y compilar con
+`-p:FcCanalUrl=https://<receptor>:8099 -p:FcOidcAutoridad=https://<emisor>/realms/fc-demo`. Además, el contenido que
+trae `semilla/` es anterior al login tradicional y todavía ingresa por el navegador: el formulario llega con un
+contenido publicado en ese canal (`guion.sh publicar`, `firmar`), que se activa al reabrir la app.
+
+El `.csproj` arma la lista de destinos según la máquina (`FcDestinos`): Linux y Windows compilan sólo Android; macOS
+compila iOS, y además Android si el SDK tiene el workload `android`. La restauración abarca todos los destinos de la
+lista, así que listar uno sin su workload rompe la compilación de los otros. En el simulador la firma es ad hoc; un
+teléfono necesita perfil de aprovisionamiento.
+
+**Qué cambia en iOS** (cada punto está explicado en el código que nombra):
+
+| Tema | Android | iOS |
+| --- | --- | --- |
+| Origen local del contenido | `https://0.0.0.1/` | `app://0.0.0.1/`: WKWebView no deja atrapar http ni https y MAUI usa un esquema propio. Otros orígenes no pasan por el servidor; los corta la CSP del contenido (`Hosting/ServidorDeContenido.cs`) |
+| Motor web | Android System WebView ≥ 94, se lee al arrancar | el WebKit del sistema; el piso es iOS 16.4 (`ParametrosDeProducto.IosMinimo`, SIMD de WebAssembly) y lo asegura `MinimumOSVersion` (`Hosting/MotorWeb.cs`) |
+| Cofre de la sesión | clave AES del AndroidKeyStore + BiometricPrompt | clave AES en el Keychain con `.userPresence` y `WhenPasscodeSetThisDeviceOnly`, abierta tras LocalAuthentication (`Platforms/iOS/Auth/CofreDeSesion.cs`). **No es equivalente en seguridad:** en Android la clave nunca sale del Keystore; en iOS el Keychain la entrega a la memoria del proceso en cada apertura y AES-GCM corre en .NET (la Secure Enclave queda como camino de crecimiento) |
+| Vuelta del navegador (modo Navegador) | actividad `CallbackDeAutenticacion` | ASWebAuthenticationSession, sin registrar el esquema |
+| Bitácora y TPR | logcat; `Process.StartElapsedRealtime` | os_log y salida estándar; inicio del proceso por `sysctl` (`Bitacora.cs`) |
+| Lectura de la marca `primer-render` | `EvaluateJavaScriptAsync` | se evalúa en el WKWebView: la API de MAUI usa `eval`, que la CSP bloquea (`Pages/ContenidoPage.xaml.cs`) |
+| Huella de la semilla | hora de instalación del paquete | fecha de creación del directorio del `.app` |
+| Red y CA de demostración | configuración de red; la CA va en el APK de Debug | App Transport Security sin excepciones; la CA se instala en el simulador: `xcrun simctl keychain booted add-root-cert claves/tls/ca_demo_tls.crt` |
+| Eventos del puente al contenido | `ScriptEnLaVista` evalúa `puenteRecibirEvento(…)` en la página (evaluateJavascript) | lo mismo, pero en el WKWebView: `HybridWebView.InvokeJavaScriptAsync` y `EvaluateJavaScriptAsync` de MAUI pasan por `eval`, que la CSP bloquea, y su tarea no terminaba nunca: no llegaba ningún evento y la pantalla no se bloqueaba al volver de segundo plano (`Hosting/ScriptEnLaVista.cs`, `Bridge/EmisorDeEventos.cs`) |
+| Llamadas al puente desde otra ruta (`/localidades`) | sin cambios | MAUI 10 exige que el Referer sea exactamente el origen local y WebKit manda la URL completa: contestaba 400. Un script de usuario fija el Referer sólo en ese pedido (`Platforms/iOS/Hosting/RefererDelPuente.cs`) |
+| Manifiesto | `AndroidManifest.xml` | `Platforms/iOS/Info.plist`: sólo `NSFaceIDUsageDescription` (la compuerta lo compara con el catálogo) |
+
+**Cómo se prueba el cofre en el simulador.** El simulador acepta Face ID simulado, sin pantalla:
+`xcrun simctl spawn booted notifyutil -s com.apple.BiometricKit.enrollmentChanged 1` y
+`notifyutil -p com.apple.BiometricKit.enrollmentChanged` para enrolar; `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`
+cada vez que el sistema pide la cara. Sin enrolar, el sistema pide el código del dispositivo.
+
 ## Qué hay en cada carpeta
 
 | Carpeta | Qué es |

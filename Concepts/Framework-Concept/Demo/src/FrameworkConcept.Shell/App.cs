@@ -42,8 +42,8 @@ public sealed class App(IServiceProvider servicios) : Application
             ventana.Page = Navegacion(pagina);
     }
 
-    // Texto blanco en la barra: el color de fondo por defecto de MAUI es oscuro y el título no se leía.
-    private static NavigationPage Navegacion(Page raiz) => new(raiz) { BarTextColor = Colors.White };
+    // Texto blanco en la barra: el color de fondo por defecto de MAUI es oscuro y el título no se leía. En iOS la barra es clara (la del sistema): se deja el color del sistema.
+    private static NavigationPage Navegacion(Page raiz) => new(raiz) { BarTextColor = OperatingSystem.IsIOS() ? null : Colors.White };
 
     /// <summary>Una pantalla nueva, creada por el contenedor de servicios.</summary>
     public static T Pantalla<T>() where T : Page =>

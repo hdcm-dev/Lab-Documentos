@@ -13,7 +13,7 @@ namespace FrameworkConcept.Shell.Hosting;
 /// </summary>
 public sealed class ServidorDeContenido
 {
-    /// <summary>El origen fijo de la página en Android, medido en E01 ([C6]): https://0.0.0.1/.</summary>
+    /// <summary>El host fijo del origen local: https://0.0.0.1/ en Android (E01, [C6]); app://0.0.0.1/ en iOS (nota de abajo).</summary>
     public const string HostLocal = "0.0.0.1";
 
     /// <summary>El archivo cuyo pedido prueba que el contenido EMPEZÓ a cargar: el runtime de .NET en el navegador.</summary>
@@ -36,8 +36,8 @@ public sealed class ServidorDeContenido
         var n = Interlocked.Increment(ref _contador);
         var uri = e.Uri;
 
-        // P3 — Sólo el origen local. Cualquier pedido a otro origen (una navegación, un script o un fetch de afuera)
-        // se corta acá, además de la CSP del index.html.
+        // P3 — Sólo el origen local. En Android, cualquier pedido a otro origen (navegación, script o fetch de afuera)
+        // se corta acá, además de la CSP del index.html; en iOS no llega acá (nota del final).
         if (!string.Equals(uri.Host, HostLocal, StringComparison.OrdinalIgnoreCase))
         {
             e.Handled = true;
@@ -67,6 +67,15 @@ public sealed class ServidorDeContenido
         if (ruta == ArchivoDeInicioDeCarga && Interlocked.Exchange(ref _cargaAvisada, 1) == 0)
             CargaIniciada?.Invoke();
     }
+
+    // Origen local en iOS. Android: MAUI atrapa los pedidos a https://0.0.0.1/ con shouldInterceptRequest (E01). iOS:
+    // WKWebView no deja atrapar http ni https, así que MAUI registra un WKURLSchemeHandler para el esquema «app» y la
+    // página vive en app://0.0.0.1/. El host es el mismo, y por eso el chequeo de arriba no cambia. Lo que sí cambia:
+    //   — en iOS AlPedirRecurso sólo ve los pedidos del esquema «app»: un pedido a otro origen (https://…) no pasa por
+    //     acá y lo corta la CSP del index.html del contenido (default-src 'self', connect-src 'self'), que en iOS es la
+    //     única barrera para esos pedidos, no una segunda;
+    //   — 'self' vale para los dos orígenes: el paquete del contenido es el mismo en las dos plataformas;
+    //   — el esquema «app» no sale a la red, así que no toca App Transport Security (Info.plist no abre nada).
 
     /// <summary>El archivo pedido dentro de la raíz, o index.html para las rutas de página de Blazor («/encuesta»).</summary>
     private string? Resolver(string ruta)

@@ -37,9 +37,10 @@ public sealed record ResultadoDeClasificacion(NivelDeCambio Nivel, IReadOnlyList
 ///   MAYOR: método quitado, parámetro obligatorio nuevo, cambio de tipo o de forma de un sobre,
 ///          cambio del transporte.
 ///
-/// Lo que P3 no nombra se trata como MAYOR (es lo que no rompe a nadie por error), salvo dos lecturas
-/// que se declaran donde se aplican: un evento nuevo cuenta como «método nuevo» y la versión de una
-/// entrada del catálogo sigue su propio SemVer.
+/// Lo que P3 no nombra se trata como MAYOR (es lo que no rompe a nadie por error), salvo tres lecturas
+/// que se declaran donde se aplican: un evento nuevo cuenta como «método nuevo», la versión de una
+/// entrada del catálogo sigue su propio SemVer, y en el transporte de los eventos sólo el receptor es del
+/// contenido (cambiar el mecanismo con el mismo receptor es MENOR).
 /// La versión del puente NO se compara acá: es justamente lo que se decide con este resultado.
 /// </summary>
 public static class ClasificadorDeCambios
@@ -56,8 +57,10 @@ public static class ClasificadorDeCambios
         }
 
         // Transporte: hybridwebview.js, la ruta de invocación, el método nativo, los eventos y el mayor de MAUI.
-        if (antes.Transporte != despues.Transporte)
+        if (antes.Transporte with { Eventos = "" } != despues.Transporte with { Eventos = "" })
             Anotar(NivelDeCambio.Mayor, $"cambió el transporte: {antes.Transporte} → {despues.Transporte}");
+        else if (antes.Transporte.Eventos != despues.Transporte.Eventos)
+            CompararEventosDelTransporte(antes.Transporte.Eventos, despues.Transporte.Eventos, Anotar);
 
         CompararMetodos(antes.Metodos, despues.Metodos, Anotar);
         CompararEventos(antes.Eventos, despues.Eventos, Anotar);
@@ -99,6 +102,28 @@ public static class ClasificadorDeCambios
             (_, SubidaDeVersion.Igual) => $"el contrato cambió y la versión del puente sigue en {despues}; corresponde subir el {requerido.ToString().ToUpperInvariant()} (P3)",
             _ => $"el contrato tiene un cambio {requerido.ToString().ToUpperInvariant()} y la versión subió el {subida.ToString().ToUpperInvariant()} ({antes} → {despues}) (P3)"
         };
+    }
+
+    /// <summary>
+    /// Lectura declarada de P3 para <c>TransporteDelPuente.Eventos</c> («receptor | mecanismo»): el contenido publicado
+    /// depende del receptor (la función global y su argumento), no de cómo el cascarón la llama. Mismo receptor → MENOR;
+    /// otro receptor → MAYOR. Las instantáneas hasta la 1.2.0 nombraban sólo el mecanismo
+    /// («HybridWebView.InvokeJavaScriptAsync»); su receptor era el mismo de hoy, window.puenteRecibirEvento(texto).
+    /// </summary>
+    private static void CompararEventosDelTransporte(string antes, string despues, Action<NivelDeCambio, string> anotar)
+    {
+        if (ReceptorDeEventos(antes) == ReceptorDeEventos(despues))
+            anotar(NivelDeCambio.Menor, $"cambió cómo el cascarón envía los eventos, no quién los recibe: {antes} → {despues}");
+        else
+            anotar(NivelDeCambio.Mayor, $"cambió el receptor de los eventos: {antes} → {despues}");
+    }
+
+    private static string ReceptorDeEventos(string eventos)
+    {
+        const string InstantaneasHasta120 = "HybridWebView.InvokeJavaScriptAsync";
+        if (eventos == InstantaneasHasta120) return "window.puenteRecibirEvento(texto)";
+        var corte = eventos.IndexOf(" | ", StringComparison.Ordinal);
+        return (corte < 0 ? eventos : eventos[..corte]).Trim();
     }
 
     private static void CompararMetodos(

@@ -13,7 +13,7 @@ namespace FrameworkConcept.Shell.Auth;
 ///
 ///   — Primer ingreso: OIDC code + PKCE en el navegador del sistema (WebAuthenticator, RFC 8252).
 ///   — Tokens: el access en memoria; el refresh en memoria y, si la persona activa «usar la seguridad del teléfono»,
-///     sellado por <see cref="CofreDeSesion"/> (Keystore + BiometricPrompt, API ≥ 30, D-03 = T1).
+///     sellado por <see cref="CofreDeSesion"/> (Keystore + BiometricPrompt, API ≥ 30, D-03 = T1; en iOS, Keychain + LocalAuthentication).
 ///   — Ingresos siguientes: desbloqueo con huella, rostro, PIN o patrón; la entrada no espera a la red y la renovación
 ///     del access corre en segundo plano.
 ///   — Cerrar o vencer la sesión no borra las filas pendientes: quedan con su dueño («oidc:{sub}»).
@@ -414,7 +414,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
         if (!ModoOidc) throw ExcepcionDeAutenticacion.Fallida("Esta app no usa cuenta.");
         var (desbloqueo, motivo) = _cofre.Evaluar(_desbloqueoActivado);
         if (desbloqueo == DesbloqueoLocal.Activado) return Actual;
-        if (desbloqueo == DesbloqueoLocal.NoDisponible || !OperatingSystem.IsAndroidVersionAtLeast(30))
+        if (desbloqueo == DesbloqueoLocal.NoDisponible || !CofreDeSesion.SistemaAdmite)
             throw ExcepcionDeAutenticacion.Fallida(motivo ?? ReglaDelDesbloqueo.MotivoApiVieja);
         if (_estado != EstadoDeSesion.Activa || _refresh is null)
             throw ExcepcionDeAutenticacion.Fallida("Ingresá con tu cuenta antes de activar la seguridad del teléfono.");
@@ -434,7 +434,7 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
     {
         if (!ModoOidc) throw ExcepcionDeAutenticacion.Fallida("Esta app no usa cuenta.");
         if (_estado != EstadoDeSesion.Bloqueada) return Actual;
-        if (!OperatingSystem.IsAndroidVersionAtLeast(30)) throw ExcepcionDeAutenticacion.Fallida(ReglaDelDesbloqueo.MotivoApiVieja);
+        if (!CofreDeSesion.SistemaAdmite) throw ExcepcionDeAutenticacion.Fallida(ReglaDelDesbloqueo.MotivoApiVieja);
 
         string abierto;
         try

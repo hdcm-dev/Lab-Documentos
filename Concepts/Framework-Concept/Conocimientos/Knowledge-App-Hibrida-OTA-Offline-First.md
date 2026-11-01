@@ -272,7 +272,7 @@ personales [Libro §6.8, D-N4-3] [R49].
   memoria. Bloqueo tras 5 min en segundo plano (demo) [Libro §6.6].
 - **Apartamiento conocido**: con `BIOMETRIC_STRONG | DEVICE_CREDENTIAL`, enrolar una huella nueva no invalida la
   clave; declararlo [Libro §6.4].
-- **iOS (Keychain)**: equivalente **NO VERIFICADO** en la demo [Libro §6.4].
+- **iOS (Keychain `.userPresence`)**: ensayado en el simulador; **apartamiento**: no es equivalente al Keystore, la clave sale a la memoria del proceso. En un teléfono, **NO VERIFICADO** [Libro §6.4].
 - **Atestación del entorno** (root, acceso remoto): no la puede afirmar la app sola; servicios como Play
   Integrity [R32]. La demo no la usa [Libro §1.5] [Libro §9].
 
@@ -380,7 +380,7 @@ firma esperable, despliegue gradual, atestación) son **NO VERIFICADO** hasta co
 
 ## 13. Límites de este conocimiento
 
-- Destilado de una demo Android; iOS queda NO VERIFICADO en Keychain y en la política de Apple [Libro §6.4]
+- Destilado de una demo Android, con iOS ensayado sólo en el simulador; el Keychain en un teléfono y la política de Apple quedan NO VERIFICADOS [Libro §6.4]
   [Libro §12.4].
 - Las propuestas de §5.4, §7.1 y §10 no se ensayaron.
 - Las cifras son de un teléfono de medida y fechadas; se revalidan en cada producto.

@@ -32,7 +32,7 @@ public sealed record ErrorDelSobre(int Code, string Message, JsonElement? Data =
 
 /// <summary>
 /// Aviso del cascarón al contenido, sin respuesta (una «notification» de JSON-RPC: no lleva id).
-/// Lo envía el cascarón con <c>HybridWebView.InvokeJavaScriptAsync</c>.
+/// El cascarón lo entrega evaluando <c>window.puenteRecibirEvento(texto)</c> en la página (ScriptEnLaVista).
 /// </summary>
 public sealed record SobreEvento(string Jsonrpc, string V, string Method, JsonElement? Params = null);
 

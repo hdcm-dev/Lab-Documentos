@@ -121,8 +121,8 @@ public sealed class FuenteDeSemillaEmbebida(IVerificadorDeFirma verificador, str
     public SemillaEmbebida? Cargada { get; private set; }
 
     /// <summary>
-    /// La instalación del APK: versión, número de build y hora de la última instalación. Cambia con cada
-    /// «adb install -r» o actualización por tienda; leerla es una consulta al PackageManager, sin abrir archivos.
+    /// La instalación del APK (o del .app de iOS): versión, número de build y hora de la última instalación. Cambia con
+    /// cada «adb install -r» o actualización por tienda; leerla es una consulta al PackageManager, sin abrir archivos.
     /// </summary>
     public string Huella { get; } = CalcularHuella();
 
@@ -139,6 +139,10 @@ public sealed class FuenteDeSemillaEmbebida(IVerificadorDeFirma verificador, str
         var contexto = Android.App.Application.Context;
         if (contexto.PackageName is { } paquete)
             instalada = contexto.PackageManager?.GetPackageInfo(paquete, 0)?.LastUpdateTime ?? 0;
+#elif IOS
+        // iOS no tiene «hora de instalación»: cada instalación (tienda o «simctl install») deja el .app en un directorio
+        // nuevo, y su fecha de creación hace ese papel. Es una consulta al sistema de archivos, sin abrir la semilla.
+        instalada = new DateTimeOffset(Directory.GetCreationTimeUtc(Foundation.NSBundle.MainBundle.BundlePath)).ToUnixTimeMilliseconds();
 #endif
         return $"{AppInfo.VersionString}+{AppInfo.BuildString}@{instalada}";
     }

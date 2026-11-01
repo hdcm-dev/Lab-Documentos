@@ -3,7 +3,7 @@ title: Enviar un trabajo
 description: Pegar la salida de tu programa y leer las observaciones.
 roles: [Student]
 order: 10
-traces: [CU-00026@1.1]
+traces: [CU-10005@1.2]
 topic: envio
 ---
 # Enviar un trabajo
@@ -14,8 +14,9 @@ Enviar es el único guardado que tenés: al enviar, el laboratorio guarda tu tra
 
 1. Corré tu programa y copiá **todo** el texto que emitió.
 2. En *Enviar un trabajo*, completá el nombre, la fecha y la descripción, y pegá el texto.
-3. Enviá. El laboratorio reconstruye tus figuras en el orden en que aparecen, empezando por la **0**.
-4. Leé las observaciones: cada una dice **en qué figura y en qué campo** está el problema.
+3. Si querés, pedí **previsualizar**: tus figuras se dibujan en el navegador y no se guarda nada. Si tu navegador no puede dibujar en tres dimensiones, la previsualización no está disponible, pero podés enviar igual.
+4. Enviá. El laboratorio reconstruye tus figuras en el orden en que aparecen, empezando por la **0**.
+5. Leé las observaciones: cada una dice **en qué figura y en qué campo** está el problema.
 
 El texto se guarda **tal como lo pegaste**: no se corrige ni se reordena. Si algo está mal, está mal en tu programa.
 

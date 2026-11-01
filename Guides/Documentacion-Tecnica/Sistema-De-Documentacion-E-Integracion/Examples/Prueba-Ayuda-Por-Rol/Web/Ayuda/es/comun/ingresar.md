@@ -3,12 +3,12 @@ title: Ingresar al laboratorio
 description: Entrar con tu correo y tu contraseña.
 roles: [Student, Administrator]
 order: 1
-traces: [CU-00022@1.1]
+traces: [CU-10002@1.5]
 topic: ingreso
 ---
 # Ingresar al laboratorio
 
-Escribí tu correo y tu contraseña en el formulario de ingreso y enviálo. Al entrar, el laboratorio te lleva al panel de tu papel: el alumno ve sus trabajos; el administrador, los de la comisión.
+Escribí tu correo y tu contraseña en el formulario de ingreso y envialo. Al entrar, el laboratorio te lleva al panel de tu papel: el alumno ve sus trabajos; el administrador, los de la comisión.
 
 ## Antes de empezar
 

@@ -3,7 +3,7 @@ title: Mis trabajos
 description: Tus envíos, su estado y el desenlace de la revisión.
 roles: [Student]
 order: 11
-traces: [CU-00028@1.1, CU-00029@1.1]
+traces: [CU-10006@1.1, CU-10007@1.3]
 topic: mis-trabajos
 ---
 # Mis trabajos

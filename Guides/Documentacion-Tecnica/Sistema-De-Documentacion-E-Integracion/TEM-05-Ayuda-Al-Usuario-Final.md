@@ -45,7 +45,7 @@ análisis de audiencia y de tareas y con mantenimiento ([ISO/IEC/IEEE, 2022](99-
 | Rol | Perfil del producto con permisos distintos (alumno, administrador). En este cuerpo el rol **no es un escenario**: dentro de `ESC-SDEI-3`, decide qué página se sirve |
 | Unidad | En un proyecto con SDD, el módulo de la especificación al que pertenece una pantalla, con sus propios casos de uso y reglas (detalle en `TEM-07`) |
 | Visibilidad y acceso | Ocultar una página en la navegación es visibilidad; no entregarla es acceso. Sólo lo segundo protege |
-| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a un `RD-` |
+| Registro de requerimientos (RRD, `CL-02`) | Tabla donde cada página de ayuda tiene su fila: audiencia, tarea, criterio Dado/Cuando/Entonces y quién decidió. Toda página de usuario traza a lo que pide su escenario (tabla de [Aplicación por escenario](#aplicación-por-escenario)); la regla de `ESC-SDEI-3` está en la l. 88 |
 
 **Qué problema resuelve.** La taxonomía de problemas documentales que surge de 878 artefactos (listas de correo,
 preguntas, *issues* y pull requests) pone la desactualización, junto con la incorrección y la incompletitud, entre los
@@ -140,9 +140,9 @@ del repositorio y revierte la edición al final. Primero simula que la ficha sub
 después, una traza a una regla que no existe.
 
 ```text
-[Salida registrada: corrida del 2026-10-27; GUIA-DIR es la carpeta del cuerpo; se omiten 9 avisos ajenos]
+[Salida registrada: corrida del 2026-11-01; GUIA-DIR es la carpeta del cuerpo; se omiten 8 avisos ajenos y la línea de anclas]
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # sin cambios
-== PR-5 traces-resolve: verde (errores=0 avisos=9) trazas=121 resueltas=112
+== PR-5 traces-resolve: verde (errores=0 avisos=8) trazas=121 resueltas=113 ids-duplicados=0 anclas=0 anclas-resueltas=0
 rc=0
 $ python3 -I tools/docs-guard/dg.py trazas GUIA-DIR      # traces: [RD-01, RN-LOC-01@1.0, RN-LOC-02@1.0]
 GUIA-DIR/Examples/MovilidadUrbana-Mini-Demo/docs/ayuda/alta-de-localidad.md:1: ERROR traza-version-desfasada: RN-LOC-01@1.0: la declaración está en 1.1
@@ -152,7 +152,7 @@ GUIA-DIR/Examples/MovilidadUrbana-Mini-Demo/docs/ayuda/alta-de-localidad.md:1: E
 rc=1
 ```
 
-Los nueve avisos omitidos son de la prueba de concepto de ayuda por rol: trazan a casos de uso de otro sistema sin un
+Los ocho avisos omitidos son de la prueba de concepto de ayuda por rol: trazan a casos de uso de otro sistema sin un
 `source.lock` que diga contra qué SHA resolverlos, y la compuerta los marca como «no verificables» en lugar de
 bloquear. Es el comportamiento esperado, no un defecto de la mini demo.
 
@@ -189,7 +189,10 @@ Si la página no está traducida, se sirve la del idioma fuente con un aviso vis
 traducción no puede quitarle la ayuda a nadie. Cada traducción declara de qué commit de la página fuente se tradujo
 (`translation_of: es/alumno/enviar-un-trabajo.md@a1b2c3d`), y un control de la CI avisa que la traducción está atrasada
 si la fuente cambió después de ese commit **[criterio propio de la propuesta de ayuda por rol; el control no existe
-todavía en `docs-guard`]**.
+todavía en `docs-guard`]**. Las dos traducciones de la prueba de concepto no usan esa forma: anclan `translation_of` a
+la versión del caso de uso que traza la página fuente (`es/alumno/enviar-un-trabajo.md@CU-10005@1.2`), que es la que
+hoy admite el esquema de las páginas de ayuda (`tools/docs-guard/esquemas/ayuda.schema.json`). Así se detecta que el
+caso cambió, no que cambió la página.
 
 ## Preguntas guía
 
@@ -219,6 +222,7 @@ Para **evaluar** una página:
 2. Con una sesión del rol que no corresponde, ¿la página, su `.md` y el índice devuelven nada?
 3. ¿Una persona sin conocimiento del sistema hace la tarea sin ayuda (prueba de lectura)?
 4. ¿Algo de la página es un criterio de aceptación o un flujo interno que no debería estar ahí?
+5. ¿La página traza también al caso de uso de la unidad de su pantalla?
 
 ## Criterios de calidad
 

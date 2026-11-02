@@ -25,13 +25,13 @@ Origen: `src/MovilidadUrbana.MAUI/` en el commit `8fb4c3a`. Destino: la misma ru
 | --- | --- | --- | --- |
 | `Domain/Catalogos.cs` | `3764586e` | Tal cual | Provincias, medios, frecuencias y motivos. La definición v1 repite sus claves y etiquetas; una prueba lo comprueba |
 | `Domain/Entities/Localidad.cs` | `8e232f7e` | Tal cual | — |
-| `Domain/Entities/Session.cs` | `5a5e953b` | Tal cual | La usará la sesión por dispositivo del cascarón (P4, demo sin login) |
+| `Domain/Entities/Session.cs` | `5a5e953b` | Tal cual | La usará la sesión por dispositivo del contenedor nativo (*native shell*; en la jerga del proyecto, "cascarón"; P4, demo sin login) |
 | `Domain/Entities/RespuestaDeEncuesta.cs` | `dc1a0205` | **Adaptado** | Suma `EncuestaId` y `VersionDefinicion`: cada respuesta guarda con qué definición se tomó (P13.2) |
 | `Domain/Rules/EncuestaRules.cs` | `93331c50` | Tal cual | Rangos de la encuesta. La definición v1 los repite como datos; una prueba lo comprueba |
 | `Domain/Rules/LocalidadRules.cs` | `da4f294f` | Tal cual | Incluye el `[GeneratedRegex]` del código postal |
 | `Application/Result.cs` | `d3cbc5d1` | Tal cual | — |
-| `Application/DependencyInjection.cs` | `bf444508` | **Adaptado** (sólo comentario) | Decía «la web y la API»; en la demo lo invoca el contenido Blazor |
-| `Application/Abstractions/ISessionContext.cs` | `06b7c815` | **Adaptado** (sólo comentario) | Decía «depende de cookies y de HTTP»; en la demo la implementa el cascarón |
+| `Application/DependencyInjection.cs` | `bf444508` | **Adaptado** (sólo comentario) | Decía «la web y la API»; en la demo lo invoca el contenido Blazor (contenido web, distribuido como paquete de actualización OTA firmado) |
+| `Application/Abstractions/ISessionContext.cs` | `06b7c815` | **Adaptado** (sólo comentario) | Decía «depende de cookies y de HTTP»; en la demo la implementa el contenedor nativo |
 | `Application/Abstractions/ILocalidadRepository.cs` | `33e35e7a` | Tal cual | Costura para que el contenido no conozca el motor: se implementará llamando al puente (R1 §14.2) |
 | `Application/Abstractions/IEncuestaRepository.cs` | `6eebb2b6` | Tal cual | Ídem |
 | `Application/Localidades/LocalidadModel.cs` | `253750bb` | Tal cual | — |
@@ -52,7 +52,7 @@ Archivos **nuevos** de la demo en las mismas capas (no salen del caso base):
 
 | Del caso base | Por qué no | Adónde va en la demo |
 | --- | --- | --- |
-| `Infrastructure/` (EF Core sobre SQLite, `SessionSeeder`, repositorios) | La base es del cascarón (P5), con esquema fijo C-1 (folio 023) | `src/FrameworkConcept.Shell/Data/` (tramo A2). Las dos localidades sembradas (`SessionSeeder.cs`, blob `7ea1a0c3`) se repiten en el doble de prueba de `tests/FrameworkConcept.Core.Tests/TestEnvironment.cs` |
+| `Infrastructure/` (EF Core sobre SQLite, `SessionSeeder`, repositorios) | La base es del contenedor nativo (P5), con esquema fijo C-1 (folio 023) | `src/FrameworkConcept.Shell/Data/` (tramo A2). Las dos localidades sembradas (`SessionSeeder.cs`, blob `7ea1a0c3`) se repiten en el doble de prueba de `tests/FrameworkConcept.Core.Tests/TestEnvironment.cs` |
 | `Presentation/` (ViewModels con CommunityToolkit.Mvvm) | Las pantallas pasan de XAML a Razor (P1); el filtro de la lista, los estados de lista y la navegación son de la vista | Páginas Razor de `src/FrameworkConcept.Content/` (tramo A2) |
 | `Pages/`, `Controls/`, `Services/`, `MauiProgram.cs` | Controles nativos y correcciones de Android que en un WebView no aplican (R1 §14.4) | — |
 | `tests/MovilidadUrbana.MAUI.UITests` (Appium) | Localiza `resource-id` nativos; el contenido es DOM dentro de un WebView | — (R1 §14.4, NO VERIFICADO cómo se prueba la UI Razor en el WebView) |

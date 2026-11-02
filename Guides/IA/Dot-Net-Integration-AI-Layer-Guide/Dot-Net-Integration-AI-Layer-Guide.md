@@ -2,7 +2,7 @@
 doc_id: GUIA-NET-IA
 doc_type: guia-de-estudio
 title: Integración de una capa de IA en aplicaciones .NET — guía de estudio y de criterios
-version: 0.12.0
+version: 1.0.0
 status: vigente
 origin: ia-assisted
 confidence: media
@@ -21,7 +21,7 @@ related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md, Conoci
 
 # Integración de una capa de IA en aplicaciones .NET
 
-> **Versión** 0.12.0 · **Fecha** 2026-11-01 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
+> **Versión** 1.0.0 · **Fecha** 2026-11-02 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
 
 Libro de estudio para sumar una capa de IA a una aplicación .NET que ya existe: dónde vive la llamada al modelo, qué sabe el modelo y qué puede hacer, cómo se prueba, se asegura y se opera, y qué decisiones de arquitectura quedan escritas. Índice general: [0.0](#c0-0).
 

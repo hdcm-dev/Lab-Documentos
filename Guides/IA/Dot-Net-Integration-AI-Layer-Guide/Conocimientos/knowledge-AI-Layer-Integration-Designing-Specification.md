@@ -89,7 +89,7 @@ El árbol ordena esas preguntas. **La rama «no» es un resultado válido**: ter
 métrica; si el respaldo es el trabajo manual de una persona, la línea base es esa persona medida sobre el mismo
 conjunto [Caso G], [Prueba]. **Un dato exacto pedido en lenguaje libre** (combinaciones que no caben en una
 pantalla de filtros) sigue saliendo de un caso de uso: el modelo sólo elige herramienta y argumentos (A1 lectura,
-carril aparte); si una pantalla de filtros alcanza, es escalón −1 [Caso N], [Prueba].
+carril aparte); si una pantalla de filtros alcanza, es escalón −1 aunque todavía no exista (construirla es deuda del producto); se decide con las preguntas reales, no con un ejemplo [Caso N], [Prueba].
 
 ```mermaid
 flowchart TB
@@ -153,7 +153,7 @@ Diez principios, condensados como **regla · razón · fuente**. Ninguno nombra 
 
 | Id | Regla | Principio | Origen |
 |---|---|---|---|
-| R-01 | **Inquilino por código.** En un servicio con varios inquilinos (organización, sede, cliente), el código resuelve el inquilino desde la identidad o un contexto validado antes de llamar al modelo; ninguna firma de herramienta ni del puerto lo recibe; un recurso de otro inquilino responde «no encontrado». Con un rol global, el inquilino lo elige la persona en un paso validado por el código, nunca el modelo | P-6 | [Caso N] |
+| R-01 | **Inquilino por código.** En un servicio con varios inquilinos (organización, sede, cliente), el código resuelve el inquilino desde la identidad o un contexto validado antes de llamar al modelo; ninguna firma de herramienta ni del puerto lo recibe; un recurso de otro inquilino responde «no encontrado». Con un rol global, el inquilino lo elige la persona en un paso validado por el código, nunca el modelo. En segundo plano, sale del registro guardado, validado al crearlo | P-6 | [Caso N] |
 | R-02 | **Minimización del pedido.** Al modelo viaja lo mínimo que la capacidad necesita; lo que el código usa para detectar una fuga (por ejemplo, el valor que no debe revelarse) se queda en el adaptador y no viaja. Si el texto libre de entrada puede traer datos personales, es CTX-SENS y ACT-SEC decide si se enmascara antes de viajar | P-3, P-9 | [Caso G] |
 | R-03 | **Anclaje de valores afirmados.** Si una respuesta en texto libre afirma datos (cifras, nombres, fechas), un validador determinista comprueba que cada valor afirmado aparece en un resultado de herramienta de esa misma conversación; si no, el resultado es *rechazado* | P-8 | [Caso N] |
 | R-04 | **Un filtro garantiza sólo lo que mide.** Un filtro de texto (numérico, por patrón) es garantía del código para lo que detecta; lo que dice lo mismo en palabras se le escapa y va a una métrica con revisión humana | P-10 | [Caso G] |
@@ -412,7 +412,7 @@ la especificación las toma; lo que la guía no decide (sincronía, A3, autoriza
 **Definición.** Un *requisito de la capa de IA* es una condición verificable, con Id `REQ-IA-nn` (dos dígitos
 o más, único), nivel BCP 14, criterio de aceptación y **prueba nombrada**. Un requisito sin criterio o sin
 prueba está incompleto. El **verificador** (un script del proyecto, o a mano si no hay) comprueba por fila: Id
-con dos dígitos o más y único, criterio y prueba no vacíos, NO APLICA con motivo. Columnas, en orden: Id · Requisito · PROTO ·
+con dos dígitos o más y único, criterio y prueba no vacíos, NO APLICA con motivo; a mano, la especificación deja la tabla de esa comprobación con su resultado (eso es la «salida 0»). Los requisitos propios siguen desde REQ-IA-22; una segunda métrica es otro Id, nunca un sufijo («12b» no pasa). Columnas, en orden: Id · Requisito · PROTO ·
 PROD · Criterio de aceptación · Prueba · Tipo · Estado de la prueba.
 
 - **Tipo**: *garantía* (prueba sin servidor de modelos, en cada build) o *conducta* (corrida rotulada con
@@ -437,7 +437,7 @@ especificación los agrega (todas las base son *garantía*, salvo REQ-IA-12, que
 | REQ-IA-15 | Al modelo viaja sólo la entrada mínima declarada en la ficha | DEBE | DEBE | el doble del modelo registra el pedido y no contiene campos fuera de la lista | `Pedido_SoloCamposDeclarados` |
 | REQ-IA-16 | Sin modelo o fuera de tiempo, el caso de uso devuelve *degradado* y sigue | DEBE | DEBE | con el doble que no responde, el flujo termina por el camino sin IA | `SinModelo_Degradado_CaminoSinIa` |
 | REQ-IA-17 | En CTX-EXISTENTE con producción, la capacidad nace apagada por parámetro (R-08) | DEBE | DEBE | apagada, las pruebas previas del servicio siguen en verde sin cambios | `Apagada_ComportamientoPrevio` |
-| REQ-IA-18 | Con varios inquilinos, el código resuelve el inquilino; ninguna firma lo recibe (R-01) | DEBE | DEBE | un recurso de otro inquilino responde «no encontrado» | `RecursoDeOtroInquilino_NoEncontrado` |
+| REQ-IA-18 | Con varios inquilinos, el código resuelve el inquilino; ninguna firma lo recibe (R-01) | DEBE | DEBE | un recurso de otro inquilino responde «no encontrado»; con rol global, un inquilino no elegido en el paso validado también | `RecursoDeOtroInquilino_NoEncontrado`; rol global: `RolGlobal_SinPasoValidado_NoEncontrado` |
 | REQ-IA-21 | Largo máximo de la entrada, concurrencia limitada y sin reintentos | DEBE | DEBE | un texto sobre el tope no viaja; con el doble que falla hay una sola llamada | `TextoSobreElTope_SinLlamada` |
 
 *Grupo A0, según el patrón de salida (§5):*
@@ -542,7 +542,7 @@ ACT-x»; en PROD eso es NO [Prueba].
 
 | # | Ítem | PROTO | PROD |
 |---|---|---|---|
-| C-00 | Normas del repo anfitrión leídas (si existen y no están a la vista, NO con la lista de lo que falta); términos nuevos propuestos | DEBE | DEBE |
+| C-00 | Normas del repo anfitrión leídas (si existen y no están a la vista, NO con la lista de lo que falta); términos nuevos propuestos: **todo** término que la especificación usa y el glosario del repo no tiene, también los de este conocimiento (puerto, escalón, nivel de agencia, línea base…) | DEBE | DEBE |
 | C-01 | Las cuatro preguntas de §1 tienen respuesta escrita | DEBE | DEBE |
 | C-02 | El resultado del árbol está registrado; si es «no», hay ADR-SIN-IA; si es «en parte», el respaldo está nombrado | DEBE | DEBE |
 | C-03 | ESC-, CTX- y ACT- fijados con el catálogo de §3; inventario de capacidades con estado | DEBE | DEBE |
@@ -552,15 +552,15 @@ ACT-x»; en PROD eso es NO [Prueba].
 | C-07 | Una ficha del puerto por capacidad con prompt propio, con sus tres resultados | DEBE | DEBE |
 | C-08 | ADR-LLAMADA, ADR-PROVEEDOR y ADR-CAPAS, con ASR y número del registro del proyecto | DEBE | DEBE |
 | C-09 | ADR-HERRAMIENTAS y ADR-AGENCIA si algún nivel es A1 o más | DEBE | DEBE |
-| C-10 | Todo `REQ-IA-nn` con criterio y prueba (verificador con salida 0) | DEBE | DEBE |
+| C-10 | Todo `REQ-IA-nn` con criterio y prueba (verificador con salida 0, o su tabla a mano con 0 filas incompletas) | DEBE | DEBE |
 | C-11 | Cada requisito con tipo (garantía o conducta) y estado de la prueba | DEBERÍA | DEBE |
 | C-12 | Matriz con filas activadas, excluidos con motivo y ficha de riesgo por capacidad | DEBERÍA | DEBE |
 | C-13 | Qué datos mínimos salen hacia qué servidor: la especificación propone una opción y ACT-SEC la firma | DEBE | DEBE |
 | C-14 | Ningún valor de infraestructura ni secreto en el repositorio | DEBE | DEBE |
 | C-15 | Si hay MCP, quién consume, en qué dirección y con qué control | DEBE | DEBE |
 | C-16 | Si hay clientes, la frontera de §6 | PUEDE | DEBERÍA |
-| C-17 | Métrica con denominador, umbral **con su valor** (en «en parte», además no peor que la línea base) y error caro, con quien fija el umbral | DEBE | DEBE |
-| C-18 | Si hay varios inquilinos, R-01 con REQ-IA-18 en cada capacidad especificada | DEBE | DEBE |
+| C-17 | **Por capacidad**: métrica con denominador, umbral **con su valor** y con el denominador de cada cifra (en «en parte», además no peor que la línea base, con cómo se mide; en «sí» no hay línea base) y error caro, con quien fija el umbral. Si el caso no trae el umbral o el error caro, o algún dato suyo (la cifra o su denominador), la especificación propone lo que falta con su motivo y queda «pendiente de firma» del rol que fija; completarlo y rotularlo «dado» es NO | DEBE | DEBE |
+| C-18 | Si hay varios inquilinos, R-01 con REQ-IA-18 en cada capacidad especificada, también en segundo plano (el inquilino sale del registro guardado, validado al crearlo); con un rol global, el paso validado por el código que elige el inquilino, con su prueba; un recurso común a todos los inquilinos se declara con su motivo en la fila de REQ-IA-18 y no exime el resto | DEBE | DEBE |
 | C-19 | Cada filtro declara lo que mide y lo que no ve (R-04) | DEBE | DEBE |
 
 ## 13. Casos de uso y referencias

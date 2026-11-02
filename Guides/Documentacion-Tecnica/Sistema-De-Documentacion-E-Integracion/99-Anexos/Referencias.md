@@ -28,6 +28,7 @@ fuentes por esas anclas sin leer la prosa.
 6. [Práctica de la industria](#6-práctica-de-la-industria)
 7. [Versionado, estilo y adopciones públicas](#7-versionado-estilo-y-adopciones-públicas)
 8. [Desarrollo guiado por especificación](#8-desarrollo-guiado-por-especificación)
+9. [Audiencias, ayuda en el punto de uso y entrega](#9-audiencias-ayuda-en-el-punto-de-uso-y-entrega)
 
 ## 1. Norma de citación
 
@@ -81,7 +82,7 @@ Plantillas:
 
 ## 4. Normas y estilos
 
-<a id="ref-iso-26514-2022"></a>ISO/IEC/IEEE. (2022). *ISO/IEC/IEEE 26514:2022 Systems and software engineering — Design and development of information for users* (1.ª ed.). https://committee.iso.org/standard/77451.html (consultado el 2026-10-26). Verificación: V.
+<a id="ref-iso-26514-2022"></a>ISO/IEC/IEEE. (2022). *ISO/IEC/IEEE 26514:2022 Systems and software engineering — Design and development of information for users* (1.ª ed.). https://committee.iso.org/standard/77451.html (consultado el 2026-10-26). Verificación: **sin verificar**: la definición de audiencia (§3.1.7) se cita adaptada y no se cotejó con la edición publicada (resolución 399 del expediente 0003 de DocAsCode, §8).
 
 <a id="ref-iso-690-2021"></a>ISO. (2021). *ISO 690:2021 Information and documentation — Guidelines for bibliographic references and citations to information resources*. Verificación: P.
 
@@ -172,5 +173,53 @@ Las entradas de esta sección se consultaron el 2026-10-27 para el tema 07.
 <a id="ref-kiro-sf"></a>Kiro. (s. f.). *Specs*. Kiro Docs. https://kiro.dev/docs/specs/ (consultado el 2026-10-27). Verificación: V.
 
 <a id="ref-nygard-2011"></a>Nygard, M. (2011, 15 de noviembre). *Documenting architecture decisions*. Cognitect. https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions (consultado el 2026-10-27). Verificación: V.
+
+## 9. Audiencias, ayuda en el punto de uso y entrega
+
+Las entradas de esta sección son las fuentes de §3.4 de la resolución 399 del expediente 0003 de DocAsCode y las 16 que reabrió la refutación 385 el 2026-11-02; la fecha de consulta es la de la última apertura. `llmstxt.org`, también reabierta, ya figura como [Howard (s. f.)](#ref-howard-sf). La ayuda de campo de Salesforce queda **sin verificar** y sin entrada: la página oficial devolvió 403 el 2026-11-02.
+
+<a id="ref-govuk-sf"></a>GOV.UK Design System. (s. f.). *Text input*. https://design-system.service.gov.uk/components/text-input/ (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-sherwin-2014"></a>Sherwin, K. (2014, rev. 2018). *Placeholders in form fields are harmful*. Nielsen Norman Group. https://www.nngroup.com/articles/form-design-placeholders/ (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-w3c-wcag22-332"></a>W3C. (s. f.). *Understanding SC 3.3.2: Labels or instructions* (WCAG 2.2, nivel A). https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-microsoft-displayattribute-2026"></a>Microsoft. (2026, 27 de mayo). *DisplayAttribute.Description property*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.description (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-microsoft-blazor-validation-sf"></a>Microsoft. (s. f.). *ASP.NET Core Blazor forms validation*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/validation (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-jsonschema-annotations-sf"></a>JSON Schema. (s. f.). *Annotations*. https://json-schema.org/understanding-json-schema/reference/annotations (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-rjsf-uischema-sf"></a>react-jsonschema-form. (s. f.). *uiSchema*. https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema/ (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-madcap-flare-2026"></a>MadCap Software. (2026). *Context-sensitive help* (Flare 2026). https://help.madcapsoftware.com/flare2026/Content/Flare/Step2-Authoring/CSH/CSH.htm (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-oasis-dita-resourceid-2015"></a>OASIS. (2015). *DITA 1.3: `<resourceid>`*. https://docs.oasis-open.org/dita/dita/v1.3/os/part1-base/langRef/base/resourceid.html (consultado el 2026-11-02). `@appid` es único junto con `@appname`. Verificación: V.
+
+<a id="ref-zendesk-helpcenter-sf"></a>Zendesk. (s. f.). *Help Center API* (Web Widget). https://developer.zendesk.com/api-reference/widget/help-center-api/ (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-pendo-sf"></a>Pendo. (s. f.). *Take a tour of Pendo*. https://support.pendo.io/hc/en-us/articles/20826000368411-Take-a-tour-of-Pendo (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-appcues-sf"></a>Appcues. (s. f.). *Targeting by user property*. https://docs.appcues.com/targeting-by-user-property (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-microsoft-apim-groups-sf"></a>Microsoft. (s. f.). *Create and use groups in Azure API Management*. Microsoft Learn. https://learn.microsoft.com/en-us/azure/api-management/api-management-howto-create-groups (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-redocly-permissions-sf"></a>Redocly. (s. f.). *Page permissions*. https://redocly.com/docs/realm/access/page-permissions (consultado el 2026-11-02). Sin sesión, redirige al login. Verificación: V.
+
+<a id="ref-redocly-xinternal-sf"></a>Redocly. (s. f.). *remove-x-internal* (decorador de Redocly CLI). https://redocly.com/docs/cli/decorators/remove-x-internal (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-mintlify-auth-sf"></a>Mintlify. (s. f.). *Authentication setup*. https://www.mintlify.com/docs/deploy/authentication-setup (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-microsoft-aspnet-openapi-2026"></a>Microsoft. (2026, 29 de octubre). *Generate OpenAPI documents* (ASP.NET Core). Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-owasp-llm06-2025"></a>OWASP GenAI Security Project. (2025). *LLM06:2025 Excessive agency*. https://genai.owasp.org/llmrisk/llm062025-excessive-agency/ (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-backstage-rbac-sf"></a>Backstage. (s. f.). *RBAC* (plugin). https://backstage.spotify.com/docs/plugins/rbac.md (consultado el 2026-11-02). TechDocs no tiene permisos propios: la visibilidad va por el catálogo. Verificación: V.
+
+<a id="ref-willison-2025"></a>Willison, S. (2025, 16 de junio). *The lethal trifecta for AI agents*. https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/ (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-mcp-authorization-2025"></a>Model Context Protocol. (2025, 18 de junio). *Authorization* (especificación 2025-06-18). https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-microsoft-copilot-privacy-2026"></a>Microsoft. (2026, 31 de octubre). *Data, privacy, and security for Microsoft 365 Copilot*. Microsoft Learn. https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy (consultado el 2026-11-02). Verificación: V.
 
 Volver al [Mapa](../01-Mapa.md#6-anexos).

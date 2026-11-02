@@ -27,8 +27,13 @@
 # cada uno con sus variables en «env», para poder extraerlos a un script sin rediseñar.
 #
 # Xcode viene del instalador en Google Drive que usa la referencia (Apple no publica Xcode sin cuenta). Riesgo: el
-# archivo depende de un tercero y de la cuota de descargas de Drive; por eso se registra su SHA-256 en el manifiesto y
-# se verifica la compilación de Xcode (XCODE_BUILD) antes de seguir.
+# archivo depende de un tercero y de la cuota de descargas de Drive; por eso su SHA-256 está fijado (XCODE_XIP_SHA256) y
+# se COMPRUEBA antes de expandirlo (corta si no coincide), y después se verifica la compilación de Xcode (XCODE_BUILD).
+# Las dependencias de gdown no van fijadas por hash: su versión queda en el manifiesto y el .xip lo cubre el SHA-256.
+#
+# La imagen macos-15 NO es fija: GitHub la actualiza (versión menor de macOS, runtimes, CoreSimulator). El manifiesto
+# registra ImageOS/ImageVersion. El runtime iOS 26.0.1 se toma de la imagen; la rama que lo baja si falta
+# (-downloadPlatform -buildVersion) no se ejercitó todavía. Los demás runtimes de la imagen no se borran.
 
 name: framework-concept-ios
 
@@ -36,6 +41,7 @@ on:
   push:
     branches:
       - main
+      - fc/ci-ios
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'
@@ -62,6 +68,7 @@ env:
   XCODE_VERSION: '26.0'
   XCODE_BUILD: '17A324'
   XCODE_FILE_INSTALLER: 'Xcode_26_Universal.xip'
+  XCODE_XIP_SHA256: '848f8de2c9f91ef2dad4eec8ff88655222a08f3eb32c4083432c51ae2480a70f'
   XCODE_GOOGLE_FILE_INSTALLER_ID: '1GoDmCUBOMKM5nnXCXxxnAgoKpSwZvaMP'
   GDOWN_VERSION: '5.2.0'
   # SIMULADOR
@@ -111,6 +118,8 @@ jobs:
           cd "$RUNNER_TEMP"
           gdown "$XCODE_GOOGLE_FILE_INSTALLER_ID" -O "$XCODE_FILE_INSTALLER"
           shasum -a 256 "$XCODE_FILE_INSTALLER" | tee "$EVIDENCIA/xcode-xip.sha256"
+          echo "${XCODE_XIP_SHA256}  ${XCODE_FILE_INSTALLER}" | shasum -a 256 -c - || { echo "ERROR: el instalador de Xcode no es el fijado"; exit 1; }
+          { python3 --version; pipx --version; pipx runpip gdown freeze; } > "$EVIDENCIA/gdown-entorno.txt" 2>&1 || true
           # Lo preinstalado se borra antes de expandir: libera espacio y asegura que no quede otro Xcode a mano.
           sudo rm -rf /Applications/Xcode*.app
           xip --expand "$XCODE_FILE_INSTALLER"
@@ -152,7 +161,7 @@ jobs:
           # El .NET de la imagen se quita del camino: sólo queda el que se instala acá.
           sudo rm -rf "$HOME/.dotnet" /usr/local/share/dotnet
           curl -fsSL "$DOTNET_INSTALL_SCRIPT_URL" -o "$RUNNER_TEMP/dotnet-install.sh"
-          shasum -a 256 "$RUNNER_TEMP/dotnet-install.sh"
+          shasum -a 256 "$RUNNER_TEMP/dotnet-install.sh" | tee "$EVIDENCIA/dotnet-install.sh.sha256"
           bash "$RUNNER_TEMP/dotnet-install.sh" --version "$DOTNET_VERSION" --install-dir "$HOME/.dotnet"
           echo "DOTNET_ROOT=$HOME/.dotnet" >> "$GITHUB_ENV"
           echo "$HOME/.dotnet" >> "$GITHUB_PATH"
@@ -170,12 +179,14 @@ jobs:
           dotnet workload config --update-mode manifests
           dotnet workload install ios maui-ios --from-rollback-file "$RUNNER_TEMP/workloads-rollback.json"
           dotnet workload list
-          dotnet workload list | grep -q "26.0.11017/10.0.100" || { echo "ERROR: el workload ios no es 26.0.11017"; exit 1; }
+          dotnet workload list | grep -qE "^ios +${WORKLOAD_IOS_MANIFEST} " || { echo "ERROR: el workload ios no es ${WORKLOAD_IOS_MANIFEST}"; exit 1; }
+          dotnet workload list | grep -qE "^maui-ios +${WORKLOAD_MAUI_MANIFEST} " || { echo "ERROR: el workload maui-ios no es ${WORKLOAD_MAUI_MANIFEST}"; exit 1; }
 
       - name: "MANIFIESTO. Traza de herramientas"
         run: |
           {
             echo "# Herramientas de la corrida ${GITHUB_RUN_ID} (${GITHUB_SHA})"
+            echo "## Imagen del runner (no fija)"; echo "${ImageOS:-?} ${ImageVersion:-?}"
             echo "## sw_vers"; sw_vers
             echo "## uname"; uname -a
             echo "## xcode-select -p"; xcode-select -p
@@ -183,6 +194,8 @@ jobs:
             echo "## xcodebuild -showsdks"; xcodebuild -showsdks
             echo "## xcrun simctl list runtimes"; xcrun simctl list runtimes
             echo "## Instalador de Xcode (SHA-256)"; cat "$EVIDENCIA/xcode-xip.sha256"
+            echo "## dotnet-install.sh (SHA-256)"; cat "$EVIDENCIA/dotnet-install.sh.sha256"
+            echo "## Entorno de gdown"; cat "$EVIDENCIA/gdown-entorno.txt"
             echo "## dotnet --info"; (cd "$DEMO" && dotnet --info)
             echo "## dotnet workload list"; dotnet workload list
             echo "## global.json"; cat "$DEMO/global.json"
@@ -207,7 +220,12 @@ jobs:
             -p:FcDestinos="$TFM" -p:RuntimeIdentifier="$RID" -v minimal
           APP="$PWD/$PROYECTO/bin/$CONFIGURACION/$TFM/$RID/FrameworkConcept.Shell.app"
           test -d "$APP"
-          codesign -dv --entitlements :- "$APP" 2>&1 | head -40
+          codesign -dv "$APP" 2>&1 | head -20
+          # Entitlements: en el simulador pueden ir en la firma o en la sección __TEXT,__entitlements del binario.
+          ENT="$( { codesign -d --entitlements - --xml "$APP" 2>/dev/null; \
+                    otool -X -s __TEXT __entitlements "$APP/FrameworkConcept.Shell" 2>/dev/null | xxd -r -p 2>/dev/null; } || true)"
+          printf '%s\n' "$ENT" | tee "$EVIDENCIA/entitlements.txt"
+          grep -q keychain-access-groups "$EVIDENCIA/entitlements.txt" || { echo "ERROR: falta keychain-access-groups en el .app"; exit 1; }
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$APP/Info.plist"
           echo "APP=$APP" >> "$GITHUB_ENV"
 

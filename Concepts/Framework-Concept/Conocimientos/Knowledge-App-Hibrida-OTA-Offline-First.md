@@ -272,7 +272,7 @@ personales [Libro §6.8, D-N4-3] [R49].
   memoria. Bloqueo tras 5 min en segundo plano (demo) [Libro §6.6].
 - **Apartamiento conocido**: con `BIOMETRIC_STRONG | DEVICE_CREDENTIAL`, enrolar una huella nueva no invalida la
   clave; declararlo [Libro §6.4].
-- **iOS (Keychain `.userPresence`)**: ensayado en el simulador; **apartamiento**: no es equivalente al Keystore, la clave sale a la memoria del proceso. En un teléfono, **NO VERIFICADO** [Libro §6.4].
+- **iOS (Keychain `.userPresence`)**: con Secure Enclave, la clave AES va envuelta (ECIES) por una P-256 del enclave: **equivalente en diseño** al Keystore, **NO VERIFICADO** en un teléfono. Sin enclave (el simulador, donde se ensayó) **apartamiento**: la clave sale a la memoria del proceso [Libro §6.4].
 - **Atestación del entorno** (root, acceso remoto): no la puede afirmar la app sola; servicios como Play
   Integrity [R32]. La demo no la usa [Libro §1.5] [Libro §9].
 

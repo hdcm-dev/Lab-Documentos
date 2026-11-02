@@ -115,16 +115,16 @@ El mismo cascarón compila para el simulador de iOS (`net10.0-ios`) con el códi
 En Android cambió una sola cosa: los eventos del puente salen por el mismo camino que en iOS (`Hosting/ScriptEnLaVista.cs`,
 ver la tabla de abajo).
 
-- **Verificado en el simulador (iOS 26, Face ID simulado):** arranque con TPR medido, servidor de contenido local,
-  puente y eventos del puente, el login por formulario contra el Keycloak de ensayo (`infra/keycloak/`), activar el
-  desbloqueo (sellar en el Keychain), bloquear con el botón y al volver de segundo plano pasados
-  `BloqueoTrasSegundoPlano`, desbloquear (también tras reabrir la app y sin red), cancelar el desbloqueo sin perder la
-  sesión, cerrar sesión, y Localidades y Encuesta con red y sin red.
-- **NO VERIFICADO:** el modo Navegador (ASWebAuthenticationSession) y todo lo que corre en un teléfono (Secure Enclave,
-  Face ID y Touch ID reales, firma con perfil). El simulador no tiene Secure Enclave: cómo contesta el Keychain de un
+- **Verificado en el simulador (iOS 26, Face ID simulado):** arranque con TPR, contenido local, puente y eventos, login
+  por formulario y por navegador (`-p:FcModoDeIngreso=Navegador`: ASWebAuthenticationSession efímera, sin el diálogo
+  «quiere utilizar … para iniciar sesión», contra `infra/keycloak/`), sellar en el Keychain, bloquear (botón y segundo
+  plano pasado `BloqueoTrasSegundoPlano`), desbloquear (también al reabrir y sin red), cancelar el desbloqueo, cerrar
+  sesión, el error del emisor en la vuelta del navegador, y Localidades y Encuesta con red y sin red.
+- **NO VERIFICADO:** cerrar la hoja del navegador con la X (la VM no deja tocarla) y todo lo que corre en un teléfono
+  (el cofre con Secure Enclave, Face ID y Touch ID reales, firma con perfil). El simulador no tiene Secure Enclave: cómo contesta el Keychain de un
   teléfono a la consulta sin interfaz del cofre sólo se sabe corriéndolo ahí.
 
-**Cómo se compila.** Sólo en una Mac con Xcode y el workload `ios` (no hay compilación de iOS fuera de macOS):
+**Cómo se compila.** Sólo en una Mac con Xcode y el workload `ios` (no hay compilación de iOS fuera de macOS). Ojo: el workload `ios` más nuevo exige el Xcode que lo acompaña (el 27.1 rechaza Xcode 26 con «requires Xcode 27.1»); con Xcode 26 se fija la versión del SDK en el destino: `-p:FcDestinos=net10.0-ios26.0 -f net10.0-ios26.0` (la salida queda en `bin/<config>/net10.0-ios26.0/`), así se compiló y midió el 2026-11-02:
 
 ```bash
 dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64
@@ -139,9 +139,9 @@ en línea, y eso lo decide el chequeo de salud del cascarón contra `GET /salud`
 `FcCanalUrl`). Con la URL por defecto (`https://canal.invalid`) el cascarón queda «sin acceso al servidor» y el botón
 de ingresar, deshabilitado. Hay que levantar el receptor didáctico (`scripts/guion.sh servir`, con un certificado
 cuyo nombre incluya la dirección con la que lo alcanza la Mac) y compilar con
-`-p:FcCanalUrl=https://<receptor>:8099 -p:FcOidcAutoridad=https://<emisor>/realms/fc-demo`. Además, el contenido que
-trae `semilla/` es anterior al login tradicional y todavía ingresa por el navegador: el formulario llega con un
-contenido publicado en ese canal (`guion.sh publicar`, `firmar`), que se activa al reabrir la app.
+`-p:FcCanalUrl=https://<receptor>:8099 -p:FcOidcAutoridad=https://<emisor>/realms/fc-demo`. La semilla
+(`semilla/`) ya trae el contenido con el formulario de ingreso y el puente 1.3.0: con `FcOidcAutoridad` configurada, el
+primer arranque sin canal muestra el formulario, con «Ingresar» deshabilitado hasta que el receptor conteste.
 
 El `.csproj` arma la lista de destinos según la máquina (`FcDestinos`): Linux y Windows compilan sólo Android; macOS
 compila iOS, y además Android si el SDK tiene el workload `android`. La restauración abarca todos los destinos de la
@@ -154,7 +154,7 @@ teléfono necesita perfil de aprovisionamiento.
 | --- | --- | --- |
 | Origen local del contenido | `https://0.0.0.1/` | `app://0.0.0.1/`: WKWebView no deja atrapar http ni https y MAUI usa un esquema propio. Otros orígenes no pasan por el servidor; los corta la CSP del contenido (`Hosting/ServidorDeContenido.cs`) |
 | Motor web | Android System WebView ≥ 94, se lee al arrancar | el WebKit del sistema; el piso es iOS 16.4 (`ParametrosDeProducto.IosMinimo`, SIMD de WebAssembly) y lo asegura `MinimumOSVersion` (`Hosting/MotorWeb.cs`) |
-| Cofre de la sesión | clave AES del AndroidKeyStore + BiometricPrompt | clave AES en el Keychain con `.userPresence` y `WhenPasscodeSetThisDeviceOnly`, abierta tras LocalAuthentication (`Platforms/iOS/Auth/CofreDeSesion.cs`). **No es equivalente en seguridad:** en Android la clave nunca sale del Keystore; en iOS el Keychain la entrega a la memoria del proceso en cada apertura y AES-GCM corre en .NET (la Secure Enclave queda como camino de crecimiento) |
+| Cofre de la sesión | clave AES del AndroidKeyStore + BiometricPrompt | clave AES en el Keychain con `.userPresence` y `WhenPasscodeSetThisDeviceOnly`, abierta tras LocalAuthentication (`Platforms/iOS/Auth/CofreDeSesion.cs`). **Con Secure Enclave** (un teléfono) la clave AES se guarda envuelta por ECIES con una clave P-256 generada dentro del enclave (`.privateKeyUsage` + `.userPresence`), que nunca sale del hardware: **equivalente en diseño** al Keystore, **NO VERIFICADO**. **Sin enclave** (el simulador) la clave queda en claro dentro del ítem y el Keychain la entrega a la memoria del proceso: no es equivalente. Una sesión sellada sin enclave se sigue abriendo |
 | Vuelta del navegador (modo Navegador) | actividad `CallbackDeAutenticacion` | ASWebAuthenticationSession, sin registrar el esquema |
 | Bitácora y TPR | logcat; `Process.StartElapsedRealtime` | os_log y salida estándar; inicio del proceso por `sysctl` (`Bitacora.cs`) |
 | Lectura de la marca `primer-render` | `EvaluateJavaScriptAsync` | se evalúa en el WKWebView: la API de MAUI usa `eval`, que la CSP bloquea (`Pages/ContenidoPage.xaml.cs`) |
@@ -169,6 +169,45 @@ teléfono necesita perfil de aprovisionamiento.
 `notifyutil -p com.apple.BiometricKit.enrollmentChanged` para enrolar; `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`
 cada vez que el sistema pide la cara. Sin enrolar, el sistema pide el código del dispositivo.
 
+### La base del cascarón sin código dinámico
+
+iOS no deja generar código en ejecución, y el cascarón se compila entero de antemano, sin intérprete. EF Core arma
+el modelo de la base y traduce cada consulta LINQ al vuelo, así que en iOS no puede: el Release abortaba al abrir
+(«Model building is not supported when publishing with NativeAOT»). El Debug no lo muestra porque corre con
+intérprete. La solución es que EF no tenga nada que armar: el modelo y las consultas salen compilados de antemano
+en `src/FrameworkConcept.Shell/Data/Compilado/`, que se versiona, y `DbSqlite` los usa en las dos plataformas
+(`UseModel`; los interceptores de las consultas los toma el compilador, `InterceptorsNamespaces` en el `.csproj`).
+Crear la base tampoco puede pasar por `EnsureCreated`, que arma el SQL con el modelo de diseño («Design-time
+DbContext operations are not supported when publishing with NativeAOT», visto en el Release del simulador): el
+script de creación sale de `dotnet ef dbcontext script` a `Data/Compilado/SqlDeCreacion.cs` y `DbSqlite` lo ejecuta
+tal cual. El modelo compilado, además, se arma en el mismo hilo (interruptor `Microsoft.EntityFrameworkCore.Issue31751`
+en `MauiProgram.cs`): por defecto EF lo arma en un hilo aparte, y en Mono eso dejaba la app trabada en la presentación.
+
+**Cuándo se regenera:** cada vez que cambian `Data/ContextoDelCascaron.cs`, `Data/Tablas.cs` o `Data/DbSqlite.cs`,
+aunque sea un comentario de `DbSqlite.cs` (las consultas precompiladas apuntan a línea y columna de cada llamada; si
+no se regenera, el cascarón no compila, y una consulta nueva sin regenerar falla en iOS al ejecutarse):
+
+```bash
+scripts/modelo-compilado.sh
+```
+
+El script corre `dotnet ef dbcontext optimize --precompile-queries --nativeaot` en el contenedor, con `dotnet-ef`
+como herramienta local (`.config/dotnet-tools.json`, misma versión que EF Core en `Directory.Build.props`). La
+herramienta no puede cargar un proyecto MAUI, así que trabaja sobre `tools/FrameworkConcept.Shell.Diseno`, un
+proyecto `net10.0` que enlaza los archivos de datos del cascarón (los mismos archivos, no copias).
+
+La precompilación de consultas de EF 10 es experimental (EF9100), y en 10.0.11 tiene límites que condicionan el
+código (cada uno está explicado en `DbSqlite.cs` o en el script):
+
+- sólo precompila una consulta si todo lo que nombra son variables locales: un parámetro del método o de una lambda
+  (el contexto, un valor, el `CancellationToken`) la hace fallar. Por eso cada método de `DbSqlite` abre el contexto
+  en una local y copia antes los valores (`var (enColeccion, corte) = (coleccion, ct)`);
+- escribe los `[InterceptsLocation]` con ruta absoluta, arma mal el nombre de una variable en las consultas sin
+  seguimiento y convierte las filas (clases selladas) a una interfaz sin pasar por `object`. El script corrige las
+  tres cosas sobre la salida y silencia los avisos del código generado.
+
+Medido en el simulador (Release, sin intérprete, 2026-11-02): TPR 3,2 s el primer arranque y 1,6–1,7 s en frío (con intérprete era 4,4 s y 2,1–2,3 s).
+
 ## Qué hay en cada carpeta
 
 | Carpeta | Qué es |
@@ -178,12 +217,13 @@ cada vez que el sistema pide la cara. Sin enrolar, el sistema pide el código de
 | `src/FrameworkConcept.Content/` | El contenido: Blazor WebAssembly **sin AOT** |
 | `tools/FrameworkConcept.Tools/` | Herramientas: claves de demostración, empaquetar, firmar el índice, publicar una definición, retirar, regenerar `contrato.json` |
 | `tools/FrameworkConcept.Receptor/` | «Receptor didáctico»: un doble de prueba que sirve el canal y recibe las respuestas |
+| `tools/FrameworkConcept.Shell.Diseno/` | Proyecto de diseño de la base del cascarón: sólo para regenerar `Data/Compilado/` (no viaja en la app) |
 | `definiciones/encuesta-movilidad/` | La encuesta de tres pasos del caso base como datos: `v1.json`, `v2.json` y su `esquema.json` |
 | `versionado/` | Fuentes únicas de versión: cascarón, puente, contenido, y la fase (`diseño`) |
 | `semilla/` | Contenido y definición que el cascarón trae embebidos (los genera el guion) |
 | `claves/` | Sólo la clave **pública** de demostración; la privada no se versiona |
 | `tests/` | `Core.Tests` (dominio y contrato), `Update.Tests` (actualizador), `Gate.Tests` (compuerta) |
-| `scripts/` | `contenedor.sh` e `imagen.sh` (el contenedor de compilación), `guion.sh` (el guion único) y `ci-local.sh` (la compuerta en local) |
+| `scripts/` | `contenedor.sh` e `imagen.sh` (el contenedor de compilación), `guion.sh` (el guion único), `ci-local.sh` (la compuerta en local) y `modelo-compilado.sh` (regenera el modelo compilado de la base) |
 | `contenedor/` | La receta del contenedor de compilación (`Dockerfile`) |
 | `etapas/` | Los parches de rojo provocado de P8: M-13, un aviso promovido a error y un error de compilación del cascarón |
 | `infra/keycloak/` | Emisor OIDC de ensayo (Keycloak en contenedor, realm `fc-demo`) para el modo con cuenta del incremento de red y autenticación (folio 038) |

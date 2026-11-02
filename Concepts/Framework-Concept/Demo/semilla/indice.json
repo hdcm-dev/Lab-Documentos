@@ -3,15 +3,15 @@
   "canal": "dev",
   "puenteMayor": 1,
   "keyId": "demo-2026",
-  "emitido": "2026-10-26T22:08:48+00:00",
-  "expires": "2026-11-25T22:08:48+00:00",
+  "emitido": "2026-11-02T10:14:50+00:00",
+  "expires": "2026-12-02T10:14:50+00:00",
   "entradas": {
     "contenido": [
       {
-        "version": "1.0.0+5d5c2b4",
+        "version": "1.0.0+e0608fd",
         "ruta": "paquetes/contenido-1.0.0.zip",
-        "size": 3789247,
-        "sha256": "21656bb58b91cf24622b2f0971d3be2c91ed8236d1ced39efaaa35109503ab0c",
+        "size": 3800128,
+        "sha256": "482d58abff7d08dd1d5a6a9e00320144333552a0d23b764f07137222d3ce93f0",
         "mandatory": false
       }
     ],

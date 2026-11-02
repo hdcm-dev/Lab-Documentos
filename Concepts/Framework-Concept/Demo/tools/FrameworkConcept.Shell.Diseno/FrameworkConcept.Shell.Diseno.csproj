@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Proyecto de diseño de la base del cascarón (P5). NO viaja en la app: existe para que «dotnet ef dbcontext
+       optimize» genere el modelo compilado y las consultas precompiladas de ContextoDelCascaron. La herramienta tiene
+       que cargar el contexto en un proceso de escritorio, y el cascarón es un proyecto MAUI (net10.0-android /
+       net10.0-ios) que no corre así. Por eso este proyecto es net10.0 a secas y ENLAZA (no copia) los archivos de
+       datos del cascarón: compila exactamente el mismo texto de DbSqlite.cs, y las consultas precompiladas quedan
+       atadas a sus llamadas (los interceptores identifican cada llamada por el contenido del archivo y la posición).
+
+       Cómo se regenera (desde la raíz de la demo), cada vez que cambian Data/ContextoDelCascaron.cs, Data/Tablas.cs o
+       cualquier consulta de Data/DbSqlite.cs:
+         scripts/contenedor.sh scripts/modelo-compilado.sh
+       El resultado va a src/FrameworkConcept.Shell/Data/Compilado/ y se versiona. README.md, «La base del cascarón sin
+       código dinámico», cuenta por qué. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>FrameworkConcept.Shell.Diseno</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Los archivos del cascarón que hacen falta para compilar el contexto y sus consultas, enlazados. Data/Compilado/
+       NO entra: es la salida de la herramienta, y si DbSqlite.cs cambió, los interceptores viejos ya no compilarían. -->
+  <ItemGroup>
+    <Compile Include="../../src/FrameworkConcept.Shell/Data/ContextoDelCascaron.cs" Link="Cascaron/Data/ContextoDelCascaron.cs" />
+    <Compile Include="../../src/FrameworkConcept.Shell/Data/Tablas.cs" Link="Cascaron/Data/Tablas.cs" />
+    <Compile Include="../../src/FrameworkConcept.Shell/Data/DbSqlite.cs" Link="Cascaron/Data/DbSqlite.cs" />
+    <Compile Include="../../src/FrameworkConcept.Shell/Data/IDb.cs" Link="Cascaron/Data/IDb.cs" />
+    <Compile Include="../../src/FrameworkConcept.Shell/Data/EsquemaDelCascaron.cs" Link="Cascaron/Data/EsquemaDelCascaron.cs" />
+    <Compile Include="../../src/FrameworkConcept.Shell/Bitacora.cs" Link="Cascaron/Bitacora.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="$(VersionEfCore)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="$(VersionEfCore)" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/FrameworkConcept.Core/FrameworkConcept.Core.csproj" />
+  </ItemGroup>
+
+</Project>

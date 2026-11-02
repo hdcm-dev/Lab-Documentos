@@ -41,7 +41,6 @@ on:
   push:
     branches:
       - main
-      - fc/ci-ios
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'

@@ -1,14 +1,19 @@
 ---
 doc_id: GUIA-NET-IA
-doc_type: study-guide
+doc_type: guia-de-estudio
 title: Integración de una capa de IA en aplicaciones .NET — guía de estudio y de criterios
 version: 0.12.0
-status: en revisión
-origin: ai-assisted
-confidence: alta en lo ejecutado y registrado; media en lo rotulado como criterio de la guía; lo no verificado está marcado
+status: borrador
+origin: ia-assisted
+confidence: media
+confidence_nota: alta en lo ejecutado y registrado; media en lo rotulado como criterio de la guía; lo no verificado está marcado
+owner: Lab-Documentos
 last_review: 2026-11-01
 tope_palabras: 60000
-audience: [desarrolladores .NET que no trabajaron con modelos, arquitectos o líderes técnicos, operadores, responsables de datos y seguridad]
+audience: [desarrollo, analista, devops, qa]
+audience_nota: desarrolladores .NET que no trabajaron con modelos, arquitectos o líderes técnicos, operadores, responsables de datos y seguridad
+traces: []
+description: Guía de estudio para sumar una capa de IA a una aplicación .NET existente, con ejemplos compilables y criterios.
 prerequisites: ["C# y .NET 10", "inyección de dependencias, ASP.NET Core, EF Core con SQLite y NUnit en lo básico", "capas Domain/Application/Infrastructure"]
 sdk_validado: ".NET SDK 10.0.403 en la imagen mcr.microsoft.com/dotnet/sdk:10.0"
 related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md, Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md]

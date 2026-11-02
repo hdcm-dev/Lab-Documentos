@@ -28,3 +28,30 @@ github.blog                      # blog de ingeniería citado en la guía 16 (AI
 shopify.engineering              # blog de ingeniería citado en la guía 16 (AI Layer)
 www.anthropic.com                # publicaciones citadas en la guía 16 (AI Layer)
 www.linkedin.com                 # artículo citado en la guía 16 (AI Layer)
+# Guía 16 (capa de IA en .NET): fuentes primarias citadas en el libro y su Conocimiento
+arxiv.org                        # artículos de investigación citados (RAG, agentes, evaluación)
+ollama.com                       # runtime local de modelos que usan los ejemplos (incluye docs.ollama.com)
+devblogs.microsoft.com           # anuncios oficiales de Microsoft.Extensions.AI y Agent Framework
+microsoft.com                    # sitios oficiales de Microsoft (blogs, developer, www)
+nuget.org                        # API pública de NuGet consultada por los ejemplos
+openai.com                       # documentación y especificaciones de OpenAI citadas
+langchain.com                    # documentación de LangChain/LangGraph comparada
+aspire.dev                       # documentación de .NET Aspire
+qwenlm.github.io                 # tarjetas oficiales de los modelos Qwen usados
+nist.gov                         # NIST AI RMF y publicaciones de NIST
+rfc-editor.org                   # RFC citados (BCP 14)
+latent.space                     # artículo citado sobre patrones de agentes
+infoleg.gob.ar                   # normativa argentina de datos personales
+resdac.org                       # definición de datos citada
+npmjs.org                        # registro npm citado en la verificación de dependencias
+pypi.org                         # registro PyPI citado en la verificación de dependencias
+claude.com                       # documentación de la plataforma de Anthropic
+withgoogle.com                   # guía People + AI de Google
+opentelemetry.io                 # convenciones semánticas de GenAI
+huggingface.co                   # tarjetas de modelos y datasets
+c4model.com                      # modelo C4 para los diagramas de arquitectura
+blog.google                      # anuncios oficiales de Google
+cockburn.us                      # arquitectura hexagonal (fuente original)
+adr.github.io                    # formatos de ADR
+fb.com                           # anuncios oficiales de Meta sobre Llama
+ollama-embed                     # nombre de servicio del compose de la demo (red interna de contenedores)

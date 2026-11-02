@@ -4,4 +4,4 @@
 # Uso previsto: AGENTS.md y archivos de instrucciones de clase H, excluidos de AI-3 por ruta (CL-03).
 #
 # sha256                                                            ruta                          control
-f12ab882c904b7fb436740fba3d5489e42badc4e4f8a37f0ffe69b80dd9d2cc5  AGENTS.md                     AI-3
+26d0e20c4969df28e75e6ee54e17c411ac12c92f855d41d2dfd8826b71930e92  AGENTS.md                     AI-3

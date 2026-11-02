@@ -110,10 +110,6 @@ else
                             <p class="fc-puerta__subtitulo">Hola, <strong>@usuario</strong>.</p>
                         }
                     </header>
-                    <p class="fc-puerta__leyenda" data-testid="puerta-leyenda-seguridad">
-                        <span class="fc-puerta__leyenda-icono" aria-hidden="true">@Icono(SvgHuella)</span>
-                        <span>Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión.</span>
-                    </p>
                     @ErrorDeSesion
                     <button type="button" class="fc-boton fc-boton--bloque" data-testid="puerta-desbloquear" disabled="@SesionDelUsuario.Ocupada"
                             aria-busy="@(SesionDelUsuario.Ocupada ? "true" : "false")" @onclick="SesionDelUsuario.DesbloquearAsync">
@@ -126,6 +122,10 @@ else
                             <span class="fc-boton__icono" aria-hidden="true">@Icono(SvgCandadoAbierto)</span><span>Desbloquear</span>
                         }
                     </button>
+                    <p class="fc-puerta__leyenda" data-testid="puerta-leyenda-seguridad">
+                        <span class="fc-puerta__leyenda-icono" aria-hidden="true">@Icono(SvgHuella)</span>
+                        <span>Usá la seguridad del teléfono: huella, rostro, PIN o patrón. No hace falta conexión.</span>
+                    </p>
                 </div>
             </section>
             break;

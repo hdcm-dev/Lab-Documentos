@@ -1,5 +1,5 @@
 {
   "keyId": "demo-2026",
   "algoritmo": "ES256",
-  "firma": "h4XrHfFq3e8Hroo9M35SKQoNggBSjQ4qbsLX3+QH/FOibovZXQ9e5pAAvxHqkp+z0CGP2MjFRyCtESAGe9DvmQ=="
+  "firma": "/61K/mND9m6m+9Fa6bBxlIxHduvjHZRcqzu/eUEGLQrAFgO+bfO8ki9VNUhEhA4vWEn3vBt5h5VSOTFoIFblAw=="
 }

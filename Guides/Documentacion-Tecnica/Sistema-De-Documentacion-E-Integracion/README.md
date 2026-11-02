@@ -121,6 +121,8 @@ anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte.
 | [Anexo: lista de verificación](99-Anexos/Lista-De-Verificacion.md) | `ANX-SDEI-VER` | anexo | borrador | Ítems `VER-*` que se revisan sobre una guía antes de pasarla a vigente |
 | [Anexo: cómo decidir](99-Anexos/Como-Decidir.md) | `ANX-SDEI-DECIDIR` | anexo | borrador | Criterios, escala anclada, filtros, regla de firmeza y una matriz trabajada |
 | [Anexo: ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` | anexo | borrador | Ejercicios de transferencia `EJR-SDEI-nn`, con claves al final |
+| [Conocimiento: diseñar el sistema documentador](Conocimientos/knowledge-DocsAsCode-Designing-Specification.md) | `ANX-SDEI-ESPECIFICACION` | anexo | borrador ensayado, no probado | Conocimiento 1.4 para diseñar la documentación como código de un proyecto: decisiones, artefactos A-01 a A-13 y compuertas |
+| [Plantilla A-01: ficha vacía](Conocimientos/A-01-ficha-vacia.md) | `ANX-SDEI-FICHA-VACIA` | anexo | borrador ensayado, no probado | Esqueleto vacío de la ficha de diseño documental que se entrega al aplicador |
 | [Guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) | `DOC-SDT-0001` | nota de estudio | obsoleto | La primera forma del mismo dominio en un archivo. La reemplaza este cuerpo: su [tabla de destinos](Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) lleva cada sección a su tema o anexo. Se archiva en la versión siguiente del cuerpo |
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
@@ -142,6 +144,7 @@ Sistema-De-Documentacion-E-Integracion/
 ├── README.md                 este índice (corpus_id y versión viven sólo acá)
 ├── 00-Marco.md               escenarios, contextos, actores, convenciones
 ├── 01-Mapa.md                estoy acá → qué aplico
+├── Conocimientos/            conocimiento de especificación y plantilla A-01
 ├── 99-Anexos/                material de consulta
 └── Examples/                 ejemplos ejecutables y guías prácticas
 ```

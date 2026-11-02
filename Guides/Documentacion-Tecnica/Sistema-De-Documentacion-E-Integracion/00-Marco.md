@@ -175,7 +175,7 @@ los controles de la compuerta, que el agente no escribió en ese pull request, y
 
 | Convención | Regla | Detalle |
 | --- | --- | --- |
-| Frontmatter | Todo documento del cuerpo abre con los diez campos más `description`; `corpus_id` y `version` sólo en el README | [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#2-los-diez-campos-más-description) |
+| Frontmatter | Todo documento del cuerpo abre con los diez campos más `description`; `corpus_id` y `version` sólo en el README, salvo el conocimiento de `Conocimientos/`, cuyo `version` repite su `**Versión:**` | [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#2-los-diez-campos-más-description) |
 | Identificadores | Un prefijo del registro cerrado, guion y sufijo (`TEM-01`, `CQ-05`, `ESC-SDEI-2`). Una traza apunta al identificador, no a la ruta | [Registro de prefijos](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#5-registro-de-prefijos) |
 | Trazas | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]`; cada una tiene que resolver contra el registro, o la compuerta da rojo | [Esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#4-trazas) |
 | Enlaces | Relativos dentro del repositorio; nunca un relativo que salga del repositorio. Entre repositorios, `Repo@ancla:corpus_id/doc_id` con enlace permanente al SHA | [Glosario](99-Anexos/Glosario.md#2-términos) (cita entre repositorios) |

@@ -9,12 +9,20 @@
 # siendo el único check requerido. Esto es un workflow aparte de entrega, como el de referencia en que se basa (el CD de
 # iOS de Ejemplo_Maui_Hibrida). Corre al llegar a main un cambio de la demo, y a mano.
 #
-# Runner: macos-15 de GitHub (el repositorio es público: los minutos de macOS no se cobran). Si algún día se cambia
-# «runs-on» a un runner propio, este workflow NUNCA debe dispararse con pull_request (correría código ajeno en esa máquina).
-# Runner propio m4dev (VM efímera JIT): sólo por workflow_dispatch con runner=m4dev. Ahí no se baja Xcode: se fija el
-# de la imagen y se verifica XCODE_BUILD e IOS_RUNTIME_BUILD (corta si no coinciden). El job lleva la guarda de fork.
+# Runner (decisión del PO, 2026-11-02): el runner propio m4dev es el defecto. El job «elegir» calcula UNA sola vez
+# dónde corre (salidas «runner», «runs-on» y «en-m4dev») y el job de iOS reutiliza esas salidas en runs-on y EN_M4DEV:
+#   - workflow_dispatch: input «runner», m4dev POR DEFECTO; «github» (macos-15 de GitHub) queda de respaldo.
+#   - push a main: la variable de repositorio FC_IOS_RUNNER; si no está definida, github. Hoy NO está definida a
+#     propósito: no hay orquestador que escuche la cola y el runner m4dev es JIT de un solo job (alguien lo levanta a
+#     mano); un push que pidiera m4dev sin runner quedaría en cola y GitHub lo cancela a las 24 h, en rojo. Cuando
+#     exista el orquestador que lee la cola, se define FC_IOS_RUNNER=m4dev y el push pasa a m4dev sin tocar este YAML.
+# m4dev: VM efímera, runner JIT de un solo job, registrado en un grupo de runners restringido a este workflow en main.
+# Por eso este workflow NUNCA debe dispararse con pull_request (correría código ajeno en esa máquina); los jobs llevan
+# además la guarda de fork. En m4dev no se baja Xcode: se usa el de la imagen y se verifica XCODE_BUILD e
+# IOS_RUNTIME_BUILD (corta si no coinciden). El macos-15 de GitHub no se cobra (repositorio público).
+# concurrency: un solo job por ref (cancel-in-progress) para no apilar jobs en la cola del runner de un solo uso.
 # En m4dev SÍ se descargan el SDK de .NET (si la imagen no lo trae; dotnet-install fijado por SHA-256 y versión exacta)
-# y los workloads (archivo de reversión fijo). No se borra nada de la imagen. Hornearlos en la imagen queda pendiente.
+# y los workloads (archivo de reversión fijo): .NET y workloads van con versión fija por el acta de la receta única. No se borra nada de la imagen. Hornearlos en la imagen queda pendiente.
 #
 # Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
 # el .NET preinstalado) y se instala exactamente lo que dice la receta de versiones:
@@ -45,18 +53,18 @@ on:
   workflow_dispatch:
     inputs:
       runner:
-        description: "Dónde corre: github (macos-15 de GitHub) o m4dev (runner propio efímero, Xcode y runtime de la imagen)"
+        description: "Dónde corre: m4dev (runner propio efímero JIT, Xcode y runtime de la imagen) o github (macos-15 de GitHub, respaldo)"
         type: choice
         options:
-          - github
           - m4dev
-        default: github
+          - github
+        default: m4dev
 
 permissions:
   contents: read
 
 concurrency:
-  group: framework-concept-ios-${{ github.ref }}
+  group: fc-ios-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -74,14 +82,38 @@ env:
   TFM: net10.0-ios
 
 jobs:
-  ios-simulador:
+  elegir:
     # Guarda de fork (Runner Arc): sólo este repositorio y nunca un PR que venga de un fork.
     if: github.repository == 'hdcm-dev/Lab-Documentos' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
-    # Los push a main van al macos-15 de GitHub; m4dev sólo a mano (workflow_dispatch runner=m4dev) hasta que el PO
-    # cambie el defecto.
-    runs-on: ${{ fromJSON(inputs.runner == 'm4dev' && '["self-hosted","macOS","ARM64","m4dev","macos-15","xcode-26"]' || '"macos-15"') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      runner: ${{ steps.elegir.outputs.runner }}
+      runs-on: ${{ steps.elegir.outputs.runs-on }}
+      en-m4dev: ${{ steps.elegir.outputs.en-m4dev }}
+    steps:
+      - name: Elegir el runner
+        id: elegir
+        env:
+          # dispatch: el input (m4dev por defecto); push: vars.FC_IOS_RUNNER o, si no está, github.
+          RUNNER: ${{ github.event_name == 'workflow_dispatch' && inputs.runner || vars.FC_IOS_RUNNER || 'github' }}
+        run: |
+          set -euo pipefail
+          case "$RUNNER" in
+            m4dev)  RUNS_ON='["self-hosted","macOS","ARM64","m4dev","macos-15","xcode-26"]'; EN=true ;;
+            github) RUNS_ON='"macos-15"'; EN=false ;;
+            *) echo "::error title=Runner::valor desconocido «${RUNNER}» (m4dev o github)"; exit 1 ;;
+          esac
+          { echo "runner=$RUNNER"; echo "runs-on=$RUNS_ON"; echo "en-m4dev=$EN"; } | tee -a "$GITHUB_OUTPUT"
+          echo "Runner elegido: **${RUNNER}** (${{ github.event_name }})" >> "$GITHUB_STEP_SUMMARY"
+
+  ios-simulador:
+    needs: elegir
+    # Guarda de fork (Runner Arc): sólo este repositorio y nunca un PR que venga de un fork.
+    if: github.repository == 'hdcm-dev/Lab-Documentos' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ${{ fromJSON(needs.elegir.outputs.runs-on) }}
     env:
-      EN_M4DEV: ${{ inputs.runner == 'm4dev' }}
+      EN_M4DEV: ${{ needs.elegir.outputs.en-m4dev }}
     timeout-minutes: 120
     steps:
       - name: Runner

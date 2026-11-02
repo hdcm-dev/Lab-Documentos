@@ -68,13 +68,19 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
 }
 .fc-nav__enlace.active { background: var(--color-fondo-3); color: var(--color-texto); opacity: 1; font-weight: 600; }
 
-/* El marco es una columna de alto de pantalla: la línea de estado va en el flujo (sticky abajo), así el espacio
-   que ocupa es siempre su altura real —uno o dos renglones— y nunca tapa el final de la página (p. ej. «Desbloquear»). */
-#app { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
-.fc-principal { flex: 1 0 auto; width: 100%; padding: var(--e-4); max-width: 760px; margin: 0 auto; }
+/* El marco es una columna del alto exacto de la pantalla: cabecera y línea de estado son piezas fijas del flex y el
+   desplazamiento ocurre DENTRO de .fc-principal. Así la línea de estado ocupa siempre su altura real —uno, dos o más
+   renglones con letra grande— y nunca queda nada debajo de ella (p. ej. «Desbloquear»): ni fixed ni sticky. */
+html, body { height: 100%; overflow: hidden; }
+#app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+.fc-cabecera { flex: none; }
+.fc-principal {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+    width: 100%; padding: var(--e-4) max(var(--e-4), calc((100% - 760px) / 2 + var(--e-4)));
+}
 
 .fc-estado {
-    position: sticky; bottom: 0; z-index: 1;
+    flex: none;
     display: flex; flex-wrap: wrap; gap: var(--e-2);
     padding: var(--e-2) var(--e-4) calc(var(--e-2) + env(safe-area-inset-bottom, 0px));
     background: var(--color-fondo); border-top: 1px solid var(--color-borde);
@@ -170,7 +176,7 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
 /* Error no controlado de Blazor: oculto hasta que Blazor lo muestre. */
 #blazor-error-ui {
     display: none;
-    position: fixed; bottom: 0; left: 0; right: 0;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
     padding: var(--e-3) var(--e-4);
     background: var(--color-error-fondo); color: var(--color-error);
 }
@@ -178,10 +184,10 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
 /* --- Red (folio 038): aviso permanente y motivo de las acciones ------------------------------------ */
 
 /* Fijo arriba mientras dure: no es un toast (DISENO §2.6). Sin servidor, color de aviso; sin red, de error. */
+/* En el flujo, al principio del área que se desplaza: no tapa la tarjeta (antes sticky arriba). */
 .fc-aviso-red {
-    position: sticky; top: 0; z-index: 10;
     display: flex; flex-direction: column; gap: 2px;
-    padding: var(--e-2) var(--e-3); margin: 0 0 var(--e-4);
+    padding: var(--e-2) var(--e-3); margin: 0 0 var(--e-3);
     border-radius: var(--radio); font-size: 14px;
 }
 .fc-aviso-red--sin-red { background: var(--color-error-fondo); color: var(--color-error); border: 1px solid var(--color-error); }
@@ -222,7 +228,7 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
     --color-borde-fuerte: #767670;   /* ≈4,5:1 sobre blanco (1.4.11) */
     --radio-tarjeta: 12px; --alto-control: 48px; --e-6: 32px;
 }
-.fc-puerta:has(> .fc-puerta__tarjeta) { align-items: stretch; background: var(--color-fondo-3); padding: var(--e-5) 0 var(--e-6); }
+.fc-puerta:has(> .fc-puerta__tarjeta) { align-items: stretch; background: var(--color-fondo-3); padding: var(--e-2) 0 var(--e-4); margin: 0; }
 .fc-puerta__tarjeta {
     width: 100%; max-width: 420px; margin: 0 auto; box-sizing: border-box;
     padding: var(--e-5) var(--e-4); border: 1px solid var(--color-borde); border-radius: var(--radio-tarjeta);
@@ -316,3 +322,10 @@ h2 { font-size: 16px; font-weight: 600; margin: 0 0 var(--e-3); display: flex; a
 .fc-sesion .fc-boton--fila:hover:not(:disabled) { background: var(--color-marca-tinte); }
 .fc-sesion .fc-boton--peligro { border-color: var(--color-error); color: var(--color-error); }
 .fc-banda.fc-banda--aviso .fc-puerta__formulario { margin-top: var(--e-2); }
+
+/* Desbloqueo: el botón va antes de la leyenda y el encabezado es más compacto, para que «Desbloquear» entre sin
+   desplazar en un teléfono de 1080×2400 con letra grande, con y sin el aviso de red. */
+.fc-puerta[data-estado="bloqueada"] .fc-puerta__tarjeta { padding: var(--e-4); gap: var(--e-3); }
+.fc-puerta[data-estado="bloqueada"] .fc-puerta__emblema { width: 44px; height: 44px; margin-bottom: 0; }
+.fc-puerta[data-estado="bloqueada"] .fc-puerta__emblema svg { width: 24px; height: 24px; }
+.fc-puerta[data-estado="bloqueada"] .fc-puerta__leyenda { padding: var(--e-2) var(--e-3); font-size: 13px; }

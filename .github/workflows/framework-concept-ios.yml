@@ -13,6 +13,8 @@
 # «runs-on» a un runner propio, este workflow NUNCA debe dispararse con pull_request (correría código ajeno en esa máquina).
 # Runner propio m4dev (VM efímera JIT): sólo por workflow_dispatch con runner=m4dev. Ahí no se baja Xcode: se fija el
 # de la imagen y se verifica XCODE_BUILD e IOS_RUNTIME_BUILD (corta si no coinciden). El job lleva la guarda de fork.
+# En m4dev SÍ se descargan el SDK de .NET (si la imagen no lo trae; dotnet-install fijado por SHA-256 y versión exacta)
+# y los workloads (archivo de reversión fijo). No se borra nada de la imagen. Hornearlos en la imagen queda pendiente.
 #
 # Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
 # el .NET preinstalado) y se instala exactamente lo que dice la receta de versiones:
@@ -36,7 +38,6 @@ on:
   push:
     branches:
       - main
-      - fc/ci-ios  # TEMPORAL
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'

@@ -133,7 +133,10 @@ repositorio privado (control `nivel-vs-repo`).
 La **prueba pareada** es la que da el veredicto: el autorizado recibe 200 con contenido y el no autorizado recibe
 algo distinto de 200 y sin contenido (403 o 404, elegido y declarado). Una sola mitad no prueba nada: un 404 para
 todos también «niega». La tabla es la propuesta de la comisión de seguridad que la mesa del expediente 0003 adoptó con
-revisión: queda firme cuando el par corra verde y rojo en la prueba de ayuda por rol extendida.
+revisión: queda firme cuando el par corra verde y rojo en la prueba de ayuda por rol extendida. Ese par ya corre en la
+[prueba extendida](Examples/Prueba-Ayuda-Por-Rol/README.md#la-prueba-extendida-audiencias-y-entrega), con contenido ficticio: 404 para la ayuda y 401 o 403 para el documento
+OpenAPI de integradores, cada mitad con su rojo plantado
+([Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt, l. 21-31 y 53-61]).
 
 **API por exposición.** La documentación de una API se publica en un documento OpenAPI **por exposición** (por
 ejemplo, uno público y otro para integradores, detrás de autorización), y la interfaz interactiva sólo en desarrollo.
@@ -225,6 +228,15 @@ enlace, o mover el contenido enlazado a una página común. (Un enlace condicion
 que el formato lo admita, y el de la prueba no lo admite.) La propuesta completa, con la derivación del caso de uso a la página sección por sección, está en la
 [guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md#7-propuesta-ayuda-por-rol-en-lab-geometria).
 
+La [prueba extendida](Examples/Prueba-Ayuda-Por-Rol/README.md#la-prueba-extendida-audiencias-y-entrega) lleva el mismo catálogo a la regla de entrega, con contenido **ficticio**
+porque este repositorio es público: un registro de audiencias con jerarquía (administrador raíz ⊃ administrador por
+aplicación ⊃ usuario) y el integrador, páginas con `delivery:`, dos alcances, panel y paquete, dos documentos OpenAPI
+y un formulario con la ayuda del campo trazada a su regla. Ahí el cruce ya no es un hallazgo: cada control
+(`cruce-de-audiencia`, `paquete-sin-fuga`, `contrato-por-exposicion`, `anclas`, `nivel-vs-repo` y las pruebas
+pareadas) corre con su mitad verde y su mitad roja plantada, y la consola sale con 0 sólo si los ocho pares se
+comportan así ([Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt, l. 92-93]). Siguen siendo controles
+de la prueba, no de `docs-guard`: entran a la compuerta con el expediente de herramienta.
+
 ### 3.4 Idiomas sin perder la ayuda
 
 Si la página no está traducida, se sirve la del idioma fuente con un aviso visible, nunca un 404: la falta de
@@ -309,7 +321,10 @@ el proyecto dice «no se usa».
 
 La asociación programática entre el campo, su pista y su error (`aria-describedby`) es un agregado de este cuerpo:
 3.3.2 no la exige, y este cuerpo no cita otro criterio de WCAG que la exija. Se prueba en las pruebas de la interfaz, no en
-`docs-guard`. Que el `ValidationMessage` de Blazor la emita **no está verificado**: se mide en la prueba.
+`docs-guard`. Medido en la [prueba extendida](Examples/Prueba-Ayuda-Por-Rol/README.md#la-prueba-extendida-audiencias-y-entrega): el `ValidationMessage` de Blazor emite el
+mensaje sin `id` y el `InputText` emite `aria-invalid` pero no `aria-describedby`
+([Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt, l. 75-76]); la asociación la pone la vista, con un
+`id` en el contenedor del mensaje y el atributo en el campo.
 
 **Asistente, si lo hay.** Nada obliga a tener un asistente. Si el producto lo suma, el asistente recupera la misma
 pieza con el token del usuario, cita `ID@versión`, **sugiere y no envía** **[propuesta de la mesa del expediente 0003,

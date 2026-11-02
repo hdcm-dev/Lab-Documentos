@@ -3,6 +3,21 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-02 (SDEI: prueba extendida de ayuda por rol, audiencias y entrega)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Prueba-Ayuda-Por-Rol/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.3, paso 4
+
+#### Agregado
+
+- **`Audiencias/` (A-15, B-12; E-1 a E-6), con contenido ficticio declarado:** registro `AUD-DEMO-AYR` con tres roles en jerarquía y el integrador (E-1); dos alcances resueltos en un servidor en memoria (E-2); panel y paquete, con el `.resources` compilado revisado (E-3); dos documentos OpenAPI con `AddOpenApi`, el de integradores detrás de autorización (E-4); formulario con `[Display]`, pista y error interpolados desde `RN-DEMO-ASUNTO` y traza desde su ficha (E-5); visibilidad del repositorio contra el nivel de cada página (E-6). Ocho pares rojo/verde; la consola sale con 0 sólo si todos se comportan como se espera. Lo `restringido` y lo `interno` se plantan en memoria y no quedan como archivo.
+- **`_requisitos.md`:** filas `RD-28` a `RD-32` para las páginas de la prueba extendida.
+
+#### Cambiado
+
+- **`README.md` de la prueba:** sección «La prueba extendida: audiencias y entrega», con la tabla de pares y lo medido (`ValidationMessage` sin `id`; `InputText` con `aria-invalid` y sin `aria-describedby`). El empaquetado de satélites `.resx` en MAUI Android sigue sin medir.
+- **`TEM-05`:** §3.3 cita la prueba extendida; la prueba pareada y la medición de `aria-describedby` remiten a su salida.
+- **`.devcontainer/devcontainer.json`:** restaura también `Audiencias/`.
+
 ## 2026-11-02 (SDEI: temas de lectura por agentes, ayuda en el punto de uso y familias de controles)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.1, paso 3

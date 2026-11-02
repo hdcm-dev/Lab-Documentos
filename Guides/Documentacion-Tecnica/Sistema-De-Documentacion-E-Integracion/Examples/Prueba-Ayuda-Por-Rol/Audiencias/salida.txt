@@ -1,0 +1,93 @@
+Registro: 5 audiencias, repositorio «publico»
+   admin-raiz  rol=RootAdmin  alcance=generico       superficie=panel          nivel=producto    expande=admin-app,admin-raiz,usuario
+   admin-app   rol=AppAdmin   alcance=por-aplicacion superficie=panel          nivel=producto    expande=admin-app,usuario
+   usuario     rol=User       alcance=por-aplicacion superficie=panel, paquete nivel=publico     expande=usuario
+   integrador  rol=Integrator alcance=generico       superficie=portal         nivel=restringido expande=integrador
+   equipo      rol=—          alcance=generico       superficie=ninguna        nivel=interno     expande=equipo
+Catálogo: 5 páginas
+   comun/primeros-pasos       delivery=[usuario] nivel=publico reciben=admin-app,admin-raiz,usuario
+   app-a/configurar-avisos    delivery=[admin-app] nivel=producto reciben=admin-app,admin-raiz
+   app-b/configurar-avisos    delivery=[admin-app] nivel=producto reciben=admin-app,admin-raiz
+   campos/asunto              delivery=[usuario] nivel=publico reciben=admin-app,admin-raiz,usuario
+   raiz/alta-de-aplicacion    delivery=[admin-raiz] nivel=producto reciben=admin-raiz
+
+== E-1 Tres roles en jerarquía y el integrador
+-- E-1 cruce-de-audiencia
+   verde (tal cual): 0 fallas
+   rojo  (plantada: comun/plantada-sube, de usuario, enlaza a raiz/alta-de-aplicacion): 1 fallas
+      cruce-de-audiencia: comun/plantada-sube → raiz/alta-de-aplicacion; admin-app, usuario no la recibe
+   par: OK
+
+== E-2 Dos alcances (app-a, app-b) resueltos en el servidor
+   AppAdmin  app-a GET /ayuda/app-a/configurar-avisos  → 200, contenido=sí
+   AppAdmin  app-a GET /ayuda/app-b/configurar-avisos  → 404, contenido=no
+   RootAdmin       GET /ayuda/app-b/configurar-avisos  → 200, contenido=sí
+   User      app-a GET /ayuda/app-a/configurar-avisos  → 404, contenido=no
+   User      app-a GET /ayuda/comun/primeros-pasos     → 200, contenido=sí
+-- E-2 prueba pareada de alcance
+   verde (tal cual): 0 fallas
+   rojo  (servidor que ignora el alcance): 1 fallas
+      entrega: AppAdmin de «app-a» recibe app-b/configurar-avisos (200)
+   par: OK
+
+== E-3 Dos superficies: panel y paquete
+   paquete/ayuda/campos/asunto.md
+   paquete/ayuda/comun/primeros-pasos.md
+   paquete/Microtexto.resources
+-- E-3 paquete-sin-fuga
+   verde (tal cual): 0 fallas
+   rojo  (clave «restringido» plantada en Microtexto.resources): 1 fallas
+      paquete-sin-fuga: «Integracion.Credencial» en Microtexto.resources
+   par: OK
+
+== E-4 Documentación de API por exposición
+   verde publico      → 200, rutas: /api/avisos
+   verde integradores → 200, rutas: /api/integracion/eventos
+   rojo  publico      → 200, rutas: /api/avisos, /api/diagnostico
+   rojo  integradores → 200, rutas: /api/diagnostico, /api/integracion/eventos
+-- E-4a contrato-por-exposicion
+   verde (tal cual): 0 fallas
+   rojo  (punto final /api/diagnostico sin grupo): 1 fallas
+      contrato-por-exposicion: /api/diagnostico sin grupo cae en todos los documentos
+   par: OK
+   Integrator GET /openapi/integradores.json → 200, contenido=sí
+   sin sesión GET /openapi/integradores.json → 401, contenido=no
+   User       GET /openapi/integradores.json → 403, contenido=no
+-- E-4b prueba pareada 200 / distinto de 200
+   verde (tal cual): 0 fallas
+   rojo  (documento de integradores sin autorización): 2 fallas
+      entrega: sin sesión → 200, contenido=sí
+      entrega: User → 200, contenido=sí
+   par: OK
+
+== E-5 Formulario: ayuda de campo y validación trazadas a RN-DEMO-ASUNTO
+   ficha RN-DEMO-ASUNTO@1.0: límite 80, 3 anclas
+   [Display] Name=«Asunto» Prompt=«Corte programado en la zona norte» Description=«Asunto.Pista»
+   pista:      «Un título corto para el aviso, de hasta 80 caracteres.»
+   validacion: «El asunto tiene más de 80 caracteres: acortalo.»
+   tal cual (límite 80): 0 fallas
+-- E-5a anclas (muestra, valida, contiene)
+   verde (tal cual): 0 fallas
+   rojo  (la regla pasa a 100 y el texto quedó copiado con 80): 2 fallas
+      anclas: muestra Asunto.Pista no contiene 100 («Un título corto para el aviso, de hasta 80 caracteres.»)
+      anclas: muestra Asunto.Validacion no contiene 100 («El asunto tiene más de 80 caracteres: acortalo.»)
+   par: OK
+   medido: InputText sin atributo → <input id="asunto" aria-invalid="true" name="modelo.Asunto" class="invalid" value="Corte programado en la zona norte por obras en la red; el servicio vuelve a la tarde, seg&#xFA;n el aviso ficticio" />
+   medido: ValidationMessage → <div class="validation-message"> (id propio: no)
+   con el atributo → <input id="asunto" aria-describedby="asunto-pista asunto-error" aria-invalid="true" name="modelo.Asunto" class="invalid" value="Corte programado en la zona norte por obras en la red; el servicio vuelve a la tarde, seg&#xFA;n el aviso ficticio" />
+-- E-5b aria-describedby medido
+   verde (tal cual): 0 fallas
+   rojo  (campo sin aria-describedby): 2 fallas
+      aria-describedby: el campo no la tiene
+      aria-describedby: no apunta al error
+   par: OK
+
+== E-6 Nivel contra visibilidad del repositorio
+-- E-6 nivel-vs-repo
+   verde (tal cual): 0 fallas
+   rojo  (página de «equipo» (interno) plantada): 1 fallas
+      nivel-vs-repo: equipo/plantada-interna es «interno» en un repositorio «publico»
+   par: OK
+
+Validador: 8/8 pares con verde y rojo como se espera
+[exit=0]

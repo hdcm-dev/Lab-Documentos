@@ -9,8 +9,8 @@
 # siendo el único check requerido. Esto es un workflow aparte de entrega, como el de referencia en que se basa (el CD de
 # iOS de Ejemplo_Maui_Hibrida). Corre al llegar a main un cambio de la demo, y a mano.
 #
-# Runner: macos-15 de GitHub (el repositorio es público: los minutos de macOS no se cobran). Puede correr también en el
-# runner propio con la etiqueta macos15 (VM de la Mac mini) si el PO lo decide: basta cambiar «runs-on».
+# Runner: macos-15 de GitHub (el repositorio es público: los minutos de macOS no se cobran). Si algún día se cambia
+# «runs-on» a un runner propio, este workflow NUNCA debe dispararse con pull_request (correría código ajeno en esa máquina).
 #
 # Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
 # el .NET preinstalado) y se instala exactamente lo que dice la receta de versiones:
@@ -34,6 +34,7 @@ on:
   push:
     branches:
       - main
+      - fc/ci-ios  # TEMPORAL
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'
@@ -82,7 +83,8 @@ jobs:
       - name: "RECETA. Versiones fijas a $GITHUB_ENV"
         run: |
           set -euo pipefail
-          grep -E '^[A-Z_][A-Z0-9_]*=' "$DEMO/ci/receta/ios/versiones.env" | tee -a "$GITHUB_ENV"
+          # Sólo se aceptan las claves propias de la receta (nada de PATH, LD_*, NODE_OPTIONS…).
+          grep -E '^(XCODE|GDOWN|IOS|SIM|DOTNET|WORKLOAD)_[A-Z0-9_]*=' "$DEMO/ci/receta/ios/versiones.env" | tee -a "$GITHUB_ENV"
 
       - name: Carpeta de evidencia
         run: |
@@ -200,6 +202,7 @@ jobs:
           sudo rm -rf "$HOME/.dotnet" /usr/local/share/dotnet
           curl -fsSL "$DOTNET_INSTALL_SCRIPT_URL" -o "$RUNNER_TEMP/dotnet-install.sh"
           shasum -a 256 "$RUNNER_TEMP/dotnet-install.sh" | tee "$EVIDENCIA/dotnet-install.sh.sha256"
+          echo "${DOTNET_INSTALL_SCRIPT_SHA256}  $RUNNER_TEMP/dotnet-install.sh" | shasum -a 256 -c -
           bash "$RUNNER_TEMP/dotnet-install.sh" --version "$DOTNET_VERSION" --install-dir "$HOME/.dotnet"
           echo "DOTNET_ROOT=$HOME/.dotnet" >> "$GITHUB_ENV"
           echo "$HOME/.dotnet" >> "$GITHUB_PATH"
@@ -221,9 +224,11 @@ jobs:
           dotnet workload list | grep -qE "^maui-ios +${WORKLOAD_MAUI_MANIFEST} " || { echo "ERROR: el workload maui-ios no es ${WORKLOAD_MAUI_MANIFEST}"; exit 1; }
 
       - name: "RECETA. Verificar lo instalado contra versiones.env"
+        shell: bash -eo pipefail {0}
         run: bash "$DEMO/ci/receta/ios/verificar.sh" | tee "$EVIDENCIA/receta-verificar.txt"
 
       - name: "MANIFIESTO. Traza de herramientas"
+        shell: bash -eo pipefail {0}
         run: |
           {
             echo "# Herramientas de la corrida ${GITHUB_RUN_ID} (${GITHUB_SHA})"

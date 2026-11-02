@@ -24,8 +24,9 @@ XB="$(xcodebuild -version 2>/dev/null | sed -n 's/^Build version //p')"
 chequear "Xcode" "$XCODE_VERSION" "$XV"
 chequear "Build de Xcode" "$XCODE_BUILD" "$XB"
 
-RT="$(xcrun simctl list runtimes 2>/dev/null | grep -c "iOS ${IOS_RUNTIME}.* - ${IOS_RUNTIME_BUILD})")"
-chequear "Runtime iOS ${IOS_RUNTIME} (${IOS_RUNTIME_BUILD})" "1" "$RT"
+RT="$(xcrun simctl list runtimes 2>/dev/null | grep -cF -- "- ${IOS_RUNTIME_BUILD})")"
+RT=$([ "$RT" -ge 1 ] && echo 1 || echo 0)
+chequear "Runtime iOS ${IOS_RUNTIME} (${IOS_RUNTIME_BUILD}) presente" "1" "$RT"
 
 DV="$(cd "$DEMO" && dotnet --version 2>/dev/null)"
 chequear "SDK .NET" "$DOTNET_VERSION" "$DV"

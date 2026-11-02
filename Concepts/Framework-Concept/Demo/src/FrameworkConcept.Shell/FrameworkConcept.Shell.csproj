@@ -13,8 +13,7 @@
          iOS, en una Mac con Xcode y el workload ios (no hay compilación de iOS fuera de macOS):
            dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64
            iossimulator-arm64 es para el simulador en una Mac con Apple silicon; ios-arm64, para un teléfono (pide
-           perfil de aprovisionamiento). Con Xcode 26 y un workload ios más nuevo: -p:FcDestinos=net10.0-ios26.0
-           -f net10.0-ios26.0. README.md, «El cascarón en iOS», cuenta cómo se instala y se lee la bitácora. -->
+           perfil de aprovisionamiento). Versiones de Xcode y workloads: ci/receta/ios/versiones.env. README.md, «El cascarón en iOS», cuenta cómo se instala y se lee la bitácora. -->
   <Import Project="../../versionado/version-cascaron.props" />
 
   <PropertyGroup>

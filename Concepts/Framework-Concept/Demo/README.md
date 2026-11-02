@@ -124,7 +124,7 @@ ver la tabla de abajo).
   (el cofre con Secure Enclave, Face ID y Touch ID reales, firma con perfil). El simulador no tiene Secure Enclave: cómo contesta el Keychain de un
   teléfono a la consulta sin interfaz del cofre sólo se sabe corriéndolo ahí.
 
-**Cómo se compila.** Sólo en una Mac con Xcode y el workload `ios` (no hay compilación de iOS fuera de macOS). Ojo: el workload `ios` más nuevo exige el Xcode que lo acompaña (el 27.1 rechaza Xcode 26 con «requires Xcode 27.1»); con Xcode 26 se fija la versión del SDK en el destino: `-p:FcDestinos=net10.0-ios26.0 -f net10.0-ios26.0` (la salida queda en `bin/<config>/net10.0-ios26.0/`), así se compiló y midió el 2026-11-02:
+**Cómo se compila.** Sólo en una Mac con Xcode y el workload `ios` (no hay compilación de iOS fuera de macOS). Las versiones (Xcode, runtime del simulador, SDK y workloads) son las de la receta `ci/receta/ios/versiones.env`, que usan igual el workflow de entrega, la VM y el escenario; `ci/receta/ios/verificar.sh` compara lo instalado contra ella. Los workloads se fijan por archivo de reversión (manifiestos de la banda 10.0.100) porque ningún workload set de la banda 10.0.400 trae iOS 26.0: los sets traen un `ios` más nuevo, que exige otro Xcode. Con eso se compila con el destino de siempre:
 
 ```bash
 dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64

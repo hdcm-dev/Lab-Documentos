@@ -1,24 +1,29 @@
 ---
 doc_id: TEM-SDEI-04
 doc_type: tema
-title: Doble audiencia — personas y agentes leyendo la misma fuente
-description: Cómo una sola fuente en Markdown sirve a personas y a agentes de IA, por qué canales llega a cada uno y qué controles impiden usarla para inyectar órdenes.
+title: Lectura por agentes — personas y agentes leyendo la misma fuente, con la audiencia de su usuario
+description: Una sola fuente en Markdown para personas y agentes de IA; el agente lee con la audiencia de su usuario y la compuerta impide inyectar órdenes.
 status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-11-02
 audience: [humano, estudiante, docente, desarrollo]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS]
 ---
 
-# Tema 04 — Doble audiencia
+# Tema 04 — Lectura por agentes
+
+> **Nombre anterior: «Doble audiencia».** El tema cambió de nombre porque el agente no es una audiencia: es un
+> lector que lee por la audiencia de su usuario (ver el [glosario](99-Anexos/Glosario.md#2-términos), «Lector»). El
+> archivo conserva su nombre hasta la reedición del libro, para no romper enlaces.
 
 Una página de documentación hoy tiene dos lectores: una persona que la abre en el navegador y un agente de IA que la
 lee para trabajar sobre el repositorio o para responderle a alguien. Este tema explica cómo se escribe **una sola
 fuente** que sirva a los dos, por qué canales le llega a cada uno y qué se controla para que ese canal no se convierta
 en una vía para darle órdenes al agente. Al terminarlo podés decidir qué canales necesita un sistema según su
-escenario y revisar si una página está lista para los dos lectores.
+escenario, revisar si una página está lista para los dos lectores y comprobar que el agente no recibe más de lo que
+recibe su usuario.
 
 ## Índice
 
@@ -32,8 +37,8 @@ escenario y revisar si una página está lista para los dos lectores.
 
 ## Definición
 
-**Doble audiencia** es la propiedad de una pieza documental que sirve, desde la misma fuente, a una persona y a un
-agente de IA, sin mantener dos textos. La persona necesita prosa ordenada, diagramas que se vean y ejemplos con
+**Lectura por agentes** (antes, «doble audiencia») es la propiedad de una pieza documental que sirve, desde la misma
+fuente, a una persona y a un agente de IA, sin mantener dos textos. La persona necesita prosa ordenada, diagramas que se vean y ejemplos con
 contexto. El agente necesita metadatos que se puedan leer sin interpretar la prosa, identificadores estables a los
 que apuntar y un índice que le diga qué hay y dónde.
 
@@ -45,8 +50,10 @@ que apuntar y un índice que le diga qué hay y dónde.
 | `AGENTS.md` (`CL-03`) | Archivo en la raíz de un repositorio con las instrucciones para un agente de código: cómo compilar, qué convenciones seguir, dónde está la documentación. Es un puntero, no una copia de la guía |
 | Índice interno (`CL-08`) | La ia-db del repositorio hermano `.Documentacion`: índices versionados en Markdown que un agente consulta antes de leer el código de un sistema, anclados al SHA que indexaron (`base_commit`). Según la tabla del Marco, se activa en `ESC-SDEI-3` y `ESC-SDEI-4` |
 | Inyección indirecta | Texto escondido en una fuente que un agente lee y que intenta que el agente haga algo que nadie le pidió ([OWASP GenAI Security Project, 2025](99-Anexos/Referencias.md#ref-owasp-2025)) |
+| Lector | Persona o agente. Es dimensión de **canal**, no de acceso: el agente hereda la audiencia y el alcance de su usuario y nunca tiene acceso propio (definición del [glosario](99-Anexos/Glosario.md#2-términos)) |
+| Filtro único | La regla de entrega que decide qué recibe una sesión se aplica igual, y en el mismo punto, a la página, a su `.md`, al `llms.txt` y a un servidor MCP, con el token del usuario |
 
-**Qué problema resuelve.** Sin doble audiencia, el equipo termina con dos textos: la guía para personas y un resumen
+**Qué problema resuelve.** Sin una fuente para los dos lectores, el equipo termina con dos textos: la guía para personas y un resumen
 para agentes, escrito a mano, que envejece por separado. Los modelos de lenguaje responden mejor cuando reciben la
 documentación de la API que van a usar ([Chen et al., 2025](99-Anexos/Referencias.md#ref-chen-2025)), y fallan cuando
 lo que saben de una biblioteca quedó atrás de su versión ([Wang et al., 2025](99-Anexos/Referencias.md#ref-wang-2025)).
@@ -56,7 +63,7 @@ Un agente que lee la misma fuente que la persona, en la misma versión, no puede
 
 - No es escribir para el agente. La prosa sigue siendo para personas; lo que se agrega es estructura (frontmatter,
   identificadores, diagramas como código), no un segundo registro de lenguaje.
-- No es publicar un sitio. Sin sitio hay doble audiencia igual: el Markdown con frontmatter ya es legible por los dos.
+- No es publicar un sitio. Sin sitio, el agente lee igual: el Markdown con frontmatter ya es legible por los dos.
 - No es darle al agente permisos sobre la documentación. Lo que el agente lee es **dato**, nunca instrucción; las
   instrucciones del agente están en un solo archivo, `AGENTS.md`, que decide una persona (clase H). Que el agente
   respete esa separación depende de cómo está armado el agente, que quien documenta no controla; lo que sí controla
@@ -200,9 +207,40 @@ La prueba de concepto de [ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md
 agentes le mostraría al asistente de un alumno los títulos de las páginas del administrador. El detalle de ese caso
 está en `TEM-05`.
 
+### 3.6 El agente lee con la audiencia de su usuario
+
+Un agente de código del equipo pertenece a la audiencia de desarrollo; el asistente del administrador de una
+aplicación pertenece a la audiencia de ese administrador, con el alcance de esa aplicación. No existe una audiencia
+«agente» con un nivel de acceso propio. Es la regla de OWASP para la agencia excesiva: lo que el agente hace se
+ejecuta en el contexto del usuario, y la autorización la decide el sistema de abajo, no el modelo
+([OWASP GenAI Security Project, 2025, LLM06](99-Anexos/Referencias.md#ref-owasp-llm06-2025)). Es también la forma de los asistentes comerciales que
+sólo muestran los datos que el usuario ya puede ver
+([Microsoft, 2026](99-Anexos/Referencias.md#ref-microsoft-copilot-privacy-2026)).
+
+De ahí sale el **filtro único**: cada canal para agentes (el `.md` crudo, el `llms.txt`, un servidor MCP, un índice
+para un asistente) pasa por la misma regla de entrega y en el mismo punto de aplicación que la página HTML, con el
+token del usuario. La especificación de MCP, cuando el transporte es HTTP, pide OAuth y que el servidor valide que el
+token fue emitido para él ([Model Context Protocol, 2025](99-Anexos/Referencias.md#ref-mcp-authorization-2025)). El
+`llms.txt` y el `AGENTS.md` **no** son control de acceso: la propuesta de `llms.txt` no trata autenticación, y el
+`AGENTS.md` es un archivo de instrucciones. El `llms.txt` es una salida más del filtro, uno por audiencia, nunca un
+índice global.
+
+**Propuesta de la mesa, sin puntuar: `canal_agente`.** En el registro de audiencias, cada audiencia podría declarar
+por qué canal la lee un agente, con `ninguno` por defecto en todo lo que no es `publico`. Es una propuesta que la mesa
+sintetizó y que todavía no puntuó la comisión que la tiene a cargo: no es norma de este cuerpo. Se habilita «por
+sesión» sólo si una prueba muestra el `llms.txt` por audiencia con el mismo resultado que la página, en dos sesiones
+distintas **[propuesta de la mesa del expediente 0003, rotulada como tal]**.
+
+**Riesgo: la trifecta.** Un asistente que a la vez accede a datos privados, lee contenido no confiable y puede
+comunicarse hacia afuera reúne las tres condiciones de una exfiltración
+([Willison, 2025](99-Anexos/Referencias.md#ref-willison-2025)). Para un asistente, el texto de ayuda de un formulario
+es contenido que no controla. Quien documenta cubre la fuente (AI-1 a AI-5, §3.4); el resto es del producto. Si el
+producto suma un asistente, ese asistente lee la misma pieza con el token del usuario, cita `ID@versión`, sugiere y
+no envía (`TEM-05`, «Ayuda en el punto de uso»).
+
 ## Preguntas guía
 
-Para **producir** una pieza con doble audiencia:
+Para **producir** una pieza que lean personas y agentes:
 
 1. ¿Qué agente va a leer esta pieza: un agente de código en el repositorio, o el asistente de la persona usuaria?
 2. ¿La `description` dice, en una línea y sin leer el resto, para qué abrir este documento?
@@ -217,12 +255,14 @@ Para **evaluar** una pieza:
 2. ¿Pasa AI-1 a AI-5 sin excepciones? Si tiene una excepción (una línea `sha256 ruta control` en
    `tools/docs-guard/excepciones.txt`, que vale mientras el archivo no cambie), ¿la agregó un pull request que aprobó
    una persona? Agregar excepciones es de clase H: un agente no las agrega en su propio pull request.
-3. Si se sirve filtrada por rol, ¿el `.md` crudo y el `llms.txt` de la ayuda pasan por el mismo filtro que la página?
-4. ¿El `AGENTS.md` del repositorio apunta a esta pieza, o la copia?
+3. Si se sirve con una regla de entrega, ¿el `.md` crudo, el `llms.txt` y un servidor MCP pasan por el mismo filtro
+   que la página, con el token del usuario?
+4. ¿Algún canal le da al agente más de lo que recibe su usuario?
+5. ¿El `AGENTS.md` del repositorio apunta a esta pieza, o la copia?
 
 ## Criterios de calidad
 
-Los criterios citables son `CQ-13` (doble audiencia) y `CQ-05` (encontrabilidad) del
+Los criterios citables son `CQ-13` (doble audiencia, el nombre anterior de este tema) y `CQ-05` (encontrabilidad) del
 [anexo de criterios](99-Anexos/Criterios-De-Calidad.md); la compuerta automatiza la parte que se puede contar.
 
 | Aspecto | Versión pobre | Versión buena |
@@ -233,7 +273,7 @@ Los criterios citables son `CQ-13` (doble audiencia) y `CQ-05` (encontrabilidad)
 | Diagramas | Capturas de pantalla de un diagrama | Mermaid con una línea debajo que dice qué muestra |
 | Instrucciones al agente | Repartidas en comentarios dentro de las páginas | Sólo en `AGENTS.md`, decidido por una persona; las páginas son dato |
 | Canales derivados | Un `llms.txt` escrito a mano en un repositorio sin sitio | Ninguno sin sitio; con sitio, generado por el build y verificado por reproducibilidad |
-| Filtrado por rol | La página se filtra y el índice no | Página, `.md` e índice salen del mismo filtro |
+| Filtrado por audiencia | La página se filtra y el índice no; el agente tiene un acceso propio | Página, `.md`, índice y MCP salen del mismo filtro, con el token del usuario |
 
 Una versión buena también **declara lo que no sabe**: si una afirmación sobre el comportamiento de los agentes sale de
 un solo estudio, se dice cuál, y si es criterio propio, se rotula. Y si la escribió un agente, pasa por una revisión
@@ -280,13 +320,15 @@ Lista corta para el `AGENTS.md` de un repositorio (la ruta «agente»):
 
 Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
 AGENTS.md (s. f.), Chatlatanagulchai et al. (2025), Chen et al. (2025), Howard (s. f.), OWASP GenAI Security Project
-(2025), Wang et al. (2025) y Yamasaki et al. (2026).
+(2025), Wang et al. (2025) y Yamasaki et al. (2026). Para la lectura con la audiencia del usuario: OWASP GenAI Security
+Project (2025, LLM06), Microsoft (2026), Model Context Protocol (2025) y Willison (2025).
 
 | Tipo | Observación |
 | --- | --- |
 | Hecho | Las dos salidas registradas del tema son de corridas del 2026-10-27 sobre la carpeta del cuerpo |
 | Criterio propio | El tope de 50 000 *tokens* del archivo que agrega todo el contenido, en `CTX-SDEI-1` con sitio, es del diseño de este cuerpo, sin fuente externa |
 | Criterio propio | Lo que hace quien recibe un aviso AI-3: reescribir la frase, pedir una excepción con huella o declarar una reserva |
+| Propuesta | `canal_agente` con `ninguno` por defecto en lo no público es una propuesta de la mesa del expediente 0003, sin puntuar por su comisión; no es norma de este cuerpo |
 
 Documento anterior: [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md). Siguiente
 documento: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md).

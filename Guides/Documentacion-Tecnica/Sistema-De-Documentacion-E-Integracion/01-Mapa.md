@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-28
+last_review: 2026-11-02
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, IDX-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-GLOSARIO, ANX-SDEI-REFERENCIAS, ANX-SDEI-CQ, ANX-SDEI-PE, ANX-SDEI-VER, ANX-SDEI-DECIDIR, ANX-SDEI-EJERCICIOS]
 ---
@@ -46,7 +46,8 @@ flowchart LR
 *Diagrama: se entra por la tabla que corresponde a lo que se sabe, se ajusta por contexto y se sale por un anexo.*
 
 Los temas `TEM-01` a `TEM-07` figuran en las tablas por su identificador; la columna «Anexo» da lo
-que ya se puede usar.
+que ya se puede usar. `TEM-04` se llama «Lectura por agentes» (antes, «Doble audiencia»): el agente lee con la
+audiencia de su usuario.
 
 ## 2. Por escenario
 
@@ -118,6 +119,7 @@ CL-14 está latente: no se activa mientras ningún escenario publique sitio (`CT
 | Revisar una guía antes de pasarla a vigente | [Lista de verificación VER-*](99-Anexos/Lista-De-Verificacion.md) | `ANX-SDEI-VER` |
 | Elegir entre alternativas de diseño | [Cómo decidir](99-Anexos/Como-Decidir.md) | `ANX-SDEI-DECIDIR` |
 | Comprobar que aprendí | [Ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` |
+| Escribir la ayuda de un campo: etiqueta, pista, error, `contexto:` y traza desde la ficha | [Tema 05, «Ayuda en el punto de uso»](TEM-05-Ayuda-Al-Usuario-Final.md#35-ayuda-en-el-punto-de-uso-pantallas-campos-paneles-y-portales) (no es un anexo: es la sección del tema) | `TEM-SDEI-05` |
 
 ## 7. Preguntas guía
 

@@ -1,6 +1,6 @@
 ---
 corpus_id: SDEI
-version: 2.0.0-borrador
+version: 2.0.0-borrador.2
 doc_id: IDX-SDEI
 doc_type: indice
 title: Sistema de documentación e integración — guía de estudio
@@ -9,7 +9,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-28
+last_review: 2026-11-02
 audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
 traces: [MARCO-SDEI, MAPA-SDEI]
 ---
@@ -19,7 +19,7 @@ traces: [MARCO-SDEI, MAPA-SDEI]
 | Campo | Valor |
 | --- | --- |
 | **Cuerpo** (`corpus_id`) | `SDEI` |
-| **Versión** | `2.0.0-borrador` |
+| **Versión** | `2.0.0-borrador.2` |
 | **Estado** | Borrador: README, Marco, Mapa, los siete temas, los anexos y los ejemplos están escritos; pasan a `vigente` cuando una persona los revisa |
 | **Compuerta** | `docs-guard` (grupos PR-1 a PR-7) en cada pull request; en local, `scripts/ci-local.sh` desde la raíz del repositorio |
 
@@ -109,8 +109,8 @@ anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte.
 | [Tema 01 — Qué es un sistema documentador](TEM-01-Sistema-Documentador.md) | `TEM-SDEI-01` | tema | borrador | Piezas, arquitectura de referencia, un caso de industria y adopciones públicas |
 | [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md) | `TEM-SDEI-02` | tema | borrador | De la captura de requerimientos a la integración: fases, RRD y estados |
 | [Tema 03 — Topología de repositorios y versionado](TEM-03-Topologia-Y-Versionado.md) | `TEM-SDEI-03` | tema | borrador | Dónde vive cada pieza y contra qué versión vale |
-| [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md) | `TEM-SDEI-04` | tema | borrador | Personas y agentes leyendo la misma fuente: canales, `AGENTS.md` y anti-inyección |
-| [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) | `TEM-SDEI-05` | tema | borrador | La ayuda dentro del producto, trazada a la regla con su versión, con roles como contexto |
+| [Tema 04 — Lectura por agentes](TEM-04-Doble-Audiencia.md) | `TEM-SDEI-04` | tema | borrador | Personas y agentes leyendo la misma fuente, el agente con la audiencia de su usuario: canales, filtro único, `AGENTS.md` y anti-inyección (antes, «Doble audiencia») |
+| [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md) | `TEM-SDEI-05` | tema | borrador | La ayuda dentro del producto, trazada a la regla con su versión, con roles como contexto, y la ayuda en el punto de uso (campos, paneles y portales) |
 | [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md) | `TEM-SDEI-06` | tema | borrador | Qué bloquea, qué avisa y por qué: dos carriles, regla de bloqueo, pares rojo/verde |
 | [Tema 07 — Integración con un marco SDD](TEM-07-Marco-SDD.md) | `TEM-SDEI-07` | tema | borrador (hasta el escalón 2) | La documentación dentro de un desarrollo guiado por especificación: qué se cita del SDD, qué se agrega y cómo resuelven las trazas |
 | [Anexo: esquema de frontmatter y prefijos](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) | `ANX-SDEI-ESQUEMA` | anexo | borrador | Los diez campos más `description`, vocabularios y registro de prefijos |

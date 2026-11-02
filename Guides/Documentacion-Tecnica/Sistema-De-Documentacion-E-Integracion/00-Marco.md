@@ -7,8 +7,8 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-28
-audience: [humano, agente, estudiante, docente, desarrollo, analista, po]
+last_review: 2026-11-02
+audience: [humano, estudiante, docente, desarrollo, analista, po]
 traces: [IDX-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-GLOSARIO]
 ---
 
@@ -77,7 +77,7 @@ flowchart LR
 
 Un repositorio dedicado a documentación formativa: lo que contiene son guías, y el código que aparece (las
 pruebas de concepto de `Examples/`) existe para ilustrarlas, no es un producto que se documente. El ejemplo es este
-repositorio, Lab-Documentos, que aloja varias guías; este cuerpo es una de ellas. Las audiencias son quien estudia, quien enseña y los agentes. La versión se ancla con la
+repositorio, Lab-Documentos, que aloja varias guías; este cuerpo es una de ellas. Las audiencias típicas son quien estudia y quien enseña; los agentes leen el cuerpo como lectores, no como audiencia. La versión se ancla con la
 versión del cuerpo en su README y una etiqueta por versión.
 
 ### ESC-SDEI-2 — App cliente sin roles
@@ -98,21 +98,30 @@ al caso de uso de la unidad que la contiene, y la confidencialidad por rol se re
 
 Un servicio que publica paquetes para que otros sistemas lo integren, con varias líneas de versión. El ejemplo es un
 servicio de notificaciones push de repositorio privado, que en este cuerpo se nombra con el alias **SDD-B** (el
-segundo marco SDD del laboratorio, junto al de Lab-Geometria; el alias no es una sigla del producto). Las audiencias son
-quien integra, quien opera y los agentes; la versión se ancla con la etiqueta de cada línea.
+segundo marco SDD del laboratorio, junto al de Lab-Geometria; el alias no es una sigla del producto). Las audiencias típicas
+son quien integra y quien opera, y los agentes leen como lectores; la versión se ancla con la etiqueta de cada línea.
 
 ### 2.5 Qué cambia entre escenarios
 
 | Parámetro | ESC-SDEI-1 Corpus de guías | ESC-SDEI-2 App sin roles | ESC-SDEI-3 Panel con roles | ESC-SDEI-4 Servicio con paquetes |
 | --- | --- | --- | --- | --- |
-| Audiencias | Estudiante, docente, agente | Persona usuaria, desarrollo, consumidor de la API, agente | Lo anterior más los roles del panel | Integrador, operador, agente |
+| Audiencias típicas | Estudiante, docente | Persona usuaria, desarrollo, consumidor de la API | Lo anterior más los roles del panel | Integrador, operador |
+| Superficies | — (no hay producto: el cuerpo se lee en el repositorio) | App móvil, web y servicio (la API) | Panel | Servicio y SDK (los paquetes); panel, si el servicio lo tiene |
+| Canales de ayuda | Página del cuerpo; los canales derivados sólo con sitio (`CTX-SDEI-1`) | Página de ayuda y punto de uso (el texto bajo el campo) | Página por regla de entrega y punto de uso | Página para quien integra y referencia de la API |
 | Clases activas por defecto | CL-02, CL-03, CL-08 a CL-13 | CL-02 a CL-08, CL-12, CL-13 | CL-01 a CL-08, CL-12 | CL-01 a CL-05, CL-07, CL-08, CL-11 a CL-13 |
 | Altas y bajas, con motivo | Altas: CL-08, porque el índice interno del repositorio hermano indexa el cuerpo; CL-13, porque el `CHANGELOG.md` registra cada cambio y la delegación del merge | Altas: CL-08 y CL-13, porque el repositorio hermano tiene índice interno y los dos repositorios llevan `CHANGELOG.md` | — | — |
 | No presente en el ejemplo, medido en su SHA | CL-11: no hay copia fijada fuera de los fixtures (Lab-Documentos `0bed863`) | CL-03: no hay `AGENTS.md`; CL-04: comentarios XML sólo en la API, no en la app MAUI; CL-12: no hay instancia de «Cómo intervenir» (Lab-E2E.WebBlazor `8fb4c3a`) | CL-02: no hay RRD; CL-04: `GenerateDocumentationFile` en `false`; CL-06: la ayuda por rol es la prueba de concepto de `Examples/`; CL-12: no hay instancia (Lab-Geometria `5f07b12`) | — (el ejemplo es privado; no se mide en lo público) |
-| Confidencialidad | No aplica | Lo que viaja en el paquete de la app instalada es visible para quien la instala | En el build y en el servidor | En el build y en los secretos |
+| Confidencialidad | No aplica | Lo que viaja en el paquete de la app instalada es visible para quien la instala: lleva sólo nivel `publico`, en texto y en recursos compilados | En el build y en el servidor | En el build y en los secretos |
 | Fuente generada | — | OpenAPI y comentarios XML | OpenAPI; comentarios XML previstos | API pública de los paquetes |
 | Ancla de versión | Versión del cuerpo y etiqueta | SHA en `source.lock` | Etiqueta y SHA | Etiqueta por línea de versión; una familia de versiones sin etiqueta se ancla con el SHA |
 | Registro de IDs | `doc_id` y `corpus_id` | Fichas provisionales `RN-LOC-nn` | El del SDD del proyecto | El del SDD del proyecto |
+
+Las audiencias típicas son un valor por defecto, como las clases activas: orientan qué se escribe y para quién, y no dan
+ni quitan acceso. Qué audiencia recibe cada pieza lo decide la regla de entrega, con sus cuatro dimensiones (rol, tipo
+de alcance, superficie y nivel de acceso), declarada en el registro de audiencias (`AUD-`). El agente no figura en la
+fila: es un lector que hereda la audiencia y el alcance de su usuario. Los términos están en el
+[glosario](99-Anexos/Glosario.md#2-términos) y los campos, en el
+[anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#2-los-diez-campos-más-description).
 
 ## 3. Contextos
 
@@ -148,9 +157,9 @@ runner de su organización de GitHub.
 
 | Id | Actor | Decide | No decide |
 | --- | --- | --- | --- |
-| `ACT-SDEI-1` | Persona responsable del producto (PO) | Lo de clase H del producto: aceptar decisiones de arquitectura, pasar a vigente, etiquetar, publicar; asentar la delegación del merge | Cada pull request de clase D o P sin reserva: lo fusiona el agente que lo abrió, después de pasar la guarda |
+| `ACT-SDEI-1` | Persona responsable del producto (PO) | Lo de clase H del producto: aceptar decisiones de arquitectura, pasar a vigente, etiquetar, publicar; asentar la delegación del merge; exponer o ensanchar la documentación de una API, cada cambio por separado; cambiar la jerarquía de audiencias | Cada pull request de clase D o P sin reserva: lo fusiona el agente que lo abrió, después de pasar la guarda |
 | `ACT-SDEI-2` | Analista | Acepta, rechaza o difiere cada requerimiento documental; decide las divergencias entre lo que la especificación dice y lo que se quiso decir | La clase de una pieza que ya está en el catálogo |
-| `ACT-SDEI-3` | Desarrollo | Escribe el código, sus comentarios XML y el contrato que se emite en el build | El texto de la ayuda al usuario final |
+| `ACT-SDEI-3` | Desarrollo | Escribe el código, sus comentarios XML y el contrato que se emite en el build; decide la clave y la ubicación del microtexto de un campo | El texto de la ayuda al usuario final ni la letra del microtexto |
 | `ACT-SDEI-4` | Agente de IA | Propone (clase P): fichas, borradores, traducciones, reindexado, correcciones por deriva | Nada de clase H; no aprueba su propio trabajo |
 | `ACT-SDEI-5` | Estudiante y docente | Recorren la guía y la evalúan con los criterios de calidad | El contenido normativo del cuerpo |
 | `ACT-SDEI-6` | Persona usuaria | Usa la ayuda dentro del producto | — |
@@ -158,7 +167,8 @@ runner de su organización de GitHub.
 Clase H quiere decir «la decide una persona», no siempre el PO: la tabla dice qué persona decide cada cosa (por
 ejemplo, una divergencia entre especificación e intención la decide la analista). Una regla atraviesa la tabla:
 quien verifica no es quien redactó, y una segunda identidad de la misma persona no
-aprueba a la primera. Que un agente fusione su pull request con la guarda no contradice la regla: quien verifica son
+aprueba a la primera. Un actor no es una audiencia: el actor interviene en el sistema documentador; la audiencia lee lo
+que produce. Que un agente fusione su pull request con la guarda no contradice la regla: quien verifica son
 los controles de la compuerta, que el agente no escribió en ese pull request, y la delegación la dio una persona.
 
 ## 5. Convenciones

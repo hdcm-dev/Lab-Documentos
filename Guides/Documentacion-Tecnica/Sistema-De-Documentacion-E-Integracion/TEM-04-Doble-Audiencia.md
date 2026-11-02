@@ -8,7 +8,7 @@ origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
 last_review: 2026-10-27
-audience: [humano, agente, estudiante, docente, desarrollo]
+audience: [humano, estudiante, docente, desarrollo]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS]
 ---
 
@@ -260,7 +260,7 @@ origin: ia-assisted       # ¿Quién la escribió? Si no fue una persona sola, h
 confidence: media         # ¿Cuánto confía quien la escribió en lo que afirma?
 owner: Lab-Documentos     # ¿Quién responde si queda desactualizada?
 last_review: 2026-10-27   # ¿Cuándo se revisó por última vez contra la fuente?
-audience: [persona-usuaria, agente]   # ¿Quiénes la leen? Ordena las rutas y los canales
+audience: [persona-usuaria]   # ¿A quién se dirige? Orienta la escritura; no da acceso
 traces: [RN-LOC-01@1.1]   # ¿Qué regla o caso de uso explica, y en qué versión se leyó?
 ---
 ```

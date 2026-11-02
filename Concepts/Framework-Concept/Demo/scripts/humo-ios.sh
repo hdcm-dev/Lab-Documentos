@@ -21,13 +21,14 @@ mkdir -p "$SALIDA"
 SALIDA="$(cd "$SALIDA" && pwd)"
 
 echo "== Simulador $UDID"
-xcrun simctl bootstatus "$UDID" -b
+# bootstatus puede quedar colgado: se le pone plazo (macOS no trae «timeout»).
+perl -e 'alarm 300; exec @ARGV' xcrun simctl bootstatus "$UDID" -b
 xcrun simctl list devices | grep "$UDID" || true
 
 echo "== Instalar $APP"
 codesign -dv "$APP" 2>&1 | grep -E "Identifier|Signature" || true
 xcrun simctl uninstall "$UDID" "$BUNDLE" 2>/dev/null || true
-xcrun simctl install "$UDID" "$APP"
+perl -e 'alarm 300; exec @ARGV' xcrun simctl install "$UDID" "$APP"
 xcrun simctl listapps "$UDID" | grep -q "$BUNDLE" || { echo "ERROR: la app no quedó registrada"; exit 1; }
 echo "instalada: $BUNDLE"
 
@@ -41,7 +42,7 @@ REC_PID=$!
 sleep 3
 
 echo "== Abrir"
-xcrun simctl launch "$UDID" "$BUNDLE"
+perl -e 'alarm 120; exec @ARGV' xcrun simctl launch "$UDID" "$BUNDLE"
 
 ESTADO=1
 for ((i = 0; i < PLAZO; i++)); do

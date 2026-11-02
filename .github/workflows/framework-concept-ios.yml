@@ -67,6 +67,7 @@ env:
   GDOWN_VERSION: '5.2.0'
   # SIMULADOR
   IOS_RUNTIME: '26.0'
+  IOS_RUNTIME_BUILD: '23A8464'   # iOS 26.0.1; la imagen macos-15 ya lo trae, si no se baja por este número
   SIM_DEVICE_TYPE: 'com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro'
   # DOTNET (el script de instalación, fijado por commit de dotnet/install-scripts)
   DOTNET_VERSION: '10.0.400'
@@ -130,15 +131,19 @@ jobs:
       - name: "SIMULADOR. Runtime iOS fijo y dispositivo"
         run: |
           set -euxo pipefail
+          # El servicio de simuladores quedó levantado con el Xcode anterior de la imagen: se reinicia para que tome
+          # el fijado (si no, «simctl bootstatus» queda colgado).
+          sudo killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
           xcrun simctl list runtimes
-          if ! xcrun simctl list runtimes | grep -q "iOS ${IOS_RUNTIME} "; then
-            sudo xcodebuild -downloadPlatform iOS -buildVersion "$IOS_RUNTIME"
+          if ! xcrun simctl list runtimes | grep -q "iOS ${IOS_RUNTIME} (.* - ${IOS_RUNTIME_BUILD})"; then
+            sudo xcodebuild -downloadPlatform iOS -buildVersion "$IOS_RUNTIME_BUILD"
           fi
           xcrun simctl list runtimes
-          RUNTIME_ID="$(xcrun simctl list runtimes | grep "iOS ${IOS_RUNTIME} " | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]+' | head -1)"
+          RUNTIME_ID="$(xcrun simctl list runtimes | grep -- "- ${IOS_RUNTIME_BUILD})" | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]+' | head -1)"
           test -n "$RUNTIME_ID"
           UDID="$(xcrun simctl create fc-humo "$SIM_DEVICE_TYPE" "$RUNTIME_ID")"
           xcrun simctl boot "$UDID"
+          perl -e 'alarm 600; exec @ARGV' xcrun simctl bootstatus "$UDID"
           echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
 
       # ── DOTNET ───────────────────────────────────────────────────────────────────────────────────────────────
@@ -215,6 +220,7 @@ jobs:
 
       # ── HUMO ─────────────────────────────────────────────────────────────────────────────────────────────────
       - name: "HUMO. Instalar, abrir y esperar el primer render"
+        timeout-minutes: 20
         run: bash "$DEMO/scripts/humo-ios.sh" "$APP" "$SIM_UDID" "$EVIDENCIA/humo" 180
 
       - name: "HUMO. TPR en el resumen"

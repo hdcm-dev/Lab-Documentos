@@ -1,0 +1,16 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "nota": "Estímulo del mismo autor. Una sola entrada de demostración (plan §E.2, ejemplo 17): tres pedidos, los dos primeros idénticos (mismo texto, mismas opciones) y el tercero con el mismo texto y otra temperatura. La temperatura del tercero es la variable del experimento: muestra que las opciones forman parte de la clave de la caché. Sin tasa.",
+  "entradas": [
+    {
+      "id": "e01",
+      "pedidos": [
+        { "id": "p1", "texto": "¿Qué datos pide el alta de una localidad? Respondé en una sola oración.", "temperatura": null },
+        { "id": "p2", "texto": "¿Qué datos pide el alta de una localidad? Respondé en una sola oración.", "temperatura": null },
+        { "id": "p3", "texto": "¿Qué datos pide el alta de una localidad? Respondé en una sola oración.", "temperatura": 0.7 }
+      ],
+      "esperado": { "llamadas_al_modelo": 2, "spans_con_cache_afuera": 2, "spans_con_telemetria_afuera": 3 }
+    }
+  ]
+}

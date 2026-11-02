@@ -24,3 +24,7 @@ cognitect.com                    # ADR de Nygard
 keepachangelog.com               # formato de CHANGELOG
 semver.org                       # versionado semántico
 code.claude.com                  # documentación del agente de código citado en la guía
+github.blog                      # blog de ingeniería citado en la guía 16 (AI Layer)
+shopify.engineering              # blog de ingeniería citado en la guía 16 (AI Layer)
+www.anthropic.com                # publicaciones citadas en la guía 16 (AI Layer)
+www.linkedin.com                 # artículo citado en la guía 16 (AI Layer)

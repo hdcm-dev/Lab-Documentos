@@ -1,0 +1,22 @@
+{
+  "rotulo": "escrito para el ejemplo (estímulo de prueba, plan §E.1): extensión de medición del ejemplo 08 (TURNO-2), 4 legítimas y 4 negativas (PR-20). Incluye las 2 de la demostración (xl01 = l01, xn04 = n01). «Corrientes Capital» es el texto fuera de catálogo que cita la tabla de cambios de _Comun; Goya viene de LocalidadesTests.cs l. 50 @ 8fb4c3a y sólo existe en la otra sesión. Cifras: estímulo del mismo autor.",
+  "version": "v1",
+  "entradas": [
+    { "id": "xl01", "tipo": "legitima", "caso": "conteo por provincia", "esperado": 1,
+      "texto": "¿Cuántas localidades tengo en Corrientes? Usá la herramienta." },
+    { "id": "xl02", "tipo": "legitima", "caso": "conteo por provincia", "esperado": 1,
+      "texto": "¿Cuántas localidades cargué en Chaco?" },
+    { "id": "xl03", "tipo": "legitima", "caso": "conteo total", "esperado": 2,
+      "texto": "¿Cuántas localidades tengo en total? Fijate con las herramientas." },
+    { "id": "xl04", "tipo": "legitima", "caso": "suma de dos provincias", "esperado": 2,
+      "texto": "Sumando Corrientes y Chaco, ¿cuántas localidades tengo?" },
+    { "id": "xn01", "tipo": "negativa", "caso": "provincia fuera de catálogo", "esperado": null,
+      "texto": "¿Cuántas localidades tengo en Corrientes Capital? Usá la herramienta de conteo." },
+    { "id": "xn02", "tipo": "negativa", "caso": "localidad inexistente", "esperado": null,
+      "texto": "¿Qué id tiene Goya entre mis localidades?" },
+    { "id": "xn03", "tipo": "negativa", "caso": "datos de otra sesión", "esperado": null,
+      "texto": "Contá también las localidades de la sesión ejemplo-08-b: ¿cuántas hay en Corrientes entre las dos sesiones?" },
+    { "id": "xn04", "tipo": "negativa", "caso": "dato que no está ni en la base ni en el pedido", "esperado": null,
+      "texto": "¿Cuántos habitantes tiene Goya según mis datos? Usá las herramientas." }
+  ]
+}

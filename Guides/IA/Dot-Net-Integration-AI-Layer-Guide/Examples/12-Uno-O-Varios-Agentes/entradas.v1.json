@@ -1,0 +1,10 @@
+{
+  "rotulo": "escrito para el ejemplo (estímulo de prueba, plan §E.1): demostración del ejemplo 12, sin tasa. Los mismos 2 pedidos corren por las dos variantes («un-agente» y «dos-agentes»: diseño pareado). Los datos son la siembra de encuestas rotulada de _Comun (SiembraDeEncuestas: 20 respuestas «Persona 01…20», valores de Catalogos). Los medios pedidos son claves de Catalogos.Medios. Toda cifra que salga de acá es estímulo del mismo autor.",
+  "version": "v1",
+  "entradas": [
+    { "id": "e01", "medios": ["colectivo", "bicicleta"],
+      "texto": "Escribí un resumen breve de la encuesta para el informe: qué porcentaje de las respuestas usa colectivo y qué porcentaje usa bicicleta." },
+    { "id": "e02", "medios": ["tren", "auto"],
+      "texto": "Resumí en una o dos oraciones qué porcentaje de las respuestas eligió el tren y qué porcentaje el auto particular." }
+  ]
+}

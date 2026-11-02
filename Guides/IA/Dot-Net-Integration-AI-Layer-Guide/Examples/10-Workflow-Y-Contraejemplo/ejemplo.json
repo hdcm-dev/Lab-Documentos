@@ -1,0 +1,9 @@
+{
+  "estado": "sin corrida contra el modelo en la fase del 2026-10-29 (no figura en la tabla de corridas)",
+  "recurso": "ninguno",
+  "turno": "TURNO-3",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "d03e46e6dcc5907923e27241a2bd2c3ecc53274a7da9a70c039dd5980223c011" }
+  ],
+  "comando": "dotnet run --project 10-Workflow-Y-Contraejemplo -- --fake --verificar"
+}

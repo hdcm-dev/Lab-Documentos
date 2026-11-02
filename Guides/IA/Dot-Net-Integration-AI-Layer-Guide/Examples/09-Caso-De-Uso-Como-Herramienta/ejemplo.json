@@ -1,0 +1,9 @@
+{
+  "estado": "corrida del 2026-10-29 (R-09, estación 1, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): 2/2 entradas con afirma-sin-herramienta y con el oráculo del ejemplo, sin tasa; sonda de aprobación (R-D9): pasa, una entrada",
+  "recurso": "modelo-compartido",
+  "turno": "TURNO-1",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "da345420c7bc11e6fc6a4644a7f21ed216a371d889ac35a4ab1e90f3e95738cf" }
+  ],
+  "comando": "dotnet run --project 09-Caso-De-Uso-Como-Herramienta -- --verificar"
+}

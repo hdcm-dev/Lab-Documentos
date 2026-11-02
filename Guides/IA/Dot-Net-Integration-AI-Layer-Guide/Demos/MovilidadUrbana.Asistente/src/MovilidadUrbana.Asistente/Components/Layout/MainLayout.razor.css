@@ -1,0 +1,16 @@
+/* Nuevo (ADR-13). Sólo tokens del caso base (Tokens.css): ningún valor visual escrito a mano. */
+.asistente-shell {
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-4);
+}
+
+.asistente-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-5);
+    border-bottom: 1px solid var(--color-border-tertiary);
+}

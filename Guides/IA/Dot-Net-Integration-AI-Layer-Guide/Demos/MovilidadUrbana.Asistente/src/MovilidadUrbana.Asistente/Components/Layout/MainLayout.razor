@@ -1,0 +1,20 @@
+@* Nuevo y mínimo (ADR-13): la demo tiene una sola página; no arrastra el shell, la barra lateral ni
+   los quince componentes de Shared/ del caso base. *@
+@inherits LayoutComponentBase
+
+<div class="asistente-shell">
+    <header class="asistente-cabecera">
+        <span class="mq-title">Movilidad Urbana</span>
+        <span class="mq-caption">Asistente · demo de la guía de la capa de IA</span>
+    </header>
+    <main id="mq-main" tabindex="-1">@Body</main>
+</div>
+
+@* Testigo de interactividad, como en el caso base: las pruebas y la captura esperan `true` antes de tocar. *@
+<div hidden data-testid="estado-app"
+     data-interactivo="@RendererInfo.IsInteractive.ToString().ToLowerInvariant()"></div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Se produjo un error inesperado y la pantalla dejó de responder.
+    <a class="mq-btn mq-btn--secundario reload" href=".">Recargar la pantalla</a>
+</div>

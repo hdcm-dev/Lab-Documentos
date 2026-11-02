@@ -1,0 +1,30 @@
+@* Nuevo (ADR-13). Patrón de src/MovilidadUrbana.Web/Components/App.razor @ 8fb4c3a (procedencia del
+   patrón, no copia): mismas hojas en el mismo orden, y la sesión pasa de la cookie al circuito como
+   parámetro de Routes. La hoja de estilos aislados lleva el nombre del ensamblado nuevo; si quedara
+   mal, fallaría en silencio: lo verifica Host_Humo_EstilosYEstados (AC-11). *@
+@inject MovilidadUrbana.Asistente.Infrastructure.Sessions.SessionContext Session
+<!DOCTYPE html>
+<html lang="es-AR">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <ResourcePreloader />
+    @* Los tokens primero y los componentes después: el orden de las dos hojas es contractual. *@
+    <link rel="stylesheet" href="@Assets["css/Tokens.css"]" />
+    <link rel="stylesheet" href="@Assets["css/Componentes.css"]" />
+    <link rel="stylesheet" href="@Assets["MovilidadUrbana.Asistente.styles.css"]" />
+    <ImportMap />
+    <HeadOutlet @rendermode="InteractiveServer" />
+</head>
+
+<body class="mq-body">
+    <a class="mq-skip" href="#mq-main">Ir al contenido</a>
+    @* `App.razor` se renderiza en el servidor con la petición HTTP a mano: es el único lugar donde
+       se puede leer la cookie de sesión. Desde acá el id viaja como parámetro hasta el circuito. *@
+    <Routes @rendermode="InteractiveServer" SessionId="@Session.Id" />
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+</body>
+
+</html>

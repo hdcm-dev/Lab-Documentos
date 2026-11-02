@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 14 de la guía (§9.7 · OA-SK1), la ruta «si venís de Semantic Kernel», fuera de la
+       secuencia principal. Sin modelo: la misma herramienta contar_localidades anotada para SK
+       ([KernelFunction]) y para M.E.AI ([Description] + AIFunctionFactory), en el mismo proyecto.
+       Un solo proyecto, consola y pruebas a la vez (como 09 y 10). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <AssemblyName>14-Anotaciones-SK-vs-MEAI</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Sólo en este ejemplo (plan §E.1, tabla de versiones). -->
+    <PackageReference Include="Microsoft.SemanticKernel" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <!-- REC-30: sólo para el caso rojo «KernelFunction entregada tal cual a un agente de MAF»
+         (Pruebas/TrampasDeMigracionTests.cs). La versión es la de Directory.Packages.props. -->
+    <PackageReference Include="Microsoft.Agents.AI" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <!-- Sin «global using NUnit.Framework»: NUnit también define [Description] y chocaría con la de
+       System.ComponentModel en las dos herramientas (CS0104). Las pruebas lo importan a mano. -->
+
+  <ItemGroup>
+    <None Include="entradas.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

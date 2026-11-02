@@ -1,0 +1,18 @@
+<Project>
+  <!-- Común a la demo (plan §F.9). Sin NoWarn (AC-1, H-023): se compila con -warnaserror. -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <!-- Intermedios fuera del árbol cuando el script de la demo monta el volumen (R-HOST); sin la
+       variable, bin/ y obj/ quedan en la carpeta del proyecto y el .gitignore los excluye. -->
+  <PropertyGroup Condition="'$(IA_LAYER_ARTEFACTOS)' != ''">
+    <BaseIntermediateOutputPath>$(IA_LAYER_ARTEFACTOS)/demo/$(MSBuildProjectName)/obj/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(IA_LAYER_ARTEFACTOS)/demo/$(MSBuildProjectName)/bin/</BaseOutputPath>
+    <!-- Si alguien compiló antes a mano, el bin/ y obj/ del árbol no se cuelan como fuentes. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,9 @@
+{
+  "estado": "corrida del 2026-10-29 (R-12, estación 2, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): 2/2 entradas no-vacia y porcentajes-del-servicio en las dos variantes, sin tasa; 0 vueltas, el corrector no se llamó",
+  "recurso": "modelo-compartido",
+  "turno": "TURNO-2",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "159c33d8d5664e4531d6129342a89832888aedb27890483fa5b96ccbf06c4458" }
+  ],
+  "comando": "dotnet run --project 12-Uno-O-Varios-Agentes -- --fake --verificar"
+}

@@ -1,0 +1,12 @@
+{
+  "estado": "corrida del 2026-10-29 (R-07, estación 2, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): oro v2, rag-con-citas 12/17, IC95 [0,440; 0,897], N entradas distintas; No sé 0/5; estabilidad pasa",
+  "recurso": "modelo-compartido",
+  "turno": "TURNO-1",
+  "entradas": [
+    { "ruta": "oro/conjunto-de-oro.v2.json", "sha256": "8a94684523951eaa76847603e53c098c327fe94f12dde5240c88acc74e574f32" },
+    { "ruta": "../06-Embeddings-Y-Busqueda-Semantica/oro/conjunto-de-oro.v1.json", "sha256": "6b724009d9210376412db4ed948768d3e3622abe17c4bd7af47903440fadfb2a" }
+  ],
+  "comando": "dotnet run --project 07-RAG-Con-Citas -- --verificar",
+  "embeddings": { "recurso": "modelo-propio", "turno": "TURNO-3", "fase": "3a", "comando": "dotnet run --project 07-RAG-Con-Citas -- --precomputar-embeddings" },
+  "estabilidad": { "turno": "TURNO-1", "pesimista_s": 240, "comando": "dotnet run --project 07-RAG-Con-Citas -- --verificar --estabilidad" }
+}

@@ -1,0 +1,10 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "demostración (TURNO-1): sin tasa",
+  "procedencia": "Goya, Corrientes, 3450, 90000: LocalidadesTests.cs l. 50 @ 8fb4c3a; el CP «34» es la negativa X-006",
+  "entradas": [
+    { "id": "e01", "texto": "Agregá Goya, Corrientes, CP 34, 90000 habitantes.", "esperado": "rechazo" },
+    { "id": "e02", "texto": "Agregá Goya, Corrientes, CP 3450, 90000 habitantes.", "esperado": "alta" }
+  ]
+}

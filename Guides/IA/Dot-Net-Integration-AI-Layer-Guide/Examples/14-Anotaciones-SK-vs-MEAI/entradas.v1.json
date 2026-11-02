@@ -1,0 +1,12 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "sin modelo: cada entrada es la FunctionCallContent que mandaría el modelo, escrita a mano; las dos definiciones de contar_localidades la reciben igual",
+  "procedencia": "provincias: Catalogos.cs @ 8fb4c3a; localidades de la sesión: SessionSeeder.cs (Corrientes, Resistencia) y LocalidadesTests.cs l. 50 y l. 102 (Goya, Bella Vista) @ 8fb4c3a; «Goya» como provincia: el mismo negativo que usa 08 (una localidad no es una provincia)",
+  "entradas": [
+    { "id": "e01", "descripcion": "provincia del catálogo con tres localidades en la sesión", "argumentos": { "provincia": "Corrientes" }, "esperado": { "cantidad": 3, "error": false } },
+    { "id": "e02", "descripcion": "provincia del catálogo con una localidad en la sesión", "argumentos": { "provincia": "Chaco" }, "esperado": { "cantidad": 1, "error": false } },
+    { "id": "e03", "descripcion": "provincia del catálogo sin localidades en la sesión", "argumentos": { "provincia": "Santa Fe" }, "esperado": { "cantidad": 0, "error": false } },
+    { "id": "e04", "descripcion": "negativo: una localidad en lugar de una provincia; las dos devuelven el error, no un 0", "argumentos": { "provincia": "Goya" }, "negativo": true, "esperado": { "cantidad": null, "error": true } }
+  ]
+}

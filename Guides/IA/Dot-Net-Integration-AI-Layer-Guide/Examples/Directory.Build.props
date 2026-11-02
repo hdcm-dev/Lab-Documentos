@@ -1,0 +1,20 @@
+<Project>
+  <!-- Común a todos los proyectos de Examples/ (plan §E.1). Sin NoWarn (AC-1, H-023): el arnés
+       compila con -warnaserror y una supresión sólo se admite como #pragma acotado y declarado. -->
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <!-- Intermedios fuera del árbol (R-HOST): el arnés monta un volumen y exporta IA_LAYER_ARTEFACTOS;
+       sin la variable (un lector que compila a mano), bin/ y obj/ quedan en la carpeta del proyecto
+       y el .gitignore de Examples/ los excluye. -->
+  <PropertyGroup Condition="'$(IA_LAYER_ARTEFACTOS)' != ''">
+    <BaseIntermediateOutputPath>$(IA_LAYER_ARTEFACTOS)/$(MSBuildProjectName)/obj/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(IA_LAYER_ARTEFACTOS)/$(MSBuildProjectName)/bin/</BaseOutputPath>
+    <!-- Si alguien compiló antes a mano, el bin/ y obj/ del árbol no se cuelan como fuentes. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);bin/**;obj/**</DefaultItemExcludes>
+  </PropertyGroup>
+</Project>

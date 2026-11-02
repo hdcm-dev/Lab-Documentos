@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Dominio y casos de uso de Movilidad Urbana, copiados de MovilidadUrbana.ApiWeb @ 8fb4c3a
+       (cada archivo dice su procedencia y su delta). Sin dependencias de IA (AC-5). Se quitan
+       GenerateDocumentationFile y el NoWarn de CS1591 del proyecto original (H2-006). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+  </PropertyGroup>
+
+</Project>

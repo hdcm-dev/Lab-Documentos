@@ -1,0 +1,8 @@
+{
+  "rotulo": "escrito para el ejemplo (estímulo de prueba, plan §E.1): demostración del ejemplo 13, sin tasa. La sesión fija demo-mcp tiene las 2 localidades sembradas del caso base (Corrientes, Corrientes; Resistencia, Chaco: SessionSeeder.cs @ 8fb4c3a). La sesión de la API tiene además Goya (LocalidadesTests.cs l. 50 @ 8fb4c3a), que por MCP no se alcanza.",
+  "version": "v1",
+  "entradas": [
+    { "id": "m01", "caso": "lectura por MCP en la sesión fija demo-mcp",
+      "texto": "¿Qué localidades tengo cargadas? Usá la herramienta." }
+  ]
+}

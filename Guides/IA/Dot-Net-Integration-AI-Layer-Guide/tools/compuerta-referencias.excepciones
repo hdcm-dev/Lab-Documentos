@@ -1,0 +1,25 @@
+# compuerta-referencias.excepciones — citas que la compuerta no resuelve contra el árbol versionado, con motivo.
+# Una cita literal por línea; lo que sigue a «#» es el motivo. Ver tools/compuerta-referencias.sh.
+bin/          # salida de compilación: no se versiona (.gitignore)
+obj/          # salida de compilación: no se versiona (.gitignore)
+registros/    # carpeta que crea el arnés al correr; no se versiona
+./registros   # ídem
+datos/        # carpeta que crean los ejemplos al correr; no se versiona
+NN-Nombre/    # marcador de la convención de nombres, no una carpeta
+Examples/NN-Nombre/  # ídem
+config.json   # archivo de configuración de docker del lector (DOCKER_CONFIG), fuera del repo
+index.json    # recurso de la API de NuGet (v3-flatcontainer), no un archivo del repo
+ollama/ollama # nombre de imagen de contenedor
+basic/transports       # tramo de URL de la especificación MCP
+specification/latest   # tramo de URL de la especificación MCP
+tools/list    # método JSON-RPC de MCP, no un archivo
+rd-po-4.excepciones    # vive en COMPUERTAS_DIR, fuera del repo por diseño (Compuertas/README.md)
+src/MovilidadUrbana.ApiWeb/   # procedencia: ruta en el repo de origen de la demo, no en esta guía
+tests/MovilidadUrbana.ApiWeb.Tests/   # ídem
+src/MovilidadUrbana.Web/Sessions/SessionMiddleware.cs   # ídem
+src/MovilidadUrbana.Web/wwwroot/css/  # ídem
+MovilidadUrbana.ApiWeb.csproj         # nombre anterior del proyecto de la demo (procedencia)
+MovilidadUrbana.ApiWeb.Tests.csproj   # ídem
+R-LLM/05-Contexto-Completo-Con-Prefijo.modelo.corrida-4.jsonl   # relativa a la carpeta de evidencia que el mismo párrafo nombra (bitácora, otro repo)
+R-LLM/05-Contexto-Completo-Con-Prefijo.modelo.jsonl             # ídem
+Arnes/05-Contexto-Completo-Con-Prefijo.calentamiento.corrida-3.log  # ídem

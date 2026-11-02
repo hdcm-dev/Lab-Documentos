@@ -1,0 +1,11 @@
+# Común a Examples/ (DC-08)
+bin/
+obj/
+registros/
+datos/
+*.db
+*.db-shm
+*.db-wal
+TestResults/
+*.user
+.vs/

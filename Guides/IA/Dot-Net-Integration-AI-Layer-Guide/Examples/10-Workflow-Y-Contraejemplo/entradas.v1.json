@@ -1,0 +1,50 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "sin modelo: cada entrada es la secuencia de respuestas que da la persona, paso por paso",
+  "procedencia": "Goya y Bella Vista: LocalidadesTests.cs l. 50 y l. 102 @ 8fb4c3a; medios, frecuencias y motivos: Catalogos.cs @ 8fb4c3a; «avion» y «laburo»: los huecos H4 y H5 del endurecimiento T2; edades y rangos: EncuestaRules.cs @ 8fb4c3a",
+  "entradas": [
+    {
+      "id": "e01",
+      "descripcion": "las tres respuestas válidas al primer intento",
+      "esperado": "completa[1,1,1]",
+      "respuestas": [
+        { "paso": 1, "nombre": "Persona 01", "edad": 34, "localidad": "Goya" },
+        { "paso": 2, "medios": ["colectivo", "bicicleta"], "frecuencia": "diaria" },
+        { "paso": 3, "distancia": 3.5, "minutos": 20, "motivo": "trabajo" }
+      ]
+    },
+    {
+      "id": "e02",
+      "descripcion": "un medio fuera del catálogo en el paso 2; la persona corrige",
+      "esperado": "completa[1,2,1]",
+      "respuestas": [
+        { "paso": 1, "nombre": "Persona 02", "edad": 51, "localidad": "Bella Vista" },
+        { "paso": 2, "medios": ["avion"], "frecuencia": "semanal", "negativo": true },
+        { "paso": 2, "medios": ["auto"], "frecuencia": "semanal" },
+        { "paso": 3, "distancia": 12, "minutos": 25, "motivo": "salud" }
+      ]
+    },
+    {
+      "id": "e03",
+      "descripcion": "edad fuera de rango en el paso 1 y motivo libre en el paso 3; la persona corrige los dos",
+      "esperado": "completa[2,1,2]",
+      "respuestas": [
+        { "paso": 1, "nombre": "Persona 03", "edad": 12, "localidad": "Goya", "negativo": true },
+        { "paso": 1, "nombre": "Persona 03", "edad": 17, "localidad": "Goya" },
+        { "paso": 2, "medios": ["caminata", "tren"], "frecuencia": "ocasional" },
+        { "paso": 3, "distancia": 2, "minutos": 30, "motivo": "laburo", "negativo": true },
+        { "paso": 3, "distancia": 2, "minutos": 30, "motivo": "estudio" }
+      ]
+    },
+    {
+      "id": "e04",
+      "descripcion": "la persona deja la encuesta antes de contestar el paso 3",
+      "esperado": "incompleta@3[1,1,0]",
+      "respuestas": [
+        { "paso": 1, "nombre": "Persona 04", "edad": 72, "localidad": "Bella Vista" },
+        { "paso": 2, "medios": ["moto"], "frecuencia": "diaria" }
+      ]
+    }
+  ]
+}

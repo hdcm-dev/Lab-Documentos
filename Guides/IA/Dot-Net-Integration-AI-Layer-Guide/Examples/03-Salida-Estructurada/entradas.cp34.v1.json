@@ -1,0 +1,10 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "uso": "estímulo de REC-16 para la fase con modelo: M = 1; el texto trae el código postal «34», que no tiene 4 dígitos. Tasa con criterio previo: propuestas con un código postal distinto de «34»",
+  "procedencia": "texto del pedido D1 de la línea archivada del 2026-10-28, tomado tal cual para comparar el mismo pedido con la composición de la base (el 89959 viene de ese pedido, no del caso base)",
+  "entradas": [
+    { "id": "c01", "trae_habitantes": true, "provincia": "Corrientes",
+      "texto": "Agregá Goya, Corrientes, CP 34, 89959 habitantes" }
+  ]
+}

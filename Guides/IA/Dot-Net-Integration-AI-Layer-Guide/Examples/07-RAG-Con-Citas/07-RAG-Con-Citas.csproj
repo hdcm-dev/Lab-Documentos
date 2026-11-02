@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 07 (plan §E.2; guía §7.3–§7.5; OA-D4). RAG sobre los 12 literales de *Policy con
+       InMemoryVectorStore, top-k, contexto con Fuente, cita validada en código y «No sé» ante lo no
+       respondible. Un solo proyecto: consola (dotnet run) y pruebas NUnit (dotnet test).
+
+       El corpus (plantilla.v1) y el conjunto de oro son los de 06: se enlazan desde su carpeta para que
+       haya una sola fuente de los dos (plan §F.6: «el conjunto de oro es el de 06/07»). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <AssemblyName>RagConCitas</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../06-Embeddings-Y-Busqueda-Semantica/Application/CorpusDePolicies.cs" Link="Application/Compartido06/CorpusDePolicies.cs" />
+    <Compile Include="../06-Embeddings-Y-Busqueda-Semantica/Application/ConjuntoDeOro.cs" Link="Application/Compartido06/ConjuntoDeOro.cs" />
+    <None Include="../06-Embeddings-Y-Busqueda-Semantica/oro/conjunto-de-oro.v1.json" Link="oro/conjunto-de-oro.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <!-- REC-28: el oro que corre 07 es el v2 (v1 + n05, una no respondible cercana); el v1 queda, histórico. -->
+    <None Include="oro/conjunto-de-oro.v2.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+    <PackageReference Include="Microsoft.Extensions.VectorData.Abstractions" />
+    <PackageReference Include="CommunityToolkit.VectorData.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

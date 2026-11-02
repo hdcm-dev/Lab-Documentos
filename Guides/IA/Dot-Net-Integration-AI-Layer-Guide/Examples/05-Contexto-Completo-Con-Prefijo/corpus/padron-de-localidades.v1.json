@@ -1,0 +1,427 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "generador": "PadronDeLocalidades.Generar() (C#), serializado una vez",
+  "registros": [
+    {
+      "Nombre": "Localidad 01",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "1271",
+      "Habitantes": 8719
+    },
+    {
+      "Nombre": "Localidad 02",
+      "Provincia": "Chaco",
+      "CodigoPostal": "1542",
+      "Habitantes": 16638
+    },
+    {
+      "Nombre": "Localidad 03",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "1813",
+      "Habitantes": 24557
+    },
+    {
+      "Nombre": "Localidad 04",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "2084",
+      "Habitantes": 32476
+    },
+    {
+      "Nombre": "Localidad 05",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "2355",
+      "Habitantes": 40395
+    },
+    {
+      "Nombre": "Localidad 06",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "2626",
+      "Habitantes": 48314
+    },
+    {
+      "Nombre": "Localidad 07",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "2897",
+      "Habitantes": 56233
+    },
+    {
+      "Nombre": "Localidad 08",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "3168",
+      "Habitantes": 64152
+    },
+    {
+      "Nombre": "Localidad 09",
+      "Provincia": "Chaco",
+      "CodigoPostal": "3439",
+      "Habitantes": 72071
+    },
+    {
+      "Nombre": "Localidad 10",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "3710",
+      "Habitantes": 79990
+    },
+    {
+      "Nombre": "Localidad 11",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "3981",
+      "Habitantes": 87909
+    },
+    {
+      "Nombre": "Localidad 12",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "4252",
+      "Habitantes": 95828
+    },
+    {
+      "Nombre": "Localidad 13",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "4523",
+      "Habitantes": 103747
+    },
+    {
+      "Nombre": "Localidad 14",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "4794",
+      "Habitantes": 111666
+    },
+    {
+      "Nombre": "Localidad 15",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "5065",
+      "Habitantes": 119585
+    },
+    {
+      "Nombre": "Localidad 16",
+      "Provincia": "Chaco",
+      "CodigoPostal": "5336",
+      "Habitantes": 7504
+    },
+    {
+      "Nombre": "Localidad 17",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "5607",
+      "Habitantes": 15423
+    },
+    {
+      "Nombre": "Localidad 18",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "5878",
+      "Habitantes": 23342
+    },
+    {
+      "Nombre": "Localidad 19",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "6149",
+      "Habitantes": 31261
+    },
+    {
+      "Nombre": "Localidad 20",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "6420",
+      "Habitantes": 39180
+    },
+    {
+      "Nombre": "Localidad 21",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "6691",
+      "Habitantes": 47099
+    },
+    {
+      "Nombre": "Localidad 22",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "6962",
+      "Habitantes": 55018
+    },
+    {
+      "Nombre": "Localidad 23",
+      "Provincia": "Chaco",
+      "CodigoPostal": "7233",
+      "Habitantes": 62937
+    },
+    {
+      "Nombre": "Localidad 24",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "7504",
+      "Habitantes": 70856
+    },
+    {
+      "Nombre": "Localidad 25",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "7775",
+      "Habitantes": 78775
+    },
+    {
+      "Nombre": "Localidad 26",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "8046",
+      "Habitantes": 86694
+    },
+    {
+      "Nombre": "Localidad 27",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "8317",
+      "Habitantes": 94613
+    },
+    {
+      "Nombre": "Localidad 28",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "8588",
+      "Habitantes": 102532
+    },
+    {
+      "Nombre": "Localidad 29",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "8859",
+      "Habitantes": 110451
+    },
+    {
+      "Nombre": "Localidad 30",
+      "Provincia": "Chaco",
+      "CodigoPostal": "9130",
+      "Habitantes": 118370
+    },
+    {
+      "Nombre": "Localidad 31",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "9401",
+      "Habitantes": 6289
+    },
+    {
+      "Nombre": "Localidad 32",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "9672",
+      "Habitantes": 14208
+    },
+    {
+      "Nombre": "Localidad 33",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "9943",
+      "Habitantes": 22127
+    },
+    {
+      "Nombre": "Localidad 34",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "1214",
+      "Habitantes": 30046
+    },
+    {
+      "Nombre": "Localidad 35",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "1485",
+      "Habitantes": 37965
+    },
+    {
+      "Nombre": "Localidad 36",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "1756",
+      "Habitantes": 45884
+    },
+    {
+      "Nombre": "Localidad 37",
+      "Provincia": "Chaco",
+      "CodigoPostal": "2027",
+      "Habitantes": 53803
+    },
+    {
+      "Nombre": "Localidad 38",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "2298",
+      "Habitantes": 61722
+    },
+    {
+      "Nombre": "Localidad 39",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "2569",
+      "Habitantes": 69641
+    },
+    {
+      "Nombre": "Localidad 40",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "2840",
+      "Habitantes": 77560
+    },
+    {
+      "Nombre": "Localidad 41",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "3111",
+      "Habitantes": 85479
+    },
+    {
+      "Nombre": "Localidad 42",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "3382",
+      "Habitantes": 93398
+    },
+    {
+      "Nombre": "Localidad 43",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "3653",
+      "Habitantes": 101317
+    },
+    {
+      "Nombre": "Localidad 44",
+      "Provincia": "Chaco",
+      "CodigoPostal": "3924",
+      "Habitantes": 109236
+    },
+    {
+      "Nombre": "Localidad 45",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "4195",
+      "Habitantes": 117155
+    },
+    {
+      "Nombre": "Localidad 46",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "4466",
+      "Habitantes": 5074
+    },
+    {
+      "Nombre": "Localidad 47",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "4737",
+      "Habitantes": 12993
+    },
+    {
+      "Nombre": "Localidad 48",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "5008",
+      "Habitantes": 20912
+    },
+    {
+      "Nombre": "Localidad 49",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "5279",
+      "Habitantes": 28831
+    },
+    {
+      "Nombre": "Localidad 50",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "5550",
+      "Habitantes": 36750
+    },
+    {
+      "Nombre": "Localidad 51",
+      "Provincia": "Chaco",
+      "CodigoPostal": "5821",
+      "Habitantes": 44669
+    },
+    {
+      "Nombre": "Localidad 52",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "6092",
+      "Habitantes": 52588
+    },
+    {
+      "Nombre": "Localidad 53",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "6363",
+      "Habitantes": 60507
+    },
+    {
+      "Nombre": "Localidad 54",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "6634",
+      "Habitantes": 68426
+    },
+    {
+      "Nombre": "Localidad 55",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "6905",
+      "Habitantes": 76345
+    },
+    {
+      "Nombre": "Localidad 56",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "7176",
+      "Habitantes": 84264
+    },
+    {
+      "Nombre": "Localidad 57",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "7447",
+      "Habitantes": 92183
+    },
+    {
+      "Nombre": "Localidad 58",
+      "Provincia": "Chaco",
+      "CodigoPostal": "7718",
+      "Habitantes": 100102
+    },
+    {
+      "Nombre": "Localidad 59",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "7989",
+      "Habitantes": 108021
+    },
+    {
+      "Nombre": "Localidad 60",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "8260",
+      "Habitantes": 115940
+    },
+    {
+      "Nombre": "Localidad 61",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "8531",
+      "Habitantes": 3859
+    },
+    {
+      "Nombre": "Localidad 62",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "8802",
+      "Habitantes": 11778
+    },
+    {
+      "Nombre": "Localidad 63",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "9073",
+      "Habitantes": 19697
+    },
+    {
+      "Nombre": "Localidad 64",
+      "Provincia": "Buenos Aires",
+      "CodigoPostal": "9344",
+      "Habitantes": 27616
+    },
+    {
+      "Nombre": "Localidad 65",
+      "Provincia": "Chaco",
+      "CodigoPostal": "9615",
+      "Habitantes": 35535
+    },
+    {
+      "Nombre": "Localidad 66",
+      "Provincia": "Córdoba",
+      "CodigoPostal": "9886",
+      "Habitantes": 43454
+    },
+    {
+      "Nombre": "Localidad 67",
+      "Provincia": "Corrientes",
+      "CodigoPostal": "1157",
+      "Habitantes": 51373
+    },
+    {
+      "Nombre": "Localidad 68",
+      "Provincia": "Entre Ríos",
+      "CodigoPostal": "1428",
+      "Habitantes": 59292
+    },
+    {
+      "Nombre": "Localidad 69",
+      "Provincia": "Mendoza",
+      "CodigoPostal": "1699",
+      "Habitantes": 67211
+    },
+    {
+      "Nombre": "Localidad 70",
+      "Provincia": "Santa Fe",
+      "CodigoPostal": "1970",
+      "Habitantes": 75130
+    }
+  ]
+}

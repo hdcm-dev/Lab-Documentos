@@ -1,0 +1,9 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "demostración (TURNO-1): sin tasa",
+  "entradas": [
+    { "id": "d01", "texto": "Voy en bondi y a veces en bici, casi todos los días.", "esperado": { "medios": ["colectivo", "bicicleta"], "frecuencia": "diaria" } },
+    { "id": "d02", "texto": "Algunos días por semana voy caminando y otros en moto.", "esperado": { "medios": ["moto", "caminata"], "frecuencia": "semanal" } }
+  ]
+}

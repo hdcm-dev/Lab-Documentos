@@ -1,0 +1,25 @@
+# Mapa de compuerta-intervalos.py: una fila por figura de la guía (formato en la cabecera del script).
+# id	ancla (texto único de la línea)	forma k/M	IC95 escrito	k	M	clase	registro	filtro	éxito
+I08	hit@1 = 1/12	1/12	-	1	12	calculo	-	-	-
+I09	hit@1 = 1/12	3/12	-	3	12	calculo	-	-	-
+I20	con 4/4 el piso es 0,398	4/4	-	4	4	calculo	-	-	-
+I21	aun 8 de 10 da IC95 [0,444; 0,975]	8 de 10	IC95 [0,444; 0,975]	8	10	umbral	-	-	-
+I25	«2 de 2 spans con contenido»	2 de 2	-	2	2	criterio	-	-	-
+I26	con menos de 8 de 10 no se interpreta, y 8 de 10 sólo evita descartarlo	8 de 10	-	8	10	umbral	-	-	-
+I27	4 de 16: 2 cercanas y 2 lejanas	4 de 16	-	4	16	estimulo	-	-	-
+I31	llamó bien a la herramienta en 5 de 5	5 de 5	-	5	5	medicion-parcial	-	-	-
+# B-12 (2026-10-29): cifras de B-11; las repeticiones están en un registro por corrida (Evidencia/R-LLM-2026-10-28), por eso «medicion-parcial» salvo R-05
+B12-05a	en 5 de 6 pares el contador marcó 650 tokens	5 de 6	IC95 [0,359; 0,996]	5	6	medicion-parcial	-	-	-
+B12-05b	en 5 de 6 pares el contador marcó 650 tokens	0/6	IC95 [0; 0,459]	0	6	medicion	../R-LLM-2026-10-28/estacion-1/R-05/05-Contexto-Completo-Con-Prefijo.jsonl	tipo=entrada	resultado=pasa
+B12-08	recibió el error de catálogo y respondió sin cifra	10 de 10	IC95 [0,692; 1]	10	10	medicion-parcial	-	-	-
+B12-03	copió el «34» del texto en 10 de 10	10 de 10	IC95 [0,692; 1]	10	10	medicion-parcial	-	-	-
+B12-16a	como nombre de una localidad más, en 10 de 10 repeticiones	10 de 10	IC95 [0,692; 1]	10	10	medicion-parcial	-	-	-
+B12-16b	como nombre de una localidad más, en 10 de 10 repeticiones	0/10	IC95 [0; 0,308]	0	10	medicion-parcial	-	-	-
+# PV-01 / DEU-10 (2026-10-30): cifras que agregaron los parches de la relectura (P-08, P-09, P-14, P-18, P-19, P-21, P-22, P-28). I22 reubicada en el texto de P-21 (recuento de legibles, sin IC). 0/52 es Historia (registro de la base); 41/52 sale de R-15b; 45/52 es el mínimo fijado antes de correr; 80 de 81 es un recuento de pruebas de la demo, sin modelo; 4 de 10 son respuestas finales distintas de e06 en R-16 (cinco archivos s01…s05, sin un registro único que el mapa cuente)
+PV01-01	la sexta regla dio rojo (80 de 81)	80 de 81	-	80	81	calculo	-	-	-
+PV01-02	2 de 2 pasan el oráculo `campos-pedidos`	2 de 2	-	2	2	medicion	../R-LLM-2026-10-28/estacion-1/R-01/01-Chat-Y-Streaming.jsonl	tipo=entrada	resultado=pasa
+PV01-04a	la repetición del 2026-10-29 (estación 2) dio 41/52 salidas interpretables	41/52	-	41	52	medicion	../R-LLM-2026-10-28/estacion-2/R-15b/15-Pruebas-Y-Evaluacion.jsonl	tipo=llamada;paso~evaluador=(Relevance|Groundedness)	paso!~meai=sin-valor
+PV01-04b	la repetición del 2026-10-29 (estación 2) dio 41/52 salidas interpretables	45/52	-	45	52	umbral	-	-	-
+PV01-05b	con `qwen3.5:4b` como juez, la corrida quedó no medida	41/52	-	41	52	medicion	../R-LLM-2026-10-28/estacion-2/R-15b/15-Pruebas-Y-Evaluacion.jsonl	tipo=llamada;paso~evaluador=(Relevance|Groundedness)	paso!~meai=sin-valor
+PV01-05c	con `qwen3.5:4b` como juez, la corrida quedó no medida	45/52	-	45	52	umbral	-	-	-
+PV01-08	como nombre de una localidad más, en 10 de 10 repeticiones	4 de 10	-	4	10	medicion-parcial	-	-	-

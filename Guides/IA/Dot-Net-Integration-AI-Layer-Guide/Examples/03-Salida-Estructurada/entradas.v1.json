@@ -1,0 +1,11 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "procedencia": "Goya, Corrientes, 3450, 90000 y Bella Vista, Corrientes, 3432: LocalidadesTests.cs l. 50 y l. 102 @ 8fb4c3a",
+  "entradas": [
+    { "id": "e01", "trae_habitantes": true, "provincia": "Corrientes",
+      "texto": "Dar de alta Goya, Corrientes, código postal 3450, con 90000 habitantes." },
+    { "id": "e02", "trae_habitantes": false, "provincia": "Corrientes",
+      "texto": "En Bella Vista, Corrientes, CP 3432, no sé cuántos viven" }
+  ]
+}

@@ -1,0 +1,187 @@
+[REF-01] Amershi
+[REF-03] Google PAIR
+[REF-04] Microsoft
+[REF-05] NIST
+[REF-06] NIST
+[REF-07] Latent Space
+[REF-08] Huyen
+[REF-09] Microsoft Learn
+[REF-10] Microsoft Learn
+[REF-11] Microsoft Learn
+[REF-12] Microsoft Learn
+[REF-13] Microsoft Learn
+[REF-14] Microsoft Learn
+[REF-15] Ji
+[REF-16] Microsoft Learn
+[REF-17] Vaswani
+[REF-18] Brown
+[REF-19] Ouyang
+[REF-20] OpenAI
+[REF-21] Yao
+[REF-22] Schick
+[REF-23] OpenAI (Eleti
+[REF-24] OpenAI
+[REF-25] Anthropic
+[REF-26] OpenAI
+[REF-27] Anthropic
+[REF-28] Google
+[REF-29] Meta
+[REF-31] Qwen Team
+[REF-33] Qwen Team
+[REF-34] Ollama
+[REF-35] Ollama
+[REF-36] Ollama
+[REF-37] Anthropic
+[REF-38] Model Context Protocol
+[REF-39] Microsoft DevBlogs (Semantic Kernel; Bolanos
+[REF-40] Microsoft DevBlogs (.NET; Quintanilla
+[REF-41] Microsoft Developer Blog
+[REF-42] Microsoft DevBlogs (.NET)
+[REF-43] Microsoft DevBlogs (Agent Framework; Henry
+[REF-44] Microsoft Learn
+[REF-45] Microsoft Learn
+[REF-46] Microsoft Learn (API)
+[REF-47] Microsoft Learn
+[REF-48] Microsoft Learn
+[REF-49] dotnet/extensions
+[REF-50] awaescher
+[REF-51] Ollama
+[REF-52] Ollama
+[REF-53] Ollama
+[REF-54] Ollama
+[REF-55] Ollama
+[REF-56] Ollama
+[REF-57] Microsoft Learn
+[REF-58] Microsoft Learn
+[REF-59] Microsoft DevBlogs (.NET; Matthiesen
+[REF-60] GitHub Changelog
+[REF-61] dotnet/extensions
+[REF-62] dotnet/extensions
+[REF-63] dotnet/extensions
+[REF-64] dotnet/extensions
+[REF-65] awaescher
+[REF-66] Microsoft Learn (API)
+[REF-192] dotnet/extensions
+[REF-67] Chan
+[REF-68] hhhuang
+[REF-69] Microsoft Learn (API)
+[REF-70] OpenAI
+[REF-71] Microsoft Learn
+[REF-72] Anthropic
+[REF-73] ollama/ollama
+[REF-75] ggml-org/llama.cpp
+[REF-76] Hsieh
+[REF-77] Leng
+[REF-78] Eyuboglu
+[REF-79] Agrawal
+[REF-80] Li
+[REF-82] Lu
+[REF-83] Agarwal
+[REF-84] Liu
+[REF-85] Lewis
+[REF-86] Microsoft Learn
+[REF-87] Microsoft Learn
+[REF-88] Microsoft Learn
+[REF-89] Microsoft Learn
+[REF-90] Microsoft Learn
+[REF-91] Microsoft Learn
+[REF-92] Microsoft Learn
+[REF-93] Microsoft Learn
+[REF-94] Microsoft Learn
+[REF-97] Microsoft Learn (Semantic Kernel)
+[REF-98] CommunityToolkit
+[REF-99] microsoft/semantic-kernel
+[REF-100] Microsoft Learn (EF Core)
+[REF-101] Microsoft Learn (EF Core)
+[REF-102] Ollama
+[REF-103] Ollama
+[REF-105] Ollama
+[REF-106] Qwen
+[REF-109] Microsoft Learn (Azure AI Search)
+[REF-110] Microsoft Learn (Azure AI Search)
+[REF-112] asg017
+[REF-113] Microsoft Azure Architecture Center
+[REF-114] Microsoft Azure Architecture Center
+[REF-115] Anthropic (Erik S. y Barry Zhang)
+[REF-116] Microsoft Learn
+[REF-117] Microsoft Learn
+[REF-118] Microsoft Learn
+[REF-119] Microsoft Learn (Agent Framework)
+[REF-121] Microsoft Learn
+[REF-122] Microsoft Learn (Agent Framework)
+[REF-124] Microsoft Learn (Agent Framework)
+[REF-125] Microsoft Learn (Agent Framework)
+[REF-126] Microsoft Learn (Agent Framework)
+[REF-127] Microsoft Learn (Agent Framework)
+[REF-128] Microsoft Learn (Agent Framework)
+[REF-129] Microsoft Learn (Agent Framework)
+[REF-130] modelcontextprotocol
+[REF-132] modelcontextprotocol/csharp-sdk
+[REF-133] modelcontextprotocol/csharp-sdk
+[REF-196] Model Context Protocol
+[REF-197] Model Context Protocol
+[REF-198] Model Context Protocol
+[REF-199] Model Context Protocol
+[REF-208] Model Context Protocol
+[REF-136] microsoft
+[REF-137] Microsoft DevBlogs (Agent Framework; Henry
+[REF-138] Microsoft Learn
+[REF-139] Microsoft Learn (Semantic Kernel)
+[REF-140] Microsoft Learn (Agent Framework)
+[REF-141] microsoft
+[REF-142] LangChain
+[REF-143] LangChain
+[REF-144] LangChain
+[REF-145] LangChain
+[REF-146] LangChain
+[REF-147] langchain-ai/langgraph
+[REF-148] Python Package Index
+[REF-149] npm
+[REF-150] tryAGI
+[REF-151] Microsoft Learn
+[REF-152] Microsoft Learn
+[REF-154] Microsoft Learn
+[REF-156] Saad-Falcon
+[REF-158] Zheng
+[REF-160] OWASP GenAI Security Project
+[REF-161] OWASP GenAI Security Project
+[REF-162] OWASP GenAI Security Project
+[REF-163] OWASP GenAI Security Project
+[REF-164] OWASP GenAI Security Project
+[REF-165] Greshake
+[REF-166] Hines
+[REF-167] Microsoft Learn (ASP.NET Core)
+[REF-205] Argentina
+[REF-206] ResDAC
+[REF-74] ollama/ollama
+[REF-168] OpenTelemetry
+[REF-169] open-telemetry
+[REF-171] open-telemetry
+[REF-173] Microsoft Learn (API)
+[REF-174] Aspire
+[REF-175] Aspire
+[REF-176] Aspire
+[REF-178] Microsoft Learn
+[REF-179] Microsoft DevBlogs (Foundry)
+[REF-193] microsoft/aspire
+[REF-194] dotnet/extensions
+[REF-195] dotnet/extensions
+[REF-182] Microsoft Learn
+[REF-183] Cockburn
+[REF-184] Nygard
+[REF-185] Microsoft
+[REF-202] Microsoft Learn (ASP.NET Core)
+[REF-203] Microsoft Learn (ASP.NET Core)
+[REF-204] Microsoft Learn (.NET)
+[REF-186] hdcm-dev
+[REF-187] NuGet
+[REF-188] NuGet
+[REF-189] NuGet
+[REF-200] NuGet
+[REF-201] Microsoft Learn (NuGet)
+[REF-207] hdcm-dev
+[REF-209] Juan Pablo Bottaro y Karthik R. (LinkedIn Engineering)
+[REF-210] Andrew McNamara (Shopify Engineering)
+[REF-211] Anthropic Engineering
+[REF-212] Johan Rosenkilde (GitHub Blog)
+[REF-213] dotnet

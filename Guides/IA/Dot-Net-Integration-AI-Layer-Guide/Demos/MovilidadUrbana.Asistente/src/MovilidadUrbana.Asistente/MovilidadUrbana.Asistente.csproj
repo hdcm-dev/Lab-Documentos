@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- Procedencia: Lab-E2E.WebBlazor/src/MovilidadUrbana.ApiWeb/MovilidadUrbana.ApiWeb.csproj @ 8fb4c3a
+       Delta: Agregado por la IA — paquetes de IA con versión central y referencia a la capa única de
+       Examples/_Comun; Modificado por otro motivo — namespace raíz MovilidadUrbana.Asistente (H2-008),
+       versiones a Directory.Packages.props (NU1010), se quitan GenerateDocumentationFile y el NoWarn de
+       CS1591 (AC-1; H2-006).
+
+       Un solo host (ADR-13): la API /api/v1 del caso base y la página de chat Blazor. Las capas son
+       carpetas y espacios de nombres de este ensamblado, como en el caso base (ADR-11); la prueba de
+       arquitectura de tests/…/Cableado reemplaza lo que no impide el compilador. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Scalar.AspNetCore" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="Microsoft.Extensions.VectorData.Abstractions" />
+    <PackageReference Include="CommunityToolkit.VectorData.InMemory" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Capa única de opciones del proveedor, cliente guionado, embeddings estables, predicado de
+         salto y registro R-LLM (plan §E.1). -->
+    <ProjectReference Include="../../../../Examples/_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="MovilidadUrbana.Asistente.Tests" />
+  </ItemGroup>
+
+</Project>

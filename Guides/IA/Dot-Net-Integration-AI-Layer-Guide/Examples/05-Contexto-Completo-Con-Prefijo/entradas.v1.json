@@ -1,0 +1,13 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "nota": "Seis preguntas sobre el padrón ficticio «Localidad 01…70». Sólo sirven de estímulo: la calidad de la respuesta no se mide (plan §E.2). Estímulo del mismo autor.",
+  "entradas": [
+    { "id": "p01", "texto": "¿Qué código postal tiene la Localidad 07 según el padrón?" },
+    { "id": "p02", "texto": "¿En qué provincia está la Localidad 23?" },
+    { "id": "p03", "texto": "¿Cuántos habitantes tiene la Localidad 41?" },
+    { "id": "p04", "texto": "Nombrá tres localidades del padrón que estén en Mendoza." },
+    { "id": "p05", "texto": "¿Cuál es la localidad de Chaco con más habitantes en el padrón?" },
+    { "id": "p06", "texto": "¿La Localidad 66 está en Entre Ríos?" }
+  ]
+}

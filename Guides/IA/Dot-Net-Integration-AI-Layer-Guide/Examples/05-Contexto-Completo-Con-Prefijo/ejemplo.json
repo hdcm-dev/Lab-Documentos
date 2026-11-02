@@ -1,0 +1,11 @@
+{
+  "estado": "corrida del 2026-10-29 (R-05, estación 1, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): caché por el contador en 5/6 pares (650 tokens de unos 1.670), IC95 [0,359; 0,996]; par-prefijo 0/6, IC95 [0; 0,459]; estado_cache frio en las 13 llamadas",
+  "recurso": "modelo-propio",
+  "turno": "TURNO-3",
+  "fase": "3a",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "af86696149b8c073f5ece969e42abde0f6505429a59ac7d0de626d327e497c3f" },
+    { "ruta": "corpus/padron-de-localidades.v1.json", "sha256": "cefe78c3b49a8c634f6aa593f0dc5be595c4ae2bcf4f9e0a04d64606bd5d8663" }
+  ],
+  "comando": "dotnet run --project 05-Contexto-Completo-Con-Prefijo -- --verificar"
+}

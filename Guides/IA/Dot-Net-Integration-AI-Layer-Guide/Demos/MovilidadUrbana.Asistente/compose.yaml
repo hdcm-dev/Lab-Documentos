@@ -1,0 +1,73 @@
+# Camino del lector (plan §F.9). El host de la demo con el SDK y «dotnet run» (sin Dockerfile: DEP-05),
+# y, opcional, un Ollama propio para los embeddings (EMB-B). Ninguna dirección tiene valor en este
+# archivo: OLLAMA_ENDPOINT, OLLAMA_MODEL, OLLAMA_NUM_CTX, OLLAMA_EMBED_ENDPOINT y OLLAMA_EMBED_MODEL
+# los pasa quien corre la demo, desde su entorno. La etiqueta de docker sale de ETIQUETA (defecto
+# neutro proyecto=guia-ia).
+#
+#   docker compose up demo                         # con tu servidor de chat y de embeddings
+#   docker compose --profile embeddings up         # suma ollama-embed; exportá antes
+#                                                  #   OLLAMA_EMBED_ENDPOINT=http://ollama-embed:11434
+#   EMB_PLAN=EMB-C docker compose up demo          # sin modelo de embeddings (ayuda rotulada)
+#   ASISTENTE_MODO=guion EMB_PLAN=EMB-C docker compose up demo   # sin ningún modelo
+#
+# Dentro de un contenedor, «localhost» es el propio contenedor: un Ollama del host no se alcanza
+# como http://localhost:11434. La página queda en http://127.0.0.1:8080 (sólo loopback del host).
+name: movilidad-urbana-asistente
+
+services:
+  demo:
+    image: "${SDK_IMAGEN:-mcr.microsoft.com/dotnet/sdk:10.0}"
+    user: "1000:1000"
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]
+    # La demo referencia Examples/_Comun por ruta relativa: se monta la carpeta de la guía entera.
+    volumes:
+      - ../..:/guia
+      - nuget:/nuget
+      - artefactos:/artefactos
+    working_dir: /guia/Demos/MovilidadUrbana.Asistente
+    command: ["dotnet", "run", "--project", "src/MovilidadUrbana.Asistente/MovilidadUrbana.Asistente.csproj", "--no-launch-profile"]
+    environment:
+      HOME: /tmp
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      NUGET_PACKAGES: /nuget
+      IA_LAYER_ARTEFACTOS: /artefactos          # bin/ y obj/ en un volumen, no en el árbol
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__BaseDeDatos: Data Source=/tmp/movilidad.db
+      # Sin valor: se toman del entorno de quien corre la demo (o quedan los defaults del código).
+      OLLAMA_ENDPOINT:
+      OLLAMA_MODEL:
+      OLLAMA_SERVIDOR:
+      OLLAMA_NUM_CTX:
+      OLLAMA_EMBED_ENDPOINT:
+      OLLAMA_EMBED_MODEL:
+      EMB_PLAN:
+      ASISTENTE_MODO:
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [demo]
+
+  # Opcional (EMB-B del lector): Ollama 0.40.11, la versión con la que se midieron los embeddings,
+  # fijada por digest. Bajala con una configuración de docker vacía (DOCKER_CONFIG) si la tuya tiene
+  # credenciales vencidas. El modelo se baja una vez: docker compose exec ollama-embed ollama pull qwen3-embedding:0.6b
+  ollama-embed:
+    profiles: [embeddings]
+    image: ollama/ollama:0.40.11@sha256:dea72d1e22270fe095b68fdf756d2b489d615643c5a2eaebbc5f569181e322d8
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]
+    volumes:
+      - ollama-embed:/root/.ollama
+    networks: [demo]
+
+networks:
+  demo:
+    driver: bridge
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]
+
+volumes:
+  nuget:
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]
+  artefactos:
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]
+  ollama-embed:
+    labels: ["${ETIQUETA:-proyecto=guia-ia}"]

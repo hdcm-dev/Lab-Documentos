@@ -1,0 +1,624 @@
+{
+ "rotulo": "escrito para el ejemplo",
+ "descripcion": "Salidas posibles del modelo y el veredicto que les da el código C# (TryGetResult + NormalizacionDeMovilidad + ValidarPaso). La prueba ParidadDelOraculo las corre por el código; paridad-del-oraculo.sh, por los oráculos jq. Si alguna difiere, el registro deja de ser recalculable (plan §E.1, H2-022).",
+ "casos": [
+  {
+   "id": "p001",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":null,\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p002",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\",1],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p003",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "```json\n{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}\n```",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p004",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"Medios\":[\"bondi\"],\"Frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p005",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p006",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],/*c*/\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p007",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":5}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p008",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":\"bondi\",\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p009",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[null,\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p010",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "[{\"medios\":[\"bondi\"]}]",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p011",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "  \n{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}\n  ",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p012",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"data\":{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p013",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":1}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p014",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p015",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p016",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"} gracias",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p017",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}{\"medios\":[]}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p018",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi.\"],\"frecuencia\":\"diaria\\n\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p019",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"BONDI\"],\"frecuencia\":\"DIARIA\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p020",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"Ómnibus\"],\"frecuencia\":\"Casi todos los días\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p021",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"treñ\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p022",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\\u0301\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p023",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"\\u212Aauto\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p024",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":null}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p025",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p026",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"  \"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p027",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":true}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p028",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"medios\":[\"avion\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p029",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "null",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p030",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "\"hola\"",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p031",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\\t\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p032",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"el  tren\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p033",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}\n```",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p034",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[[\"bondi\"]],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p035",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":{\"x\":1}}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p036",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{'medios':['bondi']}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p037",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"medios2\":null}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p038",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"İ\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p039",
+   "grupo": "bordes de TryGetResult y del plegado (incluye los dos casos del verificador: medios null y lista mixta)",
+   "salida": "{\"medios\":[\"\\u00a0bondi\\u00a0\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p040",
+   "grupo": "surrogates y U+FFFE (antes, U+FFFE hacía tirar a Plegar)",
+   "salida": "{\"medios\":[\"\\ud800\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p041",
+   "grupo": "surrogates y U+FFFE (antes, U+FFFE hacía tirar a Plegar)",
+   "salida": "{\"medios\":[\"bondi\\ud800\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p042",
+   "grupo": "surrogates y U+FFFE (antes, U+FFFE hacía tirar a Plegar)",
+   "salida": "{\"medios\":[\"\\ufffe\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p043",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "﻿{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p044",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "Aquí va: {\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p045",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}]",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p046",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":nan}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p047",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"dia\nria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p048",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":01}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p049",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"MEDIOS\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p050",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medioſ\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p051",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medıos\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p052",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":5,\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p053",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"avion\"],\"Medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p054",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"\\u006dedios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p055",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p056",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\\q\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p057",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":1e999}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p058",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p059",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "\t\r\n {\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p060",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": " {\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p061",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"} {",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p062",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"￾\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p063",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":NaN}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p064",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[1,]}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p065",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":'a'}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p066",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":True}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p067",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\u0001\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p068",
+   "grupo": "JSON estricto, primer valor, mayúsculas en los nombres y claves repetidas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":-}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p069",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p070",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p071",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p072",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p073",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\\uDC00\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p074",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\\ud800\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p075",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\\ud800\\udc00\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p076",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"\\uDC00\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p077",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"Frecuencia\":5}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p078",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":5,\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p079",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":\"\\\\ud800\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p080",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}x",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p081",
+   "grupo": "profundidad 64 y surrogates en propiedades leídas e ignoradas",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}\n\n```",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p082",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bondi.\\nx\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p083",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"\\u00a0\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p084",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"¿?\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p085",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"¿?\",\"bici\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p086",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"  Bondi  \"],\"frecuencia\":\" Casi todos los días. \"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p087",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"BICI\"],\"frecuencia\":\"A DIARIO\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p088",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bici\"],\"frecuencia\":\"  \"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p089",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"ca\\u0301minata\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p090",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"\\ud83d\\ude8c\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p091",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"el   tren\"],\"frecuencia\":\"todos   los dias\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p092",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"colectivo\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p093",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"Ñandú\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p094",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"\\ud800\":1}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p095",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"\\ud800medios\":[\"bondi\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p096",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"moto\\u2028\"],\"frecuencia\":\"diaria\"}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p097",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":{\"y\":[1,2,{\"z\":null}]}}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p098",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{ }",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p099",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bondi\"] , \"frecuencia\" : \"diaria\" }",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p100",
+   "grupo": "plegado: bordes, espacios, tildes, marcas combinantes y textos que quedan vacíos",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":-0.5e-3}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p101",
+   "grupo": "surrogates en nombres de propiedad, arriba y anidados",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":{\"\\ud800\":1}}",
+   "veredicto": "pasa"
+  },
+  {
+   "id": "p102",
+   "grupo": "surrogates en nombres de propiedad, arriba y anidados",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"\\udc00\":1}",
+   "veredicto": "falla"
+  },
+  {
+   "id": "p103",
+   "grupo": "surrogates en nombres de propiedad, arriba y anidados",
+   "salida": "{\"medios\":[\"bondi\"],\"frecuencia\":\"diaria\",\"x\":[{\"\\udc00z\":1}]}",
+   "veredicto": "pasa"
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+{
+  "estado": "la repetición del 2026-10-29 (estación 2) dio 41/52 salidas interpretables, por debajo del mínimo fijado antes de correr (45/52): no medido. qwen3.5:4b@d8b0f5e9760c, Ollama 0.40.11; juez y generador son el mismo modelo, de la misma familia: aun medido, el acuerdo no sería validación",
+  "recurso": "modelo-propio",
+  "turno": "TURNO-3",
+  "fase": "3b",
+  "entradas": [
+    { "ruta": "entradas/salidas-07.v2.json", "sha256": "5a8951ecbb3430e7d90e6b7d8a4a86da4e7d53a6579a8d6a48a5a852c07fe32a" },
+    { "ruta": "entradas/calibracion.v2.json", "sha256": "7f35be96c58c690af327c39d60843a5d2dd6c21b9c767ec9d6db79aca7fbf384" }
+  ],
+  "comando": "dotnet run --project 15-Pruebas-Y-Evaluacion -- --verificar"
+}

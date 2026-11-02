@@ -1,0 +1,42 @@
+<Project>
+  <!--
+    Versiones de TODOS los paquetes de la demo, en un solo lugar (plan §E.1: un Directory.Packages.props
+    por raíz, Examples/ y Demos/). Son las mismas que las de Examples/Directory.Packages.props para las
+    familias compartidas; la guía las cita sólo desde el Anexo F. Las del caso base (OpenApi, Scalar,
+    Mvc.Testing, NUnit.Analyzers, NUnit) se conservan fieles a 8fb4c3a por decisión (H-055, H2-006):
+    no son las últimas.
+
+    El proyecto de la demo referencia Examples/_Comun/MovilidadUrbana.Asistente.Comun (la capa única de
+    opciones del proveedor, el cliente guionado y el registro R-LLM); ese proyecto toma sus versiones
+    de Examples/Directory.Packages.props, que fija las mismas.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Microsoft.Extensions.AI y adaptador">
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.11.0" />
+    <PackageVersion Include="OllamaSharp" Version="5.5.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Datos vectoriales">
+    <PackageVersion Include="Microsoft.Extensions.VectorData.Abstractions" Version="10.11.0" />
+    <PackageVersion Include="CommunityToolkit.VectorData.InMemory" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Host y persistencia (caso base; EF Core 10.0.11 → 10.0.14, N6 §3)">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.17.3" />
+  </ItemGroup>
+
+  <ItemGroup Label="Pruebas (fieles al caso base por decisión: H-055; no son las últimas)">
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.11" />
+    <PackageVersion Include="NUnit" Version="4.3.2" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+  </ItemGroup>
+</Project>

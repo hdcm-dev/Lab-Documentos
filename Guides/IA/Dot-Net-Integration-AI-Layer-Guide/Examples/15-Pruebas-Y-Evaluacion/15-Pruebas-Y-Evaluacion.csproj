@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 15 (plan §E.2; guía §10; OA-D9, OA-O3). Suite NUnit en dos categorías —cableado
+       determinista y [Category("LLM")] con predicado de salto— y una consola que evalúa las 16 salidas
+       de 07 y 10 casos de calibración: primero los evaluadores deterministas (cita válida, afirmación
+       central, valor fuera de catálogo) y después RelevanceEvaluator y GroundednessEvaluator con un juez
+       local (qwen2.5:0.5b en el Ollama propio) y la caché del reporte. Un solo proyecto: consola
+       (dotnet run) y pruebas (dotnet test).
+
+       El oráculo de 07 NO se copia: se enlazan sus fuentes (y el corpus y el oro de 06), para que el
+       evaluador determinista de 15 sea el mismo código que decidió en 07. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <AssemblyName>PruebasYEvaluacion</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="Fuentes de 06 y 07 (una sola fuente del oráculo, del corpus y del oro)">
+    <Compile Include="../06-Embeddings-Y-Busqueda-Semantica/Application/CorpusDePolicies.cs" Link="Application/Compartido06/CorpusDePolicies.cs" />
+    <Compile Include="../06-Embeddings-Y-Busqueda-Semantica/Application/ConjuntoDeOro.cs" Link="Application/Compartido06/ConjuntoDeOro.cs" />
+    <Compile Include="../07-RAG-Con-Citas/Application/RespuestaConCitas.cs" Link="Application/Compartido07/RespuestaConCitas.cs" />
+    <Compile Include="../07-RAG-Con-Citas/Application/OraculoDeCitas.cs" Link="Application/Compartido07/OraculoDeCitas.cs" />
+    <Compile Include="../07-RAG-Con-Citas/Application/NumerosEnTexto.cs" Link="Application/Compartido07/NumerosEnTexto.cs" />
+    <Compile Include="../07-RAG-Con-Citas/Application/IndiceDeAyuda.cs" Link="Application/Compartido07/IndiceDeAyuda.cs" />
+    <None Include="../06-Embeddings-Y-Busqueda-Semantica/oro/conjunto-de-oro.v1.json" Link="oro/conjunto-de-oro.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="entradas/*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+    <PackageReference Include="Microsoft.Extensions.AI.Evaluation" />
+    <PackageReference Include="Microsoft.Extensions.AI.Evaluation.Quality" />
+    <PackageReference Include="Microsoft.Extensions.AI.Evaluation.Reporting" />
+    <!-- Sólo porque IndiceDeAyuda.cs de 07 (enlazado) define Recuperacion junto al almacén vectorial. -->
+    <PackageReference Include="Microsoft.Extensions.VectorData.Abstractions" />
+    <PackageReference Include="CommunityToolkit.VectorData.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

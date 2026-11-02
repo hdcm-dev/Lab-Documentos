@@ -223,7 +223,9 @@ jobs:
           codesign -dv "$APP" 2>&1 | head -20
           # Entitlements: en el simulador pueden ir en la firma o en la sección __TEXT,__entitlements del binario.
           ENT="$( { codesign -d --entitlements - --xml "$APP" 2>/dev/null; \
-                    otool -X -s __TEXT __entitlements "$APP/FrameworkConcept.Shell" 2>/dev/null | xxd -r -p 2>/dev/null; } || true)"
+                    otool -s __TEXT __entitlements "$APP/FrameworkConcept.Shell" 2>/dev/null \
+                      | perl -ne 'next unless s/^[0-9a-f]{8,16}\s+//; for (split) { print scalar reverse pack("H*", $_) if /^[0-9a-f]{8}$/ }'; } || true)"
+          # (otool muestra la sección en palabras de 32 bits little-endian: se invierte cada palabra para leer el plist)
           printf '%s\n' "$ENT" | tee "$EVIDENCIA/entitlements.txt"
           grep -q keychain-access-groups "$EVIDENCIA/entitlements.txt" || { echo "ERROR: falta keychain-access-groups en el .app"; exit 1; }
           /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$APP/Info.plist"

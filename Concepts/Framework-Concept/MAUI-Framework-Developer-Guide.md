@@ -482,7 +482,7 @@ Tabla 2.2. Contextos.
 |---|---|---|---|
 | CTX-1 | Android con WebView ≥ 94 | Contexto de referencia: todo el recorrido funciona | Verificado en el emulador de ensayo; en el teléfono de medida, contenido servido y tiempos de arranque medidos (Anexo H) sin recorrido completo [E01] [folio 049] |
 | CTX-2 | Android con WebView < 94 | El contenido no arranca; el cascarón muestra «WebView viejo» | Medido en E01 (WebView 83) |
-| CTX-3 | iOS | Mismo diseño, otras API (Keychain, `app://`) y otras reglas | Ensayado en el simulador de iOS 26; teléfono real, Secure Enclave y modo Navegador **NO VERIFICADOS** [folio 023] [Demo/README.md:112-124] |
+| CTX-3 | iOS | Mismo diseño, otras API (Keychain, `app://`) y otras reglas | Ensayado en el simulador de iOS 26, incluido el modo Navegador; teléfono real y Secure Enclave **NO VERIFICADOS** [folio 023] [Demo/README.md:112-124] |
 | CTX-4 | Modo Dispositivo (sin emisor OIDC) | No hay cuenta: el dueño del outbox es el id de instalación | Verificado en E02 |
 | CTX-5 | Modo con cuenta | Ingreso, desbloqueo con la seguridad del teléfono, bloqueo a los 5 min en segundo plano, outbox con dueño | Verificado en E03 en el emulador |
 | CTX-6 | Estado de la red | Qué acciones se permiten, quedan pendientes o se bloquean | Verificado en E03 salvo `EnLineaMedida` |
@@ -786,7 +786,7 @@ Retener una versión cuesta del orden de 9,13 MB en el teléfono, y el contenido
 
 El **tiempo hasta el primer render** (TPR) del arranque en frío se midió en el teléfono de medida en varias fechas y con varias variantes. Como son datos fechados, las cifras no van en el texto: están juntas en la Tabla H.3 del Anexo H, y ninguna es un valor normativo.
 
-El umbral del producto es TPR ≤ 5 000 ms; con la versión fusionada, la demo **no cumple** y se abrió la condición de revisión de P1 [Demo/README.md:306] [Demo/README.md:497-499].
+El umbral del producto es TPR ≤ 5 000 ms; con la versión fusionada, la demo **no cumple** y se abrió la condición de revisión de P1 [Demo/README.md:346] [Demo/README.md:537-539].
 
 #### 3.9 Práctica con `scripts/guion.sh`
 
@@ -1158,22 +1158,28 @@ La regla central del outbox es que **el cambio local y la intención de enviarlo
 En la demo, `GuardarYEncolarAsync` resuelve esto con un único `SaveChanges`:
 
 ```csharp
-// Demo/src/FrameworkConcept.Shell/Data/DbSqlite.cs:89-116 (recortado)
-public Task<bool> GuardarYEncolarAsync(FilaDeDocumento documento, FilaDeOutbox fila, CancellationToken ct = default) =>
-    ConCerrojo(async db =>
-    {
-        if (await db.Outbox.AnyAsync(f => f.ClaveIdempotencia == fila.ClaveIdempotencia, ct))
-            return false;
-        // … alta o actualización del documento …
-        fila.CreadaEn = Ahora;
-        fila.ProximoIntentoEn = Ahora;
-        db.Outbox.Add(fila);
+// Demo/src/FrameworkConcept.Shell/Data/DbSqlite.cs:142-172 (recortado)
+public async Task<bool> GuardarYEncolarAsync(FilaDeDocumento documento, FilaDeOutbox fila, CancellationToken ct = default)
+{
+    using var turno = await TomarTurnoAsync(ct);
+    await using var db = NuevoContexto();
+    var (clave, enColeccion, conId, corte) = (fila.ClaveIdempotencia, documento.Coleccion, documento.Id, ct);
+    if (await db.Outbox.AnyAsync(f => f.ClaveIdempotencia == clave, corte))
+        return false;
+    // … alta o actualización del documento …
+    fila.CreadaEn = Ahora;
+    fila.ProximoIntentoEn = Ahora;
+    db.Outbox.Add(fila);
 
-        // Un solo SaveChanges = una sola transacción de SQLite: el documento y la fila quedan juntos (P5).
-        await db.SaveChangesAsync(ct);
-        return true;
-    }, ct);
+    // Un solo SaveChanges = una sola transacción de SQLite: el documento y la fila quedan juntos (P5).
+    await db.SaveChangesAsync(ct);
+    return true;
+}
 ```
+
+Las copias a variables locales (`clave`, `corte`) no son un capricho de estilo: en iOS no hay código dinámico, así que
+la consulta sale precompilada de antemano, y el generador de EF sólo la acepta si todo lo que nombra es local
+[Demo/src/FrameworkConcept.Shell/Data/DbSqlite.cs:12-19].
 
 Hay dos detalles que vale la pena mirar. El primero es que, si la clave de idempotencia ya existe, el método devuelve `false` y no duplica nada: reintentar el guardado desde la UI es inofensivo. El segundo es que la clave también tiene un índice único en la base [ContextoDelCascaron.cs:20], de modo que la garantía no depende sólo del código.
 
@@ -1434,7 +1440,7 @@ Figura 6.3. La cadena del secreto. El texto sellado vive en la base y la clave v
 
 > **Apartamiento declarado H-1.** El borrador pedía que una huella nueva invalidara la clave. Con `BIOMETRIC_STRONG | DEVICE_CREDENTIAL` eso no ocurre: enrolar una huella nueva no invalida la clave [07-Red-Y-Autenticacion.md:302-309][E03 H-1]. Se mantuvo la combinación porque el PO pidió aceptar también PIN y patrón (P4). La invalidación al quitar el bloqueo de pantalla sigue vigente. El comentario de `CofreDeSesion.cs:128-129` todavía afirma lo contrario y se corrige en un PR de código aparte.
 
-`Framework-APP.md` advertía que `SecureStorage` no ata la lectura a la biometría y proponía evaluar un plugin [Framework-APP.md:189]. La demo cerró esa pregunta en Android con código de plataforma. En iOS el cofre usa el Keychain con `.userPresence`, ensayado en el simulador; **no es equivalente**: la clave sale del Keychain a la memoria del proceso (apartamiento declarado) [Demo/DISENO-RED-Y-AUTENTICACION.md:279-285]. En un teléfono sigue **NO VERIFICADO**.
+`Framework-APP.md` advertía que `SecureStorage` no ata la lectura a la biometría y proponía evaluar un plugin [Framework-APP.md:189]. La demo cerró esa pregunta en Android con código de plataforma. En iOS el cofre usa el Keychain con `.userPresence`. Con Secure Enclave la clave AES queda envuelta por una P-256 que no sale del hardware: **equivalente en diseño** al Keystore, **NO VERIFICADO** (requiere teléfono). Sin enclave, como en el simulador donde se ensayó, la clave sale a la memoria del proceso (apartamiento declarado) [Demo/DISENO-RED-Y-AUTENTICACION.md:279-285].
 
 #### 6.5 Ningún token cruza el puente
 
@@ -2725,7 +2731,7 @@ Tabla E.1. Marcas del libro.
 | NO VERIFICADO | Que el ingreso con cuenta dispare la consulta del canal (ESC-6) | 1.3.3, 2.1 |
 | NO VERIFICADO | Cascarón iOS en un teléfono (CTX-3; piso 16.4; ensayado sólo en el simulador de iOS 26) | Tabla 2.2, 12.4 |
 | NO VERIFICADO | `requires` faltante en un dispositivo real | 4.8 |
-| NO VERIFICADO | Keychain de iOS en un teléfono (en el simulador funciona, y no es equivalente al Keystore: apartamiento declarado) | 6.4, 6.7 |
+| NO VERIFICADO | Keychain de iOS en un teléfono: el cofre con Secure Enclave es equivalente al Keystore en diseño, sin ensayo (en el simulador, sin enclave, funciona y no es equivalente: apartamiento declarado) | 6.4, 6.7 |
 | NO VERIFICADO | `EnLineaMedida` en dispositivo; regresión sin cuenta en emulador; conjunto en teléfono físico | 6.7 |
 | NO VERIFICADO | Reenvío inverso de puertos de adb como camino de red | 10.4.3 |
 | NO VERIFICADO | Afirmaciones sobre productos de terceros y tendencias | 12.2, 12.3, 12.6 |
@@ -2849,10 +2855,10 @@ Tabla H.3. TPR del arranque en frío, APK Release. «Régimen» son los arranque
 
 | Fecha o ensayo | Variante | ¿Fusionada? | TPR | Fuente |
 |---|---|---|---|---|
-| antes de la corrección | semilla en el camino crítico | histórica | ~8,2 s | [Demo/README.md:306-308] |
-| 2026-10-29 | semilla fuera del camino crítico (`main`) | sí | 6,9–7,3 s en régimen; 9,2 s en la primera corrida | [Demo/README.md:336-337] [folio 049] |
+| antes de la corrección | semilla en el camino crítico | histórica | ~8,2 s | [Demo/README.md:346-348] |
+| 2026-10-29 | semilla fuera del camino crítico (`main`) | sí | 6,9–7,3 s en régimen; 9,2 s en la primera corrida | [Demo/README.md:376-377] [folio 049] |
 | E04 | arranque superpuesto V1 | no | 4,8–5,2 s en régimen; 9,6 s en la primera corrida | [folio 052] [E04] |
 | E04 | V1 con semilla desde el APK (V1S) | no | 4,9–5,6 s en régimen; 7,9–8,8 s recién instalado | [folio 053] [E04] |
 
-El umbral es TPR ≤ 5 000 ms en el teléfono de medida; las cifras de emulador no cuentan para él [Demo/README.md:305-306].
+El umbral es TPR ≤ 5 000 ms en el teléfono de medida; las cifras de emulador no cuentan para él [Demo/README.md:345-346].
 

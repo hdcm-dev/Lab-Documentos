@@ -252,8 +252,14 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
             {
                 // Corrector E03 (H-3, ANR) — ConfigureAwait(false): lo que sigue a la vuelta del navegador (canje HTTP,
                 // escrituras en SQLite, avisos) NO corre en el hilo principal, que en ese momento está devolviendo el foco.
+                // iOS — sesión efímera (ASWebAuthenticationSession.prefersEphemeralWebBrowserSession): no aparece el
+                // diálogo «quiere utilizar … para iniciar sesión» y no comparte cookies con Safari. Se pierde el SSO con
+                // el navegador, que la app no usa (cada ingreso pide clave y después vale el PIN). Android lo ignora.
                 vuelta = await MainThread.InvokeOnMainThreadAsync(() =>
-                    WebAuthenticator.Default.AuthenticateAsync(new WebAuthenticatorOptions { Url = url, CallbackUrl = _oidc.Configuracion.Redireccion }))
+                    WebAuthenticator.Default.AuthenticateAsync(new WebAuthenticatorOptions
+                    {
+                        Url = url, CallbackUrl = _oidc.Configuracion.Redireccion, PrefersEphemeralWebBrowserSession = true,
+                    }))
                     .ConfigureAwait(false);
             }
             catch (TaskCanceledException)
@@ -262,10 +268,12 @@ public sealed class SesionDelUsuario : ISesionDelUsuario
                 throw ExcepcionDeAutenticacion.Cancelada("Cerraste el navegador sin terminar el ingreso.");
             }
 
-            if (vuelta.Properties.TryGetValue("error", out var error))
-                throw ExcepcionDeAutenticacion.Fallida($"El emisor contestó «{error}».");
+            // Primero el state: una vuelta sin el state de este ingreso no es del emisor, y su «error» (texto que elige
+            // quien armó la vuelta) no se muestra. El emisor devuelve el state también en los errores (RFC 6749 §4.1.2.1).
             if (!vuelta.Properties.TryGetValue("state", out var stateVuelto) || stateVuelto != state)
                 throw ExcepcionDeAutenticacion.Fallida("La respuesta del navegador no corresponde a este ingreso (state distinto).");
+            if (vuelta.Properties.TryGetValue("error", out var error))
+                throw ExcepcionDeAutenticacion.Fallida($"El emisor contestó «{error}».");
             if (!vuelta.Properties.TryGetValue("code", out var code))
                 throw ExcepcionDeAutenticacion.Fallida("El navegador volvió sin código de autorización.");
 

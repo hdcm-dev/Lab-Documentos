@@ -13,7 +13,8 @@
          iOS, en una Mac con Xcode y el workload ios (no hay compilación de iOS fuera de macOS):
            dotnet build src/FrameworkConcept.Shell -c Debug -f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64
            iossimulator-arm64 es para el simulador en una Mac con Apple silicon; ios-arm64, para un teléfono (pide
-           perfil de aprovisionamiento). README.md, «El cascarón en iOS», cuenta cómo se instala y se lee la bitácora. -->
+           perfil de aprovisionamiento). Con Xcode 26 y un workload ios más nuevo: -p:FcDestinos=net10.0-ios26.0
+           -f net10.0-ios26.0. README.md, «El cascarón en iOS», cuenta cómo se instala y se lee la bitácora. -->
   <Import Project="../../versionado/version-cascaron.props" />
 
   <PropertyGroup>
@@ -64,12 +65,11 @@
          lo firma el perfil de aprovisionamiento. Ver Platforms/iOS/Entitlements.plist. -->
     <CodesignEntitlements>Platforms/iOS/Entitlements.plist</CodesignEntitlements>
 
-    <!-- iOS no permite generar código en ejecución: sin intérprete, EF Core no puede armar el modelo del outbox y el
-         Release aborta al abrir («Model building is not supported when publishing with NativeAOT», visto en el
-         simulador el 2026-11-01; el Debug no lo muestra porque ya corre con intérprete). «-all» deja TODO compilado
-         de antemano y habilita el intérprete sólo para el código que se genera en ejecución (el de EF). Camino de
-         crecimiento: modelo compilado y consultas precompiladas de EF (dotnet ef dbcontext optimize), y sacar esto. -->
-    <MtouchInterpreter>-all</MtouchInterpreter>
+    <!-- iOS no permite generar código en ejecución, y el cascarón compila TODO de antemano, sin intérprete. EF Core
+         lo resiste porque no arma nada al vuelo: el modelo y las consultas salen compilados de Data/Compilado/
+         (scripts/modelo-compilado.sh). Sin eso, el Release aborta al abrir («Model building is not supported when
+         publishing with NativeAOT», visto en el simulador el 2026-11-01; el Debug no lo muestra porque corre con
+         intérprete). README.md, «La base del cascarón sin código dinámico». -->
   </PropertyGroup>
 
   <!-- En el simulador la firma es ad hoc («-»): no hace falta certificado de Apple, y las entitlements quedan igual
@@ -185,6 +185,12 @@
     <AndroidResource Include="$(_CaDeDemo)" Condition="'$(_ConfigDeRed)' == 'ConCaDeDemo'"
                      Link="Platforms/Android/Resources/raw/ca_demo_tls.crt" />
   </ItemGroup>
+
+  <!-- P5 — Las consultas precompiladas de Data/Compilado/ son interceptores de C#: el compilador sólo los acepta
+       desde los espacios de nombres listados acá. -->
+  <PropertyGroup>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />

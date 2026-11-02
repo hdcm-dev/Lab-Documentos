@@ -6,6 +6,7 @@
       "src/FrameworkConcept.Content/FrameworkConcept.Content.csproj",
       "tools/FrameworkConcept.Tools/FrameworkConcept.Tools.csproj",
       "tools/FrameworkConcept.Receptor/FrameworkConcept.Receptor.csproj",
+      "tools/FrameworkConcept.Shell.Diseno/FrameworkConcept.Shell.Diseno.csproj",
       "tests/FrameworkConcept.Core.Tests/FrameworkConcept.Core.Tests.csproj",
       "tests/FrameworkConcept.Update.Tests/FrameworkConcept.Update.Tests.csproj",
       "tests/FrameworkConcept.Gate.Tests/FrameworkConcept.Gate.Tests.csproj"

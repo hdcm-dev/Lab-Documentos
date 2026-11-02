@@ -214,7 +214,7 @@ cambia.
    con `S256`; `state` aleatorio (`FlujoOidc`).
 3. **Navegador del sistema:** `WebAuthenticator.Default.AuthenticateAsync(urlDeAutorizacion, redirect)` (MAUI
    Essentials). Abre Custom Tabs si el navegador lo ofrece (por eso el `<queries>` del catálogo, §7) o el navegador por
-   `ACTION_VIEW`. **Nunca** un WebView embebido (RFC 8252 §8.12). **Corrector E03:** la URL lleva `prompt=login`
+   `ACTION_VIEW`; en iOS, ASWebAuthenticationSession efímera. **Nunca** un WebView embebido (RFC 8252 §8.12). **Corrector E03:** la URL lleva `prompt=login`
    (OIDC Core §3.1.2.1): cada ingreso interactivo pide la clave aunque el emisor tenga una sesión SSO viva (§12, P0).
 4. **Vuelta:** `com.frameworkconcept.demo://callback?code=…&state=…` llega a `Shell/Auth/CallbackDeAutenticacion.cs`
    (ya declarada con su `[IntentFilter]`). Se compara `state`.
@@ -278,11 +278,11 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 - **Cancelación** del BiometricPrompt → `CodigosDeError.AutenticacionCancelada` (-32006), la sesión sigue `Bloqueada`.
 - **iOS** (`Shell/Platforms/iOS/Auth/CofreDeSesion.cs`, mismo contrato): clave AES-256 al azar guardada como ítem
   genérico del Keychain con `SecAccessControl(.userPresence)` y `WhenPasscodeSetThisDeviceOnly`, leída después de
-  LocalAuthentication (`DeviceOwnerAuthentication`). **Diferencia declarada con Android:** la clave no queda atada al
-  hardware; el Keychain la entrega entera a la memoria del proceso en cada apertura y AES-GCM corre en .NET (el
-  `byte[]` se pone en cero y el `NSData` se libera). En Android la clave nunca sale del Keystore. Una clave de la
-  Secure Enclave (ECIES) cerraría la diferencia en un teléfono; el simulador no la tiene. **NO VERIFICADO** en un
-  teléfono.
+  LocalAuthentication (`DeviceOwnerAuthentication`). **Con Secure Enclave:** el ítem guarda la clave AES envuelta por
+  ECIES (`eciesEncryptionCofactorVariableIVX963SHA256AESGCM`) con una P-256 generada dentro del enclave
+  (`.privateKeyUsage` + `.userPresence`, `WhenPasscodeSetThisDeviceOnly`), que desenvuelve con el `LAContext` ya
+  evaluado: equivalente EN DISEÑO al Keystore, **NO VERIFICADO** (requiere teléfono). **Sin enclave** (simulador): la
+  clave va en claro en el ítem y sale a la memoria del proceso (diferencia declarada). El sellado marca el camino (`iv.datos.e`) y abrir rechaza un ítem que no coincide; en un teléfono, si el enclave no genera la clave, sellar falla (sólo `errSecUnimplemented` sigue sin enclave).
 - **Después de abrir:** estado `Activa` de inmediato (la entrada no espera a la red) y renovación del access token en
   segundo plano. Sin red, se sigue trabajando; con `invalid_grant`, `Revocada`. **[P4]**
 
@@ -684,7 +684,7 @@ lo pide, `keycloak.sh parar`, `guion.sh parar`, borrar `bin/` y `obj/`.
 - Evaluar la versión mínima del cascarón **al ingresar** (P4, fila «Versión mínima del cascarón»): sigue evaluándose en
   el arranque en frío como en A3.
 - iOS (Keychain `userPresence`, LocalAuthentication): verificado en el simulador (iOS 26): login con formulario,
-  sellar, bloquear, desbloquear. NO VERIFICADO: teléfono real, Secure Enclave, modo Navegador (P9).
+  modo Navegador (sesión efímera), sellar, bloquear, desbloquear. NO VERIFICADO: teléfono real, cofre con Secure Enclave (P9).
 - Reintentos con Polly; tabla SQLite del registro de red (§2.4).
 - Política de acciones en el manifiesto del contenido (§4.2).
 - Cuenta de demostración para tiendas y borrado de cuenta (P4, fila «Tiendas»): el emisor es de ensayo.

@@ -4,6 +4,7 @@ using FrameworkConcept.Shell.Actualizacion;
 using FrameworkConcept.Shell.Auth;
 using FrameworkConcept.Shell.Bridge;
 using FrameworkConcept.Shell.Data;
+using FrameworkConcept.Shell.Data.Compilado;
 using FrameworkConcept.Shell.Hosting;
 using FrameworkConcept.Shell.Pages;
 using FrameworkConcept.Shell.Red;
@@ -26,8 +27,16 @@ public static class MauiProgram
 
         s.AddSingleton<ConfiguracionDelCascaron>();
 
-        // P5 — Datos: EF Core SQLite detrás de IDb, en los datos privados de la app.
-        s.AddSingleton<IDb>(_ => new DbSqlite(Path.Combine(FileSystem.AppDataDirectory, EsquemaDelCascaron.NombreDelArchivo)));
+        // P5 — Datos: EF Core SQLite detrás de IDb, en los datos privados de la app, con el modelo compilado (iOS no
+        // permite armarlo en ejecución; Data/Compilado/, scripts/modelo-compilado.sh).
+        // El modelo compilado se arma, por defecto, en un hilo aparte que su constructor estático espera (EF lo hace para
+        // modelos enormes que agotan la pila). En el runtime de Android y de iOS (Mono) ese hilo queda esperando al mismo
+        // constructor estático y la app no pasa de la pantalla de presentación, sin error ni línea en la bitácora (visto en
+        // el emulador y en el simulador el 2026-11-01). Este interruptor de EF lo arma en el mismo hilo; el modelo del
+        // cascarón tiene cinco tablas y no necesita la pila grande.
+        AppContext.SetSwitch("Microsoft.EntityFrameworkCore.Issue31751", true);
+        s.AddSingleton<IDb>(_ => new DbSqlite(Path.Combine(FileSystem.AppDataDirectory, EsquemaDelCascaron.NombreDelArchivo),
+            ContextoDelCascaronModel.Instance, SqlDeCreacion.Script));
         s.AddSingleton<AlmacenDeDefinicionesSqlite>();
 
         // P2 — Actualizador (Core) con sus adaptadores de Android.

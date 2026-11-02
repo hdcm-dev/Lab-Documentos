@@ -2,7 +2,7 @@
 
 **Alias:** App-Hibrida-OTA-Offline-First
 **Naturaleza:** propio
-**Tema:** Arquitectura y decisiones para una app móvil con cascarón nativo y contenido web actualizable por canal (OTA firmada con staging y rollback), base local como fuente de verdad con outbox, sesión del dispositivo con Keystore y equipos compartidos; destilado de la demo de `Framework-Concept` y de su guía
+**Tema:** Arquitectura y decisiones para una app híbrida con contenido OTA: contenedor nativo (*native shell*; en la jerga del proyecto, "cascarón") y contenido web, distribuido como paquete de actualización OTA firmado (con staging y rollback), base local como fuente de verdad con outbox, sesión del dispositivo con Keystore y equipos compartidos; destilado de la demo de `Framework-Concept` y de su guía
 **Consumidor:** un equipo de agentes IA o de personas que arranca o revisa una app con estos principios; quien preside una mesa de diseño sobre ella
 **Condicion-de-carga:** al decidir si una app nueva conviene híbrida con OTA; al diseñar o revisar el puente, el canal, el outbox o la sesión; al armar el plan de pruebas o la lista de arranque; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
@@ -17,7 +17,7 @@
 ## 0. Propósito y alcance
 
 Este conocimiento dice **qué decidir, en qué orden y con qué criterio** para construir una app con tres
-principios: híbrida (cascarón nativo + contenido web), actualizable sin tienda (OTA, *live updates*) y
+principios: híbrida (contenedor nativo + contenido web), actualizable sin tienda (OTA, *live updates*) y
 *offline-first*. No repite el libro: lo condensa en decisiones, contratos y listas, y remite al capítulo donde
 está la evidencia. La implementación de referencia es la demo .NET MAUI de esta carpeta (`../Demo/`); los
 principios valen para Capacitor, Cordova o Expo con la misma forma.
@@ -51,7 +51,7 @@ es **propuesta** de este conocimiento, sin ensayo en la demo, se marca así. Las
    perderse [Libro §1.4] [R38].
 3. Hay **un equipo que puede operar un canal firmado** (claves, publicación, retiradas) [Libro §3.10].
 4. Las políticas de la tienda admiten el contenido descargado: Google Play admite código interpretado con acceso
-   indirecto a las API (JavaScript en WebView) [R3]; Apple lo regula en 2.5.2 y 4.7 [R1]. Que WebAssembly cuente
+   indirecto a las API (JavaScript en WebView) [R3]; Apple lo regula en 2.5.2 y 4.7, y la 4.7.2 condiciona a un permiso previo que la app exponga API nativas al software descargado, que es lo que hace el puente con el contenido que corre en el WebView: cómo lo aplica App Review a este caso es **NO VERIFICADO** [R1] [Libro §12.4]. Que WebAssembly cuente
    como «interpretado» es **NO VERIFICADO** [Libro §12.4].
 
 **No conviene** cuando:
@@ -73,9 +73,9 @@ Capawesome) si el equipo no quiere operar el canal, sabiendo que CodePush se ret
 
 | Id | Principio | Criterio para aplicarlo | Fuente |
 |---|---|---|---|
-| P-1 | **Cascarón y contenido separados.** El binario cambia por tienda; el contenido, por canal. | Si un cambio necesita permiso, plugin o API nueva → tienda. Si sólo cambia UI, reglas o textos → canal. | [Libro §1.2.1] |
+| P-1 | **Contenedor nativo y contenido separados.** El binario cambia por tienda; el contenido, por canal. | Si un cambio necesita permiso, plugin o API nueva → tienda. Si sólo cambia UI, reglas o textos → canal. | [Libro §1.2.1] |
 | P-2 | **Un solo método en el puente.** Operaciones nuevas son filas de una tabla, no métodos nuevos. | La superficie expuesta al contenido no crece; la validación queda en un punto. | [../Demo/src/FrameworkConcept.Shell/Bridge/PuenteDelCascaron.cs:9-17] |
-| P-3 | **El contenido pide, el cascarón decide.** | Toda política (red, sesión, permisos) se impone en el despachador, aunque el contenido también la muestre. | [Libro §6.2] |
+| P-3 | **El contenido pide, el contenedor nativo decide.** | Toda política (red, sesión, permisos) se impone en el despachador, aunque el contenido también la muestre. | [Libro §6.2] |
 | P-4 | **Ningún token cruza el puente.** | El contenido ve el estado de la sesión, nunca el secreto; una prueba de compuerta lo vigila. | [Libro §6.5] |
 | P-5 | **La confianza es la firma, no el servidor.** Verificar antes de leer. | Índice firmado sobre los bytes, con vencimiento; paquete con hash. | [Libro §3.3] |
 | P-6 | **Nunca activar en la misma corrida que se baja.** | Bajar a staging en segundo plano; activar en el próximo arranque en frío. Nunca hacer esperar al abrir. | [Libro §1.3.2] |
@@ -84,7 +84,7 @@ Capawesome) si el equipo no quiere operar el canal, sabiendo que CodePush se ret
 | P-9 | **La base local es la fuente de verdad; la red, un recurso que falta.** | Documento y fila del outbox en la misma transacción. | [Libro §1.4] [R29] |
 | P-10 | **Los datos de negocio que cambian viajan como definiciones versionadas**, y la versión viaja con cada respuesta. | Cambiar una pregunta publicada exige subir la versión. | [Libro §1.4.3] |
 | P-11 | **La biometría abre un secreto; no es identidad.** | La identidad la da un emisor OIDC. | [../Demo/DISENO-RED-Y-AUTENTICACION.md:145] |
-| P-12 | **Cuatro líneas de versión visibles**: cascarón, puente, contenido, definición, con la huella del contrato. | Sin eso no se sabe qué corre en un teléfono. | [Libro §1.6] |
+| P-12 | **Cuatro líneas de versión visibles**: contenedor nativo, puente, contenido, definición, con la huella del contrato. | Sin eso no se sabe qué corre en un teléfono. | [Libro §1.6] |
 | P-13 | **Lo medido manda sobre lo escrito.** | Cifras con fecha y fuente; lo no ejercitado se marca NO VERIFICADO / NO EJECUTADO. | [Libro §11.4] |
 
 Prioridad cuando chocan: seguridad (P-4, P-5) > integridad del dato (P-9) > disponibilidad (P-6, P-7) >
@@ -96,7 +96,7 @@ de la demo (por ejemplo, activar en el próximo arranque sacrifica inmediatez a 
 ```mermaid
 flowchart TB
   subgraph Tienda["Cambia por tienda"]
-    subgraph Cascaron["Cascarón nativo"]
+    subgraph Cascaron["Contenedor nativo"]
       ACT["Actualizador<br/>verifica, activa, rollback"]
       SRV["Servidor de contenido local"]
       DESP["Despachador del puente<br/>política de acciones"]
@@ -151,7 +151,7 @@ más `VersionDelPuenteIncompatible`, `CapacidadNoDisponible`, `PermisoDenegado`,
 sistema) y transporte (incluido el mayor del framework). Se serializa en orden fijo y se resume en una huella
 que la compuerta compara [Libro §4.4].
 
-**Servicio frente a capacidad.** Un *servicio del cascarón* (documentos, outbox, bridge) siempre está; una
+**Servicio frente a capacidad.** Un *servicio del contenedor nativo* (documentos, outbox, bridge) siempre está; una
 *capacidad* depende del dispositivo y de permisos. El paquete declara `requires` (sin ella no se activa) y
 `optional` (degrada y oculta) [Libro §4.5.1].
 
@@ -177,7 +177,7 @@ puentes WebView inseguros [R37].
   [../Demo/src/FrameworkConcept.Core/Update/VerificacionDelIndice.cs:18-22,50].
 - **Vencimiento** contra el ataque de congelamiento: en la demo, 30 días de vida y renovación cada 7
   [../Demo/src/FrameworkConcept.Core/Contracts/ParametrosDeProducto.cs:15-19] [R27].
-- **Claves**: activa, de reserva y revocadas embebidas en el cascarón [Libro §3.3.3]. Camino de crecimiento: TUF
+- **Claves**: activa, de reserva y revocadas embebidas en el contenedor nativo [Libro §3.3.3]. Camino de crecimiento: TUF
   (roles, umbral, rotación) [Libro §12.5].
 
 ### 5.2 Staging y activación
@@ -226,7 +226,7 @@ Figura 2. Ciclo de vida de una versión [Libro §1.3.2].
 ```mermaid
 sequenceDiagram
   participant C as Contenido
-  participant S as Cascarón (base local)
+  participant S as Contenedor nativo (base local)
   participant R as Receptor
   C->>S: Call(guardar): documento + fila del outbox (una transacción)
   Note over S: pasada periódica, backoff por fila
@@ -332,7 +332,7 @@ demo ya sostiene:
 | Agregar un método al puente | fila en la tabla, caso en el despachador, entrada de capacidad si corresponde, actualizar instantánea del contrato, decidir menor o mayor | [Libro §4.9] |
 | Agregar una acción | id estable, clase, métodos, texto del bloqueo | [Libro §6.2] [Libro Anexo F.2] |
 | Integrar cambios | rama + PR, compuerta local igual a la remota, check agregador obligatorio | [Libro §7.1–7.3] |
-| Rotar una clave | **propuesta**: publicar el cascarón con la clave de reserva embebida antes de firmar con ella; revocar la vieja en el siguiente | [Libro §3.3.3] |
+| Rotar una clave | **propuesta**: publicar el contenedor nativo con la clave de reserva embebida antes de firmar con ella; revocar la vieja en el siguiente | [Libro §3.3.3] |
 
 ## 11. Checklist de arranque de proyecto
 

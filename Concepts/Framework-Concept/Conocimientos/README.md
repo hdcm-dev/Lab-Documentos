@@ -7,7 +7,7 @@ código para la evidencia.
 
 | Conocimiento | Para qué sirve | Cuándo se carga |
 |---|---|---|
-| [Knowledge-App-Hibrida-OTA-Offline-First.md](Knowledge-App-Hibrida-OTA-Offline-First.md) | Arrancar o revisar una app con cascarón nativo, contenido web actualizable por canal firmado y trabajo sin red | Al decidir el enfoque, diseñar puente, canal, outbox o sesión, o planificar pruebas |
+| [Knowledge-App-Hibrida-OTA-Offline-First.md](Knowledge-App-Hibrida-OTA-Offline-First.md) | Arrancar o revisar una app híbrida con contenido OTA: contenedor nativo (*native shell*; en la jerga del proyecto, "cascarón") y contenido web, distribuido como paquete de actualización OTA firmado, y trabajo sin red | Al decidir el enfoque, diseñar puente, canal, outbox o sesión, o planificar pruebas |
 
 **Convenciones.** Encabezado con alias, naturaleza, tema, consumidor, condición de carga, versión, estado y
 fecha. Citas `[ruta:líneas]` relativas a esta carpeta, `[Libro §x]` para la guía y `[Rn]` para su Anexo B. Lo que

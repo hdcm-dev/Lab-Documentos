@@ -28,7 +28,7 @@ traces: [FC-GUIA-INDICE, FC-MARCO-REFERENCIA, FC-TEM-01, FC-TEM-02, FC-TEM-03, F
   - [Capítulo 2. Marco de referencia](#capítulo-2-marco-de-referencia)
 - [Parte II. Mecanismo](#parte-ii-mecanismo)
   - [Capítulo 3. Actualizar sin tienda: OTA firmada con rollback](#capítulo-3-actualizar-sin-tienda-ota-firmada-con-rollback)
-  - [Capítulo 4. El cascarón y el contrato del puente](#capítulo-4-el-cascarón-y-el-contrato-del-puente)
+  - [Capítulo 4. El contenedor nativo y el contrato del puente](#capítulo-4-el-contenedor-nativo-y-el-contrato-del-puente)
   - [Capítulo 5. Trabajo sin red: base local y outbox](#capítulo-5-trabajo-sin-red-base-local-y-outbox)
   - [Capítulo 6. Red y sesión del dispositivo](#capítulo-6-red-y-sesión-del-dispositivo)
 - [Parte III. Ingeniería](#parte-iii-ingeniería)
@@ -60,7 +60,7 @@ Tabla 0.1. Rutas de lectura por perfil.
 |---|---|---|
 | Quien llega sin contexto | Caps. 1 → 2 → 10 | Entender la idea y correr la demo |
 | Desarrollador del contenido | Caps. 1 → 4 → 5 → 8 | Escribir pantallas Razor que respeten el puente y trabajen sin red |
-| Desarrollador del cascarón | Caps. 1 → 3 → 4 → 6 → 9 | Mantener el actualizador, el puente, la red y la sesión |
+| Desarrollador del contenedor nativo | Caps. 1 → 3 → 4 → 6 → 9 | Mantener el actualizador, el puente, la red y la sesión |
 | Quien integra y publica | Caps. 1 → 7 → 8 → 3.10 | Abrir PR, pasar la compuerta, publicar en un canal |
 | Quien evalúa la arquitectura | Caps. 1 → 2 → 12 → 9 | Compararla con la industria y con los estándares |
 
@@ -106,7 +106,7 @@ de pruebas y de tiempos medidos no figuran en el texto: están en la corrida fec
 
 **Objetivos**
 
-- Definir app híbrida, cascarón, contenido, puente y capacidad tal como los usa este framework.
+- Definir app híbrida con contenido OTA, contenedor nativo, contenido, puente y capacidad tal como los usa este framework.
 - Distinguir este modelo de Blazor Hybrid, de un sitio web envuelto y de la interfaz dirigida por servidor.
 - Explicar qué es una actualización OTA, qué la vuelve confiable y en qué momento se activa una versión.
 - Explicar qué es offline-first y para qué sirve el outbox.
@@ -133,22 +133,22 @@ El resto del capítulo define cada idea. Los capítulos 3 a 6 cuentan cómo est�
 
 #### 1.2 App híbrida
 
-##### 1.2.1 Cascarón y contenido
+##### 1.2.1 Contenedor nativo y contenido
 
-Una **app híbrida** (*hybrid app*) es, en este framework, una app nativa instalada por tienda que muestra sus pantallas
+Una **app híbrida con contenido OTA** (*hybrid app with OTA content*) es, en este framework, una app nativa instalada por tienda que muestra sus pantallas
 de negocio en un WebView. Esas pantallas son un paquete web que la app sirve desde el disco del teléfono y que habla
 con el sistema sólo a través de un puente. Es el modelo de Cordova y Capacitor [R60] [R16], con otra
 tecnología de base.
 
-El **cascarón** (*native shell*) es la app .NET MAUI que se instala por tienda: tiene pantallas propias en XAML
+El **contenedor nativo** (*native shell*; en la jerga del proyecto, "cascarón") es la app .NET MAUI que se instala por tienda: tiene pantallas propias en XAML
 (arranque, error, «WebView viejo»), el actualizador, el puente y la base local, y no contiene pantallas de negocio
-[00-Marco.md:44-45]. El **contenido** (*web content*) son las pantallas de negocio: páginas Razor compiladas a Blazor
-WebAssembly, empaquetadas, firmadas y bajadas por el cascarón [00-Marco.md:54-55].
+[00-Marco.md:44-45]. El **contenido** (*web content*) es contenido web, distribuido como paquete de actualización OTA firmado: las pantallas de negocio, páginas Razor compiladas a Blazor
+WebAssembly, que baja el contenedor nativo [00-Marco.md:54-55].
 
 La regla para decidir dónde va un cambio sale del vocabulario de la guía: si el cambio necesita un permiso nuevo,
-código nativo o una API del teléfono que el catálogo no tiene, es del cascarón y viaja por tienda; si no, es contenido
+código nativo o una API del teléfono que el catálogo no tiene, es del contenedor nativo y viaja por tienda; si no, es contenido
 [00-Marco.md:47-48]. Por ejemplo, agregar la cámara a la encuesta pide un permiso en el `AndroidManifest`: es un cambio
-del cascarón [00-Marco.md:50-51].
+del contenedor nativo [00-Marco.md:50-51].
 
 En la demo, la pantalla que muestra el contenido crea un único `HybridWebView`, le engancha un servidor local y
 registra el puente como único objeto invocable:
@@ -170,21 +170,21 @@ otro origen distinto de `https://0.0.0.1/` con un 403 [Demo/src/FrameworkConcept
 En iOS esos pedidos no llegan al servidor: la única barrera es la CSP del contenido [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:71-78].
 `HybridWebView` es el control de .NET MAUI que hospeda contenido web y permite llamadas entre JavaScript y C# [R4].
 
-El **puente** (*bridge*) es la única vía entre contenido y cascarón: un objeto con un solo método, `Call`, que el
+El **puente** (*bridge*) es la única vía entre contenido y contenedor nativo: un objeto con un solo método, `Call`, que el
 contenido invoca desde JavaScript con `window.HybridWebView.InvokeDotNet('Call', [sobreJson])`, donde el sobre es un
 mensaje JSON-RPC 2.0 con un campo de versión `v` [Demo/src/FrameworkConcept.Shell/Bridge/PuenteDelCascaron.cs:3-7].
 Agregar una operación no agrega un método C#: agrega una fila a la tabla de métodos del contrato
 [Demo/src/FrameworkConcept.Shell/Bridge/PuenteDelCascaron.cs:9-10]. El capítulo 4 lo detalla.
 
-Una **capacidad** (*capability*) es algo que el teléfono ofrece al contenido a través del cascarón (cámara, estado de
+Una **capacidad** (*capability*) es algo que el teléfono ofrece al contenido a través del contenedor nativo (cámara, estado de
 red, etc.). El contenido declara cuáles necesita (`requires`) y cuáles aprovecha si están (`optional`) en el manifiesto
 de su paquete [Demo/src/FrameworkConcept.Core/Contracts/Contenido/ManifiestoContenido.cs:15,26-29]. Un **servicio del
-cascarón** es una operación del puente que no depende de hardware (por ejemplo, guardar en la base local); el capítulo
+contenedor nativo** es una operación del puente que no depende de hardware (por ejemplo, guardar en la base local); el capítulo
 4.5 trata la diferencia.
 
 ```mermaid
 flowchart TB
-  subgraph APK["Cascarón MAUI (por tienda)"]
+  subgraph APK["Contenedor nativo MAUI (por tienda)"]
     UI["Pantallas XAML propias"]
     ACT["Actualizador"]
     PUE["Puente: Call(sobre)"]
@@ -200,7 +200,7 @@ flowchart TB
   ACT -- "staging a versions" --> SRV
 ```
 
-Figura 1.1. Anatomía de la app híbrida. Mirá que el contenido sólo toca el cascarón por una flecha: el puente.
+Figura 1.1. Anatomía de la app híbrida. Mirá que el contenido sólo toca el contenedor nativo por una flecha: el puente.
 
 ##### 1.2.2 Qué no es
 
@@ -217,7 +217,7 @@ Tabla 1.1. Con qué se confunde el modelo y por qué no es lo mismo.
 |---|---|---|
 | Blazor Hybrid (`BlazorWebView`) | Razor compilado en la DLL; no se baja | [01-Actualizacion-Sin-Tienda.md:63] |
 | Un sitio web dentro de la app | Un sitio remoto en vivo no anda sin red; acá el contenido está en el teléfono | [01-Actualizacion-Sin-Tienda.md:64] |
-| Actualizar el cascarón | Permisos, código nativo y SDK sólo cambian por tienda | [01-Actualizacion-Sin-Tienda.md:65] |
+| Actualizar el contenedor nativo | Permisos, código nativo y SDK sólo cambian por tienda | [01-Actualizacion-Sin-Tienda.md:65] |
 | Interfaz dirigida por servidor (*server-driven UI*) | Acá el código de las pantallas viaja empaquetado; sólo las encuestas viajan como datos (definiciones) | [00-Marco.md:63-64] |
 | Rollback remoto | No se «baja» de versión: se corrige hacia adelante o se retira la mala | [01-Actualizacion-Sin-Tienda.md:66] |
 
@@ -248,7 +248,7 @@ propósito declarado en la ficha de la tienda tiene que salir por tienda; la pla
 #### 1.3 Actualización OTA
 
 Una **actualización OTA** (*over-the-air*, *live update*) reemplaza el contenido web sin reinstalar el binario. En la
-demo, el cascarón consulta el canal en segundo plano, baja a `staging/`, verifica firma y hash, activa en el próximo
+demo, el contenedor nativo consulta el canal en segundo plano, baja a `staging/`, verifica firma y hash, activa en el próximo
 arranque en frío y vuelve atrás si la versión no confirma `Listo` [Demo/src/FrameworkConcept.Shell/Actualizacion/ConsultasDelCanal.cs:5-7]
 [Demo/src/FrameworkConcept.Core/Update/Actualizador.cs:35-39,92-160]. La industria ofrece lo mismo como servicio:
 Expo EAS Update, Ionic Appflow, Capawesome, CodePush (capítulo 12) [R18] [R19].
@@ -273,7 +273,7 @@ El propio código lo aclara: el índice «NO es el “manifiesto del paquete de 
 secas.
 
 El índice vale 30 días desde su emisión y se renueva cada 7 [Demo/src/FrameworkConcept.Core/Contracts/ParametrosDeProducto.cs:15-19].
-Si la firma no verifica o venció, el cascarón lo descarta; la demo lo provoca con `scripts/guion.sh firma-invalida`
+Si la firma no verifica o venció, el contenedor nativo lo descarta; la demo lo provoca con `scripts/guion.sh firma-invalida`
 [00-Marco.md:72-76]. La firma es ES256 [Demo/src/FrameworkConcept.Core/Update/FirmaEs256.cs]; el capítulo 3 explica
 el orden de verificación y su relación con The Update Framework (TUF) [R27].
 
@@ -287,7 +287,7 @@ Una versión de contenido pasa por estos estados:
    [00-Marco.md:105-107].
 3. **Current.** Si el contenido llama `Listo(v)`, queda confirmada y la anterior pasa a `previous`. El teléfono guarda
    dos versiones, `current` y `previous` [Demo/src/FrameworkConcept.Core/Contracts/ParametrosDeProducto.cs:30-31].
-4. **Fallida.** Si la versión acumula `CargasSinListoParaFallar` cargas empezadas sin `Listo` (hoy, 2), el cascarón la
+4. **Fallida.** Si la versión acumula `CargasSinListoParaFallar` cargas empezadas sin `Listo` (hoy, 2), el contenedor nativo la
    anota como fallida y vuelve a `previous` [Demo/src/FrameworkConcept.Core/Update/Actualizador.cs:39,92-109]. Sólo
    cuenta una carga que llegó a pedir `_framework/dotnet.js`, la evidencia de que el contenido empezó a cargar
    [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:19-32]. El criterio es un conteo, no un tiempo; el
@@ -350,9 +350,9 @@ todavía dice que «la demo no tiene login»; quedó desactualizado y se corrige
 ##### 1.4.1 La base local como fuente de verdad
 
 Una app **offline-first** trabaja siempre contra su base local y trata la red como un recurso que puede faltar. En la
-demo, el cascarón guarda documentos, definiciones y versiones de contenido en SQLite con EF Core
-[Demo/src/FrameworkConcept.Shell/Data/DbSqlite.cs]. El contenido no habla con el servidor: le pide al cascarón que
-guarde, y el cascarón decide cuándo enviar. El capítulo 5 describe las tablas.
+demo, el contenedor nativo guarda documentos, definiciones y versiones de contenido en SQLite con EF Core
+[Demo/src/FrameworkConcept.Shell/Data/DbSqlite.cs]. El contenido no habla con el servidor: le pide al contenedor nativo que
+guarde, y el contenedor nativo decide cuándo enviar. El capítulo 5 describe las tablas.
 
 ##### 1.4.2 El outbox
 
@@ -368,14 +368,14 @@ private static readonly TimeSpan BackoffInicial = TimeSpan.FromSeconds(5);
 private static readonly TimeSpan BackoffMaximo = TimeSpan.FromMinutes(10);
 ```
 
-Al reanudar la app, el cascarón lo despierta [Demo/src/FrameworkConcept.Shell/App.cs:32]. Estos son parámetros de la
+Al reanudar la app, el contenedor nativo lo despierta [Demo/src/FrameworkConcept.Shell/App.cs:32]. Estos son parámetros de la
 demo, no norma; el capítulo 5 cuenta la idempotencia, el dueño de cada fila, «Enviar ahora» y la carta muerta.
 
 ```mermaid
 sequenceDiagram
   participant U as Encuestador
   participant C as Contenido
-  participant S as Cascarón (SQLite)
+  participant S as Contenedor nativo (SQLite)
   participant R as Receptor
   U->>C: completa la encuesta sin red
   C->>S: Call(guardar): documento + fila pendiente
@@ -401,10 +401,10 @@ Tabla 1.2. Temas secundarios: qué son, de quién son y dónde se detallan.
 
 | Tema | Pertenece a | En una frase | Detalle |
 |---|---|---|---|
-| Red | Cascarón | Cuatro estados (`EnLinea`, `EnLineaMedida`, `RedSinServidor`, `SinRed`) deciden qué acción se permite, se encola o se bloquea [Demo/src/FrameworkConcept.Core/Red/EstadoDeRed.cs:8-16] [00-Marco.md:166] | Cap. 6 |
-| Autenticación del dispositivo y Keystore | Cascarón | La primera vez se ingresa con la cuenta; después se desbloquea con la seguridad del teléfono y el secreto queda en el almacén seguro del sistema [00-Marco.md:165] | Cap. 6 |
-| Contrato del puente | Borde cascarón ↔ contenido | Una sola función versionada; el contenido pide y el cascarón decide [Demo/src/FrameworkConcept.Shell/Bridge/PuenteDelCascaron.cs:3-10] | Cap. 4 |
-| Capacidades | Cascarón | Lo que el teléfono ofrece; una capacidad nueva es un cambio de tienda [00-Marco.md:47-51] | Cap. 4 |
+| Red | Contenedor nativo | Cuatro estados (`EnLinea`, `EnLineaMedida`, `RedSinServidor`, `SinRed`) deciden qué acción se permite, se encola o se bloquea [Demo/src/FrameworkConcept.Core/Red/EstadoDeRed.cs:8-16] [00-Marco.md:166] | Cap. 6 |
+| Autenticación del dispositivo y Keystore | Contenedor nativo | La primera vez se ingresa con la cuenta; después se desbloquea con la seguridad del teléfono y el secreto queda en el almacén seguro del sistema [00-Marco.md:165] | Cap. 6 |
+| Contrato del puente | Borde contenedor nativo ↔ contenido | Una sola función versionada; el contenido pide y el contenedor nativo decide [Demo/src/FrameworkConcept.Shell/Bridge/PuenteDelCascaron.cs:3-10] | Cap. 4 |
+| Capacidades | Contenedor nativo | Lo que el teléfono ofrece; una capacidad nueva es un cambio de tienda [00-Marco.md:47-51] | Cap. 4 |
 
 > **Recuadro. Tres responsabilidades distintas.** La biometría abre un secreto, la identidad la da el servidor y el
 > entorno lo atestigua un tercero. El diseño de la demo lo dice así: «La biometría no es el login: es la llave que abre
@@ -415,9 +415,9 @@ Tabla 1.2. Temas secundarios: qué son, de quién son y dónde se detallan.
 #### 1.6 Cuatro líneas de versión
 
 En una app que se actualiza por partes, «la versión» no alcanza para saber qué corre en un teléfono. La guía define
-**cuatro líneas de versión** visibles en la pantalla de diagnóstico: cascarón, puente, contenido y definición, con la
+**cuatro líneas de versión** visibles en la pantalla de diagnóstico: contenedor nativo, puente, contenido y definición, con la
 huella del contrato al lado [03-Integracion-Y-Versionado.md:154-155] [Developer-Guide.md:37]. Cada una cambia por un
-motivo distinto: el cascarón por tienda, el puente cuando cambia el contrato, el contenido por el canal y la definición
+motivo distinto: el contenedor nativo por tienda, el puente cuando cambia el contrato, el contenido por el canal y la definición
 cuando cambia una encuesta. El capítulo 7 explica qué sube cada cambio y las líneas internas.
 
 > **En la industria.** La separación entre un binario nativo y un paquete web actualizable es la base de Cordova y
@@ -435,11 +435,11 @@ cuando cambia una encuesta. El capítulo 7 explica qué sube cada cambio y las l
 4. ¿Qué pasaría con una respuesta tomada sin red si la versión de la definición no viajara con ella?
 5. ¿Qué decisión de compilación sostiene la lectura de las políticas de las tiendas, y qué queda sin verificar?
 
-**Resumen.** El framework separa un cascarón nativo, que cambia por tienda, de un contenido Blazor WebAssembly que se
+**Resumen.** El framework separa un contenedor nativo, que cambia por tienda, de un contenido Blazor WebAssembly que se
 baja firmado, se sirve desde el disco por `HybridWebView` y habla con el sistema sólo por un puente con un método. La
 actualización OTA baja en segundo plano, activa en el próximo arranque en frío y vuelve atrás por conteo de cargas sin
 `Listo`. La app trabaja contra su base local y envía por un outbox con reintentos. Red, sesión, contrato y capacidades
-son responsabilidades del cascarón que se detallan en los capítulos 4 a 6.
+son responsabilidades del contenedor nativo que se detallan en los capítulos 4 a 6.
 
 ---
 
@@ -464,7 +464,7 @@ Tabla 2.1. Escenarios, qué pasa y su estado en la demo.
 
 | Id | Escenario | Qué pasa | Estado en la demo | Capítulo |
 |---|---|---|---|---|
-| ESC-1 | Primer arranque | El cascarón instala la semilla, la muestra y consulta el canal en segundo plano | Recorrido: «activada la semilla 1.0.0» y `Listo(1.0.0)` [00-Marco.md:96-101] [E02] | 3 |
+| ESC-1 | Primer arranque | El contenedor nativo instala la semilla, la muestra y consulta el canal en segundo plano | Recorrido: «activada la semilla 1.0.0» y `Listo(1.0.0)` [00-Marco.md:96-101] [E02] | 3 |
 | ESC-2 | Actualización con fallo y rollback | Baja a staging, activa en el próximo arranque, vuelve a `previous` tras dos cargas sin `Listo` | Recorrido: 1.0.0 → 1.1.0; 1.2.0 vuelve a 1.1.0; índice con firma inválida rechazado [00-Marco.md:105-110] [E02] | 3 |
 | ESC-3 | Contenido incompatible o capacidad faltante | El actualizador no activa un paquete que pide otro puente, una capacidad ausente o un WebView menor a 94, y dice por qué | Probado por la suite de actualización y en navegador con puente simulado; en dispositivo sólo existe la pantalla «WebView viejo» [00-Marco.md:114-119] | 4 |
 | ESC-4 | Sin red con versión de definición en vuelo | La respuesta v1 queda en el outbox y se acepta como v1 aunque ya exista la v2 | Recorrido y E03 (aviso «Sin conexión», reconexión) [00-Marco.md:123-128] | 5 |
@@ -481,7 +481,7 @@ Tabla 2.2. Contextos.
 | Id | Contexto | Qué cambia | Estado |
 |---|---|---|---|
 | CTX-1 | Android con WebView ≥ 94 | Contexto de referencia: todo el recorrido funciona | Verificado en el emulador de ensayo; en el teléfono de medida, contenido servido y tiempos de arranque medidos (Anexo H) sin recorrido completo [E01] [folio 049] |
-| CTX-2 | Android con WebView < 94 | El contenido no arranca; el cascarón muestra «WebView viejo» | Medido en E01 (WebView 83) |
+| CTX-2 | Android con WebView < 94 | El contenido no arranca; el contenedor nativo muestra «WebView viejo» | Medido en E01 (WebView 83) |
 | CTX-3 | iOS | Mismo diseño, otras API (Keychain, `app://`) y otras reglas | Ensayado en el simulador de iOS 26, incluido el modo Navegador; teléfono real y Secure Enclave **NO VERIFICADOS** [folio 023] [Demo/README.md:112-124] |
 | CTX-4 | Modo Dispositivo (sin emisor OIDC) | No hay cuenta: el dueño del outbox es el id de instalación | Verificado en E02 |
 | CTX-5 | Modo con cuenta | Ingreso, desbloqueo con la seguridad del teléfono, bloqueo a los 5 min en segundo plano, outbox con dueño | Verificado en E03 en el emulador |
@@ -498,7 +498,7 @@ Tabla 2.3. Actores.
 | ACT-02 | Coordinador que publica | Cuándo publicar, en qué canal; retirar versiones | El código |
 | ACT-03 | Servidor (canal + receptor) | Sirve índice y paquetes; acepta respuestas de versiones no retiradas | Qué se activa en el teléfono |
 | ACT-04 | Desarrollador del contenido | Páginas Razor, renderizado de encuestas, `requires`/`optional` | El catálogo de capacidades y la base |
-| ACT-05 | Desarrollador del cascarón | Puente, catálogo, actualizador, base, versión del cascarón | El contenido |
+| ACT-05 | Desarrollador del contenedor nativo | Puente, catálogo, actualizador, base, versión del contenedor nativo | El contenido |
 | ACT-06 | Revisor del PR | Si un PR se fusiona | Saltar `fw-ok` |
 | ACT-07 | Compuerta (workflow + runner autoalojado) | Verde o rojo | Nada fuera de lo que prueba |
 
@@ -510,7 +510,7 @@ Tabla 2.4. Concepto → pieza de la demo.
 
 | Concepto | Pieza | Ruta (relativa a `Demo/`) |
 |---|---|---|
-| Cascarón | Proyecto MAUI | `src/FrameworkConcept.Shell/` |
+| Contenedor nativo | Proyecto MAUI | `src/FrameworkConcept.Shell/` |
 | Contenido | Proyecto Blazor WebAssembly sin AOT | `src/FrameworkConcept.Content/` |
 | Contrato e índice | Tipos compartidos | `src/FrameworkConcept.Core/Contracts/` |
 | Actualizador y firma | Núcleo de la OTA | `src/FrameworkConcept.Core/Update/` |
@@ -579,14 +579,14 @@ pieza de la demo, y cada escenario un capítulo.
 - Entender por qué el contenido puede cambiar sin pasar por la tienda y qué límites ponen las políticas de Google Play y Apple.
 - Conocer cada pieza de la actualización: índice del canal, firma, staging, puntero, marca pendiente, fallida, retirada y semilla.
 - Seguir el ciclo de vida completo de una versión, desde que se publica hasta que queda confirmada o fallida.
-- Saber cuándo el cascarón decide un rollback y por qué esa decisión resiste un corte de energía.
+- Saber cuándo el contenedor nativo decide un rollback y por qué esa decisión resiste un corte de energía.
 - Ejercitar el mecanismo con el guion de la demo y publicar con una lista de verificación.
 
 **Requisitos previos:** capítulo 1 (app híbrida, OTA, offline-first) y capítulo 2 (marco de referencia).
 
 #### 3.1 El problema y lo que permiten las tiendas
 
-Una app instalada desde la tienda cambia sólo cuando la tienda aprueba una versión nueva y la persona la instala. Para corregir un texto, una validación o una pantalla, ese ciclo es lento. La **actualización de contenido por aire** (*OTA live update*) separa la app en dos: el cascarón nativo, que sigue viajando por la tienda, y el contenido web que corre dentro del WebView, que se reemplaza bajando un paquete firmado.
+Una app instalada desde la tienda cambia sólo cuando la tienda aprueba una versión nueva y la persona la instala. Para corregir un texto, una validación o una pantalla, ese ciclo es lento. La **actualización de contenido por aire** (*OTA live update*) separa la app en dos: el contenedor nativo, que sigue viajando por la tienda, y el contenido web que corre dentro del WebView, que se reemplaza bajando un paquete firmado.
 
 Las dos tiendas lo permiten con condiciones. Google Play prohíbe que una app se modifique por un camino que no sea el suyo. La excepción es «code that runs in a virtual machine or an interpreter where either provides indirect access to Android APIs (such as JavaScript in a webview or browser)» [01-Actualizacion-Sin-Tienda.md:70-74] [R3]. Apple, en la pauta 2.5.2, prohíbe bajar código que «introduces or changes features or functionality of the app» [01-Actualizacion-Sin-Tienda.md:80-83] [R1].
 
@@ -643,7 +643,7 @@ Un índice firmado y vencido no vale. Sin vencimiento, un atacante que guardó u
 
 ##### 3.3.3 Claves: activa, reserva y revocación
 
-El cascarón trae embebido un conjunto de claves públicas, cada una con su `keyId`, y acepta sólo las conocidas y no revocadas [FirmaEs256.cs:23-42]. El orden de los rechazos sirve al diagnóstico: primero «¿qué clave?» (`ClaveDesconocida`, `ClaveRevocada`) y después «¿la firma cierra?» (`FirmaInvalida`). Rotar o revocar una clave exige un cascarón nuevo por tienda, porque la lista viaja en el APK.
+El contenedor nativo trae embebido un conjunto de claves públicas, cada una con su `keyId`, y acepta sólo las conocidas y no revocadas [FirmaEs256.cs:23-42]. El orden de los rechazos sirve al diagnóstico: primero «¿qué clave?» (`ClaveDesconocida`, `ClaveRevocada`) y después «¿la firma cierra?» (`FirmaInvalida`). Rotar o revocar una clave exige un contenedor nativo nuevo por tienda, porque la lista viaja en el APK.
 
 **En la industria.** TUF generaliza este esquema con roles separados (raíz, objetivos, instantánea, tiempo), umbrales de firmantes y delegación [R27]. La demo usa una sola firma ES256 sobre los bytes por simplicidad; TUF queda como camino de crecimiento si aparecen varios firmantes o delegación de roles [bitácora de la reedición 04, núcleo N2].
 
@@ -678,7 +678,7 @@ La consulta al canal y la activación ocurren en momentos distintos:
 ```mermaid
 sequenceDiagram
     participant S as Servidor estático
-    participant C as Cascarón (Actualizador)
+    participant C as Contenedor nativo (Actualizador)
     participant D as Disco
     participant W as WebView (contenido)
     C->>S: GET indice.json e indice.json.sig
@@ -696,11 +696,11 @@ Figura 3.2. Consulta, staging y activación. Los disparadores de la consulta son
 
 #### 3.5 Rollback por evidencia
 
-Una versión recién activada puede estar rota: un error de JavaScript, un recurso faltante, una excepción al iniciar Blazor. El cascarón no puede inspeccionar el contenido por dentro, así que exige una prueba positiva: el contenido llama `bridge.ready` con su versión cuando terminó el primer render con el puente sano [Demo/src/FrameworkConcept.Core/Contracts/Puente/TablaDeMetodos.cs:25-28] [Demo/src/FrameworkConcept.Content/Bridge/BridgeSession.cs:112-124].
+Una versión recién activada puede estar rota: un error de JavaScript, un recurso faltante, una excepción al iniciar Blazor. El contenedor nativo no puede inspeccionar el contenido por dentro, así que exige una prueba positiva: el contenido llama `bridge.ready` con su versión cuando terminó el primer render con el puente sano [Demo/src/FrameworkConcept.Core/Contracts/Puente/TablaDeMetodos.cs:25-28] [Demo/src/FrameworkConcept.Content/Bridge/BridgeSession.cs:112-124].
 
 ##### 3.5.1 Qué cuenta como falla
 
-La marca sola no prueba nada: la persona pudo cerrar la app mientras cargaba. Por eso el cascarón anota cada arranque en que el WebView **empezó a cargar** la versión pendiente, detectado cuando pide `_framework/dotnet.js` [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:20] [Demo/src/FrameworkConcept.Shell/Pages/ContenidoPage.xaml.cs:118]. Sólo cuando eso pasó `CargasSinListoParaFallar` veces sin `Listo`, el arranque siguiente da la versión por fallida.
+La marca sola no prueba nada: la persona pudo cerrar la app mientras cargaba. Por eso el contenedor nativo anota cada arranque en que el WebView **empezó a cargar** la versión pendiente, detectado cuando pide `_framework/dotnet.js` [Demo/src/FrameworkConcept.Shell/Hosting/ServidorDeContenido.cs:20] [Demo/src/FrameworkConcept.Shell/Pages/ContenidoPage.xaml.cs:118]. Sólo cuando eso pasó `CargasSinListoParaFallar` veces sin `Listo`, el arranque siguiente da la versión por fallida.
 
 ```csharp
 // Demo/src/FrameworkConcept.Core/Update/Actualizador.cs:34-39
@@ -726,7 +726,7 @@ Tabla 3.2. Arranques del rollback con `CargasSinListoParaFallar = 2`.
 | 3 | Sigue pendiente (1 de 2): se reintenta; carga 2 sin `Listo`. |
 | 4 | 2 cargas sin `Listo`: 1.2.0 queda fallida y se vuelve a 1.1.0, con su propia marca. |
 
-Cuando eso ocurre, el cascarón deja en su bitácora la nota «rollback: 1.2.0 empezó a cargar 2 veces sin confirmar Listo; queda como fallida» [Actualizador.cs:103].
+Cuando eso ocurre, el contenedor nativo deja en su bitácora la nota «rollback: 1.2.0 empezó a cargar 2 veces sin confirmar Listo; queda como fallida» [Actualizador.cs:103].
 
 ##### 3.5.3 Idempotencia frente a un corte
 
@@ -756,13 +756,13 @@ La semilla resuelve el primer arranque: una app recién instalada, sin red, tien
 Se activa en dos casos [Actualizador.cs:173-174]:
 
 1. **Primer arranque**, cuando nunca hubo puntero.
-2. **Cascarón nuevo con una semilla más nueva que `current`**: si la tienda instala un cascarón cuya semilla supera lo instalado, esa semilla actualiza. Así, una actualización por tienda nunca deja al teléfono atrás del contenido que trae.
+2. **Contenedor nativo nuevo con una semilla más nueva que `current`**: si la tienda instala un contenedor nativo cuya semilla supera lo instalado, esa semilla actualiza. Así, una actualización por tienda nunca deja al teléfono atrás del contenido que trae.
 
-La semilla **no** es destino de rollback: si no queda versión sana, no se vuelve a ella (§3.4). Leerla y verificarla cuesta segundos, así que se carga sólo en el primer arranque o cuando cambió la huella de la instalación del cascarón [Actualizador.cs:166-171].
+La semilla **no** es destino de rollback: si no queda versión sana, no se vuelve a ella (§3.4). Leerla y verificarla cuesta segundos, así que se carga sólo en el primer arranque o cuando cambió la huella de la instalación del contenedor nativo [Actualizador.cs:166-171].
 
 Un clon nuevo del repositorio no tiene claves de firma: `scripts/guion.sh claves` las genera y la semilla se firma con ellas al compilar [Demo/scripts/guion.sh:585].
 
-**Variante ensayada, no fusionada.** El ensayo E04 probó un **arranque superpuesto**: el WebView sirve la versión por adelantado y el cascarón retiene el saludo hasta que el actualizador decide; una subvariante sirve la semilla directo desde el APK [E04] [folio 053]. Vive en ramas descartables sin fusionar y **no** es el comportamiento de `main`. Adoptarla es una decisión abierta.
+**Variante ensayada, no fusionada.** El ensayo E04 probó un **arranque superpuesto**: el WebView sirve la versión por adelantado y el contenedor nativo retiene el saludo hasta que el actualizador decide; una subvariante sirve la semilla directo desde el APK [E04] [folio 053]. Vive en ramas descartables sin fusionar y **no** es el comportamiento de `main`. Adoptarla es una decisión abierta.
 
 #### 3.7 Retención, retiradas y versión obligatoria
 
@@ -778,11 +778,11 @@ Tabla 3.3. Parámetros de retención y forzado.
 
 **Versión obligatoria.** Una entrada con `Mandatory = true` se activa en el próximo arranque en frío, igual que las demás [IndiceDelCanal.cs:49]. La política es coherente, pero no se ejercitó en la demo: **NO EJECUTADO**.
 
-**Política de soporte.** El índice puede declarar `CascaronMinimoSoportado`. Si el cascarón está debajo, el arranque se bloquea con una pantalla propia, pero sólo con red, para que haya cómo actualizar [Actualizador.cs:68-75]. No es una declaración de compatibilidad: ésa la hace el predicado del capítulo 4.
+**Política de soporte.** El índice puede declarar `CascaronMinimoSoportado`. Si el contenedor nativo está debajo, el arranque se bloquea con una pantalla propia, pero sólo con red, para que haya cómo actualizar [Actualizador.cs:68-75]. No es una declaración de compatibilidad: ésa la hace el predicado del capítulo 4.
 
 #### 3.8 Costos y arranque
 
-Retener una versión cuesta del orden de 9,13 MB en el teléfono, y el contenido Blazor exige un Android System WebView 94 o superior [01-Actualizacion-Sin-Tienda.md:221] [ParametrosDeProducto.cs:9-10] [E01]. Con un WebView más viejo el cascarón muestra su propia pantalla «actualizá el WebView» [Actualizador.cs:77-80].
+Retener una versión cuesta del orden de 9,13 MB en el teléfono, y el contenido Blazor exige un Android System WebView 94 o superior [01-Actualizacion-Sin-Tienda.md:221] [ParametrosDeProducto.cs:9-10] [E01]. Con un WebView más viejo el contenedor nativo muestra su propia pantalla «actualizá el WebView» [Actualizador.cs:77-80].
 
 El **tiempo hasta el primer render** (TPR) del arranque en frío se midió en el teléfono de medida en varias fechas y con varias variantes. Como son datos fechados, las cifras no van en el texto: están juntas en la Tabla H.3 del Anexo H, y ninguna es un valor normativo.
 
@@ -817,7 +817,7 @@ La variante `sin-listo` publica una versión que se dibuja pero no avisa `Listo`
 - [ ] La versión es SemVer estrictamente mayor que la publicada, con `+commit` y sin pre-release [IndiceDelCanal.cs:45].
 - [ ] El contenido se compiló sin AOT y los archivos del zip son planos.
 - [ ] El cambio no altera el propósito declarado en la tienda; si lo altera, va por tienda.
-- [ ] El manifiesto del paquete declara un `compatibleConPuente` que el cascarón en producción satisface (capítulo 4).
+- [ ] El manifiesto del paquete declara un `compatibleConPuente` que el contenedor nativo en producción satisface (capítulo 4).
 - [ ] El índice se firmó con la clave activa y `expires` quedó a 30 días.
 - [ ] El servidor retiene al menos 3 paquetes firmados por canal y mayor.
 - [ ] La versión llama `bridge.ready` después del primer render; se probó en un emulador de ensayo.
@@ -837,11 +837,11 @@ La variante `sin-listo` publica una versión que se dibuja pero no avisa `Listo`
 
 ---
 
-### Capítulo 4. El cascarón y el contrato del puente
+### Capítulo 4. El contenedor nativo y el contrato del puente
 
 **Objetivos**
 
-- Distinguir qué pertenece al cascarón y qué al contenido, y por qué esa frontera define qué viaja por tienda.
+- Distinguir qué pertenece al contenedor nativo y qué al contenido, y por qué esa frontera define qué viaja por tienda.
 - Entender el puente: un solo método nativo, sobres JSON-RPC 2.0 con versión y códigos de error propios.
 - Leer el contrato del puente: tabla de métodos, catálogo de capacidades y transporte.
 - Aplicar las tres capas de compatibilidad y clasificar un cambio como menor o mayor.
@@ -849,16 +849,16 @@ La variante `sin-listo` publica una versión que se dibuja pero no avisa `Listo`
 
 **Requisitos previos:** capítulos 1 y 3.
 
-#### 4.1 La frontera entre cascarón y contenido
+#### 4.1 La frontera entre contenedor nativo y contenido
 
-El **cascarón** (*shell*) es la app MAUI que se instala por tienda: pantallas XAML propias, actualizador, servidor de contenido local, puente, catálogo de capacidades y base de datos [00-Marco.md:45] [99-Anexos.md:38]. El **contenido** (*web content*) es la aplicación Blazor WebAssembly que corre en el WebView y se actualiza por el canal (capítulo 3).
+El **contenedor nativo** (*native shell*) es la app MAUI que se instala por tienda: pantallas XAML propias, actualizador, servidor de contenido local, puente, catálogo de capacidades y base de datos [00-Marco.md:45] [99-Anexos.md:38]. El **contenido** (*web content*) es la aplicación Blazor WebAssembly que corre en el WebView y se actualiza por el canal (capítulo 3).
 
-La regla de frontera es una sola: si algo necesita un permiso o un código nativo que el catálogo no tiene, va al cascarón y viaja por tienda; si no, es contenido [00-Marco.md:49].
+La regla de frontera es una sola: si algo necesita un permiso o un código nativo que el catálogo no tiene, va al contenedor nativo y viaja por tienda; si no, es contenido [00-Marco.md:49].
 
 ```mermaid
 flowchart LR
     subgraph Tienda["Viaja por tienda"]
-        Cascaron["Cascarón MAUI"]
+        Cascaron["Contenedor nativo MAUI"]
         Puente["Puente: Call(sobre)"]
         Catalogo["Catálogo de capacidades"]
         Base["Base local"]
@@ -872,7 +872,7 @@ flowchart LR
     Cascaron --> Base
 ```
 
-Figura 4.1. La frontera. El contenido no toca el sistema: todo lo que necesita del dispositivo pasa por el puente y lo resuelve el cascarón.
+Figura 4.1. La frontera. El contenido no toca el sistema: todo lo que necesita del dispositivo pasa por el puente y lo resuelve el contenedor nativo.
 
 Por la misma regla, el contenido no puede usar las API web que piden permisos desde el WebView (geolocalización, `getUserMedia`): la compuerta de pruebas busca esos usos en el código del contenido y los rechaza [Demo/tests/FrameworkConcept.Gate.Tests/Contenido/ContenidoTests.cs:75-79].
 
@@ -900,7 +900,7 @@ Lo que cruza es un **sobre** (*envelope*): un mensaje JSON-RPC 2.0 [R28] con un 
 { "jsonrpc": "2.0", "v": "1.2.0", "id": "7", "method": "bridge.ready", "params": { "version": "1.1.0" } }
 ```
 
-La respuesta repite `id` y lleva `result` o `error`, nunca los dos [Sobre.cs:21-28]. Los **eventos** del cascarón al contenido son notificaciones JSON-RPC sin `id`, que el cascarón entrega evaluando `window.puenteRecibirEvento(texto)` en la página [Sobre.cs:33-37].
+La respuesta repite `id` y lleva `result` o `error`, nunca los dos [Sobre.cs:21-28]. Los **eventos** del contenedor nativo al contenido son notificaciones JSON-RPC sin `id`, que el contenedor nativo entrega evaluando `window.puenteRecibirEvento(texto)` en la página [Sobre.cs:33-37].
 
 ##### 4.2.3 Códigos de error
 
@@ -911,8 +911,8 @@ Tabla 4.1. Códigos de error del puente [Sobre.cs:39-71].
 | -32700 / -32600 | `JsonInvalido` / `PedidoInvalido` | Sobre ilegible, o sin `jsonrpc`, `id` o `method` (JSON-RPC 2.0). |
 | -32601 | `MetodoInexistente` | El método no está en la tabla. |
 | -32602 / -32603 | `ParametrosInvalidos` / `ErrorInterno` | Faltan parámetros obligatorios / excepción no prevista. |
-| -32001 | `VersionDelPuenteIncompatible` | El mayor de `v` no es el del cascarón. |
-| -32002 | `CapacidadNoDisponible` | La capacidad que el método necesita no está en este cascarón. |
+| -32001 | `VersionDelPuenteIncompatible` | El mayor de `v` no es el del contenedor nativo. |
+| -32002 | `CapacidadNoDisponible` | La capacidad que el método necesita no está en este contenedor nativo. |
 | -32003 | `PermisoDenegado` | La persona negó el permiso. |
 | -32004 | `ConflictoDeVersion` | Otro cambió el documento. |
 | -32005 | `AccionBloqueada` | La acción no está permitida ahora (sin servidor, sesión bloqueada). |
@@ -924,7 +924,7 @@ El **transporte** es cómo viaja el sobre entre el WebView y .NET. Lo pone MAUI 
 
 - el script `_framework/hybridwebview.js`;
 - la ruta `POST /__hwvInvokeDotNet`, que el servidor de contenido acepta sólo desde la página local [PuenteDelCascaron.cs:11-12];
-- el método nativo `Call(sobre)` y los eventos por `window.puenteRecibirEvento(texto)`, que el cascarón evalúa en la página (el receptor es del contenido; cambiar sólo el mecanismo es un cambio menor);
+- el método nativo `Call(sobre)` y los eventos por `window.puenteRecibirEvento(texto)`, que el contenedor nativo evalúa en la página (el receptor es del contenido; cambiar sólo el mecanismo es un cambio menor);
 - el **mayor de MAUI**, leído de `$(MauiVersion)`.
 
 Dos condiciones prácticas salen del transporte. Primera: en Android, `hybridwebview.js` lleva el cuerpo en un encabezado HTTP que no admite UTF-8, así que el sobre se manda en ASCII con escapes `\uXXXX` [02-Cascaron-Puente-Y-Capacidades.md:116-117]. Segunda: como `hybridwebview.js` cambia con MAUI, **subir el mayor de MAUI es un cambio mayor del puente**, y obliga a un índice nuevo `/canal/puente-N+1/` [TransporteDelPuente.cs:6-8] [R4].
@@ -950,11 +950,11 @@ En la versión 1.2.0, `contrato.json` tiene 21 métodos, 4 eventos y 3 entradas 
 
 En **ejecución** sólo cruza texto: `Call(string)`. No hay interfaces C# que el contenido invoque. En **compilación**, en cambio, el proyecto del contenido referencia a Core [Demo/src/FrameworkConcept.Content/FrameworkConcept.Content.csproj:80] y comparte los tipos del contrato (records, `CodigosDeError`). Por eso el `v` que manda el contenido es la versión del puente contra la que se compiló [Demo/src/FrameworkConcept.Content/Bridge/BridgeClient.cs:27]. Si algún día llega contenido que no sea .NET, el camino es generar el cliente desde `contrato.json`.
 
-#### 4.5 Servicios del cascarón y capacidades del dispositivo
+#### 4.5 Servicios del contenedor nativo y capacidades del dispositivo
 
 No toda fila de la tabla es igual:
 
-- Un **servicio del cascarón** es una operación que el cascarón siempre ofrece, sin permiso del sistema: `documents.*`, `outbox.*`, `bridge.*`. No lleva capacidad.
+- Un **servicio del contenedor nativo** es una operación que el contenedor nativo siempre ofrece, sin permiso del sistema: `documents.*`, `outbox.*`, `bridge.*`. No lleva capacidad.
 - Una **capacidad** (*capability*) es una función del dispositivo con id estable y versión propia, declarada en el catálogo con sus permisos de Android, claves de `Info.plist` y `<queries>` [Demo/src/FrameworkConcept.Core/Contracts/Puente/CatalogoDeCapacidades.cs:28-50].
 
 El catálogo de la demo tiene tres entradas, y ninguna exige un permiso de tiempo de ejecución:
@@ -996,7 +996,7 @@ Un **rango de versión** tiene siempre la forma `>=A.B.C <(A+1).0.0`. El techo n
 
 ##### 4.5.2 Detección por versión de entrada
 
-El contenido usa `auth.lock`, que llegó con el puente 1.2, pero declara `>=1.1.0`. No es un error: el contenido detecta la función por la versión de la entrada `auth.session` del catálogo. Con `auth.session` 1.0.0 el botón «Bloquear» no se muestra [Demo/src/FrameworkConcept.Content/Auth/SesionDelContenido.cs:42-46]. El piso bajo amplía los cascarones donde el contenido corre; la detección hace que degrade bien.
+El contenido usa `auth.lock`, que llegó con el puente 1.2, pero declara `>=1.1.0`. No es un error: el contenido detecta la función por la versión de la entrada `auth.session` del catálogo. Con `auth.session` 1.0.0 el botón «Bloquear» no se muestra [Demo/src/FrameworkConcept.Content/Auth/SesionDelContenido.cs:42-46]. El piso bajo amplía los contenedores nativos donde el contenido corre; la detección hace que degrade bien.
 
 #### 4.6 Compatibilidad en tres capas
 
@@ -1034,17 +1034,17 @@ Tabla 4.2. Clasificación de un cambio [TablaDeMetodos.cs:7-9] [02-Cascaron-Puen
 | Cambio | Clase | Consecuencia |
 |---|---|---|
 | Método nuevo, entrada nueva del catálogo, campo opcional nuevo en una respuesta | **Menor** | Sube el menor del puente; el contenido viejo sigue andando. |
-| Método quitado, parámetro obligatorio nuevo, cambio de tipo o forma, cambio del transporte (incluido el mayor de MAUI) | **Mayor** | Nuevo mayor del puente, índice nuevo `/canal/puente-N+1/` con su semilla, cascarón por tienda. |
+| Método quitado, parámetro obligatorio nuevo, cambio de tipo o forma, cambio del transporte (incluido el mayor de MAUI) | **Mayor** | Nuevo mayor del puente, índice nuevo `/canal/puente-N+1/` con su semilla, contenedor nativo por tienda. |
 
 Un ejemplo real de cambio menor: de 1.1.0 a 1.2.0 se sumaron `auth.signInWithPassword` y `auth.lock`, y la entrada `auth.session` subió a 1.1.0 [CatalogoDeCapacidades.cs:47-48] [TablaDeMetodos.cs:4-5].
 
-El índice por mayor es lo que une este capítulo con el anterior: cada cascarón lee sólo el índice de su mayor del puente [IndiceDelCanal.cs:6-7], así que un contenido escrito para otro mayor nunca le llega.
+El índice por mayor es lo que une este capítulo con el anterior: cada contenedor nativo lee sólo el índice de su mayor del puente [IndiceDelCanal.cs:6-7], así que un contenido escrito para otro mayor nunca le llega.
 
 ##### 4.7.2 El ciclo de un cambio
 
 ```mermaid
 sequenceDiagram
-    participant Dev as Desarrollador del cascarón
+    participant Dev as Desarrollador del contenedor nativo
     participant T as Tabla y catálogo
     participant Tool as Tools contrato
     participant G as Gate.Tests
@@ -1075,7 +1075,7 @@ Dos límites conviene decirlos:
 
 #### 4.9 Plantilla de método nuevo
 
-- [ ] Nombre `dominio.verbo`, parámetros y respuesta con tipo; ¿lleva capacidad o es servicio del cascarón?
+- [ ] Nombre `dominio.verbo`, parámetros y respuesta con tipo; ¿lleva capacidad o es servicio del contenedor nativo?
 - [ ] Si lleva capacidad: ¿está en el catálogo con sus permisos, claves de `Info.plist` y `<queries>`? ¿Evita permisos de tiempo de ejecución que no hagan falta?
 - [ ] Clasificación menor o mayor según la Tabla 4.2.
 - [ ] Caso en `DespachadorDelPuente` y códigos de error de la Tabla 4.1.
@@ -1089,19 +1089,19 @@ Dos límites conviene decirlos:
 **Preguntas guía**
 
 1. ¿Por qué agregar una función no cambia la superficie C# expuesta al contenido?
-2. ¿Qué error recibe un contenido compilado contra el puente 2.x en un cascarón 1.x, y en qué capa?
+2. ¿Qué error recibe un contenido compilado contra el puente 2.x en un contenedor nativo 1.x, y en qué capa?
 3. ¿Por qué subir el mayor de MAUI es un cambio mayor del puente?
 4. ¿Qué diferencia hay entre `requires` y `optional` para el predicado?
 5. ¿Cómo muestra u oculta el contenido una función que llegó en un menor del puente?
 
-**Resumen.** El cascarón es lo que viaja por tienda; el contenido, lo que viaja por el canal. Se hablan por un solo método, `Call(sobre)`, con sobres JSON-RPC 2.0 que llevan la versión del puente. El contrato reúne tabla, catálogo y transporte, y la compuerta lo congela en una instantánea. La compatibilidad se controla en tres capas: el predicado antes de activar, el despachador en cada llamada y el contenido después del handshake. Un cambio menor suma; uno mayor abre un índice nuevo y exige cascarón por tienda.
+**Resumen.** El contenedor nativo es lo que viaja por tienda; el contenido, lo que viaja por el canal. Se hablan por un solo método, `Call(sobre)`, con sobres JSON-RPC 2.0 que llevan la versión del puente. El contrato reúne tabla, catálogo y transporte, y la compuerta lo congela en una instantánea. La compatibilidad se controla en tres capas: el predicado antes de activar, el despachador en cada llamada y el contenido después del handshake. Un cambio menor suma; uno mayor abre un índice nuevo y exige contenedor nativo por tienda.
 
 ### Capítulo 5. Trabajo sin red: base local y outbox
 
 **Objetivos**
 
 - Definir *offline-first* y explicar por qué la base local es la fuente de verdad del teléfono.
-- Conocer las cinco tablas reales del cascarón y quién es dueño de cada una.
+- Conocer las cinco tablas reales del contenedor nativo y quién es dueño de cada una.
 - Entender por qué el documento y su fila del outbox se guardan en una sola transacción.
 - Seguir paso a paso al sincronizador: idempotencia, dueño, orden por entidad, reintentos y carta muerta.
 - Saber cómo conviven las versiones de definición en vuelo con las actualizaciones del contenido.
@@ -1122,7 +1122,7 @@ Que la base local sea la fuente de verdad no significa que el servidor sobre. El
 
 #### 5.2 Las tablas reales
 
-El cascarón es el dueño del esquema. El contenido nunca ejecuta DDL: sólo guarda documentos JSON a través del puente. El esquema funciona como un «sobre fijo» de columnas estables, así que una actualización de contenido nunca necesita migración. Un cambio de esquema exige subir `EsquemaDelCascaron.Version` y sale por tienda [Demo/src/FrameworkConcept.Shell/Data/Tablas.cs:3-5].
+El contenedor nativo es el dueño del esquema. El contenido nunca ejecuta DDL: sólo guarda documentos JSON a través del puente. El esquema funciona como un «sobre fijo» de columnas estables, así que una actualización de contenido nunca necesita migración. Un cambio de esquema exige subir `EsquemaDelCascaron.Version` y sale por tienda [Demo/src/FrameworkConcept.Shell/Data/Tablas.cs:3-5].
 
 La persistencia usa EF Core sobre SQLite, detrás de la interfaz `IDb`. El `DbContext` declara cinco tablas [Demo/src/FrameworkConcept.Shell/Data/ContextoDelCascaron.cs:8-12]:
 
@@ -1135,7 +1135,7 @@ public DbSet<FilaDeVersionDeContenido> VersionesDeContenido => Set<FilaDeVersion
 public DbSet<FilaDeConfiguracion> Configuracion => Set<FilaDeConfiguracion>();
 ```
 
-Tabla 5.1. Tablas del cascarón.
+Tabla 5.1. Tablas del contenedor nativo.
 
 | Tabla | Qué guarda | Fuente |
 | --- | --- | --- |
@@ -1143,7 +1143,7 @@ Tabla 5.1. Tablas del cascarón.
 | `Documentos` | Documentos JSON del contenido: colección, id, versión de forma, versión y el JSON tal cual | [Tablas.cs:69-80] |
 | `Definiciones` | Cada versión de una definición de encuesta. Se conservan las que tienen respuestas sin enviar | [Tablas.cs:83-90] |
 | `VersionesDeContenido` | Qué pasó con cada versión de contenido en este teléfono (activada, `Listo`, rollback) | [Tablas.cs:92-99] |
-| `Configuracion` | Pares clave-valor del cascarón (id de instalación, última consulta, refresh sellado) | [Tablas.cs:101-106] |
+| `Configuracion` | Pares clave-valor del contenedor nativo (id de instalación, última consulta, refresh sellado) | [Tablas.cs:101-106] |
 
 Las fechas se guardan como milisegundos Unix (`long`), porque SQLite no compara ni ordena `DateTimeOffset` [Tablas.cs:7].
 
@@ -1288,7 +1288,7 @@ La alternativa, «sincronizar antes de actualizar», parece prudente, pero ata l
 
 **Resumen**
 
-La base local es la fuente de verdad de lo que hizo la persona. El cascarón es dueño de cinco tablas con esquema fijo. El documento y su fila del outbox se guardan en un único `SaveChanges`. El sincronizador envía con idempotencia, sólo las filas del dueño con sesión válida y en orden por entidad, reintenta con backoff de 5 s a 10 min y nunca borra la carta muerta. Las versiones de definición en vuelo se conservan, y ninguna actualización toca los pendientes.
+La base local es la fuente de verdad de lo que hizo la persona. El contenedor nativo es dueño de cinco tablas con esquema fijo. El documento y su fila del outbox se guardan en un único `SaveChanges`. El sincronizador envía con idempotencia, sólo las filas del dueño con sesión válida y en orden por entidad, reintenta con backoff de 5 s a 10 min y nunca borra la carta muerta. Las versiones de definición en vuelo se conservan, y ninguna actualización toca los pendientes.
 
 ---
 
@@ -1348,7 +1348,7 @@ La **política de acciones** clasifica cada acción del negocio según lo que ne
 - `SoloEnLinea`: sin servidor se bloquea, con el botón deshabilitado y un motivo.
 - `SoloWiFi`: está contemplada en la lógica, pero ninguna acción de la demo la usa.
 
-En la demo, la política es una constante del cascarón [PoliticaDeAcciones.cs:33-36,41-51]:
+En la demo, la política es una constante del contenedor nativo [PoliticaDeAcciones.cs:33-36,41-51]:
 
 ```csharp
 // Demo/src/FrameworkConcept.Core/Red/PoliticaDeAcciones.cs:41-51 (recortado)
@@ -1388,7 +1388,7 @@ Tabla 6.2. Modos de ingreso.
 ```mermaid
 sequenceDiagram
     participant C as Contenido
-    participant K as Cascarón
+    participant K as Contenedor nativo
     participant N as Navegador del sistema
     participant E as Emisor OIDC
     C->>K: auth.signIn
@@ -1404,7 +1404,7 @@ sequenceDiagram
 
 Figura 6.2. Ingreso en modo Navegador. Mirá la última flecha: el contenido se entera de que hay sesión, pero no recibe ningún token.
 
-**Modo Formulario.** El contenido dibuja su propio formulario y la clave cruza el puente **una sola vez**, en un método específico. El cascarón la canjea con ROPC. El propio código lo explica: el BCP de seguridad de OAuth (RFC 9700 §2.4) desaconseja ROPC, y la demo lo usa sólo porque el emisor de ensayo no trae el endpoint del borrador *OAuth 2.0 for First-Party Applications* [Oidc.cs:96-106][R39][R56]. Cambiar de emisor cambia ese cuerpo y nada más.
+**Modo Formulario.** El contenido dibuja su propio formulario y la clave cruza el puente **una sola vez**, en un método específico. El contenedor nativo la canjea con ROPC. El propio código lo explica: el BCP de seguridad de OAuth (RFC 9700 §2.4) desaconseja ROPC, y la demo lo usa sólo porque el emisor de ensayo no trae el endpoint del borrador *OAuth 2.0 for First-Party Applications* [Oidc.cs:96-106][R39][R56]. Cambiar de emisor cambia ese cuerpo y nada más.
 
 **Recomendación para producción.** Modo Navegador por defecto: es el estándar maduro y trae MFA y SSO sin costo. Un formulario propio vale cuando el emisor implemente el borrador de apps first-party. ROPC, nunca en producción (D-N4-1, §6.8).
 
@@ -1428,7 +1428,7 @@ La clave sólo se puede usar dentro de un `CryptoObject` de `BiometricPrompt`, e
 
 ```mermaid
 flowchart LR
-    E["Emisor OIDC"] -- "access y refresh" --> C["Cascarón"]
+    E["Emisor OIDC"] -- "access y refresh" --> C["Contenedor nativo"]
     C -- "access en memoria" --> M["Memoria del proceso"]
     C -- "refresh cifrado AES-GCM" --> T["Tabla Configuracion"]
     K[("AndroidKeyStore: clave con autenticación")] -- "cifra y descifra" --> C
@@ -1596,7 +1596,7 @@ Tabla 7.2. Los siete pasos de la compuerta.
 | 3. `Update.Tests` | Actualizador |
 | 4. `Gate.Tests` | Instantánea del contrato, definiciones, catálogo frente al manifiesto, contenido sin AOT |
 | 5. Contenido | `dotnet publish` del contenido y empaquetado con su manifiesto del paquete |
-| 6. APK | El cascarón MAUI para `android-arm64` |
+| 6. APK | El contenedor nativo MAUI para `android-arm64` |
 
 Fuente: [Demo/scripts/ci-local.sh:5-11].
 
@@ -1621,12 +1621,12 @@ Tabla 7.3. Las líneas de versión y su fuente única.
 
 | Línea | Camino | Fuente única | Valor al commit `9b5b5ad` |
 |---|---|---|---|
-| Cascarón | Tienda | `Demo/versionado/version-cascaron.props` | `1.0.0` / entero `1` |
+| Contenedor nativo | Tienda | `Demo/versionado/version-cascaron.props` | `1.0.0` / entero `1` |
 | Puente | Tienda | `Demo/versionado/puente.json` (+ `contrato.json`) | `1.3.0` |
 | Contenido | Canal | `Demo/versionado/contenido.json` | `1.0.0` (+commit al empaquetar) |
 | Definición | Canal | `encuestaId` + `version` de cada `definiciones/<id>/vN.json` | por encuesta |
 | Catálogo de capacidades | interna | catálogo del contrato | — |
-| Esquema de la base del cascarón | interna | migraciones del cascarón | — |
+| Esquema de la base del contenedor nativo | interna | migraciones del contenedor nativo | — |
 | Fase | interna | `Demo/versionado/fase.json` | `diseño` |
 
 Fuentes: [Demo/versionado/puente.json:2; Demo/versionado/contenido.json:2; Demo/versionado/version-cascaron.props; Demo/versionado/fase.json:2; 03-Integracion-Y-Versionado.md:128-155].
@@ -1634,7 +1634,7 @@ Fuentes: [Demo/versionado/puente.json:2; Demo/versionado/contenido.json:2; Demo/
 ```mermaid
 flowchart LR
     subgraph Tienda
-      C1["Cascarón"]
+      C1["Contenedor nativo"]
       C2["Puente"]
     end
     subgraph Canal
@@ -1648,7 +1648,7 @@ flowchart LR
     end
 ```
 
-Figura 7.2. Caminos y líneas de versión. Lo que importa mirar es que el **puente sale por tienda** aunque su número viva en un JSON: lo implementa el cascarón.
+Figura 7.2. Caminos y líneas de versión. Lo que importa mirar es que el **puente sale por tienda** aunque su número viva en un JSON: lo implementa el contenedor nativo.
 
 Dos reglas de la fuente única: el contenido usa SemVer 2.0.0 sin sufijo de pre-release, porque «la madurez la da el canal, no un sufijo» [Demo/versionado/contenido.json:3; R13]; y el mayor del puente es la identidad del contrato, que la instantánea de `Gate.Tests` compara con `ContratoDelPuente.Version` y con `contrato.json` [Demo/versionado/puente.json:3].
 
@@ -1701,7 +1701,7 @@ Tabla 7.5. Del cambio a la línea.
 | Páginas Razor, CSS, JS del contenido | Contenido (menor si es nuevo y compatible) | `versionado/contenido.json` | Canal |
 | Una encuesta | Definición (`version` + 1) | `definiciones/<encuestaId>/vN.json` nuevo | Canal, sin contenido nuevo |
 | Tabla de métodos, catálogo o transporte | Puente (menor o mayor, §4) | `versionado/puente.json` + `contrato.json` | Tienda |
-| Permisos, XAML, nativo, SDK, MAUI | Cascarón (`ApplicationDisplayVersion` y `ApplicationVersion` + 1) | `versionado/version-cascaron.props` | Tienda |
+| Permisos, XAML, nativo, SDK, MAUI | Contenedor nativo (`ApplicationDisplayVersion` y `ApplicationVersion` + 1) | `versionado/version-cascaron.props` | Tienda |
 
 Fuente: [06-Procedimientos-PR-Integracion-Versionado.md:278-283]. `ApplicationVersion` es un entero monótono: cada build que llega a un teléfono lleva uno mayor que el anterior, como exigen las tiendas [Demo/versionado/version-cascaron.props:1-3].
 
@@ -1773,7 +1773,7 @@ Figura 8.1. La pirámide de la demo, de la punta a la base. Las cantidades de ca
 `Gate.Tests` no prueba lógica de dominio: prueba **reglas de arquitectura**. Tres ejemplos:
 
 - `ElContenidoNoUsaAot`: el contenido no se compila con AOT, porque las tiendas sólo permiten actualizar sin revisión código interpretado (capítulo 1) [Demo/tests/FrameworkConcept.Gate.Tests/Contenido/ContenidoTests.cs:53].
-- `SemillaTests`: la semilla que viaja con el cascarón es coherente con lo publicado [Demo/tests/FrameworkConcept.Gate.Tests/Semilla/SemillaTests.cs:17].
+- `SemillaTests`: la semilla que viaja con el contenedor nativo es coherente con lo publicado [Demo/tests/FrameworkConcept.Gate.Tests/Semilla/SemillaTests.cs:17].
 - `SinTokensEnElPuenteTests`: ningún campo del contrato nombra un token o una credencial.
 
 ```csharp
@@ -2013,7 +2013,7 @@ Tabla 9.4. Decisiones del núcleo de seguridad. Las que tocan código son **prop
 
 | ID | Pregunta | Alternativas | Recomendación de la mesa |
 |---|---|---|---|
-| D-N7-1 | ¿RASP en el cascarón? | Nada; mínimo de plataforma; Play Integrity con servidor; SDK comercial | Mínimo de plataforma en el framework (`FLAG_SECURE` como capacidad pedida por pantalla, ocultar overlays) y Play Integrity como capacidad opcional documentada. SDK comercial, fuera |
+| D-N7-1 | ¿RASP en el contenedor nativo? | Nada; mínimo de plataforma; Play Integrity con servidor; SDK comercial | Mínimo de plataforma en el framework (`FLAG_SECURE` como capacidad pedida por pantalla, ocultar overlays) y Play Integrity como capacidad opcional documentada. SDK comercial, fuera |
 | D-N7-2 | Reacción ante riesgo | Cerrar; avisar y limitar; informar al servidor | Avisar y limitar, **nunca descartar el outbox**; el servidor decide bloquear |
 | D-N7-3 | Respaldo del sistema | `allowBackup="false"`; reglas de exclusión | `false`: el equipo es compartido y se reaprovisiona |
 | D-N7-4 | Ingreso federado | Sólo OIDC; sumar Credential Manager | OIDC (actual): cuentas de organización, no personales |
@@ -2061,12 +2061,12 @@ Tabla 10.1. Carpetas de la demo y su papel [Demo/README.md, «Qué hay en cada c
 | Carpeta | Qué es | Capítulo |
 | --- | --- | --- |
 | `src/FrameworkConcept.Core/` | Núcleo sin MAUI: dominio, contrato del puente, índice del canal, firma, interfaces del actualizador, red y sesión | 3, 4, 6 |
-| `src/FrameworkConcept.Shell/` | El cascarón: app MAUI para Android, actualizador, servidor de contenido, puente, base local, cofre de sesión | 3–6 |
+| `src/FrameworkConcept.Shell/` | El contenedor nativo: app MAUI para Android, actualizador, servidor de contenido, puente, base local, cofre de sesión | 3–6 |
 | `src/FrameworkConcept.Content/` | El contenido: Blazor WebAssembly sin AOT | 1, 4 |
 | `tools/FrameworkConcept.Tools/` | Claves de demostración, empaquetar, firmar el índice, publicar definiciones, retirar, regenerar `contrato.json` | 3, 4 |
 | `tools/FrameworkConcept.Receptor/` | Receptor didáctico: un doble de prueba que sirve el canal y recibe las respuestas | 3, 5 |
 | `definiciones/encuesta-movilidad/` | La encuesta como datos: `v1.json`, `v2.json` y `esquema.json` | 5 |
-| `versionado/` | Fuentes únicas de versión: cascarón, puente, contenido y fase | 7 |
+| `versionado/` | Fuentes únicas de versión: contenedor nativo, puente, contenido y fase | 7 |
 | `semilla/` | Contenido y definición embebidos en el APK | 3 |
 | `claves/` | Sólo la clave pública de demostración | 3 |
 | `tests/` | `Core.Tests`, `Update.Tests` y `Gate.Tests` | 8 |
@@ -2078,7 +2078,7 @@ Tabla 10.1. Carpetas de la demo y su papel [Demo/README.md, «Qué hay en cada c
 ```mermaid
 flowchart LR
   Tools["Tools: empaquetar y firmar"] --> Receptor["Receptor didáctico (canal)"]
-  Receptor -->|índice firmado y paquetes| Shell["Cascarón (Shell)"]
+  Receptor -->|índice firmado y paquetes| Shell["Contenedor nativo (Shell)"]
   Semilla["semilla/"] --> Shell
   Core["Core: contrato, canal, firma"] --> Shell
   Core --> Content["Contenido (Blazor WASM)"]
@@ -2088,7 +2088,7 @@ flowchart LR
   Tests --> Shell
 ```
 
-Figura 10.1. Piezas de la demo. Mirá que Core no depende de MAUI: por eso lo prueban las suites sin dispositivo, y que el contenido sólo llega al cascarón por el puente.
+Figura 10.1. Piezas de la demo. Mirá que Core no depende de MAUI: por eso lo prueban las suites sin dispositivo, y que el contenido sólo llega al contenedor nativo por el puente.
 
 #### 10.3 Cómo se compila y se prueba
 
@@ -2098,7 +2098,7 @@ No hace falta .NET instalado. `scripts/contenedor.sh` corre cada comando dentro 
 
 ##### 10.3.2 La solución sin MAUI
 
-`FrameworkConcept.Demo.SinMaui.slnf` es un filtro de solución que excluye el cascarón: compila y prueba todo lo que no necesita el workload de Android [Demo/README.md:31-35]. Es la parte rápida de la compuerta.
+`FrameworkConcept.Demo.SinMaui.slnf` es un filtro de solución que excluye el contenedor nativo: compila y prueba todo lo que no necesita el workload de Android [Demo/README.md:31-35]. Es la parte rápida de la compuerta.
 
 ```bash
 scripts/contenedor.sh dotnet build FrameworkConcept.Demo.SinMaui.slnf -c Release
@@ -2139,7 +2139,7 @@ Tabla 10.2. Pasos de la compuerta local.
 | 3 | `Update.Tests`: actualizador |
 | 4 | `Gate.Tests`: instantánea del contrato, definiciones, catálogo frente al manifiesto del paquete, contenido sin AOT |
 | 5 | Publica el contenido Blazor y lo empaqueta |
-| 6 | Compila el APK del cascarón para `android-arm64` |
+| 6 | Compila el APK del contenedor nativo para `android-arm64` |
 
 ```bash
 scripts/ci-local.sh              # todo; la base es origin/main
@@ -2168,7 +2168,7 @@ FC_RID=android-x64 FC_URL_CANAL=https://$IP:8099 scripts/guion.sh apk
 
 [Demo/README.md, «Cómo se corre la demo»]. La dirección `203.0.113.10` es de documentación (RFC 5737): reemplazala por la tuya.
 
-**Las claves en un clon nuevo.** El clon trae la clave pública y una semilla firmada con su privada, pero no la privada. Si generás un par nuevo con `claves --forzar`, tenés que rehacer `publicar v1`, `definicion v1`, `firmar` y `semilla` antes de compilar el APK; si no, el cascarón descarta la semilla y arranca sin contenido. `SemillaTests` lo frena en la compuerta [Demo/README.md, «Las claves en un clon nuevo»] [Demo/tests/FrameworkConcept.Gate.Tests/Semilla/SemillaTests.cs].
+**Las claves en un clon nuevo.** El clon trae la clave pública y una semilla firmada con su privada, pero no la privada. Si generás un par nuevo con `claves --forzar`, tenés que rehacer `publicar v1`, `definicion v1`, `firmar` y `semilla` antes de compilar el APK; si no, el contenedor nativo descarta la semilla y arranca sin contenido. `SemillaTests` lo frena en la compuerta [Demo/README.md, «Las claves en un clon nuevo»] [Demo/tests/FrameworkConcept.Gate.Tests/Semilla/SemillaTests.cs].
 
 **Por qué hay una CA de demostración.** El canal es sólo HTTPS. El APK de Debug confía en la CA que genera `guion.sh tls` porque va en los `debug-overrides` de la configuración de red de Android; un APK de Release ignora ese bloque [Demo/README.md, «Por qué hay una CA de demostración»].
 
@@ -2201,7 +2201,7 @@ stateDiagram-v2
 
 Figura 10.2. Recorrido del guion. Mirá el paso 3: la versión nueva baja pero no se muestra; recién el arranque en frío siguiente la activa.
 
-El paso 7 lleva cuatro arranques porque el cascarón sólo da una versión por fallida cuando el WebView **empezó a cargarla** `CargasSinListoParaFallar` veces sin recibir `Listo`; un arranque cortado antes de cargar no cuenta.
+El paso 7 lleva cuatro arranques porque el contenedor nativo sólo da una versión por fallida cuando el WebView **empezó a cargarla** `CargasSinListoParaFallar` veces sin recibir `Listo`; un arranque cortado antes de cargar no cuenta.
 
 [Demo/src/FrameworkConcept.Core/Update/Actualizador.cs:34-39]
 
@@ -2284,7 +2284,7 @@ Tabla 11.1. Fuentes únicas y las pruebas que las atan.
 
 | Dato | Fuente única | Prueba que la ata |
 | --- | --- | --- |
-| Versiones del cascarón, del puente y del contenido | `Demo/versionado/version-cascaron.props`, `puente.json`, `contenido.json` | `InstantaneaDelContratoTests` (puente) |
+| Versiones del contenedor nativo, del puente y del contenido | `Demo/versionado/version-cascaron.props`, `puente.json`, `contenido.json` | `InstantaneaDelContratoTests` (puente) |
 | Métodos, eventos y catálogo del puente | `Demo/src/FrameworkConcept.Core/Contracts/contrato.json` | `InstantaneaDelContratoTests` |
 | Capacidades declaradas por el contenido | Manifiesto del paquete frente al catálogo | `CatalogoFrenteAlManifiestoTests` |
 | Plazos y retenciones (vigencia 30 d, renovación 7 d, reanudación 15 min, 3 paquetes en el servidor, 2 en el teléfono, WebView 94) | [Demo/src/FrameworkConcept.Core/Contracts/ParametrosDeProducto.cs:10-34] | Pruebas de `Update.Tests` que los usan |
@@ -2379,32 +2379,32 @@ La razón de los enlaces relativos: los enlaces absolutos a rutas del puesto de 
 
 #### 12.1 Definiciones
 
-- **App híbrida**: app nativa instalada por tienda que muestra su interfaz, toda o en parte, con un WebView y ofrece capacidades del teléfono a través de un puente. En este framework: cascarón MAUI más `HybridWebView`.
+- **App híbrida**: app nativa instalada por tienda que muestra su interfaz, toda o en parte, con un WebView y ofrece capacidades del teléfono a través de un puente. En este framework: contenedor nativo MAUI más `HybridWebView`.
 - **Live update** (*OTA*, *code push*): cambiar el contenido web o interpretado de una app híbrida sin pasar por la tienda. El binario nativo no cambia.
 - **Runtime version**: la identidad de compatibilidad entre el binario y el paquete. En la demo es el **mayor del puente** [Demo/versionado/puente.json].
-- **PWA** (*Progressive Web App*): aplicación web que, con un *service worker* y un manifiesto web, se instala y funciona sin red, sin cascarón nativo.
+- **PWA** (*Progressive Web App*): aplicación web que, con un *service worker* y un manifiesto web, se instala y funciona sin red, sin contenedor nativo.
 - **MASVS**: el estándar de OWASP de requisitos de seguridad para apps móviles, en grupos como STORAGE, CRYPTO, AUTH, NETWORK, PLATFORM, CODE y RESILIENCE [R30].
 
 #### 12.2 Familias de apps híbridas
 
 Tabla 12.1. Mapa del mercado. Afirmaciones sobre terceros **NO VERIFICADO** hasta la consulta de las fuentes.
 
-| Familia | Cascarón | Contenido | Live update | Qué toma o descarta este framework |
+| Familia | Contenedor nativo | Contenido | Live update | Qué toma o descarta este framework |
 | --- | --- | --- | --- | --- |
 | Apache Cordova [R17] | Nativo mínimo con plugins | HTML y JS en WebView | Plugins de terceros | Toma el puente por plugins; descarta el ecosistema por su mantenimiento |
-| Ionic Capacitor [R16] | Proyecto nativo propio, editable | Web en WebView | Appflow [R19], Capawesome [R20], Capgo [R21] | El análogo más cercano: cascarón nativo, plugins versionados, paquetes por canal |
+| Ionic Capacitor [R16] | Proyecto nativo propio, editable | Web en WebView | Appflow [R19], Capawesome [R20], Capgo [R21] | El análogo más cercano: contenedor nativo, plugins versionados, paquetes por canal |
 | React Native + Expo | Nativo, con UI nativa | JS interpretado | EAS Update [R18] | Toma el vocabulario: *runtime version* y canales |
 | CodePush (App Center) | RN o Cordova | JS | Servicio alojado hasta el retiro de App Center [R22]; servidor de código abierto [R23] | Lección: no atar la actualización a un SaaS |
 | Flutter + Shorebird [R24] | Nativo Flutter | Dart con parches | Shorebird | Fuera del stack; confirma la tendencia |
 | .NET Blazor Hybrid [R25] | MAUI con `BlazorWebView` | Razor compilado en la app | No hay | Descartado para el contenido: lo compilado en la app no se puede bajar [01-Actualizacion-Sin-Tienda.md:63] |
-| PWA [R26] | No hay | Web con *service worker* | Propia de la web | Descartada: no da Keystore, biometría ni capacidades con control del cascarón |
+| PWA [R26] | No hay | Web con *service worker* | Propia de la web | Descartada: no da Keystore, biometría ni capacidades con control del contenedor nativo |
 
 La elección del framework es **Blazor WebAssembly servido por `HybridWebView`**, no Blazor Hybrid: el contenido corre dentro del WebView como WASM sin AOT [Demo/src/FrameworkConcept.Content/FrameworkConcept.Content.csproj:18] y llega a Android sólo por el puente [Demo/src/FrameworkConcept.Core/Contracts/Puente/TransporteDelPuente.cs:30]. `HybridWebView` está documentado por Microsoft para .NET MAUI [R4].
 
 ```mermaid
 flowchart LR
   subgraph Tienda["Cambia sólo por tienda"]
-    B["Binario nativo o cascarón"]
+    B["Contenedor nativo (binario de tienda)"]
   end
   subgraph OTA["Cambia por live update"]
     C["Contenido web o JS"]
@@ -2416,7 +2416,7 @@ flowchart LR
   EAS["EAS Update"] --> C
   Appflow --> C
   CodePush --> C
-  PWA["PWA: sin cascarón"] -.-> C
+  PWA["PWA: sin contenedor nativo"] -.-> C
 ```
 
 Figura 12.1. Dónde cae cada producto. Mirá que todos separan lo que cambia por tienda de lo que cambia por canal; la PWA no tiene la primera mitad.
@@ -2449,7 +2449,7 @@ La vigencia acotada es la defensa contra el **ataque de congelamiento** (*freeze
 #### 12.4 Lo que permiten las tiendas
 
 - **Google Play.** La política de abuso de dispositivos y redes admite código que corre en una máquina virtual o un intérprete con acceso indirecto a las API de Android, como JavaScript en un WebView [R3] [01-Actualizacion-Sin-Tienda.md:68-74]. La demo lo cumple con tres hechos verificables: el contenido corre en el WebView sin AOT, llega a Android sólo por el puente y va firmado [Demo/src/FrameworkConcept.Content/FrameworkConcept.Content.csproj:18] [Demo/src/FrameworkConcept.Core/Update/FirmaEs256.cs].
-- **Apple.** Las pautas de revisión (2.5.2 y 4.7) y el acuerdo de licencia del programa de desarrolladores regulan el código interpretado descargado [R1] [R2]. El inciso exacto del acuerdo vigente queda **NO VERIFICADO**: la guía cita §3.3.1 y versiones anteriores lo numeraban de otra forma [bitácora de la reedición 04, núcleo N8]. El cascarón iOS es diseño sin ensayo [ParametrosDeProducto.cs:12-13].
+- **Apple.** Las pautas de revisión (2.5.2, 4.7 y 4.7.2) y el acuerdo de licencia del programa de desarrolladores regulan el código interpretado descargado [R1] [R2]. El inciso exacto del acuerdo vigente queda **NO VERIFICADO**: la guía cita §3.3.1 y versiones anteriores lo numeraban de otra forma [bitácora de la reedición 04, núcleo N8]. El contenedor nativo de iOS es diseño sin ensayo [ParametrosDeProducto.cs:12-13]. La pauta 4.7.2 toca de lleno al puente: «Your app may not extend or expose native platform APIs or technologies to the software without prior permission from Apple» [R1]. El contenido corre en el WebView y el puente le expone capacidades nativas (cámara, estado de red y el resto del catálogo, véase §1.2.1), justo lo que la pauta condiciona a un permiso previo. Cómo aplica App Review esa pauta a un puente con catálogo cerrado como el de la demo queda **NO VERIFICADO**.
 - **WebAssembly como «código interpretado»** ante las tiendas: **NO VERIFICADO** (véase §1.2.3).
 
 Las políticas cambian: toda cita de una tienda lleva fecha de consulta.
@@ -2496,7 +2496,7 @@ Tabla 12.4. Extensiones naturales de la demo (decisiones documentales; ninguna t
 3. ¿Qué ataque evita `expires` y cuál no evita mientras no haya rotación de claves?
 4. ¿Qué perdería el producto si la actualización dependiera de un SaaS que se retira?
 
-**Resumen.** El framework pertenece a la familia de Capacitor con *live updates*: cascarón nativo, contenido web por canal y un puente versionado. Sus mecanismos (índice firmado con expiración, staging, rollback por confirmación, semilla, retirada) tienen equivalente directo en la industria. Lo distinto es el stack (.NET MAUI y Blazor WASM en `HybridWebView`) y el control propio del canal.
+**Resumen.** El framework pertenece a la familia de Capacitor con *live updates*: contenedor nativo, contenido web por canal y un puente versionado. Sus mecanismos (índice firmado con expiración, staging, rollback por confirmación, semilla, retirada) tienen equivalente directo en la industria. Lo distinto es el stack (.NET MAUI y Blazor WASM en `HybridWebView`) y el control propio del canal.
 
 ---
 
@@ -2518,15 +2518,16 @@ Tabla A.1. Glosario bilingüe, en orden alfabético.
 | Atestación | Veredicto firmado por un tercero sobre la integridad de la app y el dispositivo | *attestation* | 9.2 |
 | Base del PR | La demo en la rama de destino, para comparar contrato y definiciones | *PR base* | 8.4 |
 | Canal | Puntero (`dev`, `beta`, `prod`) que promueve el mismo artefacto; no es una versión | *channel* | 7.5 |
-| Capacidad | Función del dispositivo ofrecida por el cascarón con id y versión propios en el catálogo | *capability* | 4.5 |
+| Capacidad | Función del dispositivo ofrecida por el contenedor nativo con id y versión propios en el catálogo | *capability* | 4.5 |
 | Carta muerta | Filas `Rechazada` o `Error`: no se reintentan ni se borran, quedan a la vista | *dead letter* | 5.4.6 |
-| Cascarón | La app MAUI instalada por tienda: pantallas XAML propias, actualizador, servidor de contenido, puente, base local | *native shell* | 1.2.1 |
+| Cascarón (coloq.) | Véase *Contenedor nativo*; sólo aparece como aclaración en la primera mención | — | 1.2.1 |
 | Check agregador `fw-ok` | Job que corre siempre y resume los demás; único check obligatorio | *required aggregate check* | 7.2 |
 | Check obligatorio | Check que la rama protegida exige en verde | *required status check* | 7.2 |
 | Chequeo de salud | GET al servidor propio con timeout corto que confirma que se lo alcanza | *health check* | 6.1 |
 | Clave de idempotencia | Identificador único de una fila del outbox con el que el receptor deduplica los reenvíos | *idempotency key* | 5.4.1 |
 | Coherencia documental | Cada afirmación verificable tiene una fuente que dice lo mismo hoy | *documentation consistency* | 11.1 |
 | Compuerta | Pruebas que un PR tiene que pasar para fusionarse | *gate* | 7.3 |
+| Contenedor nativo | La app MAUI instalada por tienda: pantallas XAML propias, actualizador, servidor de contenido, puente, base local. No confundir con `Microsoft.Maui.Controls.Shell`, el *Shell* de navegación de MAUI, que la demo no usa | *native shell*; sin. *native wrapper* | 1.2.1 |
 | Contenido | Pantallas de negocio en Blazor WebAssembly sin AOT, descargables por canal | *web content*, *update bundle* | 1.2.1 |
 | Contexto | Condición del entorno que cambia la respuesta de un escenario (CTX-n) | *context* | 2.2 |
 | Contrato del puente | Tabla de métodos, catálogo y transporte, serializados en `contrato.json` | *bridge contract* | 4.4 |
@@ -2549,7 +2550,7 @@ Tabla A.1. Glosario bilingüe, en orden alfabético.
 | Live update | Cambiar el contenido sin pasar por la tienda | *OTA*, *code push* | 1.3 |
 | Manifiesto del paquete | Descripción del paquete de contenido: compatibilidad con el puente, capacidades, motor mínimo | *bundle manifest* | 1.3.1 |
 | Marca Listo | Llamada del contenido que confirma que la versión arrancó sana | *ready signal* | 1.3.2 |
-| Marca pendiente | Señal que el cascarón pone al activar una versión y que el contenido borra con `Listo` | *pending flag* | 3.5 |
+| Marca pendiente | Señal que el contenedor nativo pone al activar una versión y que el contenido borra con `Listo` | *pending flag* | 3.5 |
 | MASVS | Estándar de OWASP de requisitos de seguridad móvil | — | 12.1 |
 | Modo Formulario | Ingreso con formulario propio; la clave cruza el puente una vez | *first-party login* | 6.3 |
 | Modo Navegador | Ingreso con code + PKCE en el navegador del sistema (RFC 8252) | *native app authorization* | 6.3 |
@@ -2562,9 +2563,9 @@ Tabla A.1. Glosario bilingüe, en orden alfabético.
 | Política de acciones | `SoloLocal`, `Encolable` o `SoloEnLinea` por acción | *action policy* | 6.2 |
 | Predicado de compatibilidad | Puente en rango, cada `requires` presente y en rango, motor ≥ mínimo | *compatibility check* | 4.6 |
 | Prueba intermitente | Pasa y falla sobre el mismo código | *flaky test* | 8.3 |
-| Puente | Un solo método nativo, `Call(sobre)`, entre contenido y cascarón | *bridge* | 4.2 |
+| Puente | Un solo método nativo, `Call(sobre)`, entre contenido y contenedor nativo | *bridge* | 4.2 |
 | Puntero | Archivo con current, previous, pendiente y CargasSinListo | *pointer* | 3.2 |
-| PWA | App web instalable con *service worker*, sin cascarón | *Progressive Web App* | 12.1 |
+| PWA | App web instalable con *service worker*, sin contenedor nativo | *Progressive Web App* | 12.1 |
 | Rango de versión | Siempre `>=A.B.C <(A+1).0.0` | *version range* | 4.6 |
 | RASP | La app observa el entorno en que corre y reacciona | *Runtime Application Self-Protection* | 9.2 |
 | Retirada | Versión que el índice marca para no usar | *revoked release* | 3.7 |
@@ -2574,7 +2575,7 @@ Tabla A.1. Glosario bilingüe, en orden alfabético.
 | SDUI | El servidor describe la pantalla y la app la dibuja con componentes nativos | *Server Driven UI* | 9.5 |
 | Semilla | Contenido y definición embebidos en el APK para el primer arranque | *seed*, *embedded update* | 3.6 |
 | Servicio de accesibilidad | Componente que lee y actúa sobre la pantalla | *accessibility service* | 9.2 |
-| Servicio del cascarón | Función que el cascarón presta sin depender del hardware | *shell service* | 4.5 |
+| Servicio del contenedor nativo | Función que el contenedor nativo presta sin depender del hardware | *shell service* | 4.5 |
 | Sobre | Mensaje JSON-RPC 2.0 con un campo extra `v`, la versión del puente que espera el contenido | *envelope* | 4.2 |
 | Staging | Carpeta donde una versión bajada y verificada espera el próximo arranque en frío | *staging* | 3.2 |
 | Superposición | Ventana de otra app encima de la propia | *overlay* | 9.2 |
@@ -2587,7 +2588,7 @@ Tabla A.1. Glosario bilingüe, en orden alfabético.
 
 Formato: `R<n>. Autor u organización. *Título*. URL. Consulta: fecha.` R1 a R15 son las fuentes F-01 a F-15 de la guía, consultadas el 2026-10-25 [99-Anexos.md:93-111]. Desde R16, propuestas por los núcleos: el 2026-11-01 se comprobó sólo que cada URL responde (todas con HTTP 200, salvo R48, que rechaza clientes automáticos con 403), pero **no se contrastó su contenido** con lo que afirma el texto; por eso siguen con «Consulta: a verificar».
 
-- R1. Apple. *App Review Guidelines* (2.5.2, 4.7). https://developer.apple.com/app-store/review/guidelines/. Consulta: 2026-10-25.
+- R1. Apple. *App Review Guidelines* (2.5.2, 4.7, 4.7.2). https://developer.apple.com/app-store/review/guidelines/. Consulta: 2026-10-25.
 - R2. Apple. *Apple Developer Program License Agreement*. https://developer.apple.com/support/terms/apple-developer-program-license-agreement/. Consulta: 2026-10-25 (inciso a verificar).
 - R3. Google. *Device and Network Abuse*. https://support.google.com/googleplay/android-developer/answer/9888379. Consulta: 2026-10-25.
 - R4. Microsoft. *HybridWebView – .NET MAUI*. https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/hybridwebview?view=net-maui-10.0. Consulta: 2026-10-25.
@@ -2673,7 +2674,7 @@ Tabla C.1. Folios del expediente.
 | 042 | Marca de primer render y TPR |
 | 043, 046 | Cambio de entorno de laboratorio y su corrección |
 | 044–045 | Redacción de datos sensibles en el repo público y evidencia local |
-| 047, 049 | TPR en el teléfono de medida, medido por el cascarón |
+| 047, 049 | TPR en el teléfono de medida, medido por el contenedor nativo |
 | 048 | Compuerta en el host de compilación y runner autoalojado |
 | 050 | Dictamen: condición 2 de P1, evaluar el camino de reserva «C-min» |
 | 051 | Historia reescrita; registra la protección de `main` |
@@ -2729,7 +2730,7 @@ Tabla E.1. Marcas del libro.
 | NO VERIFICADO | WASM como «código interpretado» ante Apple y Play (folio 035) | 1.2.3, 3.1, 12.4 |
 | NO VERIFICADO | Inciso del acuerdo de Apple sobre código interpretado | 12.4 |
 | NO VERIFICADO | Que el ingreso con cuenta dispare la consulta del canal (ESC-6) | 1.3.3, 2.1 |
-| NO VERIFICADO | Cascarón iOS en un teléfono (CTX-3; piso 16.4; ensayado sólo en el simulador de iOS 26) | Tabla 2.2, 12.4 |
+| NO VERIFICADO | Contenedor nativo de iOS en un teléfono (CTX-3; piso 16.4; ensayado sólo en el simulador de iOS 26) | Tabla 2.2, 12.4 |
 | NO VERIFICADO | `requires` faltante en un dispositivo real | 4.8 |
 | NO VERIFICADO | Keychain de iOS en un teléfono: el cofre con Secure Enclave es equivalente al Keystore en diseño, sin ensayo (en el simulador, sin enclave, funciona y no es equivalente: apartamiento declarado) | 6.4, 6.7 |
 | NO VERIFICADO | `EnLineaMedida` en dispositivo; regresión sin cuenta en emulador; conjunto en teléfono físico | 6.7 |
@@ -2753,7 +2754,7 @@ Tabla E.1. Marcas del libro.
 
 ```text
 Método:            <dominio>.<accion>
-Clase:             servicio del cascarón | capacidad <id>
+Clase:             servicio del contenedor nativo | capacidad <id>
 Parámetros:        <nombre: tipo, obligatorio/opcional>
 Resultado:         <tipo>
 Errores:           -32601 (método no encontrado), -32002, -32005, …
@@ -2778,7 +2779,7 @@ Prueba:      caso en Core.Tests/Red
 
 ```text
 Qué cambia y por qué:
-Línea de versión que sube: cascarón | puente | contenido | definición | ninguna
+Línea de versión que sube: contenedor nativo | puente | contenido | definición | ninguna
 Compuerta local: scripts/ci-local.sh → rc=0 (fecha, commit)
 Rojo provocado (si agrega una suite):
 Documentación tocada:

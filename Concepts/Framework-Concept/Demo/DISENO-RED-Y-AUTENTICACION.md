@@ -32,7 +32,7 @@ decisión de este documento que ninguna fuente fija, con su motivo.
 | Tema | Antes (A1–A3) | Después del incremento |
 | --- | --- | --- |
 | Red | `Connectivity` y evento `network.changed {conectado}` | Estado combinado `SinRed / RedSinServidor / EnLinea / EnLineaMedida` con chequeo de salud propio, reconexión automática y aviso permanente **[§6, 038]** |
-| Acciones | Todas se ejecutan; la encuesta va al outbox | Cada acción declarada con su clase `SoloLocal / Encolable / SoloEnLinea`; el **cascarón** evalúa; el botón se deshabilita y dice por qué **[§7, 038]** |
+| Acciones | Todas se ejecutan; la encuesta va al outbox | Cada acción declarada con su clase `SoloLocal / Encolable / SoloEnLinea`; el **contenedor nativo** (*native shell*; en la jerga del proyecto, "cascarón") evalúa; el botón se deshabilita y dice por qué **[§7, 038]** |
 | Identidad | Sesión por dispositivo (id de instalación) | Dos modos fijados al compilar: **Dispositivo** (como antes) u **Oidc** (code + PKCE en el navegador del sistema, desbloqueo con la seguridad del teléfono) **[P4, 038]** |
 | Outbox | Dueño = id de instalación; sale todo | Sale sólo con la identidad de su dueño y sesión válida; cerrar o vencer la sesión no borra pendientes **[P4, P5]** |
 | Receptor | Acepta sin token | Con `--oidc-emisor`, exige un JWT del emisor validado contra su JWKS **[P4; arq: el receptor es el «servidor» del ensayo]** |
@@ -46,7 +46,7 @@ de esquema obligaría a decidir sobre el sobre de C-1, y el incremento no lo nec
 **Por qué dos modos.** **[arq]** Sin `-p:FcOidcAutoridad` el APK se comporta como en A3: `guion.sh demo`, la prueba de
 humo y el recorrido headless siguen valiendo sin Keycloak. El modo Oidc es el del folio 038. El catálogo es el mismo en
 los dos (es una constante del binario, P12): en modo Dispositivo `auth.status` informa `modo: dispositivo` y el
-contenido no ofrece ingresar.
+contenido (contenido web, distribuido como paquete de actualización OTA firmado) no ofrece ingresar.
 
 ## 2. Red combinada
 
@@ -130,7 +130,7 @@ arrancar, así que no pierde nada.
 ### 2.6 Aviso permanente **[038 «notificación al usuario que no hay red»]**
 
 `Content/Red/AvisoDeRed.razor`, montado en `MainLayout` arriba de toda página (ya montado, vacío). Una banda fija
-mientras el estado no sea `EnLinea`, con el texto de §2.1 y el `motivo` del cascarón; desaparece sola al reconectar.
+mientras el estado no sea `EnLinea`, con el texto de §2.1 y el `motivo` del contenedor nativo; desaparece sola al reconectar.
 No es un toast: el folio 038 pide que se vea **mientras dure**. `data-testid="aviso-red"` y
 `data-estado="{estado}"`.
 
@@ -219,7 +219,7 @@ cambia.
 4. **Vuelta:** `com.frameworkconcept.demo://callback?code=…&state=…` llega a `Shell/Auth/CallbackDeAutenticacion.cs`
    (ya declarada con su `[IntentFilter]`). Se compara `state`.
 5. **Canje:** `POST token_endpoint` con `grant_type=authorization_code`, `code`, `redirect_uri`, `client_id` y
-   `code_verifier`, por un `HttpClient` del cascarón **sin** `ManejadorDeSesion` (no hay token todavía) y con
+   `code_verifier`, por un `HttpClient` del contenedor nativo **sin** `ManejadorDeSesion` (no hay token todavía) y con
    `ManejadorDeRed`. Cliente público: sin secreto. **Corrector E03:** desde la vuelta del navegador, el canje y las
    escrituras corren fuera del hilo principal (`ConfigureAwait(false)`) y se registran sus tiempos (H-3, §12).
 6. **Identidad:** `sub` y `preferred_username` de las claims del `id_token`. **[arq]** Sin validar la firma del
@@ -235,7 +235,7 @@ cambia.
 #### Variante first-party (por defecto desde 2026-10-30, `-p:FcModoDeIngreso=Formulario`)
 
 Pedido del PO: «login tradicional», con usuario y clave en un formulario propio de la app y sin navegador. El contenido
-manda la credencial **una vez** por `auth.signInWithPassword(usuario, clave)`. El cascarón la canjea en el
+manda la credencial **una vez** por `auth.signInWithPassword(usuario, clave)`. El contenedor nativo la canjea en el
 `token_endpoint` del descubrimiento (`FlujoOidc.CuerpoDelIngresoConClave`: `grant_type=password`, `client_id`,
 `username`, `password`, `scope`) y la descarta. La credencial no se registra en `Bitacora`, en excepciones ni en el
 despachador (que sólo anota el método), y no se persiste. Después del canje el camino es el mismo que el del navegador
@@ -250,7 +250,7 @@ se actualiza OTA (lo atenúa la firma del canal). `invalid_grant` → «Usuario 
 ejemplo `unauthorized_client` con el realm viejo) → «El emisor no permite el ingreso con clave para esta app.».
 `-p:FcModoDeIngreso=Navegador` vuelve al flujo de esta sección (Custom Tab).
 
-**La CA de demostración y el navegador.** **[arq; NO VERIFICADO]** El `HttpClient` del cascarón confía en la CA de
+**La CA de demostración y el navegador.** **[arq; NO VERIFICADO]** El `HttpClient` del contenedor nativo confía en la CA de
 demostración por `network_security_config` (sólo Debug), pero **el navegador del sistema no lee esa configuración**.
 Para que Chrome abra `https://203.0.113.10:8443` sin error de certificado, la CA se instala en el emulador como
 **certificado de CA de usuario** (Ajustes → Seguridad → Cifrado y credenciales → Instalar un certificado → Certificado
@@ -299,7 +299,7 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
   juntos bajo el cerrojo con que cambia la identidad (ingreso, cierre, renovación); el token viaja en el pedido y
   `ManejadorDeSesion` lo respeta. Con cuenta, nada sale sin token (401 local, reintentar).
 - **Qué se ve:** `outbox.status` y `outbox.changed` cuentan sólo las filas de `ISesionDelUsuario.DuenoVisible` (ya
-  cableado: `IDb.ContarOutboxDeAsync`). Las de otro dueño son invisibles. Diagnóstico (pantalla del cascarón, para
+  cableado: `IDb.ContarOutboxDeAsync`). Las de otro dueño son invisibles. Diagnóstico (pantalla del contenedor nativo, para
   quien opera) sigue mostrando todas.
 - **401 del receptor:** no es carta muerta: la fila se reintenta y la sesión intenta renovar una vez
   (`InformarNoAutorizadoAsync`); si el emisor rechaza, `Revocada`. Cambia `ClienteDelReceptor` (constructor de
@@ -324,9 +324,9 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 ### 3.7 Contenido: la puerta de la sesión **[P4, 038]**
 
 > **2026-10-30 — La cara del login es del contenido** (decisión del PO). Por defecto (`-p:FcPantallasDeSesion=Contenido`),
-> el cascarón ya no tapa esta puerta con `IngresoPage` y `DesbloqueoPage`: la puerta del contenido es la pantalla de
+> el contenedor nativo ya no tapa esta puerta con `IngresoPage` y `DesbloqueoPage`: la puerta del contenido es la pantalla de
 > ingreso y de desbloqueo, y se actualiza sin tienda. El canje PKCE, los tokens (Keystore) y el diálogo del sistema
-> (huella, PIN o patrón) siguen en el cascarón por `auth.session`; el contenido nunca ve credenciales ni tokens. El
+> (huella, PIN o patrón) siguen en el contenedor nativo por `auth.session`; el contenido nunca ve credenciales ni tokens. El
 > ingreso abre una Custom Tab (WebAuthenticator), como pide RFC 8252. `-p:FcPantallasDeSesion=Cascaron` vuelve a las
 > pantallas XAML.
 
@@ -342,8 +342,8 @@ tiene que comprobar el constructor de autenticación en el emulador; si no, BLOQ
 > de una pantalla abierta se pierde; lo encolado no), el despachador rechaza los datos (-32005) y la renovación no corre.
 > Se suelta el access de memoria; el refresh de memoria **no**, porque re-sellarlo pediría el diálogo del sistema y con
 > rotación el sellado puede ser más viejo. No protege el refresh contra quien ya controle el proceso. El botón sólo
-> aparece si el cascarón trae `auth.session` 1.1.0 (puente 1.2). Contra la prueba de claves: espera creciente en el
-> cascarón tras cada `invalid_grant` (2 s por intento, hasta 30 s) y `bruteForceProtected` en el realm de ensayo.
+> aparece si el contenedor nativo trae `auth.session` 1.1.0 (puente 1.2). Contra la prueba de claves: espera creciente en el
+> contenedor nativo tras cada `invalid_grant` (2 s por intento, hasta 30 s) y `bruteForceProtected` en el realm de ensayo.
 > Con `-p:FcPantallasDeSesion=Cascaron` el ingreso es siempre por navegador (`IngresoPage`), aunque el modo sea
 > `Formulario`.
 
@@ -377,7 +377,7 @@ pendientes del dueño que se fue). Estado `SinCuenta`.
 
 ## 4. Política de acciones
 
-### 4.1 Dónde se evalúa: en el cascarón **[038 «evaluada por el cascarón»; §7]**
+### 4.1 Dónde se evalúa: en el contenedor nativo **[038 «evaluada por el cascarón»; §7]**
 
 - `IGuardiaDeAcciones` (`Shell/Red/GuardiaDeAcciones.cs`) evalúa con el estado de red y de sesión del momento, con la
   función pura `EvaluadorDeAcciones.Evaluar` (`Core/Red/PoliticaDeAcciones.cs`).
@@ -388,9 +388,9 @@ pendientes del dueño que se fue). Estado `SinCuenta`.
 
 ### 4.2 Dónde se declara **[arq]**
 
-Una **constante del cascarón**, `PoliticaDeAcciones.Acciones`, como el catálogo (P12): cada acción con su clase y los
+Una **constante del contenedor nativo**, `PoliticaDeAcciones.Acciones`, como el catálogo (P12): cada acción con su clase y los
 métodos del puente que la ejecutan. El borrador §7 deja abierto que venga en el manifiesto del contenido para cambiarla
-sin tienda; la demo no lo hace porque la clase de una acción depende de qué hace el cascarón con ese método (el outbox
+sin tienda; la demo no lo hace porque la clase de una acción depende de qué hace el contenedor nativo con ese método (el outbox
 es suyo), y un contenido no debería poder relajarla. Queda como evolución: el manifiesto podría sólo **endurecer** una
 clase (de `Encolable` a `SoloEnLinea`), nunca relajarla.
 
@@ -503,7 +503,7 @@ tipos y valores del dominio en español.
 
 `ContratoDelPuente.Version`, `versionado/puente.json` y `src/FrameworkConcept.Core/Contracts/contrato.json`
 (regenerado con `FrameworkConcept.Tools contrato`). El contenido declara `compatibleConPuente: ">=1.1.0 <2.0.0"`
-(`declaracion-del-contenido.json`): un contenido que llama a `actions.policy` no debe activarse sobre un cascarón
+(`declaracion-del-contenido.json`): un contenido que llama a `actions.policy` no debe activarse sobre un contenedor nativo
 1.0 (el actualizador lo frena por el predicado de P3).
 
 **El contrato queda congelado para el incremento.** Si un constructor necesita otro campo, lo pide: cada cambio
@@ -681,7 +681,7 @@ lo pide, `keycloak.sh parar`, `guion.sh parar`, borrar `bin/` y `obj/`.
 **No entra en la demo** (se declara en la guía):
 
 - Borrar las filas pendientes propias con confirmación que dice cuántas se pierden (P4): diseño, sin pantalla.
-- Evaluar la versión mínima del cascarón **al ingresar** (P4, fila «Versión mínima del cascarón»): sigue evaluándose en
+- Evaluar la versión mínima del contenedor nativo **al ingresar** (P4, fila «Versión mínima del cascarón»): sigue evaluándose en
   el arranque en frío como en A3.
 - iOS (Keychain `userPresence`, LocalAuthentication): verificado en el simulador (iOS 26): login con formulario,
   modo Navegador (sesión efímera), sellar, bloquear, desbloquear. NO VERIFICADO: teléfono real, cofre con Secure Enclave (P9).
@@ -723,4 +723,4 @@ Una variante con dos claves (biométrica invalidable + credencial) queda como al
 contradice un texto del PO (borrador §4): **se le avisa** en el informe del ensayo.
 
 El contrato del puente no cambia: `SesionInformada` tiene la misma forma (sólo cambia cuándo se llega a cada estado).
-`ISesionDelUsuario` es interna del cascarón (no viaja por el puente).
+`ISesionDelUsuario` es interna del contenedor nativo (no viaja por el puente).

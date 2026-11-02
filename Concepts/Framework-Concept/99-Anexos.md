@@ -64,7 +64,7 @@ las del resto, en el tema que cita cada fila.
 | **Puerta de sesión** | Componente del contenido que muestra ingreso, desbloqueo o la página según el estado de la sesión | No ve tokens: sólo recibe `auth.session` | — | DISENO §3.7 |
 | **Formulario (modo de ingreso)** | Ingreso con usuario y clave en el contenido (`auth.signInWithPassword`); el cascarón canjea con Direct Access Grant (ROPC), habilitado sólo en el emisor de ensayo | No es una solución de producción | *Direct Access Grant*, ROPC | DISENO §3.7 |
 | **OAuth 2.0 for First-Party Applications** | Borrador IETF para el login propio de una app first-party: desafío, `code` con PKCE y pasos extra como MFA | No es ROPC | draft-ietf-oauth-first-party-apps | `Oidc.cs` L100–L106 |
-| **Cascarón** | El binario nativo MAUI que se instala por tienda y aloja el contenido | No se actualiza por canal | *native shell* (*App Shell model*), *native binary* | P1 |
+| **Cascarón** | El binario nativo MAUI que se instala por tienda y aloja el contenido | No se actualiza por canal | *native shell*, *native binary* | P1 |
 | **Contenido (paquete)** | Blazor WASM firmado que llega por canal | No es el cascarón | *update bundle* | P2 |
 | **Actualización sin tienda** | Bajar, verificar y activar contenido nuevo sin pasar por la tienda | No cambia el binario nativo | OTA, *live updates*, *code push* (Expo EAS Update, CodePush, Capawesome) | P2 |
 | **Mayor del puente** | Identidad del contrato entre cascarón y contenido | — | *runtime version* (EAS Update) | P3, P7 |

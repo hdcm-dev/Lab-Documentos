@@ -1,6 +1,6 @@
 # Demo del framework — apps .NET MAUI con pantallas Blazor actualizables sin tienda
 
-Una app Android que se instala una vez por tienda (el **cascarón**) y cuyas pantallas de negocio (el **contenido**,
+Una app Android que se instala una vez por tienda (el **contenedor nativo**, *native shell*; en la jerga del proyecto, "cascarón") y cuyas pantallas de negocio (el **contenido**: contenido web, distribuido como paquete de actualización OTA firmado;
 páginas Razor compiladas a Blazor WebAssembly) y encuestas (las **definiciones**, datos JSON) se actualizan
 bajándolas de un canal firmado, sin pasar por la tienda.
 
@@ -15,7 +15,7 @@ corre la demo y en qué estado está.
   (`scripts/imagen.sh`, unos minutos la primera vez) y la etiqueta `fc-demo-build:<huella de la receta>`; si la
   receta cambia, se construye otra.
 - Para ver el contenido Blazor: un dispositivo Android con Android System WebView 94 o mayor (P1, condición C-3 del
-  ensayo E01). Un emulador con WebView 83 sólo llega a la pantalla «WebView viejo» del cascarón. La integración se
+  ensayo E01). Un emulador con WebView 83 sólo llega a la pantalla «WebView viejo» del contenedor nativo. La integración se
   corrió en un emulador Android 13 x86_64 con WebView 155 (ver «Recorrido en el dispositivo»).
 - `adb` contra el dispositivo, y que el dispositivo alcance por IP a la máquina que corre el receptor. Ese es el
   único camino de red medido (P11), y se midió sólo con el emulador `fc-android-emu-hpdev` (por Tailscale).
@@ -30,10 +30,10 @@ corre la demo y en qué estado está.
 Todo corre dentro del contenedor, con `scripts/contenedor.sh`, desde esta carpeta:
 
 ```bash
-scripts/contenedor.sh dotnet build FrameworkConcept.Demo.SinMaui.slnf -c Release   # todo menos el cascarón MAUI
+scripts/contenedor.sh dotnet build FrameworkConcept.Demo.SinMaui.slnf -c Release   # todo menos el contenedor nativo MAUI
 scripts/contenedor.sh dotnet test tests/FrameworkConcept.Core.Tests -c Release      # dominio y contrato
 scripts/contenedor.sh dotnet build src/FrameworkConcept.Shell -c Debug \
-  -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk                   # el APK del cascarón
+  -p:RuntimeIdentifier=android-arm64 -p:AndroidPackageFormat=apk                   # el APK del contenedor nativo
 ```
 
 `FrameworkConcept.Demo.SinMaui.slnf` es la parte que se compila sin el workload de Android: la que corre en la
@@ -69,7 +69,7 @@ scripts/guion.sh tpr         -H <host> -P <puerto> -s <serie>   # P1: 5 arranque
 **Las claves en un clon nuevo.** El clon trae `claves/publica-demo.pem` y `semilla/` (firmada con su privada), pero no
 la privada. `guion.sh claves` se niega a pisar la pública sin `--forzar`. Con `claves --forzar` se genera un par nuevo,
 y entonces hay que rehacer `publicar v1`, `definicion v1`, `firmar` y `semilla` **antes** de compilar el APK: si no, el
-cascarón descarta la semilla («semilla: firma rechazada») y arranca sin contenido. La compuerta lo frena:
+contenedor nativo descarta la semilla («semilla: firma rechazada») y arranca sin contenido. La compuerta lo frena:
 `Gate.Tests` verifica `semilla/indice.json.sig` con `claves/publica-demo.pem` (`SemillaTests`). `guion.sh demo` hace
 todo eso solo.
 
@@ -88,9 +88,9 @@ Después, el recorrido v1 → v2 (lo mismo que hace `scripts/guion.sh demo`, que
 | 6 | `firma-invalida`; abrir en frío; `firmar` | `Rechazado FirmaInvalida`, sigue 1.1.0 |
 | 7 | `publicar sin-listo`, `firmar`; abrir en frío cuatro veces | 1.2.0 se baja; se activa y empieza a cargar sin avisar «Listo»; se reintenta; en el cuarto arranque vuelve a 1.1.0 y queda como fallida |
 
-**Cuándo una versión cuenta como fallida (P2, rollback por marca).** Al activar una versión, el cascarón le pone la
+**Cuándo una versión cuenta como fallida (P2, rollback por marca).** Al activar una versión, el contenedor nativo le pone la
 marca «pendiente», que el contenido borra con `Listo(version)`. La marca sola no prueba que el contenido falló: la
-persona pudo cerrar la app mientras cargaba. Por eso el cascarón anota cada arranque en que el WebView **empezó a
+persona pudo cerrar la app mientras cargaba. Por eso el contenedor nativo anota cada arranque en que el WebView **empezó a
 cargar** la versión pendiente (pidió `_framework/dotnet.js`), y sólo cuando eso pasó
 `Actualizador.CargasSinListoParaFallar` veces (2) sin `Listo`, el arranque siguiente vuelve a `previous` y anota la
 versión como fallida. Un arranque cortado antes de cargar no cuenta. El 2 es criterio de la demo, no un valor de
@@ -109,9 +109,9 @@ en `salida/humo/claves/`: no toca `claves/` ni `semilla/`), y
 `src/FrameworkConcept.Content/Testing/probar-en-navegador.sh` prueba el contenido en Chromium headless con el puente
 simulado (40 comprobaciones).
 
-## El cascarón en iOS
+## El contenedor nativo en iOS
 
-El mismo cascarón compila para el simulador de iOS (`net10.0-ios`) con el código de las mismas piezas que en Android.
+El mismo contenedor nativo compila para el simulador de iOS (`net10.0-ios`) con el código de las mismas piezas que en Android.
 En Android cambió una sola cosa: los eventos del puente salen por el mismo camino que en iOS (`Hosting/ScriptEnLaVista.cs`,
 ver la tabla de abajo).
 
@@ -135,8 +135,8 @@ xcrun simctl spawn booted log show --last 2m --info --style compact \
 ```
 
 **Para probar el ingreso con cuenta hace falta un receptor.** La pantalla de ingreso sólo se habilita con el servidor
-en línea, y eso lo decide el chequeo de salud del cascarón contra `GET /salud` de `FcReceptorUrl` (por defecto, la de
-`FcCanalUrl`). Con la URL por defecto (`https://canal.invalid`) el cascarón queda «sin acceso al servidor» y el botón
+en línea, y eso lo decide el chequeo de salud del contenedor nativo contra `GET /salud` de `FcReceptorUrl` (por defecto, la de
+`FcCanalUrl`). Con la URL por defecto (`https://canal.invalid`) el contenedor nativo queda «sin acceso al servidor» y el botón
 de ingresar, deshabilitado. Hay que levantar el receptor didáctico (`scripts/guion.sh servir`, con un certificado
 cuyo nombre incluya la dirección con la que lo alcanza la Mac) y compilar con
 `-p:FcCanalUrl=https://<receptor>:8099 -p:FcOidcAutoridad=https://<emisor>/realms/fc-demo`. La semilla
@@ -169,9 +169,9 @@ teléfono necesita perfil de aprovisionamiento.
 `notifyutil -p com.apple.BiometricKit.enrollmentChanged` para enrolar; `notifyutil -p com.apple.BiometricKit_Sim.pearl.match`
 cada vez que el sistema pide la cara. Sin enrolar, el sistema pide el código del dispositivo.
 
-### La base del cascarón sin código dinámico
+### La base del contenedor nativo sin código dinámico
 
-iOS no deja generar código en ejecución, y el cascarón se compila entero de antemano, sin intérprete. EF Core arma
+iOS no deja generar código en ejecución, y el contenedor nativo se compila entero de antemano, sin intérprete. EF Core arma
 el modelo de la base y traduce cada consulta LINQ al vuelo, así que en iOS no puede: el Release abortaba al abrir
 («Model building is not supported when publishing with NativeAOT»). El Debug no lo muestra porque corre con
 intérprete. La solución es que EF no tenga nada que armar: el modelo y las consultas salen compilados de antemano
@@ -185,7 +185,7 @@ en `MauiProgram.cs`): por defecto EF lo arma en un hilo aparte, y en Mono eso de
 
 **Cuándo se regenera:** cada vez que cambian `Data/ContextoDelCascaron.cs`, `Data/Tablas.cs` o `Data/DbSqlite.cs`,
 aunque sea un comentario de `DbSqlite.cs` (las consultas precompiladas apuntan a línea y columna de cada llamada; si
-no se regenera, el cascarón no compila, y una consulta nueva sin regenerar falla en iOS al ejecutarse):
+no se regenera, el contenedor nativo no compila, y una consulta nueva sin regenerar falla en iOS al ejecutarse):
 
 ```bash
 scripts/modelo-compilado.sh
@@ -194,7 +194,7 @@ scripts/modelo-compilado.sh
 El script corre `dotnet ef dbcontext optimize --precompile-queries --nativeaot` en el contenedor, con `dotnet-ef`
 como herramienta local (`.config/dotnet-tools.json`, misma versión que EF Core en `Directory.Build.props`). La
 herramienta no puede cargar un proyecto MAUI, así que trabaja sobre `tools/FrameworkConcept.Shell.Diseno`, un
-proyecto `net10.0` que enlaza los archivos de datos del cascarón (los mismos archivos, no copias).
+proyecto `net10.0` que enlaza los archivos de datos del contenedor nativo (los mismos archivos, no copias).
 
 La precompilación de consultas de EF 10 es experimental (EF9100), y en 10.0.11 tiene límites que condicionan el
 código (cada uno está explicado en `DbSqlite.cs` o en el script):
@@ -213,19 +213,19 @@ Medido en el simulador (Release, sin intérprete, 2026-11-02): TPR 3,2 s el prim
 | Carpeta | Qué es |
 | --- | --- |
 | `src/FrameworkConcept.Core/` | Núcleo sin MAUI. `Domain/` y `Application/` portados del caso base (ver `MAPA-CASO-BASE.md`); `Contracts/` con los tipos del contrato; `Update/` con las interfaces del actualizador |
-| `src/FrameworkConcept.Shell/` | El cascarón: app MAUI para Android con sus pantallas XAML, el actualizador, el servidor de contenido y el puente |
+| `src/FrameworkConcept.Shell/` | El contenedor nativo: app MAUI para Android con sus pantallas XAML, el actualizador, el servidor de contenido y el puente |
 | `src/FrameworkConcept.Content/` | El contenido: Blazor WebAssembly **sin AOT** |
 | `tools/FrameworkConcept.Tools/` | Herramientas: claves de demostración, empaquetar, firmar el índice, publicar una definición, retirar, regenerar `contrato.json` |
 | `tools/FrameworkConcept.Receptor/` | «Receptor didáctico»: un doble de prueba que sirve el canal y recibe las respuestas |
-| `tools/FrameworkConcept.Shell.Diseno/` | Proyecto de diseño de la base del cascarón: sólo para regenerar `Data/Compilado/` (no viaja en la app) |
+| `tools/FrameworkConcept.Shell.Diseno/` | Proyecto de diseño de la base del contenedor nativo: sólo para regenerar `Data/Compilado/` (no viaja en la app) |
 | `definiciones/encuesta-movilidad/` | La encuesta de tres pasos del caso base como datos: `v1.json`, `v2.json` y su `esquema.json` |
-| `versionado/` | Fuentes únicas de versión: cascarón, puente, contenido, y la fase (`diseño`) |
-| `semilla/` | Contenido y definición que el cascarón trae embebidos (los genera el guion) |
+| `versionado/` | Fuentes únicas de versión: contenedor nativo, puente, contenido, y la fase (`diseño`) |
+| `semilla/` | Contenido y definición que el contenedor nativo trae embebidos (los genera el guion) |
 | `claves/` | Sólo la clave **pública** de demostración; la privada no se versiona |
 | `tests/` | `Core.Tests` (dominio y contrato), `Update.Tests` (actualizador), `Gate.Tests` (compuerta) |
 | `scripts/` | `contenedor.sh` e `imagen.sh` (el contenedor de compilación), `guion.sh` (el guion único), `ci-local.sh` (la compuerta en local) y `modelo-compilado.sh` (regenera el modelo compilado de la base) |
 | `contenedor/` | La receta del contenedor de compilación (`Dockerfile`) |
-| `etapas/` | Los parches de rojo provocado de P8: M-13, un aviso promovido a error y un error de compilación del cascarón |
+| `etapas/` | Los parches de rojo provocado de P8: M-13, un aviso promovido a error y un error de compilación del contenedor nativo |
 | `infra/keycloak/` | Emisor OIDC de ensayo (Keycloak en contenedor, realm `fc-demo`) para el modo con cuenta del incremento de red y autenticación (folio 038) |
 
 ## Dónde está cada decisión en el código
@@ -300,7 +300,7 @@ opciones y versión 0.
 
 **Pendiente para los tramos siguientes.**
 
-- A2: actualizador, servidor de contenido, puente, catálogo, SQLite + outbox y las pantallas XAML del cascarón;
+- A2: actualizador, servidor de contenido, puente, catálogo, SQLite + outbox y las pantallas XAML del contenedor nativo;
   páginas Razor, renderizador de encuestas y cliente del puente del contenido; las herramientas (claves, empaquetar,
   firmar, publicar, retirar) y el receptor; las suites `Update.Tests` y `Gate.Tests` con sus rojos provocados;
   `claves/publica-demo.pem`.
@@ -309,9 +309,9 @@ opciones y versión 0.
 - Desvío de nombre: el dictamen (P7) ubica la fase en `versionado/rutas.json`; el layout de la demo la nombra
   `versionado/fase.json`.
 
-### Tramo A2 — actualizador, cascarón, contenido, herramientas y compuerta (2026-10-26)
+### Tramo A2 — actualizador, contenedor nativo, contenido, herramientas y compuerta (2026-10-26)
 
-**Hecho.** El actualizador (`Core/Update/`) con su suite; el cascarón MAUI (`Shell/`); el contenido Blazor sin AOT
+**Hecho.** El actualizador (`Core/Update/`) con su suite; el contenedor nativo MAUI (`Shell/`); el contenido Blazor sin AOT
 (`Content/`); las herramientas, el receptor y `scripts/guion.sh`; la compuerta (`Gate.Tests`, `ci-local.sh` y el
 workflow). Los detalles y sus rojos provocados están en el expediente (E02-Demo-Integracion).
 
@@ -362,14 +362,14 @@ workflow). Los detalles y sus rojos provocados están en el expediente (E02-Demo
 - Rollback por marca con evidencia de carga (P2): ver «Cuándo una versión cuenta como fallida».
 - Claves: `claves` no pisa una pública existente sin `--forzar`; `humo` usa sus propias claves; `Gate.Tests`
   verifica la semilla contra la pública versionada.
-- Rojos provocados de P8 versionados en `etapas/` (M-13, aviso promovido a error, error de compilación del cascarón).
+- Rojos provocados de P8 versionados en `etapas/` (M-13, aviso promovido a error, error de compilación del contenedor nativo).
 - Plantilla de PR del repositorio (`.github/pull_request_template.md`) con los dos campos obligatorios de P6.6.
 - `guion.sh tunel` habla HTTPS con el receptor cuando hay `claves/tls/`; el desvío de P11 con el g42 queda declarado.
 
 **Verificado** (contenedor de la receta, 2026-10-26): `ci-local.sh` en verde (0/0, Core.Tests 65/65, Update.Tests
 102/102, Gate.Tests 47/47, contenido empaquetado, APK arm64 0/0); `guion.sh humo` 47 OK sin tocar
 `claves/publica-demo.pem`; los rojos de `etapas/` (M-13: 6 pruebas de `Core.Tests` en rojo y `ci-local.sh` con
-rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; cascarón: CS0029). En el emulador `fc-android-emu-hpdev`: la
+rc 1; aviso: 1 error con `CI=true`, 1 aviso sin `CI`; contenedor nativo: CS0029). En el emulador `fc-android-emu-hpdev`: la
 semilla ya no se carga después del primer arranque; dos arranques cortados antes de cargar no cuentan; dos cargas
 sin «Listo» llevan a `previous`. Los detalles, en el expediente (E02-Demo-Integracion, `correcciones.md`).
 
@@ -383,7 +383,7 @@ M-13 en el runner (tramo A5).
 Diseño completo en `DISENO-RED-Y-AUTENTICACION.md`:
 
 - estado de red combinado, con chequeo de salud propio y reconexión automática;
-- política de acciones evaluada por el cascarón (`SoloLocal`, `Encolable`, `SoloEnLinea`);
+- política de acciones evaluada por el contenedor nativo (`SoloLocal`, `Encolable`, `SoloEnLinea`);
 - sesión OIDC (code + PKCE en el navegador del sistema) con desbloqueo por la seguridad del teléfono;
 - outbox con dueño;
 - un Keycloak de ensayo.
@@ -518,16 +518,16 @@ Qué cambió:
 - `FrameworkConcept.Tools tpr --logcat <archivo>` calcula el TPR por proceso: de la hora de la primera línea `FC` menos
   su `t=`, que es el inicio del proceso, a la línea de consola `FC-MARCA primer-render`. Una corrida sin marca dice si
   el WebView llegó a pedir el contenido.
-- El cascarón deja escrito a los 10 s si el WebView no pidió el contenido (`ContenidoPage`).
+- El contenedor nativo deja escrito a los 10 s si el WebView no pidió el contenido (`ContenidoPage`).
 - `Gate.Tests/Medicion/LectorDeTprTests.cs` fija el cálculo, el diagnóstico de la corrida sin marca y que los textos
-  buscados sigan siendo los que escriben `puente.js` y el cascarón.
+  buscados sigan siendo los que escriben `puente.js` y el contenedor nativo.
 
 **Verificado** (2026-10-27): `ci-local.sh` en verde con `rc=0`: Core 211, Update 102, Gate 56 y el APK. En el emulador
 `fc-android-emu-hpdev`, con el APK Release x64 sin depuración: 5 de 5 arranques `COLD` con marca y TPR de 9 641 a
 12 451 ms. Las cifras del emulador no juzgan el umbral de P1.
 
 
-**Marca leída por el cascarón** (folio 049). En un teléfono, con el APK Release, el WebView no pasa la consola al
+**Marca leída por el contenedor nativo** (folio 049). En un teléfono, con el APK Release, el WebView no pasa la consola al
 logcat y la línea de `puente.js` no aparece (folio 047; con el APK Debug sí aparece). Por eso, al llegar «Listo»,
 `ContenidoPage` le pide al WebView la hora de la marca (`performance.timeOrigin` + `startTime`) y escribe
 `FC-MARCA primer-render … tpr=Nms (leída por el cascarón)` con la etiqueta `FC`, contado desde el inicio del proceso.

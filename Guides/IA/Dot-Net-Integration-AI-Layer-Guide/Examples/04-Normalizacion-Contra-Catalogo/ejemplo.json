@@ -1,0 +1,11 @@
+{
+  "estado": "corrida del 2026-10-29 (R-04, estación 1, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): 8/10 (v1 1/2, extensión 7/8), IC95 [0,444; 0,975], N entradas distintas; ninguna clave fuera de Catalogos llegó a la encuesta",
+  "recurso": "modelo-compartido",
+  "turno": "TURNO-1",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "197685d0abc77d562fabfe8962b28ba96e8cac4e773f03fc97ea8cfb860435ea" },
+    { "ruta": "entradas.extension.v1.json", "sha256": "65dbc4f673e2fd42f9a2d7074c28964ff333bc2cbc773f7401eaff3c90fd0c87" }
+  ],
+  "comando": "dotnet run --project 04-Normalizacion-Contra-Catalogo -- --fake --verificar",
+  "extension": { "turno": "TURNO-2", "pesimista_s": 640, "comando": "dotnet run --project 04-Normalizacion-Contra-Catalogo -- --verificar --extension", "estado": "historia (hasta el 2026-10-28, servidor retirado): ejecutado contra el modelo el 2026-10-27 (TURNO-2, por la vía extension del arnés; qwen3.5:4b, servidor compartido): 7/8 válidas con normalización correcta, IC95 [0,473; 0,997]. Registro R-LLM 04-Normalizacion-Contra-Catalogo.modelo-ext.jsonl (8 entradas, entradas_hash = sha256 de entradas.extension.v1.json), recalculado: coincide" }
+}

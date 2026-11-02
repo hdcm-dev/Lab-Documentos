@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 11 de la guía (§8.7 · OA-D6, OA-S4). Un solo proyecto, consola y pruebas a la vez:
+       GenerateProgramFile=false deja Program.cs como punto de entrada y dotnet test corre Pruebas/.
+       Suma Microsoft.Agents.AI (MAF 1.26.0) a lo de 09: AsAIAgent y AgentSession. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <AssemblyName>11-Agente-Con-Aprobacion</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+    <PackageReference Include="Microsoft.Agents.AI" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="entradas.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Persistencia/MovilidadUrbana.Persistencia.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

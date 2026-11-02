@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: pruebas de cableado de _Comun (sin red). Es también el proyecto de humo del arnés:
+       si esto compila con -warnaserror y queda verde, la base común de los ejemplos está sana. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente.Comun.Pruebas.Cableado</RootNamespace>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../MovilidadUrbana.Persistencia/MovilidadUrbana.Persistencia.csproj" />
+    <ProjectReference Include="../MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

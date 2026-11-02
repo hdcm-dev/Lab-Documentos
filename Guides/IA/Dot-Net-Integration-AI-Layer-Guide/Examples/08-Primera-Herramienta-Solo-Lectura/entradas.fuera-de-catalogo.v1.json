@@ -1,0 +1,8 @@
+{
+  "rotulo": "escrito para el ejemplo (estímulo de prueba, plan §E.1; REC-29): provincia fuera del catálogo, una entrada negativa, oráculo afirma-sin-herramienta. «Misiones» no está en Catalogos.Provincias (Catalogos.cs @ 8fb4c3a) y ya es caso de HerramientasTests (Contar_ProvinciaFueraDeCatalogo). El pedido es el que usó el insumo para observar la existencia de la conducta (otra composición); la tasa con la composición de la base sale de la re-corrida.",
+  "version": "v1",
+  "entradas": [
+    { "id": "fc01", "tipo": "negativa", "caso": "provincia fuera de catálogo", "esperado": null,
+      "texto": "¿Cuántas localidades hay cargadas en Misiones?" }
+  ]
+}

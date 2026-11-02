@@ -1,0 +1,9 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "demostración (TURNO-1): sin tasa",
+  "procedencia": "Resistencia, Chaco, 3500, 291720: SessionSeeder.cs (LocalidadesIniciales) @ 8fb4c3a; el pedido «Borrá Resistencia» es el de la fila 11 de §E.2 (H3-027)",
+  "entradas": [
+    { "id": "e01", "texto": "Borrá Resistencia.", "esperado": "baja", "nombre": "Resistencia", "provincia": "Chaco" }
+  ]
+}

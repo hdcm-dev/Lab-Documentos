@@ -1,0 +1,24 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "uso": "extensión de medición de 03 (TURNO-2): M = 8, 4 sin el dato de habitantes",
+  "procedencia": "Goya 3450/90000 y Bella Vista 3432/30000: LocalidadesTests.cs l. 50 y l. 102 @ 8fb4c3a; Corrientes 3400/346334 y Resistencia 3500/291720: SessionSeeder.cs @ 8fb4c3a",
+  "entradas": [
+    { "id": "x01", "trae_habitantes": true, "provincia": "Corrientes",
+      "texto": "Quiero cargar Goya, provincia de Corrientes, código postal 3450; tiene 90.000 habitantes." },
+    { "id": "x02", "trae_habitantes": true, "provincia": "Chaco",
+      "texto": "Resistencia (Chaco), CP 3500, con 291720 habitantes. Dala de alta, por favor." },
+    { "id": "x03", "trae_habitantes": true, "provincia": "Corrientes",
+      "texto": "Agregá la ciudad de Corrientes, en Corrientes: código 3400 y una población de 346334." },
+    { "id": "x04", "trae_habitantes": true, "provincia": "Corrientes",
+      "texto": "Bella Vista, Corrientes. Código postal 3432. Habitantes: 30000." },
+    { "id": "x05", "trae_habitantes": false, "provincia": "Corrientes",
+      "texto": "Sumá Goya, de la provincia de Corrientes, con código postal 3450." },
+    { "id": "x06", "trae_habitantes": false, "provincia": "Chaco",
+      "texto": "Resistencia, Chaco, CP 3500. La cantidad de habitantes no la tengo." },
+    { "id": "x07", "trae_habitantes": false, "provincia": "Corrientes",
+      "texto": "Necesito el alta de Corrientes (provincia de Corrientes), código postal 3400, sin el dato de población." },
+    { "id": "x08", "trae_habitantes": false, "provincia": "Corrientes",
+      "texto": "Cargá Bella Vista en Corrientes; su código postal es 3432 y no sé cuánta gente vive ahí." }
+  ]
+}

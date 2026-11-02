@@ -1,0 +1,11 @@
+{
+  "estado": "corrida del 2026-10-29 (R-06, estación 1, qwen3-embedding:0.6b, Ollama 0.40.11, digest ac6da0dfba84): oro v2, top-3 12/12 por variante, IC95 [0,735; 1]; dos corridas idénticas byte a byte; el ejemplo todavía no lee el oro v2 (se corrió sobre una copia, registro de trabajo no publicado; ver el Anexo H de la guía)",
+  "recurso": "modelo-propio",
+  "turno": "TURNO-3",
+  "fase": "3a",
+  "entradas": [
+    { "ruta": "oro/conjunto-de-oro.v1.json", "sha256": "6b724009d9210376412db4ed948768d3e3622abe17c4bd7af47903440fadfb2a" },
+    { "ruta": "oro/calibracion.v1.json", "sha256": "566aa881efd3430f032ed1b400c7ebf6720630ba3e8c03d3a36a67f4db64d0da" }
+  ],
+  "comando": "dotnet run --project 06-Embeddings-Y-Busqueda-Semantica -- --verificar"
+}

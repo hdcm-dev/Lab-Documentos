@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Procedencia: Lab-E2E.WebBlazor/tests/MovilidadUrbana.ApiWeb.Tests/MovilidadUrbana.ApiWeb.Tests.csproj @ 8fb4c3a
+       Delta: Agregado por la IA — carpetas Cableado/ (sin red) y ConModelo/ ([Category("LLM")]);
+       Modificado por otro motivo — namespace, versiones centrales (Mvc.Testing 10.0.11 y NUnit.Analyzers
+       4.7.0, en el Anexo F).
+
+       Pruebas del host en proceso, con WebApplicationFactory: sin Kestrel ni navegador. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MovilidadUrbana.Asistente\MovilidadUrbana.Asistente.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\entradas.v1.json" Link="entradas.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,64 @@
+/* Nuevo (ADR-13). Estilos aislados de la página de chat: sólo tokens de Tokens.css. Este archivo hace
+   que exista MovilidadUrbana.Asistente.styles.css, que App.razor enlaza (AC-11). */
+.chat-modo {
+    margin-bottom: var(--space-3);
+}
+
+.chat-mensajes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 12rem;
+}
+
+.chat-msg {
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-background-tertiary);
+    max-width: 90%;
+}
+
+.chat-msg p {
+    margin: 0;
+}
+
+.chat-msg--persona {
+    align-self: flex-end;
+    background: var(--color-brand-primary-tint);
+}
+
+.chat-msg--decision {
+    align-self: center;
+    background: var(--color-background-secondary);
+}
+
+.chat-rol {
+    display: block;
+    font-size: var(--font-size-caption);
+    color: var(--color-text-secondary);
+}
+
+.chat-aprobacion {
+    margin: var(--space-3);
+}
+
+.chat-pedido {
+    margin-top: var(--space-2);
+}
+
+.chat-form {
+    display: flex;
+    gap: var(--space-2);
+    width: 100%;
+}
+
+.chat-form .mq-input {
+    flex: 1;
+    min-width: 0;
+}
+
+/* La banda del caso base es una fila; el pedido de aprobación se lee mejor de arriba abajo. */
+.chat-aprobacion {
+    flex-direction: column;
+    align-items: stretch;
+}

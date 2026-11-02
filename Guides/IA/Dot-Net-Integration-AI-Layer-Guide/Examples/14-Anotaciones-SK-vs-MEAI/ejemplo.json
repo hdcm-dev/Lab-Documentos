@@ -1,0 +1,9 @@
+{
+  "estado": "sin corrida contra el modelo en la fase del 2026-10-29 (no figura en la tabla de corridas)",
+  "recurso": "ninguno",
+  "turno": "TURNO-3",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "b1ebc65147ba3bc18088c41e977d3b948e22e8b4847796bf086eeedb10bb30c7" }
+  ],
+  "comando": "dotnet run --project 14-Anotaciones-SK-vs-MEAI -- --fake --verificar"
+}

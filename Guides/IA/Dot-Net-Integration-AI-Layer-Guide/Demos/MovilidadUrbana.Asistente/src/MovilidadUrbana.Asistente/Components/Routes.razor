@@ -1,0 +1,29 @@
+@* Nuevo (ADR-13). Repite el puente SessionId → SessionContext de
+   src/MovilidadUrbana.Web/Components/Routes.razor @ 8fb4c3a (procedencia del patrón, no copia). *@
+@using MovilidadUrbana.Asistente.Infrastructure.Sessions
+
+<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NoEncontrado)">
+    <Found Context="datosDeRuta">
+        <RouteView RouteData="datosDeRuta" DefaultLayout="typeof(Layout.MainLayout)" />
+        <FocusOnNavigate RouteData="datosDeRuta" Selector="#mq-main" />
+    </Found>
+</Router>
+
+@code {
+    /// <summary>
+    /// Identificador de sesión que `App.razor` leyó de la cookie. Un circuito de Blazor Server no
+    /// tiene acceso a la petición HTTP original, así que este parámetro es el puente entre el
+    /// render estático y el interactivo. Debe ser serializable: por eso es un `string`.
+    /// </summary>
+    [Parameter]
+    public string? SessionId { get; set; }
+
+    [Inject]
+    private SessionContext Contexto { get; set; } = default!;
+
+    // Antes de que se renderice cualquier página: las herramientas del circuito ya ven la sesión correcta.
+    protected override void OnParametersSet()
+    {
+        if (SessionId is not null) Contexto.Set(SessionId);
+    }
+}

@@ -1,0 +1,7 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "entradas": [
+    { "id": "a01", "texto": "¿Qué datos tengo que cargar para dar de alta una localidad?" }
+  ]
+}

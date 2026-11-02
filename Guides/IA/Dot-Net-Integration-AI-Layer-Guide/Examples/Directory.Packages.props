@@ -1,0 +1,72 @@
+<Project>
+  <!--
+    Versiones de TODOS los paquetes de Examples/, en un solo lugar (plan §E.1; la guía las cita sólo
+    desde el Anexo F). Re-verificadas en nuget.org el 2026-10-27 (DEP-02). Con gestión central, un
+    PackageReference con Version en línea es error NU1010: los .csproj nombran el paquete y nada más.
+
+    CentralPackageTransitivePinningEnabled: MAF 1.26.0 arrastra M.E.AI.Evaluation,
+    VectorData.Abstractions y Compliance.Abstractions 10.10.0 y M.E.AI.Abstractions 10.10.1; con el
+    pinning, toda versión de esta lista vale también para las dependencias transitivas (H-054, X-005).
+
+    REC-35 (2026-10-29): se retiraron Microsoft.Extensions.Hosting, OpenTelemetry.Extensions.Hosting y
+    OpenTelemetry.Exporter.OpenTelemetryProtocol, que ningún .csproj referenciaba ni llegaban como
+    transitivos. Los PackageVersion sin PackageReference directo que quedan son pins de transitivos:
+    M.E.AI.Abstractions, Compliance.Abstractions, OpenTelemetry.Api y Microsoft.Agents.AI.Abstractions.
+  -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Microsoft.Extensions.AI">
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Abstractions" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Quality" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.AI.Evaluation.Reporting" Version="10.11.0" />
+    <PackageVersion Include="Microsoft.Extensions.Compliance.Abstractions" Version="10.11.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Adaptadores">
+    <PackageVersion Include="OllamaSharp" Version="5.5.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Datos vectoriales">
+    <PackageVersion Include="Microsoft.Extensions.VectorData.Abstractions" Version="10.11.0" />
+    <PackageVersion Include="CommunityToolkit.VectorData.InMemory" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Label="Agentes, workflows y MCP">
+    <PackageVersion Include="Microsoft.Agents.AI" Version="1.26.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Abstractions" Version="1.26.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Workflows" Version="1.26.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.Workflows.Generators" Version="1.26.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="2.3.0" />
+    <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.3.0" />
+    <PackageVersion Include="Microsoft.SemanticKernel" Version="1.81.0" />
+    <!-- Azure.AI.OpenAI 2.9.0-beta.1 llega como transitivo de Microsoft.SemanticKernel 1.81.0 (sólo
+         en 14) y NO se fija aquí: forzar otra versión cambiaría la dependencia que SK declara. Es la
+         única preview admitida, declarada en el Anexo F y en Compuertas/ac6.excepciones. -->
+
+  </ItemGroup>
+
+  <ItemGroup Label="Observabilidad y caché">
+    <PackageVersion Include="OpenTelemetry" Version="1.20.1" />
+    <!-- Sólo como transitivo: MAF 1.26.0 arrastra OpenTelemetry.Api 1.18.0 (10 y 12) y 17 resuelve
+         1.20.1; con el pinning, toda la familia queda en 1.20.1 (AC-6, DEP-12). -->
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.20.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.InMemory" Version="1.20.1" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup Label="Host y persistencia">
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.14" />
+  </ItemGroup>
+
+  <ItemGroup Label="Pruebas (fieles al caso base por decisión: H-055; no son las últimas)">
+    <PackageVersion Include="NUnit" Version="4.3.2" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+<Project>
+  <!-- paquetes_hash del registro R-LLM (plan §E.1): el SHA-256 de Directory.Packages.props se graba en
+       cada ensamblado al compilar, porque con los intermedios en un volumen el binario no tiene el
+       archivo a mano en tiempo de ejecución. -->
+  <Target Name="IaLayerPaquetesHash" BeforeTargets="GetAssemblyAttributes">
+    <GetFileHash Files="$(MSBuildThisFileDirectory)Directory.Packages.props" Algorithm="SHA256" HashEncoding="hex">
+      <Output TaskParameter="Hash" PropertyName="IaLayerPaquetesHash" />
+    </GetFileHash>
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+        <_Parameter1>PaquetesHash</_Parameter1>
+        <_Parameter2>$(IaLayerPaquetesHash.ToLowerInvariant())</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
+</Project>

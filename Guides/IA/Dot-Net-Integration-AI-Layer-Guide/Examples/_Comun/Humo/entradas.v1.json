@@ -1,0 +1,7 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "entradas": [
+    { "id": "h01", "texto": "¿Qué datos pide el alta de una localidad?" }
+  ]
+}

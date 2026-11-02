@@ -1,0 +1,16 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "nota": "Estímulos de prueba de la demo (plan §E.1, regla P3-08 B): sólo entidades y valores del caso base 8fb4c3a; Goya (3450, 90000) y Bella Vista (3432) de LocalidadesTests.cs l. 50 y l. 102; Corrientes y Resistencia de SessionSeeder.cs. Toda cifra que produzcan es «estímulo del mismo autor».",
+  "entradas": [
+    { "id": "pd1-01", "paso": "PD-1", "humo": false, "texto": "¿Cuántas localidades tengo en Corrientes?" },
+    { "id": "pd1-02", "paso": "PD-1", "humo": false, "texto": "¿Qué medio usa más la gente?" },
+    { "id": "pd2-01", "paso": "PD-2", "humo": true, "texto": "¿Cuántos dígitos lleva el código postal?" },
+    { "id": "pd3-01", "paso": "PD-3", "humo": true, "texto": "Agregá Bella Vista, en Corrientes, código postal 3432. No sé cuántos viven." },
+    { "id": "pd4-01", "paso": "PD-4", "humo": false, "texto": "Voy en bondi y a veces en bici, todos los días, unos 8 km en 35 minutos, para ir al trabajo." },
+    { "id": "pd4-02", "paso": "PD-4", "humo": false, "texto": "Voy en avion todos los días al trabajo, 8 km en 35 minutos." },
+    { "id": "pd5-01", "paso": "PD-5", "humo": false, "texto": "Agregá Goya, Corrientes, CP 34, con 90000 habitantes." },
+    { "id": "pd5-02", "paso": "PD-5", "humo": false, "texto": "Perdón, el código postal es 3450." },
+    { "id": "pd6-01", "paso": "PD-6", "humo": true, "texto": "Borrá Resistencia" }
+  ]
+}

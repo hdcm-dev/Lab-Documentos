@@ -1,0 +1,225 @@
+{
+  "rotulo": "salidas del modelo copiadas del registro R-LLM de 07 (corrida válida); las preguntas son estímulo escrito para el ejemplo (oro de 06)",
+  "version": "v2",
+  "procedencia": {
+    "ejemplo": "07-RAG-Con-Citas",
+    "modelo": "qwen3.5:4b",
+    "digest": "2a654d98e6fb",
+    "ollama_version": "0.32.0-rc0",
+    "servidor": "compartido",
+    "turno_id": "20261027T134714-<recurso>-3629776-15251",
+    "fecha_primera_llamada": "2026-10-27T13:48:11.7816312+00:00",
+    "entradas_hash_07": "6b724009d9210376412db4ed948768d3e3622abe17c4bd7af47903440fadfb2a",
+    "registro": "07-RAG-Con-Citas.modelo.jsonl (registro de trabajo no publicado; ver Anexo H)"
+  },
+  "salidas": [
+    {
+      "id": "r01",
+      "pregunta": "¿Qué largo puede tener el nombre de una localidad y se puede repetir dentro de la misma provincia?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDelNombre] Localidad · requisito del nombre: Entre 3 y 60 caracteres, único por provincia.\n[Fuente: LocalidadPolicy.RequisitoDeLaProvincia] Localidad · requisito de la provincia: Una de las provincias del catálogo.\n[Fuente: EncuestaPolicy.RequisitoDelNombre] Encuesta · requisito del nombre: Al menos 3 caracteres.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDelNombre",
+        "LocalidadPolicy.RequisitoDeLaProvincia",
+        "EncuestaPolicy.RequisitoDelNombre"
+      ],
+      "salida": "El nombre de una localidad debe tener entre 3 y 60 caracteres, pero no puede repetirse dentro de la misma provincia porque debe ser único por provincia. [Fuente: LocalidadPolicy.RequisitoDelNombre] [Fuente: LocalidadPolicy.RequisitoDeLaProvincia]",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r02",
+      "pregunta": "¿Puedo cargar una localidad en cualquier provincia que se me ocurra?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDeLaProvincia] Localidad · requisito de la provincia: Una de las provincias del catálogo.\n[Fuente: EncuestaPolicy.RequisitoDeLaLocalidad] Encuesta · requisito de la localidad: Una de las localidades cargadas en el ABM.\n[Fuente: LocalidadPolicy.RequisitoDelNombre] Localidad · requisito del nombre: Entre 3 y 60 caracteres, único por provincia.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDeLaProvincia",
+        "EncuestaPolicy.RequisitoDeLaLocalidad",
+        "LocalidadPolicy.RequisitoDelNombre"
+      ],
+      "salida": "No puedes cargar una localidad en cualquier provincia; el sistema exige que la provincia sea parte de las provincias del catálogo oficial [Fuente: LocalidadPolicy.RequisitoDeLaProvincia]. Además, recuerda que cada nombre de localidad debe ser único dentro de su respectiva provincia y cumplir con los requisitos de longitud entre 3 y 60 caracteres [Fuente: LocalidadPolicy.RequisitoDelNombre], mientras que la localidad en sí misma debe estar cargada en el ABM [Fuente: EncuestaPolicy.RequisitoDeLaLocalidad].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r03",
+      "pregunta": "¿Cuántos números lleva el código postal de una localidad?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDelCodigoPostal] Localidad · requisito del código postal: 4 dígitos.\n[Fuente: LocalidadPolicy.RequisitoDeLosHabitantes] Localidad · requisito de los habitantes: Un número entero de 1 en adelante.\n[Fuente: LocalidadPolicy.RequisitoDeLaProvincia] Localidad · requisito de la provincia: Una de las provincias del catálogo.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDelCodigoPostal",
+        "LocalidadPolicy.RequisitoDeLosHabitantes",
+        "LocalidadPolicy.RequisitoDeLaProvincia"
+      ],
+      "salida": "El código postal de una localidad debe llevar 4 dígitos [Fuente: LocalidadPolicy.RequisitoDelCodigoPostal].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r04",
+      "pregunta": "¿Cuál es la población más chica que se puede cargar para una localidad?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDeLosHabitantes] Localidad · requisito de los habitantes: Un número entero de 1 en adelante.\n[Fuente: EncuestaPolicy.RequisitoDeLaLocalidad] Encuesta · requisito de la localidad: Una de las localidades cargadas en el ABM.\n[Fuente: LocalidadPolicy.RequisitoDelNombre] Localidad · requisito del nombre: Entre 3 y 60 caracteres, único por provincia.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDeLosHabitantes",
+        "EncuestaPolicy.RequisitoDeLaLocalidad",
+        "LocalidadPolicy.RequisitoDelNombre"
+      ],
+      "salida": "La población mínima que se puede cargar para una localidad es un número entero de 1 en adelante [Fuente: LocalidadPolicy.RequisitoDeLosHabitantes].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r05",
+      "pregunta": "¿Cuántas letras tiene que tener como mínimo un nombre?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDelNombre] Encuesta · requisito del nombre: Al menos 3 caracteres.\n[Fuente: LocalidadPolicy.RequisitoDelNombre] Localidad · requisito del nombre: Entre 3 y 60 caracteres, único por provincia.\n[Fuente: EncuestaPolicy.RequisitoDeLosMinutos] Encuesta · requisito de los minutos: Entre 1 y 600 minutos.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDelNombre",
+        "LocalidadPolicy.RequisitoDelNombre",
+        "EncuestaPolicy.RequisitoDeLosMinutos"
+      ],
+      "salida": "Un nombre debe tener al menos tres caracteres, ya sea para una encuesta o para una localidad [Fuente: EncuestaPolicy.RequisitoDelNombre].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r06",
+      "pregunta": "¿Qué edad tiene que tener quien contesta la encuesta?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLaEdad] Encuesta · requisito de la edad: Entre 16 y 110 años.\n[Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia] Encuesta · requisito de la frecuencia: Con qué asiduidad usa esos medios.\n[Fuente: EncuestaPolicy.RequisitoDeLosMinutos] Encuesta · requisito de los minutos: Entre 1 y 600 minutos.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLaEdad",
+        "EncuestaPolicy.RequisitoDeLaFrecuencia",
+        "EncuestaPolicy.RequisitoDeLosMinutos"
+      ],
+      "salida": "Quien conteste la encuesta debe tener entre 16 y 110 años [Fuente: EncuestaPolicy.RequisitoDeLaEdad].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r07",
+      "pregunta": "En la encuesta, ¿puedo escribir una localidad que todavía no se dio de alta?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLaLocalidad] Encuesta · requisito de la localidad: Una de las localidades cargadas en el ABM.\n[Fuente: EncuestaPolicy.RequisitoDelNombre] Encuesta · requisito del nombre: Al menos 3 caracteres.\n[Fuente: EncuestaPolicy.RequisitoDeLosMedios] Encuesta · requisito de los medios: Al menos uno.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLaLocalidad",
+        "EncuestaPolicy.RequisitoDelNombre",
+        "EncuestaPolicy.RequisitoDeLosMedios"
+      ],
+      "salida": "Sí, puedes escribir una localidad que aún no esté cargada en el ABM siempre y cuando cumpla con tener al menos 3 caracteres. [Fuente: EncuestaPolicy.RequisitoDeLaLocalidad][Fuente: EncuestaPolicy.RequisitoDelNombre]",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r08",
+      "pregunta": "¿Cuántos medios de transporte hay que marcar en la encuesta?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLosMedios] Encuesta · requisito de los medios: Al menos uno.\n[Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia] Encuesta · requisito de la frecuencia: Con qué asiduidad usa esos medios.\n[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLosMedios",
+        "EncuestaPolicy.RequisitoDeLaFrecuencia",
+        "EncuestaPolicy.RequisitoDeLaDistancia"
+      ],
+      "salida": "Hay que marcar al menos un medio de transporte según el contexto proporcionado [Fuente: EncuestaPolicy.RequisitoDeLosMedios].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r09",
+      "pregunta": "¿Qué se pregunta sobre cada cuánto viaja la persona?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDelMotivo] Encuesta · requisito del motivo: El motivo principal del viaje.\n[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n[Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia] Encuesta · requisito de la frecuencia: Con qué asiduidad usa esos medios.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDelMotivo",
+        "EncuestaPolicy.RequisitoDeLaDistancia",
+        "EncuestaPolicy.RequisitoDeLaFrecuencia"
+      ],
+      "salida": "Se pregunta con qué asiduidad utiliza los medios de transporte por día, ya que el contexto establece un límite máximo de 500 km diarios para este requisito. [Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia]",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r10",
+      "pregunta": "¿Cuántos kilómetros diarios se pueden declarar en la encuesta?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n[Fuente: EncuestaPolicy.RequisitoDeLosMinutos] Encuesta · requisito de los minutos: Entre 1 y 600 minutos.\n[Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia] Encuesta · requisito de la frecuencia: Con qué asiduidad usa esos medios.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLaDistancia",
+        "EncuestaPolicy.RequisitoDeLosMinutos",
+        "EncuestaPolicy.RequisitoDeLaFrecuencia"
+      ],
+      "salida": "Se pueden declarar entre 0 y 500 km por día según los requisitos establecidos para el uso del medio [Fuente: EncuestaPolicy.RequisitoDeLaDistancia].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r11",
+      "pregunta": "¿Cuánto puede durar el viaje que se declara en la encuesta?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n[Fuente: EncuestaPolicy.RequisitoDelMotivo] Encuesta · requisito del motivo: El motivo principal del viaje.\n[Fuente: EncuestaPolicy.RequisitoDeLosMinutos] Encuesta · requisito de los minutos: Entre 1 y 600 minutos.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLaDistancia",
+        "EncuestaPolicy.RequisitoDelMotivo",
+        "EncuestaPolicy.RequisitoDeLosMinutos"
+      ],
+      "salida": "El viaje declarado en la encuesta debe tener una duración entre 1 y 600 minutos [Fuente: EncuestaPolicy.RequisitoDeLosMinutos].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "r12",
+      "pregunta": "¿Qué hay que contestar sobre para qué se hace el viaje?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDelMotivo] Encuesta · requisito del motivo: El motivo principal del viaje.\n[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n[Fuente: EncuestaPolicy.RequisitoDeLaFrecuencia] Encuesta · requisito de la frecuencia: Con qué asiduidad usa esos medios.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDelMotivo",
+        "EncuestaPolicy.RequisitoDeLaDistancia",
+        "EncuestaPolicy.RequisitoDeLaFrecuencia"
+      ],
+      "salida": "Para responder a esta pregunta, debes indicar el motivo principal del viaje según los datos recopilados en la encuesta [Fuente: EncuestaPolicy.RequisitoDelMotivo].",
+      "resultado_07": "pasa",
+      "motivo_07": null
+    },
+    {
+      "id": "n01",
+      "pregunta": "¿Cuántos habitantes tiene Goya, en Corrientes?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDeLosHabitantes] Localidad · requisito de los habitantes: Un número entero de 1 en adelante.\n[Fuente: LocalidadPolicy.RequisitoDelCodigoPostal] Localidad · requisito del código postal: 4 dígitos.\n[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDeLosHabitantes",
+        "LocalidadPolicy.RequisitoDelCodigoPostal",
+        "EncuestaPolicy.RequisitoDeLaDistancia"
+      ],
+      "salida": "No tengo información sobre el número exacto de habitantes que tiene Goya en Corrientes porque el contexto solo establece un requisito general para las localidades (un entero mayor o igual a 1), sin especificar datos concretos por ciudad. [Fuente: LocalidadPolicy.RequisitoDeLosHabitantes]",
+      "resultado_07": "falla",
+      "motivo_07": "no dijo «No sé»"
+    },
+    {
+      "id": "n02",
+      "pregunta": "¿Se puede corregir una respuesta de la encuesta después de enviarla?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDeLosMedios] Encuesta · requisito de los medios: Al menos uno.\n[Fuente: EncuestaPolicy.RequisitoDelNombre] Encuesta · requisito del nombre: Al menos 3 caracteres.\n[Fuente: EncuestaPolicy.RequisitoDeLaEdad] Encuesta · requisito de la edad: Entre 16 y 110 años.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDeLosMedios",
+        "EncuestaPolicy.RequisitoDelNombre",
+        "EncuestaPolicy.RequisitoDeLaEdad"
+      ],
+      "salida": "No tengo información en el contexto sobre si es posible corregir o editar las respuestas de la encuesta tras su envío, por lo que no puedo responder a esa pregunta con los datos disponibles. [Fuente: No sé]",
+      "resultado_07": "falla",
+      "motivo_07": "no dijo «No sé»"
+    },
+    {
+      "id": "n03",
+      "pregunta": "¿Cuál es la capital de Mendoza?",
+      "contexto": "[Fuente: LocalidadPolicy.RequisitoDeLaProvincia] Localidad · requisito de la provincia: Una de las provincias del catálogo.\n[Fuente: LocalidadPolicy.RequisitoDelCodigoPostal] Localidad · requisito del código postal: 4 dígitos.\n[Fuente: EncuestaPolicy.RequisitoDeLaLocalidad] Encuesta · requisito de la localidad: Una de las localidades cargadas en el ABM.\n",
+      "recuperados": [
+        "LocalidadPolicy.RequisitoDeLaProvincia",
+        "LocalidadPolicy.RequisitoDelCodigoPostal",
+        "EncuestaPolicy.RequisitoDeLaLocalidad"
+      ],
+      "salida": "No tengo información sobre cuál es la capital de Mendoza en los fragmentos proporcionados, ya que solo se describen requisitos para provincias, códigos postales y localidades dentro del sistema. [Fuente: No sé]",
+      "resultado_07": "falla",
+      "motivo_07": "no dijo «No sé»"
+    },
+    {
+      "id": "n04",
+      "pregunta": "¿Cuánto cuesta el boleto del tren?",
+      "contexto": "[Fuente: EncuestaPolicy.RequisitoDelMotivo] Encuesta · requisito del motivo: El motivo principal del viaje.\n[Fuente: EncuestaPolicy.RequisitoDeLaDistancia] Encuesta · requisito de la distancia: Entre 0 y 500 km por día.\n[Fuente: EncuestaPolicy.RequisitoDeLosMinutos] Encuesta · requisito de los minutos: Entre 1 y 600 minutos.\n",
+      "recuperados": [
+        "EncuestaPolicy.RequisitoDelMotivo",
+        "EncuestaPolicy.RequisitoDeLaDistancia",
+        "EncuestaPolicy.RequisitoDeLosMinutos"
+      ],
+      "salida": "No sé, ya que en el contexto no se menciona la información sobre el costo del boleto del tren. [Fuente: No disponible]",
+      "resultado_07": "falla",
+      "motivo_07": "no dijo «No sé»"
+    }
+  ]
+}

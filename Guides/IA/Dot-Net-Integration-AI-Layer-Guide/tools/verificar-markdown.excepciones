@@ -1,0 +1,5 @@
+# Rutas que la guía nombra y que verificar-markdown.py no resuelve solo (ESTA-06). Formato en la cabecera del script.
+Examples/NN- # patrón del nombre de las carpetas de ejemplos («NN-Nombre»), no una ruta
+tools/demo.sh = Demos/MovilidadUrbana.Asistente/tools/demo.sh
+tools/diff-base.sh = Demos/MovilidadUrbana.Asistente/tools/diff-base.sh
+tools/server/README.md # ruta dentro de la fuente externa de REF-75 (llama.cpp), no de esta guía

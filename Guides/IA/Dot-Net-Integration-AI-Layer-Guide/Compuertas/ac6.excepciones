@@ -1,0 +1,4 @@
+# Previews admitidas por AC-6: «<paquete> <versión exacta> <motivo>». Cada línea es una fila del
+# Anexo F (versiones). Una preview que no figure acá hace fallar AC-6; una línea que ya no se
+# resuelva en ningún proyecto también (la excepción vencida no queda en silencio).
+Azure.AI.OpenAI 2.9.0-beta.1 transitivo de Microsoft.SemanticKernel 1.81.0, sólo en 14; no se fija porque forzarlo cambiaría la dependencia que SK declara (Anexo F: dependencia transitiva preliminar de SK)

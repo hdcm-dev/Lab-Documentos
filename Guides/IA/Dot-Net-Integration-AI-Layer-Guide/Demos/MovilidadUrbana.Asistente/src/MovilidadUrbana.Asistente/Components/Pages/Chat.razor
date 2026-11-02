@@ -1,0 +1,124 @@
+@* Nuevo (ADR-13; plan §F.1, §F.4). La única presentación del chat: página → IChatClient →
+   herramientas = casos de uso, con el historial y los pedidos de aprobación en el estado del
+   circuito (SesionDeChat, scoped). La página muestra texto ya resuelto y pedidos armados por el
+   código; manda sólo texto y decisiones (id + aprobar o rechazar). Cada pedido al modelo pasa por
+   el mismo límite de concurrencia que la API (LimitadorDelModelo, REC-13). *@
+@page "/"
+@using MovilidadUrbana.Asistente.Infrastructure.AI
+@using MovilidadUrbana.Asistente.Concurrencia
+@using MovilidadUrbana.Asistente.Infrastructure.AI.Chat
+@inject SesionDeChat Sesion
+@inject ModoDelAsistente Modo
+@inject LimitadorDelModelo Limitador
+
+<PageTitle>Movilidad Urbana — Asistente</PageTitle>
+
+<div class="mq-encabezado">
+    <div>
+        <h1 data-testid="titulo">Asistente</h1>
+        <p class="mq-caption">Consultá tus localidades y la encuesta. Las altas y las bajas se hacen sólo con tu aprobación.</p>
+    </div>
+</div>
+
+<p class="chat-modo mq-caption" data-testid="modo">
+    @(Modo.Guion ? "Modo guion: sin modelo." : $"Modelo {Modo.Modelo} (servidor {Modo.Servidor}).")
+    Ayuda: @Modo.PlanDeEmbeddings.
+</p>
+
+<section class="mq-panel">
+    <div class="mq-panel__cuerpo chat-mensajes" data-testid="mensajes" aria-live="polite">
+        @if (Sesion.Mensajes.Count == 0)
+        {
+            <p class="mq-caption">Por ejemplo: «¿Cuántas localidades tengo en Corrientes?», «¿Qué medio usa más la gente?» o «Borrá Resistencia».</p>
+        }
+        @foreach (var m in Sesion.Mensajes)
+        {
+            <div class="chat-msg chat-msg--@m.Rol" data-testid="msg-@m.Rol">
+                <span class="chat-rol">@Rotulo(m.Rol)</span>
+                <p>@m.Texto</p>
+            </div>
+        }
+        @if (_ocupada)
+        {
+            <p class="mq-caption" data-testid="esperando">Pensando…</p>
+        }
+    </div>
+
+    @if (Sesion.Pendientes.Count > 0)
+    {
+        <div class="mq-banda mq-banda--atencion chat-aprobacion" data-testid="aprobacion" role="alert">
+            <p class="mq-body-strong">Pedido de aprobación</p>
+            <p class="mq-caption">Lo armó la app con los datos de tu sesión; no es texto del modelo.</p>
+            @foreach (var p in Sesion.Pendientes)
+            {
+                <div class="chat-pedido" data-testid="pedido">
+                    <p>@p.Descripcion</p>
+                    <div class="mq-acciones-fila">
+                        <button type="button" class="mq-btn mq-btn--primario" data-testid="aprobar" disabled="@_ocupada" @onclick="() => DecidirAsync(p.Id, true)">Aprobar</button>
+                        <button type="button" class="mq-btn mq-btn--secundario" data-testid="rechazar" disabled="@_ocupada" @onclick="() => DecidirAsync(p.Id, false)">Rechazar</button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mq-panel__pie">
+        <form class="chat-form" @onsubmit="EnviarAsync">
+            <label class="mq-sr-only" for="chat-entrada">Mensaje</label>
+            <input id="chat-entrada" class="mq-input" data-testid="entrada" @bind="_texto" @bind:event="oninput"
+                   disabled="@(_ocupada || Sesion.Pendientes.Count > 0)" placeholder="Escribí tu consulta" autocomplete="off" />
+            <button type="submit" class="mq-btn mq-btn--primario" data-testid="enviar"
+                    disabled="@(_ocupada || Sesion.Pendientes.Count > 0 || string.IsNullOrWhiteSpace(_texto))">Enviar</button>
+        </form>
+    </div>
+</section>
+
+@if (_error is not null)
+{
+    <div class="mq-banda mq-banda--error mq-mt-3" data-testid="error" role="alert">@_error</div>
+}
+
+@code {
+    private string _texto = string.Empty;
+    private bool _ocupada;
+    private string? _error;
+
+    private static string Rotulo(string rol) => rol switch
+    {
+        "persona" => "Vos",
+        "asistente" => "Asistente",
+        "decision" => "Decisión",
+        _ => rol
+    };
+
+    private async Task EnviarAsync()
+    {
+        var texto = _texto.Trim();
+        if (texto.Length == 0 || _ocupada) return;
+        _texto = string.Empty;
+        await CorrerAsync(() => Sesion.EnviarAsync(texto));
+    }
+
+    private Task DecidirAsync(string id, bool aprobar) => CorrerAsync(() => Sesion.DecidirAsync(id, aprobar));
+
+    private async Task CorrerAsync(Func<Task> accion)
+    {
+        _ocupada = true;
+        _error = null;
+        try
+        {
+            if (!await Limitador.CorrerAsync(accion))
+            {
+                _error = "El servidor del modelo está ocupado. Probá de nuevo en unos segundos.";
+            }
+        }
+        catch (Exception e) when (e is HttpRequestException or TaskCanceledException or InvalidOperationException)
+        {
+            _error = $"No se pudo completar el pedido: {e.Message}";
+        }
+        finally
+        {
+            _ocupada = false;
+        }
+    }
+}

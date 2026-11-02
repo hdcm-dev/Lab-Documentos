@@ -1,0 +1,15 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "tipo": "extensión de medición (TURNO-2): tasa k/8 de normalización correcta contra la clave esperada",
+  "entradas": [
+    { "id": "x01", "texto": "Me muevo en micro todos los días para ir al trabajo.", "esperado": { "medios": ["colectivo"], "frecuencia": "diaria" } },
+    { "id": "x02", "texto": "De vez en cuando uso el auto o voy a pie.", "esperado": { "medios": ["auto", "caminata"], "frecuencia": "ocasional" } },
+    { "id": "x03", "texto": "Tomo el tren y después el colectivo, de lunes a domingo.", "esperado": { "medios": ["colectivo", "tren"], "frecuencia": "diaria" } },
+    { "id": "x04", "texto": "Un par de veces por semana voy en bicicleta.", "esperado": { "medios": ["bicicleta"], "frecuencia": "semanal" } },
+    { "id": "x05", "texto": "Ando en moto a diario.", "esperado": { "medios": ["moto"], "frecuencia": "diaria" } },
+    { "id": "x06", "texto": "Rara vez salgo; cuando salgo voy a pie.", "esperado": { "medios": ["caminata"], "frecuencia": "ocasional" } },
+    { "id": "x07", "texto": "Viajo en coche y en ómnibus algunos días por semana.", "esperado": { "medios": ["colectivo", "auto"], "frecuencia": "semanal" } },
+    { "id": "x08", "texto": "Todos los días uso la bici y el tren.", "esperado": { "medios": ["bicicleta", "tren"], "frecuencia": "diaria" } }
+  ]
+}

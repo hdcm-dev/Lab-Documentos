@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 03 (plan §E.2, guía §5.3, OA-D2). Un solo proyecto (contrato del arnés): es la
+       consola del ejemplo y, a la vez, su proyecto de pruebas NUnit. GenerateProgramFile=false deja
+       como punto de entrada el Program.cs del ejemplo en lugar del que genera Microsoft.NET.Test.Sdk. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <!-- El archivo se llama como su carpeta (convención NN-Nombre, D-03 b de la guía 16, prompt 02);
+         el ensamblado conserva el nombre anterior para no cambiar binarios ni registros. -->
+    <AssemblyName>SalidaEstructurada</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="entradas.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="entradas.ext.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="entradas.cp34.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

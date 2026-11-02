@@ -1,0 +1,12 @@
+# Común a Demos/ (plan §F.9, DC-08)
+bin/
+obj/
+datos/
+*.db
+*.db-shm
+*.db-wal
+registros/
+almacenes/
+TestResults/
+*.user
+.vs/

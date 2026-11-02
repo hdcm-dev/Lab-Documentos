@@ -1,0 +1,9 @@
+{
+  "estado": "corrida del 2026-10-29 (R-PD, estación 2, qwen3.5:4b, Ollama 0.40.11, digest d8b0f5e9760c, num_ctx 8192): humos PD-2, PD-3 y PD-6 pasan (una entrada cada uno, sin tasa); PD-2 sin la vía embeddings; demo.sh embeddings no medido (la corrida se rechazó por configuración antes del primer pedido)",
+  "recurso": "modelo-compartido",
+  "turno": "TURNO-1",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "302285bad38cb1243e77273bf090215412ff5e3ab3834fda0141cd7d5703bd2a" }
+  ],
+  "comando": "tools/demo.sh pruebas  |  tools/demo.sh embeddings (turno modelo-propio)  |  tools/demo.sh humo (turno modelo-compartido)"
+}

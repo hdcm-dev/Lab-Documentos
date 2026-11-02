@@ -1,0 +1,33 @@
+{
+  "rotulo": "escrito para el ejemplo",
+  "version": "v1",
+  "nota": "Estímulo del mismo autor. Los campos esperados son los nombres de las propiedades que enuncian LocalidadPolicy y EncuestaPolicy (8fb4c3a); cada forma se compara sin mayúsculas ni tildes.",
+  "entradas": [
+    {
+      "id": "e01",
+      "texto": "¿Qué datos tengo que cargar para dar de alta una localidad?",
+      "politica": "LocalidadPolicy",
+      "campos": [
+        { "campo": "nombre", "formas": ["nombre"] },
+        { "campo": "provincia", "formas": ["provincia"] },
+        { "campo": "codigo postal", "formas": ["codigo postal", "cp"] },
+        { "campo": "habitantes", "formas": ["habitante"] }
+      ]
+    },
+    {
+      "id": "e02",
+      "texto": "¿Y qué me pide la encuesta de movilidad?",
+      "politica": "EncuestaPolicy",
+      "campos": [
+        { "campo": "nombre", "formas": ["nombre"] },
+        { "campo": "edad", "formas": ["edad"] },
+        { "campo": "localidad", "formas": ["localidad"] },
+        { "campo": "medios", "formas": ["medio"] },
+        { "campo": "frecuencia", "formas": ["frecuencia"] },
+        { "campo": "distancia", "formas": ["distancia"] },
+        { "campo": "minutos", "formas": ["minuto"] },
+        { "campo": "motivo", "formas": ["motivo"] }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "rotulo": "escrito para el ejemplo (estímulo de prueba, plan §E.1): demostración del ejemplo 08, sin tasa. Base: las 2 localidades sembradas del caso base (Corrientes, Corrientes; Resistencia, Chaco: SessionSeeder.cs @ 8fb4c3a). Goya viene de LocalidadesTests.cs l. 50 @ 8fb4c3a y en la sesión de la corrida NO está.",
+  "version": "v1",
+  "entradas": [
+    { "id": "l01", "tipo": "legitima", "caso": "conteo por provincia", "esperado": 1,
+      "texto": "¿Cuántas localidades tengo en Corrientes? Usá la herramienta." },
+    { "id": "n01", "tipo": "negativa", "caso": "dato que no está ni en la base ni en el pedido", "esperado": null,
+      "texto": "¿Cuántos habitantes tiene Goya según mis datos? Usá las herramientas." }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "estado": "sin corrida contra el modelo en la fase del 2026-10-29 (no figura en la tabla de corridas)",
+  "recurso": "ninguno",
+  "turno": "TURNO-3",
+  "entradas": [
+    { "ruta": "entradas.v1.json", "sha256": "7ed960f60db0673ce4334c78353167fe48b9ae30e95f5018ca21400d551f6566" }
+  ],
+  "comando": "dotnet run --project _Comun/Humo -- --fake --verificar"
+}

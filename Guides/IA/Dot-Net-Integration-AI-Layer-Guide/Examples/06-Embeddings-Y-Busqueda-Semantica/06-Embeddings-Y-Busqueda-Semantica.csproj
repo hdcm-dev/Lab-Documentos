@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Nuevo: ejemplo 06 (plan §E.2; guía §7.1 y §7.5; OA-D4). IEmbeddingGenerator y similitud coseno
+       sobre los 12 literales de *Policy, medidos con hit rate@1, hit rate@3 y MRR contra dos líneas
+       base sin modelo (azar y léxica). Un solo proyecto: consola (dotnet run) y pruebas NUnit
+       (dotnet test). GenerateProgramFile en false porque el Main lo pone Program.cs. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>MovilidadUrbana.Asistente</RootNamespace>
+    <AssemblyName>EmbeddingsYBusquedaSemantica</AssemblyName>
+    <IsTestProject>true</IsTestProject>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="OllamaSharp" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <None Include="oro/conjunto-de-oro.v1.json" CopyToOutputDirectory="PreserveNewest" />
+    <!-- REC-28: calibración del umbral, aparte del oro de evaluación (2026-10-28). -->
+    <None Include="oro/calibracion.v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Dominio/MovilidadUrbana.Dominio.csproj" />
+    <ProjectReference Include="../_Comun/MovilidadUrbana.Asistente.Comun/MovilidadUrbana.Asistente.Comun.csproj" />
+  </ItemGroup>
+
+</Project>

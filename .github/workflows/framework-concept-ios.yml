@@ -1,0 +1,239 @@
+# Entrega y verificación del cascarón de la demo del framework en iOS (Concepts/Framework-Concept/Demo).
+#
+# Qué hace: compila el cascarón (contenedor nativo .NET MAUI) en Release para el simulador de iOS (iossimulator-arm64,
+# firma ad hoc, sin perfiles ni secretos), lo instala en un simulador, lo abre, espera la marca «FC-MARCA
+# primer-render» en el registro unificado y sube como artefactos el .app comprimido, la bitácora, la captura, el video,
+# el TPR y el manifiesto de herramientas (qué se usó, versión por versión).
+#
+# NO es parte de la compuerta del PR: «fw-ok» (framework-concept-demo.yml, expediente 0001, folio 035, P6.2/P6.3) sigue
+# siendo el único check requerido. Esto es un workflow aparte de entrega, como el de referencia en que se basa (el CD de
+# iOS de Ejemplo_Maui_Hibrida). Corre al llegar a main un cambio de la demo, y a mano.
+#
+# Runner: macos-15 de GitHub (el repositorio es público: los minutos de macOS no se cobran). Puede correr también en el
+# runner propio con la etiqueta macos15 (VM de la Mac mini) si el PO lo decide: basta cambiar «runs-on».
+#
+# Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
+# el .NET preinstalado) y se instala exactamente:
+#   macOS 15 (imagen macos-15) · Xcode 26.0 · runtime del simulador iOS 26.0 · SDK .NET 10.0.400 (el de global.json de
+#   la demo, instalado por versión exacta) · workloads ios 26.0.11017 y maui 10.0.0 (manifiestos de la banda 10.0.100)
+# Es la combinación medida en la VM el 2026-11-01. Por qué los workloads van por archivo de reversión y no por un
+# «workload set»: ningún set de la banda 10.0.400 (10.0.400 a 10.0.403) trae ios 26.0; traen 26.5, 27.0 o 27.1, que
+# exigen un Xcode más nuevo («requires Xcode 27.1»). El único set con ios 26.0.11017 es el 10.0.100. El archivo de
+# reversión fija los manifiestos uno por uno y funciona con el SDK 10.0.400 porque los manifiestos de toda la familia
+# 10.0 son de la banda 10.0.100. Así no se toca global.json (que también compila Android).
+#
+# Receta de instalación: pendiente de la mesa «receta única» (un mismo script para este workflow, la VM del runner y el
+# escenario de agente). Mientras tanto los pasos van en bloques autocontenidos (XCODE, SIMULADOR, DOTNET, WORKLOADS),
+# cada uno con sus variables en «env», para poder extraerlos a un script sin rediseñar.
+#
+# Xcode viene del instalador en Google Drive que usa la referencia (Apple no publica Xcode sin cuenta). Riesgo: el
+# archivo depende de un tercero y de la cuota de descargas de Drive; por eso se registra su SHA-256 en el manifiesto y
+# se verifica la compilación de Xcode (XCODE_BUILD) antes de seguir.
+
+name: framework-concept-ios
+
+on:
+  push:
+    branches:
+      - main
+      - fc/ci-ios   # disparador de prueba del PR que crea este workflow; se quita antes de fusionar
+    paths:
+      - 'Concepts/Framework-Concept/Demo/**'
+      - '.github/workflows/framework-concept-ios.yml'
+      - '!**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: framework-concept-ios-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEMO: Concepts/Framework-Concept/Demo
+  PROYECTO: src/FrameworkConcept.Shell
+  BUNDLE_ID: com.frameworkconcept.demo
+  DOTNET_NOLOGO: "1"
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
+  CI: "true"
+
+  # XCODE
+  XCODE_VERSION: '26.0'
+  XCODE_BUILD: '17A324'
+  XCODE_FILE_INSTALLER: 'Xcode_26_Universal.xip'
+  XCODE_GOOGLE_FILE_INSTALLER_ID: '1GoDmCUBOMKM5nnXCXxxnAgoKpSwZvaMP'
+  GDOWN_VERSION: '5.2.0'
+  # SIMULADOR
+  IOS_RUNTIME: '26.0'
+  SIM_DEVICE_TYPE: 'com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro'
+  # DOTNET (el script de instalación, fijado por commit de dotnet/install-scripts)
+  DOTNET_VERSION: '10.0.400'
+  DOTNET_INSTALL_SCRIPT_URL: 'https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.sh'
+  # WORKLOADS (manifiestos fijos, banda 10.0.100)
+  WORKLOAD_IOS_MANIFEST: '26.0.11017/10.0.100'
+  WORKLOAD_MAUI_MANIFEST: '10.0.0/10.0.100'
+  # BUILD
+  CONFIGURACION: Release
+  RID: iossimulator-arm64
+  TFM: net10.0-ios
+
+jobs:
+  ios-simulador:
+    if: github.repository == 'hdcm-dev/Lab-Documentos'
+    runs-on: macos-15
+    timeout-minutes: 120
+    steps:
+      - name: Runner
+        run: |
+          echo "Arquitectura: $(uname -m)"
+          echo "CPU: $(sysctl -n machdep.cpu.brand_string)"
+          echo "Núcleos: $(sysctl -n hw.ncpu)"
+          sw_vers
+          df -h /
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Carpeta de evidencia
+        run: |
+          EVIDENCIA="$RUNNER_TEMP/evidencia"
+          mkdir -p "$EVIDENCIA"
+          echo "EVIDENCIA=$EVIDENCIA" >> "$GITHUB_ENV"
+
+      # ── XCODE ────────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "XCODE. Descargar, instalar y fijar"
+        run: |
+          set -euxo pipefail
+          pipx install "gdown==${GDOWN_VERSION}"
+          cd "$RUNNER_TEMP"
+          gdown "$XCODE_GOOGLE_FILE_INSTALLER_ID" -O "$XCODE_FILE_INSTALLER"
+          shasum -a 256 "$XCODE_FILE_INSTALLER" | tee "$EVIDENCIA/xcode-xip.sha256"
+          # Lo preinstalado se borra antes de expandir: libera espacio y asegura que no quede otro Xcode a mano.
+          sudo rm -rf /Applications/Xcode*.app
+          xip --expand "$XCODE_FILE_INSTALLER"
+          rm -f "$XCODE_FILE_INSTALLER"
+          XCODE_PATH="/Applications/Xcode_${XCODE_VERSION}.app"
+          sudo mv Xcode.app "$XCODE_PATH"
+          sudo ln -s "$XCODE_PATH" /Applications/Xcode.app
+          sudo xcode-select --switch "$XCODE_PATH"
+          sudo xcodebuild -license accept
+          sudo xcodebuild -runFirstLaunch
+          xcodebuild -version
+          xcodebuild -version | grep -q "Build version ${XCODE_BUILD}" || { echo "ERROR: no es Xcode ${XCODE_BUILD}"; exit 1; }
+          echo "MD_APPLE_SDK_ROOT=$XCODE_PATH" >> "$GITHUB_ENV"
+          df -h /
+
+      # ── SIMULADOR ────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "SIMULADOR. Runtime iOS fijo y dispositivo"
+        run: |
+          set -euxo pipefail
+          xcrun simctl list runtimes
+          if ! xcrun simctl list runtimes | grep -q "iOS ${IOS_RUNTIME} "; then
+            sudo xcodebuild -downloadPlatform iOS -buildVersion "$IOS_RUNTIME"
+          fi
+          xcrun simctl list runtimes
+          RUNTIME_ID="$(xcrun simctl list runtimes | grep "iOS ${IOS_RUNTIME} " | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]+' | head -1)"
+          test -n "$RUNTIME_ID"
+          UDID="$(xcrun simctl create fc-humo "$SIM_DEVICE_TYPE" "$RUNTIME_ID")"
+          xcrun simctl boot "$UDID"
+          echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
+
+      # ── DOTNET ───────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "DOTNET. SDK por versión exacta"
+        run: |
+          set -euxo pipefail
+          # El .NET de la imagen se quita del camino: sólo queda el que se instala acá.
+          sudo rm -rf "$HOME/.dotnet" /usr/local/share/dotnet
+          curl -fsSL "$DOTNET_INSTALL_SCRIPT_URL" -o "$RUNNER_TEMP/dotnet-install.sh"
+          shasum -a 256 "$RUNNER_TEMP/dotnet-install.sh"
+          bash "$RUNNER_TEMP/dotnet-install.sh" --version "$DOTNET_VERSION" --install-dir "$HOME/.dotnet"
+          echo "DOTNET_ROOT=$HOME/.dotnet" >> "$GITHUB_ENV"
+          echo "$HOME/.dotnet" >> "$GITHUB_PATH"
+          export PATH="$HOME/.dotnet:$PATH"
+          dotnet --list-sdks
+          cd "$DEMO" && test "$(dotnet --version)" = "$DOTNET_VERSION"
+
+      # ── WORKLOADS ────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "WORKLOADS. ios y maui-ios por manifiestos fijos"
+        run: |
+          set -euxo pipefail
+          printf '{\n  "microsoft.net.sdk.ios": "%s",\n  "microsoft.net.sdk.maui": "%s"\n}\n' \
+            "$WORKLOAD_IOS_MANIFEST" "$WORKLOAD_MAUI_MANIFEST" > "$RUNNER_TEMP/workloads-rollback.json"
+          cat "$RUNNER_TEMP/workloads-rollback.json" | tee "$EVIDENCIA/workloads-rollback.json"
+          dotnet workload config --update-mode manifests
+          dotnet workload install ios maui-ios --from-rollback-file "$RUNNER_TEMP/workloads-rollback.json"
+          dotnet workload list
+          dotnet workload list | grep -q "26.0.11017/10.0.100" || { echo "ERROR: el workload ios no es 26.0.11017"; exit 1; }
+
+      - name: "MANIFIESTO. Traza de herramientas"
+        run: |
+          {
+            echo "# Herramientas de la corrida ${GITHUB_RUN_ID} (${GITHUB_SHA})"
+            echo "## sw_vers"; sw_vers
+            echo "## uname"; uname -a
+            echo "## xcode-select -p"; xcode-select -p
+            echo "## xcodebuild -version"; xcodebuild -version
+            echo "## xcodebuild -showsdks"; xcodebuild -showsdks
+            echo "## xcrun simctl list runtimes"; xcrun simctl list runtimes
+            echo "## Instalador de Xcode (SHA-256)"; cat "$EVIDENCIA/xcode-xip.sha256"
+            echo "## dotnet --info"; (cd "$DEMO" && dotnet --info)
+            echo "## dotnet workload list"; dotnet workload list
+            echo "## global.json"; cat "$DEMO/global.json"
+            echo "## MauiVersion"; grep -o '<MauiVersion>[^<]*' "$DEMO/Directory.Build.props"
+            echo "## Versión del cascarón"; grep -oE '<Application(Display)?Version>[^<]*' "$DEMO/versionado/version-cascaron.props"
+          } | tee "$EVIDENCIA/manifiesto-herramientas.txt"
+
+      # ── BUILD ────────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "VERSIONADO. Del cascarón (version-cascaron.props)"
+        run: |
+          P="$DEMO/versionado/version-cascaron.props"
+          VER="$(sed -n 's/.*<ApplicationDisplayVersion>\(.*\)<\/ApplicationDisplayVersion>.*/\1/p' "$P")"
+          NUM="$(sed -n 's/.*<ApplicationVersion>\(.*\)<\/ApplicationVersion>.*/\1/p' "$P")"
+          echo "Cascarón ${VER} (${NUM})"
+          echo "NOMBRE_ZIP=$(date -u +%Y%m%d%H%M)_${VER}_${NUM}_${BUNDLE_ID}.app.zip" >> "$GITHUB_ENV"
+
+      - name: "BUILD. Release para el simulador"
+        working-directory: ${{ env.DEMO }}
+        run: |
+          set -euxo pipefail
+          dotnet build "$PROYECTO" -c "$CONFIGURACION" -f "$TFM" \
+            -p:FcDestinos="$TFM" -p:RuntimeIdentifier="$RID" -v minimal
+          APP="$PWD/$PROYECTO/bin/$CONFIGURACION/$TFM/$RID/FrameworkConcept.Shell.app"
+          test -d "$APP"
+          codesign -dv --entitlements :- "$APP" 2>&1 | head -40
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" -c "Print :CFBundleShortVersionString" -c "Print :CFBundleVersion" "$APP/Info.plist"
+          echo "APP=$APP" >> "$GITHUB_ENV"
+
+      - name: "BUILD. Zip del .app"
+        run: |
+          cd "$(dirname "$APP")"
+          zip -qry "$EVIDENCIA/$NOMBRE_ZIP" "$(basename "$APP")"
+          ls -lh "$EVIDENCIA/$NOMBRE_ZIP"
+
+      # ── HUMO ─────────────────────────────────────────────────────────────────────────────────────────────────
+      - name: "HUMO. Instalar, abrir y esperar el primer render"
+        run: bash "$DEMO/scripts/humo-ios.sh" "$APP" "$SIM_UDID" "$EVIDENCIA/humo" 180
+
+      - name: "HUMO. TPR en el resumen"
+        if: always()
+        run: |
+          {
+            echo "### Cascarón iOS (simulador)"
+            echo '```'
+            cat "$EVIDENCIA/humo/tpr.txt" 2>/dev/null || echo "sin marca primer-render"
+            xcodebuild -version | tr '\n' ' '; echo
+            dotnet workload list | grep -E '^(ios|maui-ios) ' || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Subir evidencia
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: framework-concept-ios-${{ github.run_id }}
+          path: ${{ runner.temp }}/evidencia/
+          if-no-files-found: warn
+          retention-days: 14

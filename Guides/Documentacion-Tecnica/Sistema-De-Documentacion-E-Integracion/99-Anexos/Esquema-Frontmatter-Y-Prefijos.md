@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: alta
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-11-02
 audience: [humano, agente, desarrollo, analista]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-GLOSARIO]
 ---
@@ -43,16 +43,27 @@ prosa. Lo verifica la compuerta `docs-guard` en el grupo PR-2 (esquema) y en el 
 | Campo | Obligatorio | Valores | Para qué sirve |
 | --- | --- | --- | --- |
 | `doc_id` | Sí | Prefijo registrado, guion y sufijo en mayúsculas (`TEM-01`, `ANX-SDEI-CQ`) | Identidad estable: las trazas y las citas entre repositorios apuntan a él, no a la ruta |
-| `doc_type` | Sí | `tema`, `marco-de-referencia`, `familia`, `mapa`, `anexo`, `anexo-referencias`, `indice`, `guia-practica`, `guia-de-estudio`, `operativa`, `study-note`, `rrd`, `proceso`, `ficha` | Decide qué estructura se espera y qué controles se relajan (en `anexo-referencias`, AI-4 sólo avisa) |
+| `doc_type` | Sí | `tema`, `marco-de-referencia`, `familia`, `mapa`, `anexo`, `anexo-referencias`, `indice`, `guia-practica`, `guia-de-estudio`, `operativa`, `study-note`, `rrd`, `proceso`, `ficha`, `registro-audiencias` | Decide qué estructura se espera y qué controles se relajan (en `anexo-referencias`, AI-4 sólo avisa) |
 | `title` | Sí | Texto, 3 caracteres o más | Título para índices y canales; el H1 visible puede ser más corto |
 | `status` | Sí | `borrador`, `vigente`, `obsoleto` | Ciclo de vida; pasar a `vigente` es acto de una persona |
 | `origin` | Sí | `human`, `ia-assisted`, `ia-generated` | Quién produjo el texto; gatilla la revisión según origen (`CQ-14`) |
 | `confidence` | Si `origin` no es `human` | `alta`, `media`, `baja` | Cuánto confía quien redactó en lo que afirma |
 | `owner` | Sí | Texto | Responsable de mantenerlo |
 | `last_review` | Sí | Fecha `AAAA-MM-DD` | Frescura: el carril programado avisa pasados 365 días |
-| `audience` | Sí | Lista con uno o más de: `humano`, `agente`, `estudiante`, `docente`, `desarrollo`, `qa`, `devops`, `po`, `analista`, `persona-usuaria` | A quién sirve; ordena las rutas de lectura |
+| `audience` | Sí | Lista con uno o más de: `humano`, `agente`, `estudiante`, `docente`, `desarrollo`, `qa`, `devops`, `po`, `analista`, `persona-usuaria` | A quién se dirige; ordena las rutas de lectura. Es de **orientación**: no da ni quita acceso. `agente` queda en el vocabulario sólo como valor heredado (ver abajo) |
 | `traces` | Sí (puede ser `[]`) | Lista de `ID` o `ID@MAYOR.MENOR`, sin repetidos | De qué depende el documento; cada traza tiene que resolver |
 | `description` | Sí | Texto de 10 a 160 caracteres | Resumen para índices y agentes. La revisa una persona en el pull request que pasa el documento a vigente |
+| `delivery` | No | Lista de audiencias declaradas en el registro de audiencias (`AUD-`) | Regla de entrega: qué audiencias reciben la página. Es el campo que protege |
+
+**Audiencia y entrega.** `audience` orienta y `delivery` entrega. La clave `delivery` está en inglés, como las demás, y
+no se parece a `audience` para que un error de tipeo no cambie la orientación por la entrega. Sus valores están cerrados
+al registro de audiencias, una pieza con prefijo `AUD-` y `doc_type: registro-audiencias` que tiene una fila por
+audiencia con sus dimensiones (rol, tipo de alcance, superficie y nivel de acceso) y la jerarquía con `incluye:`; la
+matriz audiencia × página se deriva y no se escribe a mano. No hay migración: lo heredado se conserva, y un documento
+sin `delivery` o con `agente` en `audience` sólo avisará. El agente es un lector, no una audiencia, y hereda la de su
+usuario. Los controles `audiencia-vocabulario` (un valor de `delivery` fuera del registro) y `delivery-clave-cercana`
+(`audiencias:`, `audiences:` y variantes) nacen en «avisa» y todavía no están implementados en `docs-guard`: entran con
+el expediente de herramienta, cada uno con su par rojo/verde. Hoy el esquema sólo comprueba la forma de `delivery`.
 
 ## 3. README del cuerpo y páginas de ayuda
 
@@ -61,7 +72,7 @@ Dos formas tienen su propio esquema:
 | Forma | Cómo se reconoce | Campos obligatorios |
 | --- | --- | --- |
 | README de un cuerpo | `README.md` con `corpus_id` | `corpus_id` (mayúsculas y guiones), `version` (SemVer, admite sufijo `-borrador`), `title`, `description`. Puede sumar los diez campos, como el [README de este cuerpo](../README.md) |
-| Página de ayuda al usuario final | Tiene `roles` o `translation_of` y no tiene `doc_id` | `title` y, según el caso, `roles` o `translation_of`. El esquema completo lo trae el ejemplo de la ayuda por rol |
+| Página de ayuda al usuario final | Tiene `roles` o `translation_of` y no tiene `doc_id` | `title` y, según el caso, `roles` o `translation_of`. Opcionales: `delivery` (como arriba) y `contexto: <app>/<id>`, el identificador de contexto de la pantalla o del campo que pide la página; el mapa pantalla → página se deriva de esos campos y el control `contexto-resuelve` (página sin `contexto` que la pida o `contexto` sin página) entra en «avisa» con el expediente de herramienta. El esquema completo lo trae el ejemplo de la ayuda por rol |
 
 `corpus_id` y `version` viven sólo en el README: un tema no repite la versión del cuerpo.
 
@@ -113,6 +124,7 @@ documenta y se resuelve contra el SHA de su `source.lock`.
 | `ANX` | interno | Anexo |
 | `IDX` | interno | Índice |
 | `FC` | interno | Documento del Framework Concept (`FC-TEM-nn`, `FC-GUIA-INDICE`, `FC-MARCO-REFERENCIA`, `FC-ANEXO-99`), espacio propio para no chocar con los cuerpos de `Guides/` |
+| `AUD` | interno | Registro de audiencias (`doc_type: registro-audiencias`) |
 | `TEM` | interno | Tema del cuerpo |
 | `CQ` | interno | Criterio de calidad |
 | `PE` | interno | Patrón de ejemplo |

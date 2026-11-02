@@ -19,6 +19,7 @@ IDX     interno   índice
 # Framework Concept (Concepts/Framework-Concept): espacio propio para no chocar con los cuerpos de Guides/
 FC      interno   documento del Framework Concept (FC-TEM-nn, FC-GUIA-INDICE, FC-MARCO-REFERENCIA, FC-ANEXO-99)
 # Cuerpo de la guía del sistema documentador (N09 §7)
+AUD     interno   registro de audiencias (doc_type: registro-audiencias; resolución 399 del expediente 0003, A-12)
 TEM     interno   tema del cuerpo
 CQ      interno   criterio de calidad
 PE      interno   patrón de ejemplo

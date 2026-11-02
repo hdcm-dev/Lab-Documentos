@@ -3,6 +3,23 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-02 (SDEI: vocabulario de audiencias y entrega)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ y tools/docs-guard/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.1, paso 2
+
+#### Agregado
+
+- **Glosario (C-01; A-01, A-02, A-04 a A-06, A-12, B-01, B-04, B-07):** audiencia (orienta, no da ni quita acceso; la cita ISO/IEC/IEEE 26514:2022 queda «sin verificar»), regla de entrega, dimensiones de entrega, nivel de acceso, punto de aplicación, jerarquía, lector, registro de audiencias, punto de uso, microtexto, capa e identificador de contexto; «Doble audiencia» queda como nombre anterior de `TEM-04`; «Rol» remite primero a audiencia (y después a la regla de entrega) y «Contexto» se distingue de `contexto:`.
+- **Esquema (C-05; A-12, B-07):** campo opcional `delivery:` (regla de entrega, cerrado al registro de audiencias), `contexto: <app>/<id>` en la página de ayuda, `doc_type: registro-audiencias` y prefijo `AUD-` (en el anexo, en `prefijos.txt` y en `cuerpo.schema.json` y `ayuda.schema.json`, que sólo comprueban la forma). Sin migración. Los controles `audiencia-vocabulario`, `delivery-clave-cercana` y `contexto-resuelve` quedan descritos como «avisa» y sin implementar: entran con el expediente de herramienta, cada uno con su par.
+- **Referencias (C-09):** sección 9 con las fuentes de §3.4 de la resolución y las 16 que reabrió la refutación 385, cada una con su fecha de consulta (2026-11-01 o 2026-11-02); la ayuda de campo de Salesforce queda «sin verificar» y sin entrada (403).
+
+#### Cambiado
+
+- **Referencias (C-09):** la cita ISO/IEC/IEEE 26514:2022 pasa de «Verificación: V» a «sin verificar», como dice el glosario.
+- **Marco §2.5 (C-02; A-03, A-09):** la fila «Audiencias» pasa a «Audiencias típicas» y pierde «agente»; filas nuevas «Superficies» y «Canales de ayuda»; la confidencialidad de `ESC-SDEI-2` dice que el paquete lleva sólo `publico`, en texto y en recursos compilados. Las descripciones de `ESC-SDEI-1` y `ESC-SDEI-4` dejan de contar al agente como audiencia.
+- **Marco §4 (C-03; A-05, A-07, B-04):** exponer o ensanchar la documentación de una API es H por cambio y cambiar la jerarquía es H (`ACT-SDEI-1`); desarrollo decide la clave y la ubicación del microtexto, no su letra (`ACT-SDEI-3`); un actor no es una audiencia.
+- **`agente` sale de `audience` (C-04; A-04, R3-04 c)** en `00-Marco.md:11`, `TEM-04-Doble-Audiencia.md:11` y el ejemplo de `TEM-04-Doble-Audiencia.md:263`. El valor sigue en el vocabulario del esquema como heredado, porque la resolución no migra.
+
 ## 2026-11-01 (SDEI: ajustes de coherencia del cuerpo)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — cuerpo `SDEI`, expediente 0003 de DocsAsCode, ajustes AC-01 a AC-36 (salvo AC-24)

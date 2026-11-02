@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-11-01
+last_review: 2026-11-02
 audience: [analista, po, desarrollo, agente]
 traces: [TEM-SDEI-05]
 ---
@@ -32,10 +32,14 @@ usan el rango `RD-21` en adelante porque los `RD-` son únicos en todo el reposi
 `RD-04`. Las páginas de [`Consola/Ayuda/`](Consola/Ayuda/) no tienen fila: son el banco de prueba del validador, con
 defectos plantados.
 
+Las filas `RD-28` a `RD-32` son de la prueba extendida de [`Audiencias/`](Audiencias/) (resolución 399 del expediente
+0003, A-15). Su contenido es **ficticio** y su audiencia es la del registro
+[`AUD-DEMO-AYR`](Audiencias/_audiencias.md), declarada en la página con `delivery:`; no trazan a ningún caso de uso.
+
 | Término | Significado |
 | --- | --- |
-| Audiencia | Rol del panel que lee la página: alumno, administrador, o los dos |
-| Fuente | El caso de uso de la unidad Web con su versión en `5f07b12` |
+| Audiencia | En `RD-21` a `RD-27`, rol del panel que lee la página: alumno, administrador, o los dos. En `RD-28` a `RD-32`, audiencia del registro `AUD-DEMO-AYR`; la jerarquía la expande |
+| Fuente | En `RD-21` a `RD-27`, el caso de uso de la unidad Web con su versión en `5f07b12`; en `RD-28` a `RD-32`, el agregado de la resolución 399 (§5.2.3) que la pide |
 | Decisión | La tomó la mesa del expediente 0003 por delegación del PO, al decidir cómo se corrige el ejemplo |
 
 ## 2. Requerimientos
@@ -49,6 +53,11 @@ defectos plantados.
 | RD-25 | administrador | Habilitar, bloquear, rehabilitar y dar de baja cuentas, sabiendo que la baja borra los trabajos | CL-06, [`es/administrador/gobernar-las-cuentas.md`](Web/Ayuda/es/administrador/gobernar-las-cuentas.md) | `CU-10004@1.9` | Dado el caso de uso de la pantalla, cuando la persona lee la ayuda, entonces los pasos coinciden con su flujo y la ayuda avisa lo que no se puede deshacer; instrumento: `traces-resolve` con el SDD como fuente y relectura declarada en el pull request | aceptado | mesa del expediente 0003, 2026-11-01 |
 | RD-26 | administrador | Resetear la contraseña de un alumno | CL-06, [`es/administrador/resetear-una-contrasena.md`](Web/Ayuda/es/administrador/resetear-una-contrasena.md) | `CU-10004@1.9` | Dado el caso de uso de la pantalla, cuando la persona lee la ayuda, entonces los pasos coinciden con su flujo; instrumento: `traces-resolve` con el SDD como fuente y relectura declarada en el pull request | aceptado | mesa del expediente 0003, 2026-11-01 |
 | RD-27 | administrador | Dar desenlace a un trabajo pendiente | CL-06, [`es/administrador/dar-desenlace.md`](Web/Ayuda/es/administrador/dar-desenlace.md) | `CU-10009@1.1` | Dado el caso de uso de la pantalla, cuando la persona lee la ayuda, entonces los pasos coinciden con su flujo; instrumento: `traces-resolve` con el SDD como fuente y relectura declarada en el pull request | aceptado | mesa del expediente 0003, 2026-11-01 |
+| RD-28 | usuario | Leer los avisos de la propia aplicación | CL-06, [`comun/primeros-pasos.md`](Audiencias/Ayuda/comun/primeros-pasos.md) | E-1 (ficticio) | Dado el registro de audiencias, cuando el servidor de la prueba entrega la página, entonces la reciben sólo las audiencias de su `delivery` con la jerarquía expandida; instrumento: la consola de `Audiencias/` y su par rojo/verde | aceptado | resolución 399 del expediente 0003, 2026-11-02 |
+| RD-29 | admin-app | Configurar los avisos de la aplicación A | CL-06, [`app-a/configurar-avisos.md`](Audiencias/Ayuda/app-a/configurar-avisos.md) | E-2 (ficticio) | Dado el registro de audiencias, cuando el servidor de la prueba entrega la página, entonces la reciben sólo las audiencias de su `delivery` con la jerarquía expandida; instrumento: la consola de `Audiencias/` y su par rojo/verde, y el administrador de `app-b` no la recibe | aceptado | resolución 399 del expediente 0003, 2026-11-02 |
+| RD-30 | admin-app | Configurar los avisos de la aplicación B | CL-06, [`app-b/configurar-avisos.md`](Audiencias/Ayuda/app-b/configurar-avisos.md) | E-2 (ficticio) | Dado el registro de audiencias, cuando el servidor de la prueba entrega la página, entonces la reciben sólo las audiencias de su `delivery` con la jerarquía expandida; instrumento: la consola de `Audiencias/` y su par rojo/verde, y el administrador de `app-a` no la recibe | aceptado | resolución 399 del expediente 0003, 2026-11-02 |
+| RD-31 | usuario | Escribir el asunto de un aviso dentro del límite | CL-06 canal punto de uso, [`campos/asunto.md`](Audiencias/Ayuda/campos/asunto.md) y la ficha [`RN-DEMO-ASUNTO`](Audiencias/Reglas/RN-DEMO-ASUNTO.md) | E-5 (ficticio) | Dado el límite de la ficha de la regla, cuando cambia, entonces la pista y el error lo siguen por interpolación y el control de anclas da rojo si el texto quedó copiado; instrumento: la consola de `Audiencias/` y su par rojo/verde | aceptado | resolución 399 del expediente 0003, 2026-11-02 |
+| RD-32 | admin-raiz | Dar de alta una aplicación y asignarle su administrador | CL-06, [`raiz/alta-de-aplicacion.md`](Audiencias/Ayuda/raiz/alta-de-aplicacion.md) | E-1 (ficticio) | Dado el registro de audiencias, cuando el servidor de la prueba entrega la página, entonces la reciben sólo las audiencias de su `delivery` con la jerarquía expandida; instrumento: la consola de `Audiencias/` y su par rojo/verde | aceptado | resolución 399 del expediente 0003, 2026-11-02 |
 
 ## 3. Cómo se verifica
 

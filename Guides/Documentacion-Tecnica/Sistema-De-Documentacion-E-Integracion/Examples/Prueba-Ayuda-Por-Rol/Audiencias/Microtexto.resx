@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Asunto.Etiqueta" xml:space="preserve"><value>Asunto</value><comment>Capa etiqueta. Nivel publico. Contenido ficticio.</comment></data>
+  <data name="Asunto.Pista" xml:space="preserve"><value>Un título corto para el aviso, de hasta {0} caracteres.</value><comment>Capa pista. {0} = ReglaAsunto.Maximo (RN-DEMO-ASUNTO). Nivel publico.</comment></data>
+  <data name="Asunto.Validacion" xml:space="preserve"><value>El asunto tiene más de {0} caracteres: acortalo.</value><comment>Capa validacion. {0} = ReglaAsunto.Maximo (RN-DEMO-ASUNTO). Nivel publico.</comment></data>
+</root>

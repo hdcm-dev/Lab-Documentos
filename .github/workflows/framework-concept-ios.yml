@@ -34,7 +34,6 @@ on:
   push:
     branches:
       - main
-      - fc/ci-ios   # TEMPORAL: prueba de la caché; se quita antes de fusionar
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'

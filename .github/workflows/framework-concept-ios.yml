@@ -36,7 +36,6 @@ on:
   push:
     branches:
       - main
-      - fc/ci-ios   # disparador de prueba del PR que crea este workflow; se quita antes de fusionar
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'

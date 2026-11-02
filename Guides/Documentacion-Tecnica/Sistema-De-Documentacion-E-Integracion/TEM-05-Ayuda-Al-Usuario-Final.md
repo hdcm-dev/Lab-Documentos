@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-27
+last_review: 2026-11-02
 audience: [humano, agente, estudiante, docente, desarrollo, analista]
 traces: [MARCO-SDEI, MAPA-SDEI, ANX-SDEI-ESQUEMA, ANX-SDEI-CQ, ANX-SDEI-REFERENCIAS, DEMO-MU-21, DEMO-MU-11]
 ---
@@ -195,6 +195,85 @@ la versión del caso de uso que traza la página fuente (`es/alumno/enviar-un-tr
 hoy admite el esquema de las páginas de ayuda (`tools/docs-guard/esquemas/ayuda.schema.json`). Así, cuando exista el
 control, avisará que cambió el caso y no la página.
 
+### 3.5 Ayuda en el punto de uso: pantallas, campos, paneles y portales
+
+La ayuda no sólo vive en una página aparte. También llega a la pantalla o al campo donde se la necesita: es el canal
+**punto de uso** de `CL-06`, no una clase nueva de pieza (ver el [glosario](99-Anexos/Glosario.md#2-términos)). Lo que
+agrega el sistema documentador a los mecanismos que ya usa la industria es que el texto del campo tiene fuente
+versionada, se revisa por pull request y traza a la regla que valida el campo con `ID@versión`.
+
+**Capas del microtexto.** El texto de un campo se escribe en capas de un vocabulario cerrado:
+
+| Capa | Qué lleva | Regla |
+| --- | --- | --- |
+| `etiqueta` | El nombre del campo, visible y fuera de él | Nunca reemplazada por el marcador (*placeholder*) |
+| `pista` | Una oración que sirve a la mayoría | Sin enlaces; nada esencial en el marcador ni en un *tooltip* |
+| `info` | Lo que no entra en la pista | Se ofrece por identificador de contexto, en una página de ayuda |
+| `ejemplo` | Un valor válido | Ficticio, nunca un dato de un inquilino real |
+| `validacion` | El mensaje de error bajo el campo | Dice qué pasó y cómo corregirlo |
+
+La pista para la mayoría, en una oración y sin enlaces, y no usar el marcador en lugar de la etiqueta vienen del
+sistema de diseño de GOV.UK ([GOV.UK Design System, s. f.](99-Anexos/Referencias.md#ref-govuk-sf)); que el marcador
+daña la usabilidad, de Nielsen Norman Group ([Sherwin, 2014](99-Anexos/Referencias.md#ref-sherwin-2014)). En .NET, la
+capa sale del modelo de datos: `[Display(Name, Prompt, Description)]`, donde `Description` es la que se usa como
+*tooltip* o descripción ([Microsoft, 2026](99-Anexos/Referencias.md#ref-microsoft-displayattribute-2026)), y las
+anotaciones de validación de Blazor dan el mensaje por campo
+([Microsoft, s. f.](99-Anexos/Referencias.md#ref-microsoft-blazor-validation-sf)). En un formulario generado desde
+JSON Schema, `title` es lo corto y `description` lo largo
+([JSON Schema, s. f.](99-Anexos/Referencias.md#ref-jsonschema-annotations-sf)).
+
+**Los números salen de la regla; la letra, de una persona.** El límite que aparece en la pista o en el error
+(«entre 3 y 60 caracteres») se interpola desde la constante o el atributo de la regla, no se copia. La letra la
+escribe una persona: derivar no es generar (ver la [Definición](#definición)). Así el desfase numérico entre ayuda y regla desaparece por
+construcción; es el caso de `RN-LOC-01` de §3.1, escrito al revés.
+
+**Traza desde la ficha de la regla.** La ficha de la regla lleva tres anclas hacia el producto: `muestra` (la clave
+del recurso del microtexto), `valida` (el atributo que la hace cumplir) y `contiene` (el límite interpolado que el
+texto tiene que contener). La traza va de la ficha al microtexto y no al revés, porque el texto localizado en
+archivos de recursos todavía no se ancla: la frase que lo dice en la decisión del conocimiento se quita recién
+cuando exista un resolvedor para `.resx` o JSON Schema. Un campo con regla y sin ayuda **avisa**; donde la regla no
+está en atributos, la comparación entre texto y regla es una prueba unitaria del producto.
+
+**Identificador de contexto.** La página de ayuda que amplía un campo o una pantalla declara
+`contexto: <app>/<id>` en su frontmatter ([anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#3-readme-del-cuerpo-y-páginas-de-ayuda)).
+El espacio de nombres `<app>` evita que dos aplicaciones choquen con el mismo `<id>`. El mapa pantalla → página no
+se escribe: se deriva de esos campos. Es la misma idea que la ayuda contextual por identificador de las herramientas
+de autoría ([MadCap Software, 2026](99-Anexos/Referencias.md#ref-madcap-flare-2026)) y que el par `@appname` +
+`@appid` de DITA ([OASIS, 2015](99-Anexos/Referencias.md#ref-oasis-dita-resourceid-2015)).
+
+**Paneles y portales.** El resolvedor de contexto corre en el servidor y con la audiencia de la sesión: a cada
+identificador le devuelve la página que esa audiencia puede recibir. La etiqueta y el mensaje de error son **iguales**
+para todas las audiencias; si hay variante, va en la pista o en la ayuda ampliada, con su motivo, resuelta en el
+servidor y nunca con todas las variantes enviadas al cliente. El portal es una superficie y un renderizador, no una
+fuente. Un enlace del panel al portal **no transfiere permiso**: el portal vuelve a aplicar su regla de entrega, como
+hacen los portales de desarrollador que niegan una página a quien no tiene el grupo o el equipo
+([Redocly, s. f.](99-Anexos/Referencias.md#ref-redocly-permissions-sf)). En un paquete instalable (app móvil,
+WebAssembly) viaja sólo lo `publico`, en texto y en recursos compilados; lo demás se pide al servidor con el token
+del usuario.
+
+**Plataformas de guía en producto.** Las plataformas de recorridos y *tooltips* segmentan bien, pero el contenido
+vive en su editor y no en el repositorio ([Pendo, s. f.](99-Anexos/Referencias.md#ref-pendo-sf);
+[Appcues, s. f.](99-Anexos/Referencias.md#ref-appcues-sf)): pierden traza, revisión y versión. Por eso entran sólo
+como canal derivado que **dirige** hacia la ayuda: sin números ni reglas, nunca con contenido de nivel no público y
+declaradas fuera del repositorio. Se activan sólo si la persona responsable del producto pide recorridos; si no,
+el proyecto dice «no se usa».
+
+**Accesibilidad (WCAG 2.2).** Tres criterios de éxito tocan el campo:
+
+| Criterio | Nivel | Qué pide | Quién lo comprueba |
+| --- | --- | --- | --- |
+| 3.3.1 Identificación de errores | A | El campo con error se identifica y el error se describe en texto ([W3C, s. f.](99-Anexos/Referencias.md#ref-w3c-wcag22-331)) | `docs-guard` exige la capa `validacion` en cada campo con regla |
+| 3.3.2 Etiquetas o instrucciones | A | Etiqueta o instrucciones cuando se pide un dato ([W3C, s. f.](99-Anexos/Referencias.md#ref-w3c-wcag22-332)) | `docs-guard` exige la capa `etiqueta` en cada campo con regla |
+| 3.3.3 Sugerencia ante errores | AA | Si se conoce cómo corregir, se sugiere ([W3C, s. f.](99-Anexos/Referencias.md#ref-w3c-wcag22-333)) | La revisión del texto de `validacion` |
+
+La asociación programática entre el campo, su pista y su error (`aria-describedby`) es un agregado de este cuerpo:
+3.3.2 no la exige (la piden otros criterios, 1.3.1 y 4.1.2). Se prueba en las pruebas de la interfaz, no en
+`docs-guard`. Que el `ValidationMessage` de Blazor la emita **no está verificado**: se mide en la prueba.
+
+**Asistente, si lo hay.** Nada obliga a tener un asistente. Si el producto lo suma, el asistente recupera la misma
+pieza con el token del usuario, cita `ID@versión`, **sugiere y no envía** **[propuesta de la mesa del expediente 0003,
+rotulada como tal]**. El riesgo que lo justifica está en `TEM-04`, §3.6.
+
 ## Preguntas guía
 
 Para **producir** una página de ayuda:
@@ -213,6 +292,7 @@ producto que no tiene prefijo para su ayuda lo agrega a `tools/docs-guard/prefij
    y le digo a la persona qué hacer mientras tanto?
 5. ¿Los errores están escritos con el mensaje que la persona ve en la pantalla, no con el código interno?
 6. ¿Qué roles pueden ver esta página? ¿Enlaza a alguna que otro de sus roles lectores no puede ver?
+7. Si amplía un campo o una pantalla, ¿declara `contexto: <app>/<id>`, y los números de su texto salen de la regla?
 
 Para **evaluar** una página:
 
@@ -224,6 +304,8 @@ Para **evaluar** una página:
 3. ¿Una persona sin conocimiento del sistema hace la tarea sin ayuda (prueba de lectura)?
 4. ¿Algo de la página es un criterio de aceptación o un flujo interno que no debería estar ahí?
 5. ¿La página traza también al caso de uso de la unidad de su pantalla?
+6. En el punto de uso, ¿cada campo con regla tiene `etiqueta` y `validacion`, y la ficha de la regla lo traza con
+   `muestra`, `valida` y `contiene`?
 
 ## Criterios de calidad
 
@@ -239,6 +321,7 @@ Los criterios citables son `CQ-01` (corrección), `CQ-03` (actualidad) y `CQ-09`
 | Rol | La página se oculta del menú y se entrega por URL | El servidor no la entrega; el `.md` y el índice pasan por el mismo filtro |
 | Enlaces | Una página común enlaza a una de un solo rol | Una prueba detecta el cruce de rol (en el validador del producto, no en `docs-guard`) |
 | Idioma | 404 si falta la traducción | Idioma fuente con aviso; traducción marcada como atrasada si la fuente cambió |
+| Campo | Lo esencial en el marcador; el límite copiado a mano | Etiqueta visible, pista de una oración, límite interpolado desde la regla y traza desde la ficha |
 
 ## Anexo
 
@@ -285,7 +368,10 @@ contra el esquema de páginas de ayuda del [anexo del esquema](99-Anexos/Esquema
 ## Fuentes y observaciones
 
 Fuentes primarias del tema, con fecha de consulta en el [anexo de referencias](99-Anexos/Referencias.md):
-ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y Carroll (1995).
+ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y Carroll (1995). Para la ayuda en el
+punto de uso: GOV.UK Design System (s. f.), Sherwin (2014), W3C (s. f., criterios 3.3.1, 3.3.2 y 3.3.3), Microsoft
+(2026 y s. f.), JSON Schema (s. f.), MadCap Software (2026), OASIS (2015), Redocly (s. f.), Pendo (s. f.) y Appcues
+(s. f.).
 
 | Tipo | Observación |
 | --- | --- |
@@ -295,6 +381,9 @@ ISO/IEC/IEEE (2022), Aghajani et al. (2019), Tan et al. (2024) y van der Meij y 
 | Hecho | La prueba de ayuda por rol no tiene `source.lock`; sus ocho trazas se comprobaron con `--fuente` contra el SDD de Lab-Geometria en `5f07b12` (8 de 8 resueltas). Llevar esa comprobación a la CI queda como deuda del expediente de herramienta que agregue el trabajo con `--fuente` y el `source.lock` de la prueba |
 | Criterio propio | La línea «releída contra la versión nueva, sin cambios» en la descripción del pull request |
 | Criterio propio | El control de traducción atrasada por commit es de la propuesta de ayuda por rol y no existe todavía en `docs-guard` |
+| Sin verificar | Que el `ValidationMessage` de Blazor emita la asociación con `aria-describedby`; se mide en la prueba de la interfaz |
+| Propuesta | El asistente que sugiere y no envía es una propuesta de la mesa del expediente 0003; vuelve a sus comisiones si el producto incorpora un asistente |
+| Hecho | Los controles que nombra §3.5 (campo con regla sin ayuda, `contexto-resuelve`, `anclas` extendidas) están en `TEM-06` §1.3 y todos avisan hasta tener su par rojo/verde |
 
-Documento anterior: [Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md). Siguiente documento:
+Documento anterior: [Tema 04 — Lectura por agentes](TEM-04-Doble-Audiencia.md). Siguiente documento:
 [Tema 06 — Compuertas de calidad y CI](TEM-06-Compuertas-Y-CI.md).

@@ -184,6 +184,10 @@ Las entradas de esta sección son las fuentes de §3.4 de la resolución 399 del
 
 <a id="ref-w3c-wcag22-332"></a>W3C. (s. f.). *Understanding SC 3.3.2: Labels or instructions* (WCAG 2.2, nivel A). https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html (consultado el 2026-11-02). Verificación: V.
 
+<a id="ref-w3c-wcag22-331"></a>W3C. (s. f.). *Understanding SC 3.3.1: Error identification* (WCAG 2.2, nivel A). https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html (consultado el 2026-11-02). Verificación: V.
+
+<a id="ref-w3c-wcag22-333"></a>W3C. (s. f.). *Understanding SC 3.3.3: Error suggestion* (WCAG 2.2, nivel AA). https://www.w3.org/WAI/WCAG22/Understanding/error-suggestion.html (consultado el 2026-11-02). Verificación: V.
+
 <a id="ref-microsoft-displayattribute-2026"></a>Microsoft. (2026, 27 de mayo). *DisplayAttribute.Description property*. Microsoft Learn. https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.dataannotations.displayattribute.description (consultado el 2026-11-02). Verificación: V.
 
 <a id="ref-microsoft-blazor-validation-sf"></a>Microsoft. (s. f.). *ASP.NET Core Blazor forms validation*. Microsoft Learn. https://learn.microsoft.com/en-us/aspnet/core/blazor/forms/validation (consultado el 2026-11-01). Verificación: V.

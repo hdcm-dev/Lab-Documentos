@@ -3,6 +3,24 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-02 (SDEI: temas de lectura por agentes, ayuda en el punto de uso y familias de controles)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.1, paso 3
+
+#### Agregado
+
+- **`TEM-05` §3.5 «Ayuda en el punto de uso» (C-07; B-01 a B-11):** capas `etiqueta · pista · info · ejemplo · validacion`; números interpolados desde la regla y letra escrita por una persona; traza desde la ficha de la regla con `muestra`, `valida` y `contiene`; `contexto: <app>/<id>` con el mapa derivado; paneles y portales (resolvedor en el servidor, el enlace no transfiere permiso, el paquete lleva sólo `publico`); plataformas de guía sólo como canal que dirige; WCAG 2.2 3.3.1, 3.3.2 y 3.3.3, con `aria-describedby` en las pruebas de la interfaz; asistente condicional como propuesta rotulada. Es sección, no tema nuevo (B-04b).
+- **`TEM-04` §3.6 (C-06; A-04, A-10, B-10):** el agente lee con la audiencia de su usuario; filtro único para página, `.md`, `llms.txt` y MCP con el token del usuario; `canal_agente` como propuesta de la mesa sin puntuar; la trifecta como riesgo.
+- **`TEM-06` §1.3 (C-08; A-11, B-05):** las trece familias de controles de la resolución, todas en «avisa» hasta tener su par rojo/verde corrido; ninguna implementada.
+- **Referencias:** W3C, criterios 3.3.1 y 3.3.3 de WCAG 2.2, citados por `TEM-05` §3.5.
+
+#### Cambiado
+
+- **`TEM-04` (C-06; A-04):** se renombra «Lectura por agentes»; «Doble audiencia» queda como nombre anterior. El archivo conserva su nombre hasta el PR del libro, para no romper enlaces.
+- **`01-Mapa.md` (C-10):** `TEM-04` con su nombre nuevo y fila «Necesito… escribir la ayuda de un campo» hacia `TEM-05` §3.5.
+- **`README.md` del cuerpo (C-11):** tabla de contenido con el nombre nuevo de `TEM-04` y la sección nueva de `TEM-05`; versión `2.0.0-borrador.2`.
+- **Remisiones:** la navegación de `TEM-03` y `TEM-05` nombra el tema 04 por su nombre nuevo.
+
 ## 2026-11-02 (SDEI: vocabulario de audiencias y entrega)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ y tools/docs-guard/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.1, paso 2

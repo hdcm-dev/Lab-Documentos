@@ -329,4 +329,4 @@ se releyeron el 2026-10-27 para este tema.
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |
 
 Documento anterior: [Tema 02 — El ciclo documental](TEM-02-Ciclo-Documental.md). Siguiente documento:
-[Tema 04 — Doble audiencia](TEM-04-Doble-Audiencia.md).
+[Tema 04 — Lectura por agentes](TEM-04-Doble-Audiencia.md).

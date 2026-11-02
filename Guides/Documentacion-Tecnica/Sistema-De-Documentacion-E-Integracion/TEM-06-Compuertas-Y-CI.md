@@ -7,7 +7,7 @@ status: borrador
 origin: ia-assisted
 confidence: media
 owner: Lab-Documentos — guía del sistema documentador
-last_review: 2026-10-28
+last_review: 2026-11-02
 audience: [humano, agente, estudiante, docente, desarrollo, devops]
 traces: [MARCO-SDEI, MAPA-SDEI, TEM-SDEI-04, TEM-SDEI-05, ANX-SDEI-CQ, ANX-SDEI-VER, ANX-SDEI-REFERENCIAS]
 ---
@@ -145,6 +145,33 @@ positivo). `reflint` sobre guías viejas tiene línea de
 base alta (falla 4): bloquea sólo en un cuerpo nuevo. Un archivo está en un cuerpo nuevo si su carpeta, o una carpeta
 superior dentro del repositorio, tiene un `README.md` con `corpus_id` en el frontmatter. La frescura no depende
 del pull request (falla 2): avisa.
+
+### 1.3 Familias de controles de audiencias y ayuda
+
+La regla de entrega (`TEM-04`, §3.6) y la ayuda en el punto de uso (`TEM-05`, §3.5) traen controles nuevos. Todos
+nacen **avisando**: ninguno tiene todavía su par rojo/verde corrido (falla la condición 3), y ningún control bloquea
+sin su par. Pasan a bloquear de a uno, por el expediente de herramienta, cuando su par corre en `autoprueba` y su línea
+de base da 0. Los que corren en el producto o en su CI no son de `docs-guard`: la tabla dice dónde corre cada uno.
+
+| Control | Qué detecta | Dónde corre | Estado |
+| --- | --- | --- | --- |
+| `audiencia-vocabulario` | Un valor de `delivery:` fuera del registro de audiencias | `docs-guard` | Avisa |
+| `delivery-clave-cercana` | `audiencias:`, `audiences:` y variantes cercanas de `delivery:` | `docs-guard` | Avisa |
+| `nivel-vs-repo` | Nivel de acceso mayor que `producto` en un repositorio declarado público | `docs-guard` | Avisa |
+| `cruce-de-audiencia` | Enlace que sube en la jerarquía expandida de audiencias | `docs-guard` | Avisa |
+| `indice-sin-fuga` | Página no pública en un índice público o en `llms.txt` | `docs-guard` sobre la salida del build | Avisa |
+| `paquete-sin-fuga` | Clave o página no pública en el paquete instalable (APK, `_framework`), recursos compilados incluidos | Build del producto | Avisa |
+| `ampliacion-de-acceso` | Cambio que ensancha un nivel de acceso o una exposición de API | Guarda de merge, reserva H | Avisa |
+| `contrato-por-exposicion` | Endpoint sin grupo que cae en todos los documentos OpenAPI | Producto | Avisa |
+| `contexto-resuelve` | `contexto:` sin página, o página de contexto huérfana | `docs-guard` | Avisa |
+| `anclas` extendidas | Traza `muestra`, `valida` y `contiene` del microtexto a la ficha de la regla | `docs-guard` y producto | Avisa |
+| `traduccion-atrasada` | Traducción con versión menor que la de su fuente | `docs-guard` | Avisa siempre |
+| `anti-inyeccion-en-recursos` | AI-1 a AI-5 sobre los recursos de microtexto | `docs-guard` | Avisa |
+| Pruebas de entrega pareadas | 200 con contenido al autorizado; distinto de 200 y sin contenido al que no lo está (403 o 404, elegido y declarado) | CI del producto | Avisa |
+
+`traduccion-atrasada` avisa siempre porque una traducción atrasada no es un defecto del pull request que cambia la
+fuente (falla la condición 2). Ninguno de estos controles está implementado todavía: la tabla fija sus nombres para
+que el expediente de herramienta, el producto y este cuerpo hablen de lo mismo.
 
 ## Aplicación por escenario
 
@@ -319,6 +346,7 @@ Write the Docs (s. f.), GitLab (s. f., «Documentation testing» y «Documentati
 | --- | --- |
 | Hecho | El bloque del workflow se cita del commit `4750354`; la etiqueta de runner va como parámetro, porque la fija el caso por plataforma |
 | Hecho | La salida registrada del ensayo de §3.3 es de la corrida del 2026-10-27 en la rama del tema |
+| Hecho | Las trece familias de §1.3 y su estado «avisa» son las de la resolución 399 del expediente 0003 de DocsAsCode; los nombres están unificados y ninguno está implementado |
 | Criterio propio | Un cambio que llega desde un fork no se fusiona solo: alguien con permiso lo lleva a una rama del repositorio y abre el pull request desde ahí |
 
 Documento anterior: [Tema 05 — Ayuda al usuario final](TEM-05-Ayuda-Al-Usuario-Final.md). Siguiente documento:

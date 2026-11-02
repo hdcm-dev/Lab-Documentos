@@ -11,6 +11,8 @@
 #
 # Runner: macos-15 de GitHub (el repositorio es público: los minutos de macOS no se cobran). Si algún día se cambia
 # «runs-on» a un runner propio, este workflow NUNCA debe dispararse con pull_request (correría código ajeno en esa máquina).
+# Runner propio m4dev (VM efímera JIT): sólo por workflow_dispatch con runner=m4dev. Ahí no se baja Xcode: se fija el
+# de la imagen y se verifica XCODE_BUILD e IOS_RUNTIME_BUILD (corta si no coinciden). El job lleva la guarda de fork.
 #
 # Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
 # el .NET preinstalado) y se instala exactamente lo que dice la receta de versiones:
@@ -40,6 +42,14 @@ on:
       - '.github/workflows/framework-concept-ios.yml'
       - '!**.md'
   workflow_dispatch:
+    inputs:
+      runner:
+        description: "Dónde corre: github (macos-15 de GitHub) o m4dev (runner propio efímero, Xcode y runtime de la imagen)"
+        type: choice
+        options:
+          - github
+          - m4dev
+        default: github
 
 permissions:
   contents: read
@@ -64,8 +74,13 @@ env:
 
 jobs:
   ios-simulador:
-    if: github.repository == 'hdcm-dev/Lab-Documentos'
-    runs-on: macos-15
+    # Guarda de fork (Runner Arc): sólo este repositorio y nunca un PR que venga de un fork.
+    if: github.repository == 'hdcm-dev/Lab-Documentos' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    # Los push a main van al macos-15 de GitHub; m4dev sólo a mano (workflow_dispatch runner=m4dev) hasta que el PO
+    # cambie el defecto.
+    runs-on: ${{ fromJSON(inputs.runner == 'm4dev' && '["self-hosted","macOS","ARM64","m4dev","macos-15","xcode-26"]' || '"macos-15"') }}
+    env:
+      EN_M4DEV: ${{ inputs.runner == 'm4dev' }}
     timeout-minutes: 120
     steps:
       - name: Runner
@@ -106,7 +121,10 @@ jobs:
       #   - Alcance por rama: lo guardado en main lo leen todas las ramas; lo guardado en otra rama, sólo esa rama.
       #     Tras un cambio de Xcode conviene que la primera corrida sea sobre main.
       #   - En runner.temp, fuera del checkout: la ruta entra en la versión de la caché y no se mezcla con el código.
+      # En m4dev la imagen ya trae Xcode 26.0 (17A324) en /Applications/Xcode.app y el runtime iOS 26.0.1: no se
+      # borra ni se baja nada (ver «XCODE. Fijar el de la imagen (m4dev)»).
       - name: "XCODE. Restaurar el instalador desde la caché"
+        if: env.EN_M4DEV != 'true'
         id: cache-xip
         uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4 (node24)
         with:
@@ -114,7 +132,7 @@ jobs:
           key: xcode-xip-${{ env.XCODE_VERSION }}-${{ env.XCODE_FILE_INSTALLER }}-${{ env.XCODE_GOOGLE_FILE_INSTALLER_ID }}-${{ env.XCODE_XIP_SHA256 }}
 
       - name: "XCODE. Bajar el instalador de Google Drive (sin caché)"
-        if: steps.cache-xip.outputs.cache-hit != 'true'
+        if: env.EN_M4DEV != 'true' && steps.cache-xip.outputs.cache-hit != 'true'
         run: |
           set -uo pipefail
           pipx install "gdown==${GDOWN_VERSION}" || exit 1
@@ -135,6 +153,7 @@ jobs:
           ls -lh "$XIP"
 
       - name: "XCODE. Validar (SHA-256) y expandir el instalador"
+        if: env.EN_M4DEV != 'true'
         run: |
           set -euxo pipefail
           XIP="$RUNNER_TEMP/xcode-xip/$XCODE_FILE_INSTALLER"
@@ -153,13 +172,14 @@ jobs:
           df -h /
 
       - name: "XCODE. Guardar el instalador en la caché"
-        if: steps.cache-xip.outputs.cache-hit != 'true'
+        if: env.EN_M4DEV != 'true' && steps.cache-xip.outputs.cache-hit != 'true'
         uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4 (node24)
         with:
           path: ${{ runner.temp }}/xcode-xip
           key: ${{ steps.cache-xip.outputs.cache-primary-key }}
 
       - name: "XCODE. Instalar y fijar"
+        if: env.EN_M4DEV != 'true'
         run: |
           set -euxo pipefail
           rm -rf "$RUNNER_TEMP/xcode-xip"   # ya está guardado o vino de la caché: se libera el disco
@@ -175,13 +195,30 @@ jobs:
           echo "MD_APPLE_SDK_ROOT=$XCODE_PATH" >> "$GITHUB_ENV"
           df -h /
 
+      - name: "XCODE. Fijar el de la imagen (m4dev)"
+        if: env.EN_M4DEV == 'true'
+        run: |
+          set -euxo pipefail
+          XCODE_PATH=/Applications/Xcode.app
+          test -d "$XCODE_PATH"
+          sudo xcode-select --switch "$XCODE_PATH"
+          xcodebuild -version
+          xcodebuild -version | grep -q "Build version ${XCODE_BUILD}" || {
+            echo "::error title=Xcode::la imagen de m4dev no trae Xcode ${XCODE_BUILD}"; exit 1; }
+          xcrun simctl list runtimes | grep -qF -- "- ${IOS_RUNTIME_BUILD})" || {
+            echo "::error title=Simulador::la imagen de m4dev no trae el runtime iOS ${IOS_RUNTIME_BUILD}"; exit 1; }
+          echo "Xcode de la imagen de m4dev (no se bajó)" > "$EVIDENCIA/xcode-xip.sha256"
+          echo "gdown no se usa en m4dev" > "$EVIDENCIA/gdown-entorno.txt"
+          echo "MD_APPLE_SDK_ROOT=$XCODE_PATH" >> "$GITHUB_ENV"
+
       # ── SIMULADOR ────────────────────────────────────────────────────────────────────────────────────────────
       - name: "SIMULADOR. Runtime iOS fijo y dispositivo"
         run: |
           set -euxo pipefail
           # El servicio de simuladores quedó levantado con el Xcode anterior de la imagen: se reinicia para que tome
           # el fijado (si no, «simctl bootstatus» queda colgado).
-          sudo killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
+          # En m4dev no se cambió de Xcode: no hace falta.
+          [ "$EN_M4DEV" = true ] || sudo killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
           xcrun simctl list runtimes
           if ! xcrun simctl list runtimes | grep -q "iOS ${IOS_RUNTIME} (.* - ${IOS_RUNTIME_BUILD})"; then
             sudo xcodebuild -downloadPlatform iOS -buildVersion "$IOS_RUNTIME_BUILD"
@@ -190,16 +227,36 @@ jobs:
           RUNTIME_ID="$(xcrun simctl list runtimes | grep -- "- ${IOS_RUNTIME_BUILD})" | grep -oE 'com\.apple\.CoreSimulator\.SimRuntime\.iOS-[0-9-]+' | head -1)"
           test -n "$RUNTIME_ID"
           UDID="$(xcrun simctl create fc-humo "$SIM_DEVICE_TYPE" "$RUNTIME_ID")"
-          xcrun simctl boot "$UDID"
-          perl -e 'alarm 600; exec @ARGV' xcrun simctl bootstatus "$UDID"
+          # bootstatus a veces queda colgado en el primer arranque (corrida 41505370615: 10 min sin respuesta). Hasta
+          # tres intentos de 5 min: si no arranca, se apaga, se borra el dispositivo y se vuelve a arrancar.
+          for intento in 1 2 3; do
+            xcrun simctl boot "$UDID" || true
+            if perl -e 'alarm 300; exec @ARGV' xcrun simctl bootstatus "$UDID"; then break; fi
+            echo "::warning title=Simulador::bootstatus sin respuesta en el intento ${intento}; se reinicia el dispositivo"
+            [ "$intento" -lt 3 ] || exit 1
+            xcrun simctl shutdown "$UDID" || true
+            xcrun simctl erase "$UDID" || true
+          done
           echo "SIM_UDID=$UDID" >> "$GITHUB_ENV"
 
       # ── DOTNET ───────────────────────────────────────────────────────────────────────────────────────────────
       - name: "DOTNET. SDK por versión exacta"
         run: |
           set -euxo pipefail
-          # El .NET de la imagen se quita del camino: sólo queda el que se instala acá.
-          sudo rm -rf "$HOME/.dotnet" /usr/local/share/dotnet
+          if [ "$EN_M4DEV" = true ]; then
+            # m4dev: no se borra nada de la imagen. Si su .NET (en $HOME/.dotnet, escribible para los workloads) ya
+            # tiene el SDK de global.json se usa; si no, se instala ahí mismo con el dotnet-install fijado.
+            if [ -x "$HOME/.dotnet/dotnet" ] && "$HOME/.dotnet/dotnet" --list-sdks | grep -q "^${DOTNET_VERSION} "; then
+              echo "SDK ${DOTNET_VERSION} de la imagen de m4dev" | tee "$EVIDENCIA/dotnet-install.sh.sha256"
+              echo "DOTNET_ROOT=$HOME/.dotnet" >> "$GITHUB_ENV"
+              echo "$HOME/.dotnet" >> "$GITHUB_PATH"
+              exit 0
+            fi
+            echo "La imagen de m4dev no trae el SDK ${DOTNET_VERSION} en \$HOME/.dotnet:"; (command -v dotnet && dotnet --list-sdks) || true
+          else
+            # El .NET de la imagen se quita del camino: sólo queda el que se instala acá.
+            sudo rm -rf "$HOME/.dotnet" /usr/local/share/dotnet
+          fi
           curl -fsSL "$DOTNET_INSTALL_SCRIPT_URL" -o "$RUNNER_TEMP/dotnet-install.sh"
           shasum -a 256 "$RUNNER_TEMP/dotnet-install.sh" | tee "$EVIDENCIA/dotnet-install.sh.sha256"
           echo "${DOTNET_INSTALL_SCRIPT_SHA256}  $RUNNER_TEMP/dotnet-install.sh" | shasum -a 256 -c -

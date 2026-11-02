@@ -13,23 +13,16 @@
 # runner propio con la etiqueta macos15 (VM de la Mac mini) si el PO lo decide: basta cambiar «runs-on».
 #
 # Cadena de herramientas: TODO fijo, nada de «la última» (regla del PO). Se borra lo que trae la imagen (otros Xcode y
-# el .NET preinstalado) y se instala exactamente:
-#   macOS 15 (imagen macos-15) · Xcode 26.0 · runtime del simulador iOS 26.0 · SDK .NET 10.0.400 (el de global.json de
-#   la demo, instalado por versión exacta) · workloads ios 26.0.11017 y maui 10.0.0 (manifiestos de la banda 10.0.100)
-# Es la combinación medida en la VM el 2026-11-01. Por qué los workloads van por archivo de reversión y no por un
-# «workload set»: ningún set de la banda 10.0.400 (10.0.400 a 10.0.403) trae ios 26.0; traen 26.5, 27.0 o 27.1, que
-# exigen un Xcode más nuevo («requires Xcode 27.1»). El único set con ios 26.0.11017 es el 10.0.100. El archivo de
-# reversión fija los manifiestos uno por uno y funciona con el SDK 10.0.400 porque los manifiestos de toda la familia
-# 10.0 son de la banda 10.0.100. Así no se toca global.json (que también compila Android).
-#
-# Receta de instalación: pendiente de la mesa «receta única» (un mismo script para este workflow, la VM del runner y el
-# escenario de agente). Mientras tanto los pasos van en bloques autocontenidos (XCODE, SIMULADOR, DOTNET, WORKLOADS),
-# cada uno con sus variables en «env», para poder extraerlos a un script sin rediseñar.
-#
+# el .NET preinstalado) y se instala exactamente lo que dice la receta de versiones:
+#   Concepts/Framework-Concept/Demo/ci/receta/ios/versiones.env (una sola fuente para este workflow, la VM del runner y
+#   el escenario de agente; ahí está también por qué los workloads van por archivo de reversión). El paso RECETA la
+#   carga a $GITHUB_ENV y ci/receta/ios/verificar.sh compara lo instalado contra ella antes de compilar.
+
 # Xcode viene del instalador en Google Drive que usa la referencia (Apple no publica Xcode sin cuenta). Riesgo: el
 # archivo depende de un tercero y de la cuota de descargas de Drive; por eso su SHA-256 está fijado (XCODE_XIP_SHA256) y
 # se COMPRUEBA antes de expandirlo (corta si no coincide), y después se verifica la compilación de Xcode (XCODE_BUILD).
-# Las dependencias de gdown no van fijadas por hash: su versión queda en el manifiesto y el .xip lo cubre el SHA-256.
+# El .xip se guarda en la caché de GitHub Actions (ver el bloque XCODE) para no depender de la cuota de Drive.
+# Las dependencias de gdown no van fijadas por hash: sus versiones quedan en el manifiesto y el .xip lo cubre el SHA-256.
 #
 # La imagen macos-15 NO es fija: GitHub la actualiza (versión menor de macOS, runtimes, CoreSimulator). El manifiesto
 # registra ImageOS/ImageVersion. El runtime iOS 26.0.1 se toma de la imagen; la rama que lo baja si falta
@@ -41,6 +34,7 @@ on:
   push:
     branches:
       - main
+      - fc/ci-ios   # TEMPORAL: prueba de la caché; se quita antes de fusionar
     paths:
       - 'Concepts/Framework-Concept/Demo/**'
       - '.github/workflows/framework-concept-ios.yml'
@@ -63,23 +57,6 @@ env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "1"
   CI: "true"
 
-  # XCODE
-  XCODE_VERSION: '26.0'
-  XCODE_BUILD: '17A324'
-  XCODE_FILE_INSTALLER: 'Xcode_26_Universal.xip'
-  XCODE_XIP_SHA256: '848f8de2c9f91ef2dad4eec8ff88655222a08f3eb32c4083432c51ae2480a70f'
-  XCODE_GOOGLE_FILE_INSTALLER_ID: '1GoDmCUBOMKM5nnXCXxxnAgoKpSwZvaMP'
-  GDOWN_VERSION: '5.2.0'
-  # SIMULADOR
-  IOS_RUNTIME: '26.0'
-  IOS_RUNTIME_BUILD: '23A8464'   # iOS 26.0.1; la imagen macos-15 ya lo trae, si no se baja por este número
-  SIM_DEVICE_TYPE: 'com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro'
-  # DOTNET (el script de instalación, fijado por commit de dotnet/install-scripts)
-  DOTNET_VERSION: '10.0.400'
-  DOTNET_INSTALL_SCRIPT_URL: 'https://raw.githubusercontent.com/dotnet/install-scripts/e5cf1dd2d1540ed05ac84f8eb8c5cdec2807621e/src/dotnet-install.sh'
-  # WORKLOADS (manifiestos fijos, banda 10.0.100)
-  WORKLOAD_IOS_MANIFEST: '26.0.11017/10.0.100'
-  WORKLOAD_MAUI_MANIFEST: '10.0.0/10.0.100'
   # BUILD
   CONFIGURACION: Release
   RID: iossimulator-arm64
@@ -99,9 +76,14 @@ jobs:
           sw_vers
           df -h /
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2 (node24)
         with:
           persist-credentials: false
+
+      - name: "RECETA. Versiones fijas a $GITHUB_ENV"
+        run: |
+          set -euo pipefail
+          grep -E '^[A-Z_][A-Z0-9_]*=' "$DEMO/ci/receta/ios/versiones.env" | tee -a "$GITHUB_ENV"
 
       - name: Carpeta de evidencia
         run: |
@@ -110,19 +92,77 @@ jobs:
           echo "EVIDENCIA=$EVIDENCIA" >> "$GITHUB_ENV"
 
       # ── XCODE ────────────────────────────────────────────────────────────────────────────────────────────────
-      - name: "XCODE. Descargar, instalar y fijar"
+      # Caché del instalador .xip (actions/cache). El Xcode sigue siendo el .xip FIJO de Drive, no el de la imagen; la
+      # caché sólo evita depender de la cuota de descargas de Drive («Too many users have viewed or downloaded…»).
+      #   - Clave: XCODE_VERSION + XCODE_FILE_INSTALLER + XCODE_GOOGLE_FILE_INSTALLER_ID + XCODE_XIP_SHA256. Si cambia
+      #     cualquiera, es otra entrada y se vuelve a bajar. Sin restore-keys, a propósito: una coincidencia parcial
+      #     traería otro Xcode.
+      #   - Venga de Drive o de la caché, el .xip se valida con el SHA-256 exacto antes de expandirlo; se guarda sólo
+      #     después de validarlo y expandirlo (nunca se cachea una página de error de Drive).
+      #   - Tope de GitHub: 10 GB de caché por repositorio (el .xip pesa ~2,6 GB: caben tres o cuatro entradas); pasado
+      #     el tope borra las menos usadas, y borra toda entrada que no se lee en 7 días. En ambos casos la corrida
+      #     siguiente baja de Drive y la vuelve a llenar.
+      #   - Alcance por rama: lo guardado en main lo leen todas las ramas; lo guardado en otra rama, sólo esa rama.
+      #     Tras un cambio de Xcode conviene que la primera corrida sea sobre main.
+      #   - En runner.temp, fuera del checkout: la ruta entra en la versión de la caché y no se mezcla con el código.
+      - name: "XCODE. Restaurar el instalador desde la caché"
+        id: cache-xip
+        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4 (node24)
+        with:
+          path: ${{ runner.temp }}/xcode-xip
+          key: xcode-xip-${{ env.XCODE_VERSION }}-${{ env.XCODE_FILE_INSTALLER }}-${{ env.XCODE_GOOGLE_FILE_INSTALLER_ID }}-${{ env.XCODE_XIP_SHA256 }}
+
+      - name: "XCODE. Bajar el instalador de Google Drive (sin caché)"
+        if: steps.cache-xip.outputs.cache-hit != 'true'
+        run: |
+          set -uo pipefail
+          pipx install "gdown==${GDOWN_VERSION}" || exit 1
+          { python3 --version; pipx --version; gdown --version; pipx runpip gdown freeze; } > "$EVIDENCIA/gdown-entorno.txt" 2>&1
+          XIP="$RUNNER_TEMP/xcode-xip/$XCODE_FILE_INSTALLER"
+          mkdir -p "$(dirname "$XIP")"
+          echo "Caché del Xcode: no está (clave ${{ steps.cache-xip.outputs.cache-primary-key }}); se baja de Google Drive"
+          rc=0
+          gdown "$XCODE_GOOGLE_FILE_INSTALLER_ID" -O "$XIP" 2>&1 | tee "$RUNNER_TEMP/gdown.log" || rc=$?
+          if [ "$rc" -ne 0 ] || [ ! -s "$XIP" ]; then
+            if grep -q "Too many users have viewed or downloaded" "$RUNNER_TEMP/gdown.log"; then
+              echo "::error title=Xcode::Drive sin cuota y sin caché del Xcode (Google Drive limitó la descarga de ${XCODE_FILE_INSTALLER}; reintentar en hasta 24 h)"
+            else
+              echo "::error title=Xcode::Drive no entregó ${XCODE_FILE_INSTALLER} y no hay caché del Xcode (gdown salió con $rc; ver el log de arriba)"
+            fi
+            exit 1
+          fi
+          ls -lh "$XIP"
+
+      - name: "XCODE. Validar (SHA-256) y expandir el instalador"
         run: |
           set -euxo pipefail
-          pipx install "gdown==${GDOWN_VERSION}"
-          cd "$RUNNER_TEMP"
-          gdown "$XCODE_GOOGLE_FILE_INSTALLER_ID" -O "$XCODE_FILE_INSTALLER"
-          shasum -a 256 "$XCODE_FILE_INSTALLER" | tee "$EVIDENCIA/xcode-xip.sha256"
-          echo "${XCODE_XIP_SHA256}  ${XCODE_FILE_INSTALLER}" | shasum -a 256 -c - || { echo "ERROR: el instalador de Xcode no es el fijado"; exit 1; }
-          { python3 --version; pipx --version; pipx runpip gdown freeze; } > "$EVIDENCIA/gdown-entorno.txt" 2>&1 || true
+          XIP="$RUNNER_TEMP/xcode-xip/$XCODE_FILE_INSTALLER"
+          ORIGEN="${{ steps.cache-xip.outputs.cache-hit == 'true' && 'caché' || 'Google Drive' }}"
+          echo "Instalador desde ${ORIGEN}: $(stat -f%z "$XIP") bytes"
+          [ -s "$EVIDENCIA/gdown-entorno.txt" ] || echo "gdown no se instaló: el .xip vino de la caché" > "$EVIDENCIA/gdown-entorno.txt"
+          ( cd "$(dirname "$XIP")" && shasum -a 256 "$XCODE_FILE_INSTALLER" ) | tee "$EVIDENCIA/xcode-xip.sha256"
+          echo "origen: $ORIGEN" >> "$EVIDENCIA/xcode-xip.sha256"
+          ( cd "$(dirname "$XIP")" && echo "${XCODE_XIP_SHA256}  ${XCODE_FILE_INSTALLER}" | shasum -a 256 -c - ) || {
+            echo "::error title=Xcode::El instalador desde ${ORIGEN} no es el fijado (SHA-256 distinto de XCODE_XIP_SHA256)"; exit 1; }
           # Lo preinstalado se borra antes de expandir: libera espacio y asegura que no quede otro Xcode a mano.
           sudo rm -rf /Applications/Xcode*.app
-          xip --expand "$XCODE_FILE_INSTALLER"
-          rm -f "$XCODE_FILE_INSTALLER"
+          cd "$RUNNER_TEMP"
+          xip --expand "$XIP"
+          test -d Xcode.app
+          df -h /
+
+      - name: "XCODE. Guardar el instalador en la caché"
+        if: steps.cache-xip.outputs.cache-hit != 'true'
+        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4 (node24)
+        with:
+          path: ${{ runner.temp }}/xcode-xip
+          key: ${{ steps.cache-xip.outputs.cache-primary-key }}
+
+      - name: "XCODE. Instalar y fijar"
+        run: |
+          set -euxo pipefail
+          rm -rf "$RUNNER_TEMP/xcode-xip"   # ya está guardado o vino de la caché: se libera el disco
+          cd "$RUNNER_TEMP"
           XCODE_PATH="/Applications/Xcode_${XCODE_VERSION}.app"
           sudo mv Xcode.app "$XCODE_PATH"
           sudo ln -s "$XCODE_PATH" /Applications/Xcode.app
@@ -181,11 +221,16 @@ jobs:
           dotnet workload list | grep -qE "^ios +${WORKLOAD_IOS_MANIFEST} " || { echo "ERROR: el workload ios no es ${WORKLOAD_IOS_MANIFEST}"; exit 1; }
           dotnet workload list | grep -qE "^maui-ios +${WORKLOAD_MAUI_MANIFEST} " || { echo "ERROR: el workload maui-ios no es ${WORKLOAD_MAUI_MANIFEST}"; exit 1; }
 
+      - name: "RECETA. Verificar lo instalado contra versiones.env"
+        run: bash "$DEMO/ci/receta/ios/verificar.sh" | tee "$EVIDENCIA/receta-verificar.txt"
+
       - name: "MANIFIESTO. Traza de herramientas"
         run: |
           {
             echo "# Herramientas de la corrida ${GITHUB_RUN_ID} (${GITHUB_SHA})"
-            echo "## Imagen del runner (no fija)"; echo "${ImageOS:-?} ${ImageVersion:-?}"
+            echo "## Imagen del runner (no fija)"; echo "ImageOS=${ImageOS:-?} ImageVersion=${ImageVersion:-?}"
+            echo "## Receta (versiones.env)"; grep -E '^[A-Z_]+=' "$DEMO/ci/receta/ios/versiones.env"
+            echo "## Verificación de la receta"; cat "$EVIDENCIA/receta-verificar.txt"
             echo "## sw_vers"; sw_vers
             echo "## uname"; uname -a
             echo "## xcode-select -p"; xcode-select -p
@@ -194,7 +239,7 @@ jobs:
             echo "## xcrun simctl list runtimes"; xcrun simctl list runtimes
             echo "## Instalador de Xcode (SHA-256)"; cat "$EVIDENCIA/xcode-xip.sha256"
             echo "## dotnet-install.sh (SHA-256)"; cat "$EVIDENCIA/dotnet-install.sh.sha256"
-            echo "## Entorno de gdown"; cat "$EVIDENCIA/gdown-entorno.txt"
+            echo "## Entorno de gdown (python, pipx, gdown y sus dependencias)"; cat "$EVIDENCIA/gdown-entorno.txt"
             echo "## dotnet --info"; (cd "$DEMO" && dotnet --info)
             echo "## dotnet workload list"; dotnet workload list
             echo "## global.json"; cat "$DEMO/global.json"
@@ -255,7 +300,7 @@ jobs:
 
       - name: Subir evidencia
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0 (node24)
         with:
           name: framework-concept-ios-${{ github.run_id }}
           path: ${{ runner.temp }}/evidencia/

@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 *.env
+# Excepción: la receta de versiones de iOS no lleva secretos (sólo versiones y hashes públicos).
+!Concepts/Framework-Concept/Demo/ci/receta/ios/versiones.env
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

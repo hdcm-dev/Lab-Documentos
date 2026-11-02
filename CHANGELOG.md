@@ -20,6 +20,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **`01-Mapa.md` (C-10):** `TEM-04` con su nombre nuevo y fila «Necesito… escribir la ayuda de un campo» hacia `TEM-05` §3.5.
 - **`README.md` del cuerpo (C-11):** tabla de contenido con el nombre nuevo de `TEM-04` y la sección nueva de `TEM-05`; versión `2.0.0-borrador.2`.
 - **Remisiones:** la navegación de `TEM-03` y `TEM-05` nombra el tema 04 por su nombre nuevo.
+- **`TEM-05` (C-07; A-05 a A-09; P-15 intacto):** `roles` pasa a la regla de entrega con jerarquía (`incluye:`), tipo de alcance, superficies, cuatro niveles con su punto de aplicación y la prueba pareada, y la API por exposición; se reescriben la definición de «Rol» (ahora «Audiencia y regla de entrega») y la columna de la tabla por escenario, sin tocar a qué traza `ESC-SDEI-3`; título, diagrama, preguntas, criterios y plantilla hablan de regla de entrega; `agente` sale de `audience` (A-04); la asociación con `aria-describedby` ya no se atribuye a criterios de WCAG sin entrada en las referencias.
 
 ## 2026-11-02 (SDEI: vocabulario de audiencias y entrega)
 

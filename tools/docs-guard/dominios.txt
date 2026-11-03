@@ -55,3 +55,11 @@ cockburn.us                      # arquitectura hexagonal (fuente original)
 adr.github.io                    # formatos de ADR
 fb.com                           # anuncios oficiales de Meta sobre Llama
 ollama-embed                     # nombre de servicio del compose de la demo (red interna de contenedores)
+# Guía 16 — sección Docs as Code (§16.8): fuentes de la práctica, fichas, procedencia y entrega
+www.writethedocs.org             # guía «Docs as code» de la comunidad Write the Docs
+www.docslikecode.com             # sitio del libro «Docs Like Code» de Anne Gentle
+abseil.io                        # edición web de «Software Engineering at Google» (capítulo Documentation)
+papers.nips.cc                   # actas de NeurIPS (Sculley et al., 2015)
+www.w3.org                       # recomendación W3C PROV-O (procedencia)
+doi.org                          # resolutor DOI de artículos citados (Saltzer y Schroeder, Clopper y Pearson, Biggs, Sweller)
+martinfowler.com                 # artículo «Feature Toggles» de Pete Hodgson

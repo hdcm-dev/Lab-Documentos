@@ -57,7 +57,7 @@ concurrency:
 jobs:
   docs-guard:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: [self-hosted, ci-hdcm]
     timeout-minutes: 10
     env:
       RUTA: ${{ inputs.ruta || 'Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion' }}

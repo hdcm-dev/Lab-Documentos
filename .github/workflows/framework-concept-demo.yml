@@ -4,12 +4,12 @@
 #   P6.2  un solo workflow de PR, SIN «paths» en el «on:»: el alcance lo decide un paso del job «alcance».
 #   P6.3  «fw-ok» es el único check requerido de main, y es estricto: un job omitido cuenta como rojo, salvo
 #         la omisión declarada (el PR no toca la demo), que se informa con su motivo.
-#   P6.4  runs-on [self-hosted, i7infra-dev] con guarda de mismo repositorio (un PR desde un fork no corre en
+#   P6.4  runs-on [self-hosted, ci-hdcm] con guarda de mismo repositorio (un PR desde un fork no corre en
 #         el runner propio), permissions: contents: read y ningún secreto.
 #   P8    la compuerta mínima: build sin MAUI con avisos como error, Core.Tests, Update.Tests, Gate.Tests,
 #         publish y empaquetado del contenido, APK del cascarón.
 #
-# Los runners con la etiqueta i7infra-dev (hpdev-runner-dev; antes i7infra-runner-dev) no tienen docker.sock ni KVM:
+# El runner propio (etiqueta ci-hdcm) no tiene docker.sock ni KVM:
 # los pasos corren dotnet directo, no contenedores.
 # Trae SDK 10.0.402, maui-android 10.0.110 y JDK 21 (relevamiento R2 §5). El SDK lo fija global.json de la
 # demo (10.0.400 con rollForward latestPatch: acepta 10.0.402); la versión de MAUI la fija MauiVersion en
@@ -40,7 +40,7 @@ jobs:
   # ¿El PR toca la demo? Se decide acá (P6.2) para que un PR de Guides/ no espere la compilación de Android.
   alcance:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: [self-hosted, ci-hdcm]
     timeout-minutes: 5
     outputs:
       demo: ${{ steps.decidir.outputs.demo }}
@@ -85,7 +85,7 @@ jobs:
   compuerta:
     needs: alcance
     if: needs.alcance.outputs.demo == 'true'
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: [self-hosted, ci-hdcm]
     timeout-minutes: 30
     defaults:
       run:
@@ -146,7 +146,7 @@ jobs:
   apk:
     needs: [alcance, compuerta]
     if: needs.alcance.outputs.demo == 'true'
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: [self-hosted, ci-hdcm]
     timeout-minutes: 30
     defaults:
       run:
@@ -166,7 +166,7 @@ jobs:
   fw-ok:
     needs: [alcance, compuerta, apk]
     if: always()
-    runs-on: [self-hosted, i7infra-dev]
+    runs-on: [self-hosted, ci-hdcm]
     timeout-minutes: 5
     steps:
       - name: Agregador estricto

@@ -2,13 +2,13 @@
 doc_id: GUIA-NET-IA
 doc_type: guia-de-estudio
 title: Integración de una capa de IA en aplicaciones .NET — guía de estudio y de criterios
-version: 1.0.0
+version: 1.1.0
 status: vigente
 origin: ia-assisted
 confidence: media
 confidence_nota: alta en lo ejecutado y registrado; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
-last_review: 2026-11-02
+last_review: 2026-11-03
 tope_palabras: 60000
 audience: [desarrollo, analista, devops, qa]
 audience_nota: desarrolladores .NET que no trabajaron con modelos, arquitectos o líderes técnicos, operadores, responsables de datos y seguridad
@@ -21,7 +21,7 @@ related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md, Conoci
 
 # Integración de una capa de IA en aplicaciones .NET
 
-> **Versión** 1.0.0 · **Fecha** 2026-11-02 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
+> **Versión** 1.1.0 · **Fecha** 2026-11-03 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
 
 Libro de estudio para sumar una capa de IA a una aplicación .NET que ya existe: dónde vive la llamada al modelo, qué sabe el modelo y qué puede hacer, cómo se prueba, se asegura y se opera, y qué decisiones de arquitectura quedan escritas. Índice general: [0.0](#c0-0).
 
@@ -62,7 +62,7 @@ Figura 0.1. Orden de lectura.
 - [Parte IV · Conocimiento](#parte-4): [7 · Estrategias de conocimiento](#c7) · [8 · RAG en .NET](#c8)
 - [Parte V · Agencia](#parte-5): [9 · Herramientas, agentes y orquestación](#c9) · [10 · Métodos y marcos comparados](#c10)
 - [Parte VI · Producción](#parte-6): [11 · Probar y evaluar](#c11) · [12 · Asegurar](#c12) · [13 · Operar y desplegar](#c13)
-- [Parte VII · Integración](#parte-7): [14 · Decisiones de arquitectura](#c14) · [15 · La demo](#c15) · [16 · Caso aplicado](#c16)
+- [Parte VII · Integración](#parte-7): [14 · Decisiones de arquitectura](#c14) · [15 · La demo](#c15) · [16 · Caso aplicado](#c16) (con [16.8 · Docs as Code dentro de una capa de IA](#c16-8))
 - [Cierre](#cierre): [17 · Autoevaluación](#c17)
 - Anexos: [A · Plantillas](#anexo-a) · [B · Listas por actor](#anexo-b) · [C · Glosario](#anexo-c) · [D · Referencias](#anexo-d) · [E · Laboratorio](#anexo-e) · [F · Versiones](#anexo-f) · [G · Lecturas](#anexo-g) · [H · Procedencia](#anexo-h)
 
@@ -3209,6 +3209,162 @@ Cuando una pista necesite un dato que el pedido no trae y que un caso de uso de 
 
 El caso se especificó aplicando sólo el borrador del [Conocimiento de especificación](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md), sin abrir este libro, para medir si el Conocimiento alcanza solo ([0.6](#c0-6)). Lo que faltó volvió al Conocimiento como regla: la rama «en parte» del árbol de decisión, la escalera de conocimiento, el patrón filtro posterior más plantilla, LLM09 en las capacidades que explican, la minimización del pedido (R-02) y «un filtro garantiza sólo lo que mide» (R-04). El Conocimiento cita el caso como [Caso G] en su §13; este capítulo es el recorrido inverso: del caso a los capítulos que lo explican.
 
+<a id="c16-8"></a>
+### 16.8 Docs as Code dentro de una capa de IA
+
+Esta sección responde una pregunta del PO: cómo se integra, en la industria, la práctica de Docs as Code dentro de una capa de IA. La respuesta es la posición que fijó la mesa conjunta del expediente 0004 (veredicto del jurado, `JURADO-VEREDICTO.md`), que vive en Lab-Documentos.Documentacion, en `PROMPTs/Guides/16-IA-Layer/OUTPUTs/Expedientes/0004-Debate-DocsAsCode-En-La-Capa-De-IA/`. Se aplica a dos casos: Lab-Geometria ([§16.1](#c16-1)), que es público, y `{servicio-privado}`, un servicio privado que el libro nombra sólo por alias y del que no da topología, modelos ni defectos abiertos.
+
+<a id="c16-8-1"></a>
+#### 16.8.1 Qué es Docs as Code y dónde termina
+
+**Definición.** Docs as Code es tratar la documentación como software: se escribe en texto plano, vive en el mismo repositorio que el código, cambia por pull request con revisión y pasa por la integración continua con pruebas propias. La comunidad Write the Docs la define como una filosofía en la que la documentación se crea «with the same tools» (con las mismas herramientas) que el código: control de versiones, marcado en texto plano y revisión de código [REF-214]. Gentle la desarrolla como flujo de trabajo de un equipo de documentación [REF-215], y el capítulo «Documentation» de *Software Engineering at Google* sostiene que la documentación funciona mejor cuando tiene dueño, control de fuentes, revisión y seguimiento de errores, como el código [REF-216].
+
+> **Comentario.** La idea no es nueva ni es de IA. Lo que la vuelve relevante acá es que una capa de IA está hecha, en buena parte, de *texto que gobierna conducta*: un prompt de sistema, una rúbrica, una plantilla de respaldo. Ese texto cambia lo que hace el programa igual que una línea de C#, y por eso se le aplica la misma disciplina.
+
+**Lo que la mesa no encontró.** La mesa no encontró una metodología con nombre que integre Docs as Code «dentro» de una capa de IA, y ninguna norma nombra Docs as Code. Eso es lo que probó su búsqueda, no una prueba de que no exista. Lo que sí existe son los marcos que piden **información documentada y controlada** del sistema de IA: ISO/IEC 42001:2023 [REF-221] y los dos documentos de NIST que el libro ya usa, el AI RMF 1.0 [REF-05] y el perfil de IA generativa [REF-06].
+
+> **Comentario.** ISO/IEC 42001 es una norma de *sistema de gestión*: no dice cómo escribir un prompt, sino que la información documentada del sistema se identifique, se revise, se apruebe, tenga control de cambios y se conserve. Un repositorio con PR cumple casi todo eso sin costo extra: el commit da versión y autor, el PR da revisión y la fusión da aprobación. Por eso la industria llega a Docs as Code aunque ninguna norma lo nombre. Criterio del veredicto: se documenta el *sistema*, no sólo el modelo.
+
+**El principio.** La práctica observable es la extensión de un solo principio: *si es texto que gobierna el sistema, va al repo, por PR, con prueba*. Donde la prueba no puede decir nada, termina Docs as Code ([16.8.3](#c16-8-3)).
+
+<a id="c16-8-2"></a>
+#### 16.8.2 Las tres puertas
+
+El veredicto describe tres puertas por las que Docs as Code entra a una capa de IA. Votó tres puertas 2 a 1. El voto en disidencia lee la tercera como un caso de la primera, aplicado a otro autor.
+
+```mermaid
+flowchart LR
+  subgraph REPO["Repositorio: PR, revisión y CI"]
+    P1["Puerta 1<br/>artefactos de la capa<br/>prompt, banco, métrica, ADR, ficha"]
+    P2["Puerta 2<br/>corpus que lee la IA<br/>entrada no confiable"]
+    P3["Puerta 3<br/>lo que escribe la IA<br/>borrador con procedencia"]
+  end
+  P1 --> CAPA["Capa de IA"]
+  P2 --> CAPA
+  CAPA --> P3
+  P3 -- "revisión humana" --> P1
+  CAPA -. "fuera de Docs as Code" .-> RUN["Conducta en ejecución,<br/>permiso, verdad,<br/>puesta en uso"]
+```
+
+Figura 16.1. Las tres puertas y lo que queda afuera.
+
+**Puerta 1 · Gobierno de los artefactos de la capa.** Se tratan como código el prompt de sistema y las plantillas de respaldo, el banco de evaluación, la rúbrica, la definición de cada métrica con su versión, el ADR con su condición «deja de valer si» y la ficha del sistema por capacidad.
+
+- *Fichas de modelo y de datos.* Mitchell y otros proponen las *model cards*: un documento corto que acompaña a un modelo con su uso previsto, sus límites y su evaluación desagregada [REF-217]. Gebru y otros proponen las *datasheets for datasets*: motivación, composición, recolección y usos recomendados de un conjunto de datos [REF-218]. Arnold y otros proponen las *FactSheets*, una declaración del proveedor sobre un servicio de IA completo [REF-219]. **Por qué importa:** las tres fijan qué campos tiene que tener la documentación de un componente de IA. **Cómo se ve:** la ficha de capacidad que propone la mesa toma de Mitchell sólo los campos que aplican (uso previsto, límites, evaluación) y suma «deja de valer si»; la datasheet sirve de molde para describir el banco.
+- *Decisiones.* El ADR de Nygard [REF-184] ya es la forma del [capítulo 14](#c14). **Cómo se ve:** en Lab-Geometria, el ADR de la carpeta `ai-layer/` de la especificación.
+- *Deuda alrededor del modelo.* Sculley y otros muestran que, en un sistema con aprendizaje automático, el modelo es una parte chica y la deuda se acumula en la configuración, los datos y las dependencias que lo rodean [REF-220]. **Por qué importa:** el prompt y las opciones son esa configuración; si no están versionados, nadie sabe qué cambió cuando cambia una respuesta.
+
+> **Comentario.** En los dos proyectos la puerta 1 ya tiene una prueba concreta: *el prompt del código es igual al de la ficha*. En Lab-Geometria el prompt vive como recurso del binario y su ficha está en la especificación de `ai-layer/`; en `{servicio-privado}`, según su sesión, la prueba ya existe. Es determinista, no tiene falsos positivos y se corre sin modelo: es el primer control que la mesa manda a «bloquea».
+
+**Puerta 2 · La documentación como fuente no confiable de la IA.** Lo que el corpus entrega a un consumidor máquina (un índice de recuperación, un `llms.txt`, un `AGENTS.md`, un recurso de un servidor MCP) es **un destino de publicación más**. Hereda el filtro de entrega por audiencia que ya tiene la publicación para personas, y su contenido es **entrada no confiable** para el modelo.
+
+- *`llms.txt`.* Howard propone un archivo Markdown en la raíz de un sitio que resume para un modelo qué hay y dónde [REF-222]. *`AGENTS.md`* es un archivo Markdown abierto con instrucciones del proyecto para agentes de programación, separado del README para personas [REF-223]. **Por qué importa:** los dos son formatos para que una máquina lea documentación; ninguno es control de acceso.
+- *MCP.* La especificación del protocolo define recursos y herramientas que un servidor expone a un cliente con modelo [REF-38]; el libro lo trata en [§9.9](#c9-9).
+- *RAG.* Lewis y otros definen la recuperación aumentada: el modelo responde con fragmentos recuperados de un corpus [REF-85]; el libro la desarrolla en el [capítulo 8](#c8).
+- *Inyección.* OWASP LLM01 describe la inyección indirecta: instrucciones escondidas en contenido que el modelo lee [REF-160]. **Por qué importa:** un documento del corpus es justamente ese contenido. Un párrafo de ayuda puede traer «ignorá lo anterior».
+
+> **Comentario.** La regla de la mesa es que el filtro por audiencia vive en un solo lugar, el sistema documentador, que genera un corpus por audiencia con su huella; la capa no filtra de nuevo, sino que verifica que la huella coincida con la audiencia de la sesión y rechaza si no. **Cómo se ve:** docs-guard ya corre los controles anti-inyección AI-1 a AI-5 sobre el corpus de Lab-Documentos. Pero en Lab-Geometria y en `{servicio-privado}` **no hay recuperación de documentos**: Geometría responde sin herramientas y el servicio privado lee cifras con herramientas, no documentos. La puerta 2 queda diseñada y no ejercida (deuda declarada del veredicto).
+
+**Puerta 3 · Lo que escribe la IA, como borrador con procedencia.** Un texto que redacta un agente entra con su procedencia declarada en el frontmatter (`origin: ia-generated` o `ia-assisted`, con `confidence`), no es fuente de nada y no habilita una puesta en uso hasta que una persona lo apruebe.
+
+- *Procedencia.* PROV-O, recomendación del W3C, da el vocabulario para decir qué entidad generó qué actividad y qué agente la llevó a cabo [REF-224]. El perfil de IA generativa de NIST cuenta la procedencia del contenido entre sus acciones sugeridas [REF-06]. **Por qué importa:** si no queda escrito quién escribió un texto, un borrador de agente termina citado como norma.
+
+> **Comentario.** Es la única puerta con un defecto medido en estos proyectos: en Lab-Geometria, las plantillas de respaldo las redactó un agente, quedaron rotuladas «definitivas» antes de la revisión humana, y la lente didáctica encontró en ellas el mismo defecto que se le reprochaba al modelo. El esquema de docs-guard ya pide `origin` y `confidence`; esta misma guía declara `origin: ia-assisted` en su frontmatter.
+
+<a id="c16-8-3"></a>
+#### 16.8.3 Lo que Docs as Code no cubre
+
+Docs as Code controla el *texto* que gobierna la capa. Hay cuatro cosas que no controla, y cada una es de otra disciplina:
+
+| No cubre | Por qué | Disciplina que la toma | Fuente |
+|---|---|---|---|
+| El comportamiento en ejecución | Que el prompt esté versionado no dice qué responde el modelo; eso se mide con banco y corridas ([cap. 11](#c11)) | Ingeniería de evaluación (función MEASURE) | [REF-05] |
+| El permiso | Lo que un usuario puede ver o hacer lo decide el código en tiempo de ejecución, con mínimo privilegio, no un documento | Seguridad | [REF-225] |
+| La verdad del contenido | Un documento revisado y fusionado puede estar mal; el PR prueba que alguien lo miró, no que sea cierto | Revisión del dominio por una persona | — |
+| La puesta en uso | Fusionar deja el cambio en `main`; encender la capa para usuarios es otra decisión, con otra firma | Gestión del riesgo (función MANAGE) y entrega continua | [REF-05], [REF-226], [REF-227] |
+
+> **Comentario.** *Fusionar no es encender.* Humble y Farley separan el despliegue del código de su liberación a usuarios [REF-226], y Hodgson muestra los *release toggles* como la forma más común de hacerlo: el código llega a producción con la funcionalidad oculta hasta que alguien decide prenderla [REF-227]. Saltzer y Schroeder, con el principio de mínimo privilegio, fundan por qué el permiso no puede vivir en un documento [REF-225]. **Cómo se ve:** en Lab-Geometria la capa arranca apagada si no hay servidor configurado (`REQ-IA-15`, con su prueba), así que fusionar la especificación o el prompt no pone nada frente a un alumno. La mesa pidió medir el canal real de publicación de Lab-Geometria antes de afirmar más que eso.
+
+<a id="c16-8-4"></a>
+#### 16.8.4 Artefactos de la capa y su control
+
+| Artefacto | Qué es | Control que lo hace código | Lab-Geometria | `{servicio-privado}` | Fuente |
+|---|---|---|---|---|---|
+| Prompt de sistema y plantillas de respaldo | El texto que fija la conducta pedida y lo que se muestra si no hay modelo | Un solo contrato; prueba «prompt del código = ficha», bloqueante; el prompt no se toca sin volver a correr el banco | Recurso del binario y ficha en `ai-layer/`; plantillas sin el rótulo «definitivas» hasta revisión | La prueba existe según su sesión | [REF-220] |
+| Evaluación (banco, rúbrica, corrida) | Los casos, el criterio fijado antes de correr y los registros | Registros crudos con SHA-256 como evidencia inmutable; resumen recalculable en CI sin modelo; tasa k/M con intervalo de Clopper-Pearson | `ai-layer/ensayos/`: `banco.json`, `resumir.py`, `SHA256SUMS` | Banco y evidencia en su repo | [REF-228], [REF-158] |
+| Model card y ficha por capacidad | Uso previsto, límites, evaluación y «deja de valer si» | Plantilla en esta guía; pasa a `doc_type` con esquema cuando haya una segunda capacidad | Instancia en `ai-layer/` | Ficha con modelos por código, sin nombre | [REF-217], [REF-218], [REF-219] |
+| Métrica | La definición de lo que se mide, con versión | Documento con versión; cada corrida declara contra qué versión se midió; identificador con el caso (`GEO-M4`, `SP-M4`) | M1 a M5 de `Resultado.md` | M-1 redefinida tras premiar un validador flojo | [REF-05] |
+| ADR | Una decisión con su contexto y su vencimiento | Formato del [capítulo 14](#c14), con «deja de valer si» | `ai-layer/03-ADR.md` | Decisiones por código en su repo | [REF-184] |
+| Contrato | La forma de lo que entra y sale de la capa, y de cada herramienta | Prueba de contrato y prueba negativa por rol en CI | Salida estructurada validada ([§11.3](#c11-3)) | Prueba negativa de no publicación: existe y no corre en CI | [REF-38] |
+
+> **Comentario.** La métrica merece una nota. En `{servicio-privado}` la métrica de respaldo original premiaba un validador flojo: si el validador aceptaba más, la métrica subía. Es la ley de Goodhart: una medida que se vuelve objetivo deja de medir. Por eso la métrica es un documento con versión, y un cambio de su definición se revisa como un cambio de código. El nombre del modelo de `{servicio-privado}` no aparece en este libro, que es público (respuesta C-5 de la mesa).
+
+<a id="c16-8-5"></a>
+#### 16.8.5 Las preguntas abiertas y lo que respondió la mesa
+
+Las dos sesiones que llegaron a la mesa dejaron catorce preguntas, y el refutador cinco más. Resumen de las respuestas, con el voto cuando no fue unánime:
+
+- **Dónde vive el filtro por audiencia.** En el sistema documentador, fuente de verdad única; la capa verifica la huella y no filtra (2–1).
+- **Con qué identidad recupera la capa.** La del usuario final, propagada; nunca la del servicio ni la del agente. Se prueba con una prueba de contrato negativa por rol y por herramienta en CI.
+- **Lo que escribe un agente.** No es fuente antes de la aprobación humana; lleva `origin` y `confidence`.
+- **`AGENTS.md`.** Configuración que se documenta: va al repo con frontmatter y por PR, pero no se distribuye por audiencia (2–1).
+- **Qué bloquea desde el principio.** Sólo lo determinista y con objeto: prompt = ficha, prueba negativa de no publicación conectada a CI y recálculo del resumen de toda corrida citada. El canario de contexto no se implementa donde no hay recuperación.
+- **Cómo se ensaya.** Dos ensayos distintos: el aplicador ciego ensaya al agente que especifica; las respuestas del modelo se ensayan con banco y validadores deterministas, k/M con intervalo de Clopper-Pearson [REF-228]. Lo que no tiene oráculo lo fija una persona, y un juez automático vale sólo calibrado contra ella [REF-158].
+- **Conocimientos con defectos abiertos.** Se integra sobre el borrador rotulado, y el rótulo impide la puesta en uso mientras un defecto crítico citado esté abierto.
+- **Ficha de capacidad y compuertas de la capa.** Plantilla y compuertas en esta guía, no en el esquema común de docs-guard, hasta que una segunda capacidad o una segunda guía las use (2–1 cada una).
+- **Dueño del arnés de evaluación.** La capa, como código; el arnés invoca el validador del producto en lugar de reimplementarlo.
+- **Corrida rotulada.** Dos piezas, un rótulo: los registros son evidencia; el resumen es documento.
+- **Firma humana.** La delegación en mesas cubre la fusión y no la puesta en uso; la decisión de encendido la firma el PO o, en Lab-Geometria, el docente responsable, con fundamento en NIST MANAGE [REF-05] e ISO/IEC 42001 [REF-221].
+- **Nombre del modelo en un repo público.** Sólo junto a decisiones del producto público.
+- **Servidor de modelos compartido.** Una ficha por alias con los parámetros que el arnés fija y verifica, sin topología.
+- **Salida del expediente.** Dictamen y exposiciones; se adoptan sólo las propuestas con objeto y costo bajo en estos dos proyectos.
+
+> **Comentario.** El Reglamento (UE) 2024/1689 aparece en el debate sólo como contexto: la mesa no estableció que se aplique a estos dos proyectos, y no lo usa como fundamento.
+
+<a id="c16-8-6"></a>
+#### 16.8.6 Plan de adopción
+
+Aplica quien convocó la mesa. Lo que toca a `{servicio-privado}` es recomendación para su responsable y no se verifica desde este repo público.
+
+| Orden | Paso | Dónde | Por qué en ese lugar |
+|---|---|---|---|
+| 1 | Barrido del expediente: ningún folio público describe un defecto abierto del privado ni nombra su modelo | Expediente 0004 | Seguridad del propio expediente |
+| 2 | Medir antes de afirmar: el canal real de publicación de Lab-Geometria y el estado de la regla de revisión humana | Lab-Documentos, Lab-Geometria | Sostiene «fusionar no es encender» |
+| 3 | Prueba «prompt del código = ficha», bloqueante | Lab-Geometria | Determinista y sin falsos positivos |
+| 4 | Prompt y plantillas de respaldo como un solo contrato; retirar «definitivas» hasta revisión | Lab-Geometria | Defecto medido; es la puerta 3 |
+| 5 | Prueba negativa de no publicación conectada a CI, con su par rojo/verde | `{servicio-privado}`; Lab-Geometria, el par | Único bloqueo que hoy existe y no corre |
+| 6 | Recálculo en CI de toda corrida citada, con versión de la métrica | Lab-Geometria | Existe en parte |
+| 7 | Calendario «avisa → bloquea» con fecha para cada control nuevo | Los dos | Un control en «avisa» deja un `main` verde con una contradicción |
+| 8 | Plantillas en esta guía: ficha por capacidad, datasheet del banco y ficha de servidor por alias | Esta guía; instancias en Lab-Geometria | Documentan sin tocar el linter común |
+
+Quedan como ideas expuestas y no adoptadas, entre otras: el índice por audiencia con canario, `llms.txt` y MCP con autorización (no hay recuperación), la huella versionada que invalida una decisión cuando cambia su prompt o su modelo, y el ensayo ciego como compuerta.
+
+<a id="c16-8-7"></a>
+#### 16.8.7 Recorrido de estudio
+
+La comisión didáctica propone enseñar la capa como un ciclo completo que se repite, agregando **una variable por escalón**. Se apoya en la alineación constructiva: primero se escribe qué tiene que poder hacer el estudiante, después la tarea y por último la evaluación [REF-229]; y en la teoría de la carga cognitiva, que desaconseja presentar juntas muchas ideas nuevas [REF-230]. Cada escalón termina con algo que el estudiante **ve fallar y pasar**, sobre Lab-Geometria; `{servicio-privado}` entra sólo como caso narrado, porque es privado y no se puede reproducir.
+
+| # | Variable nueva | Qué ve funcionando | Qué tiene que poder hacer |
+|---|---|---|---|
+| 1 | Docs as Code sin IA | Un PR con frontmatter roto queda en rojo y en verde al corregirlo; un control en «avisa» deja pasar una contradicción | Aplicar una compuerta y explicar avisa contra bloquea |
+| 2 | El modelo detrás de un puerto, apagado | Sin servidor, la app arranca degradada con la plantilla; pasa `NoModelEndpoint_StartsDegraded` | Explicar por qué fusionar no es encender |
+| 3 | El prompt como código | Cambia una regla del prompt y la prueba prompt = ficha queda en rojo hasta actualizar la ficha | Aplicar la trazabilidad prompt ↔ documento |
+| 4 | La evaluación versionada | Corre `resumir.py` sobre los registros de la corrida y obtiene los números de `Resultado.md`; verifica `SHA256SUMS` | Analizar k/n, el intervalo, y por qué 0/30 no prueba 0 % |
+| 5 | El filtro no es la calidad | Lee pistas que pasaron el filtro y son geométricamente falsas, y escribe el caso que las detecta | Distinguir un control de seguridad de uno de corrección |
+| 6 | Docente contra juez | Puntúa pistas con la rúbrica, compara con el juez y calcula la concordancia de `REQ-IA-14` | Evaluar la validez de una métrica automática |
+| 7 | Herramientas e identidad (caso narrado) | Lee el caso de la métrica que premiaba un validador flojo y escribe el caso trampa | Evaluar una métrica y crear un caso negativo |
+| 8 | El corpus que lee la IA | Arma un índice por audiencia y ve una prueba negativa en rojo con el índice global y en verde con el filtrado | Crear un control de entrega antes del índice ([cap. 8](#c8)) |
+| 9 | Lo que la IA escribe | Un borrador `ia-generated` no se acepta sin revisión humana; el estudiante es quien revisa | Evaluar un borrador y firmar |
+
+> **Comentario.** Dos lugares del orden no se negocian: la evaluación (4) va antes que la calidad (5 y 6), porque sin saber leer k/n no se puede juzgar un filtro; y el corpus que lee la IA (8) va al final, porque junta las variables de todos los escalones anteriores. El escalón 8 no tiene caso en ninguno de los dos proyectos: es el trabajo práctico integrador. El escalón 5 depende de material que hoy está fuera de los repos y hay que foliarlo antes de asignarlo como lectura.
+
+**Preguntas guía.**
+
+1. ¿Qué texto de tu capa de IA cambia la conducta del programa? ¿Está en el repo, cambia por PR y tiene una prueba?
+2. Un documento de ayuda va a entrar al contexto del modelo. ¿Quién decide qué audiencia lo recibe, y qué hace la capa si la huella no coincide?
+3. ¿Qué diferencia hay entre fusionar el prompt nuevo y encender la capa con él? ¿Quién firma cada cosa?
+4. Una métrica sube después de un cambio del validador. ¿Qué mirarías antes de festejar?
+
 <a id="cierre"></a>
 # Cierre
 
@@ -4100,6 +4256,29 @@ Cada referencia tiene la forma `[REF-nn] Autor u organización, «Título», URL
 - [REF-211] Anthropic Engineering, «How we built our multi-agent research system», https://www.anthropic.com/engineering/multi-agent-research-system, publicado 2025-06-13, consultado 2026-11-01
 - [REF-212] Johan Rosenkilde (GitHub Blog), «How GitHub Copilot is getting better at understanding your code», https://github.blog/ai-and-ml/github-copilot/how-github-copilot-is-getting-better-at-understanding-your-code/, publicado 2023-05-17, act. 2024-02-07, consultado 2026-11-01
 - [REF-213] dotnet, «eShopSupport» (aplicación .NET de referencia para soporte con IA), https://github.com/dotnet/eShopSupport, rama main, consultado 2026-11-01
+
+<a id="anexo-d-14"></a>
+### D.14 Docs as Code y gobierno de los artefactos de la capa
+
+Referencias de [§16.8](#c16-8). Para un libro o una norma sin página pública consultable, la entrada lo dice en lugar de dar una URL; para un artículo con DOI, la URL es la del DOI.
+
+- [REF-214] Write the Docs, «Docs as code», https://www.writethedocs.org/guide/docs-as-code/, sin fecha visible, consultado 2026-11-03
+- [REF-215] Gentle, A., «Docs Like Code» (libro; primera edición autoeditada, 2017; el sitio presenta la segunda edición), https://www.docslikecode.com/, consultado 2026-11-03
+- [REF-216] Manshreck, T. (MacNamara, R., ed.), «Documentation», capítulo 10 de Winters, Manshreck y Wright, *Software Engineering at Google* (O'Reilly, 2020), https://abseil.io/resources/swe-book/html/ch10.html, 2020, consultado 2026-11-03
+- [REF-217] Mitchell, Wu, Zaldivar, Barnes, Vasserman, Hutchinson, Spitzer, Raji, Gebru, «Model Cards for Model Reporting», https://arxiv.org/abs/1810.03993, FAT* 2019, v1 2018-10-05, consultado 2026-11-03
+- [REF-218] Gebru, Morgenstern, Vecchione, Wortman Vaughan, Wallach, Daumé III, Crawford, «Datasheets for Datasets», https://arxiv.org/abs/1803.09010, *Communications of the ACM* 64(12), diciembre de 2021; v1 2018-03-23, v8 2021-12-01, consultado 2026-11-03
+- [REF-219] Arnold, Bellamy, Hind, Houde, Mehta, Mojsilovic, Nair, Natesan Ramamurthy, Reimer, Olteanu, Piorkowski, Tsay, Varshney, «FactSheets: Increasing Trust in AI Services through Supplier's Declarations of Conformity», https://arxiv.org/abs/1808.07261, *IBM Journal of Research and Development* 63(4/5), 2019; v1 2018-08-22, consultado 2026-11-03
+- [REF-220] Sculley, Holt, Golovin, Davydov, Phillips, Ebner, Chaudhary, Young, Crespo, Dennison, «Hidden Technical Debt in Machine Learning Systems», https://papers.nips.cc/paper/5656-hidden-technical-debt-in-machine-learning-systems, NIPS 2015 (Advances in Neural Information Processing Systems 28), consultado 2026-11-03
+- [REF-221] ISO/IEC, «ISO/IEC 42001:2023 Information technology — Artificial intelligence — Management system» (norma de pago; se cita sin apartado salvo la información documentada, cláusula 7.5, según el veredicto de la mesa), sin URL consultable (la ficha del catálogo de ISO no respondió), 2023, consultado 2026-11-03
+- [REF-222] Howard, J., «The /llms.txt file», https://llmstxt.org/, publicado 2024-09-03, act. 2026-08-10, consultado 2026-11-03
+- [REF-223] AGENTS.md, «AGENTS.md» (formato abierto con indicaciones del proyecto destinadas a agentes de programación; según el sitio, bajo custodia de la Agentic AI Foundation de la Linux Foundation), https://agents.md/, sin fecha visible, consultado 2026-11-03
+- [REF-224] W3C, «PROV-O: The PROV Ontology», https://www.w3.org/TR/prov-o/, recomendación del 2013-04-30, consultado 2026-11-03
+- [REF-225] Saltzer, J. H. y Schroeder, M. D., «The Protection of Information in Computer Systems», https://doi.org/10.1109/PROC.1975.9939, *Proceedings of the IEEE* 63(9), 1975, consultado 2026-11-03
+- [REF-226] Humble, J. y Farley, D., «Continuous Delivery: Reliable Software Releases through Build, Test, and Deployment Automation» (libro, Addison-Wesley), sin URL, 2010, consultado 2026-11-03
+- [REF-227] Hodgson, P., «Feature Toggles (aka Feature Flags)», https://martinfowler.com/articles/feature-toggles.html, publicado 2017-10-09, consultado 2026-11-03
+- [REF-228] Clopper, C. J. y Pearson, E. S., «The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial», https://doi.org/10.1093/biomet/26.4.404, *Biometrika* 26(4), 404–413, diciembre de 1934, consultado 2026-11-03
+- [REF-229] Biggs, J., «Enhancing teaching through constructive alignment», https://doi.org/10.1007/BF00138871, *Higher Education* 32, 1996, consultado 2026-11-03
+- [REF-230] Sweller, J., «Cognitive load during problem solving: effects on learning», https://doi.org/10.1207/s15516709cog1202_4, *Cognitive Science* 12(2), 1988, consultado 2026-11-03
 
 <a id="anexo-e"></a>
 ## Anexo E · Laboratorio

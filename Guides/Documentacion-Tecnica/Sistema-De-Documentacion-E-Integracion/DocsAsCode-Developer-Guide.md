@@ -4497,7 +4497,7 @@ devcontainers `@devcontainers/cli@0.89.0`; imagen del túnel `cloudflare/cloudfl
 ##### 14.3.2 Pasos
 
 Se ejecutan en orden y cada uno se verifica antes del siguiente; si uno falla, se detiene y se busca la causa en la
-Tabla 14.6 (`PE-06`, instrucciones probadas en contenedor).
+tabla 14.6 (`PE-06`, instrucciones probadas en contenedor).
 
 **Paso 1. Levantar el devcontainer.** Desde `$P`, `npx -y @devcontainers/cli@0.89.0 up --workspace-folder .`. La
 salida es un JSON con `"outcome":"success"`, `containerId` (es `$CID`) y `remoteWorkspaceFolder` (es `$W`)

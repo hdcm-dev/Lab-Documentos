@@ -103,6 +103,9 @@ flowchart TB
 
 *Diagrama: de la pregunta a la decisión. Una decisión con revisión vuelve a la pregunta cuando se cumple su condición.*
 
+Cuando puntúan varios evaluadores, FIRME exige además una ventaja de tres o más puntos de celda, el ruido medido entre
+evaluadores **[criterio propio del expediente 0003, regla R-06]**.
+
 ## 5. Una matriz trabajada
 
 **Pregunta.** ¿La guía del sistema documentador es un cuerpo de varios documentos o un archivo único? Es la decisión

@@ -226,7 +226,7 @@ enlace no lleva a ningún lado. Es un **cruce de rol**. Hoy no es un control de 
 prueba de concepto, y en un panel real va en las pruebas del producto. Se arregla de una de dos formas: quitar el
 enlace, o mover el contenido enlazado a una página común. (Un enlace condicionado por rol dentro de la página exigiría
 que el formato lo admita, y el de la prueba no lo admite.) La propuesta completa, con la derivación del caso de uso a la página sección por sección, está en la
-[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md#7-propuesta-ayuda-por-rol-en-lab-geometria).
+[guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#7-propuesta-ayuda-por-rol-en-lab-geometria), hoy archivada ([Lab-Documentos, s. f.](99-Anexos/Referencias.md#ref-lab-documentos-guia-sf)).
 
 La [prueba extendida](Examples/Prueba-Ayuda-Por-Rol/README.md#la-prueba-extendida-audiencias-y-entrega) lleva el mismo catálogo a la regla de entrega, con contenido **ficticio**
 porque este repositorio es público: un registro de audiencias con jerarquía (administrador raíz ⊃ administrador por
@@ -418,7 +418,7 @@ conviene hacer mientras se decide. Sin decidir cuál es el correcto.>
 ```
 
 En un panel con roles se suma la regla de entrega, `delivery:` con audiencias del registro (la prueba de ayuda por rol
-usa todavía `roles`, con los nombres del rol tal como los guarda el producto), y se valida contra el esquema de páginas de ayuda del [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#3-readme-del-cuerpo-y-páginas-de-ayuda).
+usa todavía `roles`, con los nombres del rol tal como los guarda el producto), y se valida contra el esquema de páginas de ayuda del [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md#3-readme-del-cuerpo-y-páginas-de-ayuda). Esa página no lleva `doc_id`: tiene `title`, `description` y `roles` o `delivery`. Si conserva el `doc_id` de esta plantilla, la compuerta la valida como documento del cuerpo y no mira `roles`.
 
 ---
 

@@ -112,7 +112,7 @@ El final de una corrida en orden:
 ```
 
 Si un control da rojo, la línea anterior al agregador dice qué archivo y qué fila. Por ejemplo:
-`docs/fichas/RN-LOC-01.md:63: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80`.
+`RN-LOC-01.md:63: ERROR ancla-valor-distinto: NombreEntry.MaxLength: la ficha afirma 60 y el código tiene 80` (la ficha 1.0 de la prueba negativa, en `tools/docs-guard/fixtures/anclas/real-rn-loc-01/`).
 
 ## 5. Tutorial: documentar una pantalla nueva
 
@@ -387,6 +387,7 @@ permanente.
 | --- | --- |
 | No hay roles ni confidencialidad | La app móvil no tiene roles; la ayuda por rol se demostró aparte (Prueba-Ayuda-Por-Rol, en esta misma carpeta `Examples/`) |
 | Los IDs `RN-LOC-nn` son provisionales | MovilidadUrbana no tiene registro de reglas; los asigna esta demo |
+| Las fichas anclan sólo la app móvil | MovilidadUrbana tiene tres aplicaciones (web, API y móvil); la copia de la regla en la API no tiene ancla, así que un cambio ahí no da rojo ([Marco](../../00-Marco.md#esc-sdei-2--app-cliente-sin-roles); [arquitectura §3](docs/tecnica/arquitectura.md#3-dónde-vive-cada-regla)) |
 | Las páginas no se publican en un sitio | Se leen como `.md` en el repositorio |
 | No se modifica el código | Si el repositorio del código abre un expediente que lo autorice, la documentación pasa a vivir junto al código |
 | La clasificación fina de una regla queda fuera de alcance | El tutorial resume el método de deducción de reglas (§5.2) y no lo enseña. Los casos de borde que §5.2 no resuelve (qué cuenta como una regla, una regla con partes de especies o momentos distintos, un grado de certeza mixto o dudoso, una divergencia que no encaja en Leve o De fondo, un hueco común a toda la pantalla) se resuelven por §5.6 y quedan como supuestos en el PR, para que los decida quien revisa |

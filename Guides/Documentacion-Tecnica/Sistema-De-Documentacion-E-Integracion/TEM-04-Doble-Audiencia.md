@@ -48,7 +48,7 @@ que apuntar y un índice que le diga qué hay y dónde.
 | Canal | La forma en que un lector recibe la fuente: el render de Markdown del repositorio, un sitio publicado, un índice para agentes. El `AGENTS.md` no es un canal de la fuente: es un puntero escrito a mano que le dice al agente dónde está |
 | Canal derivado (`CL-14`) | Artefacto que el build de un **sitio publicado** genera de la fuente: una página `.md` por página publicada, un `llms.txt`, un archivo que agrega todo el contenido. Sólo existe si hay sitio (`CTX-SDEI-1`). No confundir con el `.md` y el `llms.txt` que sirve la ayuda de un producto desde su propio servidor: esos son parte de la ayuda (`CL-06`, ver `TEM-05`) |
 | `AGENTS.md` (`CL-03`) | Archivo en la raíz de un repositorio con las instrucciones para un agente de código: cómo compilar, qué convenciones seguir, dónde está la documentación. Es un puntero, no una copia de la guía |
-| Índice interno (`CL-08`) | La ia-db del repositorio hermano `.Documentacion`: índices versionados en Markdown que un agente consulta antes de leer el código de un sistema, anclados al SHA que indexaron (`base_commit`). Según la tabla del Marco, se activa en `ESC-SDEI-3` y `ESC-SDEI-4` |
+| Índice interno (`CL-08`) | La ia-db del repositorio hermano `.Documentacion`: índices versionados en Markdown que un agente consulta antes de leer el código de un sistema, anclados al SHA que indexaron (`base_commit`). Según la tabla del Marco, está activo por defecto en los cuatro escenarios; en `ESC-SDEI-1` y `ESC-SDEI-2` entra como alta, porque el repositorio hermano tiene índice interno |
 | Inyección indirecta | Texto escondido en una fuente que un agente lee y que intenta que el agente haga algo que nadie le pidió ([OWASP GenAI Security Project, 2025](99-Anexos/Referencias.md#ref-owasp-2025)) |
 | Lector | Persona o agente. Es dimensión de **canal**, no de acceso: el agente hereda la audiencia y el alcance de su usuario y nunca tiene acceso propio (definición del [glosario](99-Anexos/Glosario.md#2-términos)) |
 | Filtro único | La regla de entrega que decide qué recibe una sesión se aplica igual, y en el mismo punto, a la página, a su `.md`, al `llms.txt` y a un servidor MCP, con el token del usuario |
@@ -92,8 +92,8 @@ frontmatter; lo que cambia es qué canales para agentes están activos y quién 
 | Escenario | Quién es el agente lector | Canales activos | Lo que hay que cuidar |
 | --- | --- | --- | --- |
 | `ESC-SDEI-1` Corpus de guías | Un agente que estudia o mantiene la guía | Markdown con frontmatter y `AGENTS.md` en la raíz (ruta «agente» del [README](README.md#3-rutas-de-lectura)), y el índice interno (CL-08) del repositorio hermano, que indexa el cuerpo | Que los anexos de referencia (esquema, glosario) se encuentren sin recorrer la prosa |
-| `ESC-SDEI-2` App sin roles | Un agente de código que trabaja sobre la app; el asistente del usuario que lee la ayuda | `AGENTS.md`, contrato OpenAPI emitido en el build (`CL-05`), ayuda con `traces` | Que el contrato que lee el agente sea el del SHA fijado, no uno escrito a mano |
-| `ESC-SDEI-3` Panel con roles | Lo anterior, más un agente al que el usuario del panel le pide ayuda | Lo anterior, más el índice interno. Si la ayuda del panel ofrece su propio `.md` y `llms.txt` (parte de la ayuda, no un canal derivado de sitio), van **filtrados por el rol de la sesión** | Que el `llms.txt` de la ayuda no deje ver títulos de páginas que el rol no puede ver |
+| `ESC-SDEI-2` App sin roles | Un agente de código que trabaja sobre la app; el asistente del usuario que lee la ayuda | `AGENTS.md`, contrato OpenAPI emitido en el build (`CL-05`), ayuda con `traces`, índice interno (`CL-08`) del repositorio hermano | Que el contrato que lee el agente sea el del SHA fijado, no uno escrito a mano |
+| `ESC-SDEI-3` Panel con roles | Lo anterior, más un agente al que el usuario del panel le pide ayuda | Lo anterior. Si la ayuda del panel ofrece su propio `.md` y `llms.txt` (parte de la ayuda, no un canal derivado de sitio), van **filtrados por el rol de la sesión** | Que el `llms.txt` de la ayuda no deje ver títulos de páginas que el rol no puede ver |
 | `ESC-SDEI-4` Servicio con paquetes | El agente de código de quien integra el paquete, y el del equipo del servicio | `AGENTS.md`, README y CHANGELOG del paquete (`CL-13`), contrato, índice interno | Que la documentación del paquete diga contra qué versión vale |
 
 Los contextos cambian una respuesta concreta:
@@ -111,8 +111,8 @@ Los contextos cambian una respuesta concreta:
 ### 3.1 Un proveedor que sirve a los dos lectores
 
 El portal público de OneSignal, un proveedor externo de notificaciones, analizado en la
-[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md#14-evidencia-el-sitio-está-pensado-también-para-agentes),
-publica un `llms.txt` con un índice de 170 páginas en formato `.md`, y cada página `.md` abre con un aviso que apunta a
+[guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#14-evidencia-el-sitio-está-pensado-también-para-agentes) y reverificado en el libro (18.1),
+publica un `llms.txt` que, al 2026-11-01, tiene 179 entradas (líneas que empiezan con `- [`; 16 son subíndices por idioma) ([OneSignal, s. f., b](99-Anexos/Referencias.md#ref-onesignal-llms-sf)), y cada página `.md` abre con un aviso que apunta a
 ese índice. La misma fuente da HTML a la persona y Markdown al modelo. La propuesta de `llms.txt` describe ese archivo
 como un índice en Markdown, en la raíz del sitio, pensado para que un modelo encuentre lo relevante sin recorrer el
 HTML ([Howard, s. f.](99-Anexos/Referencias.md#ref-howard-sf)). Es una **propuesta**, no una norma: por eso el cuerpo la
@@ -133,10 +133,10 @@ exceptuado de AI-3 con la huella del archivo: si cambia una letra, la excepción
 
 ### 3.3 Ensayo reproducible: el índice para agentes sale del frontmatter
 
-Este cuerpo no tiene sitio ni índice interno. El ensayo comprueba que el frontmatter alcanza para armar, sin leer la
+Este cuerpo no tiene sitio, y su índice interno (`CL-08`) vive en el repositorio hermano. El ensayo comprueba que el frontmatter alcanza para armar, sin leer la
 prosa, un índice que le diga a un agente qué documento abrir, y que ese índice es reproducible. No es una pieza
-nueva: no se versiona, se genera cuando hace falta. Es la misma información que tomaría un índice interno o un
-`llms.txt` si existieran.
+nueva: no se versiona, se genera cuando hace falta. Es la información que necesita cualquier índice para agentes: el interno del repositorio
+hermano, o un `llms.txt` si hubiera sitio.
 
 ```python
 # [Fragmento ilustrativo: el script del ensayo, completo; corre con la biblioteca estándar]
@@ -181,9 +181,9 @@ formas de esconderlas:
 El ensayo planta dos defectos en el Mapa, uno por vez, y los revierte:
 
 ```text
-[Salida registrada: corrida del 2026-10-27; GUIA-DIR es la carpeta del cuerpo]
-$ python3 -I tools/docs-guard/dg.py ai GUIA-DIR          # con un comentario HTML al final del Mapa
-GUIA-DIR/01-Mapa.md:131: ERROR AI-1 comentario-html: [el comentario plantado; acá se omite, porque la compuerta lo detectaría en esta página]
+[Salida registrada: corrida del 2026-11-04; GUIA-DIR es la carpeta del cuerpo]
+$ python3 -I tools/docs-guard/dg.py ai GUIA-DIR          # con una línea en blanco y un comentario HTML al final del Mapa
+GUIA-DIR/01-Mapa.md:135: ERROR AI-1 comentario-html: [el comentario plantado; acá se omite, porque la compuerta lo detectaría en esta página]
 rc=1
 $ python3 -I tools/docs-guard/dg.py ai GUIA-DIR          # con un U+200B dentro de una palabra
 GUIA-DIR/01-Mapa.md:4: ERROR AI-2 caracter-invisible: U+200B

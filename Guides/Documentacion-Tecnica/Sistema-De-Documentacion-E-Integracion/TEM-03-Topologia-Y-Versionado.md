@@ -170,7 +170,8 @@ rutas: src/MovilidadUrbana.ApiWeb src/MovilidadUrbana.MAUI
 ```
 
 Contra ese SHA, las fichas de reglas resuelven sus anclas `ruta#Símbolo@SHA` y la compuerta da verde. Contra `main`
-del código, el workflow de la demo mide la deriva y sólo avisa. Cambiar el SHA es un pull request que actualiza, en el
+del código, el carril programado cuenta los commits de atraso del SHA, y el control A1 del workflow de la demo mide la
+deriva por símbolo cuando ese workflow corre; los dos sólo avisan. Cambiar el SHA es un pull request que actualiza, en el
 mismo cambio, el contrato y las anclas de las fichas.
 
 ### Adopciones públicas de las prácticas que recomienda este tema
@@ -185,7 +186,7 @@ meses anteriores **[umbral de criterio propio del plan]**.
 | | Grafana ([Grafana Labs, 2026](99-Anexos/Referencias.md#ref-grafana-2026)) | `docs/sources/`, `7b102dd`, 2026-10-27 |
 | P5. Si la documentación va en un repositorio separado, una rama por versión del producto | Kubernetes ([Kubernetes, 2026](99-Anexos/Referencias.md#ref-kubernetes-website-2026)) | 33 ramas `release-1.*`, la última `release-1.36`; `content/en/`, `ed70e31`, 2026-10-26 |
 | | Istio ([Istio, 2026](99-Anexos/Referencias.md#ref-istio-2026)) | 33 ramas `release-1.*`, la última `release-1.31`; `content/`, `2100f40`, 2026-10-27 |
-| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16. Corrida del 2026-11-01 con el guion: «no reproducido» (el repositorio se mudó; ver el ensayo de abajo) |
+| P6. Copias versionadas de la documentación sólo cuando conviven versiones del producto | Docusaurus ([Docusaurus, 2026](99-Anexos/Referencias.md#ref-docusaurus-2026)) | `website/versioned_docs/` con doce versiones de la 2.x a la 3.10; `206e741`, 2026-10-16. Corrida del 2026-11-01 con el guion: «no reproducido» (el repositorio se mudó a meta/docusaurus y el guion no sigue la redirección; ver el ensayo de abajo); la consulta con redirección del mismo día da `c5bc92e`, 2026-10-29, doce versiones (libro 18.2) |
 | | Jest ([Jest, 2026](99-Anexos/Referencias.md#ref-jest-2026)) | `website/versioned_docs/` con las versiones 29.7, 30.0, 30.4 y 30.5; `ea7258e`, 2026-08-31 |
 
 Las tres prácticas no compiten: P4 es el valor por defecto; P5 y P6 son el precio de salir de él cuando el producto
@@ -248,8 +249,8 @@ rompe todas las trazas que lo usan, que es la razón de calificar los IDs con el
 
 ### Lab-Geometria: por qué la separación que ya tiene es la correcta
 
-La [guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md#62-mismo-repositorio-o-repositorio-auxiliar)
-aplica la regla a Lab-Geometria (`ESC-SDEI-3`): la especificación y el manual del panel por rol van en el repositorio
+La [guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#62-mismo-repositorio-o-repositorio-auxiliar), hoy archivada ([Lab-Documentos, s. f.](99-Anexos/Referencias.md#ref-lab-documentos-guia-sf)),
+aplicaba la regla a Lab-Geometria (`ESC-SDEI-3`): la especificación y el manual del panel por rol van en el repositorio
 del código, porque describen pantallas que cambian en el mismo pull request; los índices para agentes, los análisis y
 las guías de estudio de ese proyecto van en el hermano `.Documentacion`, porque hablan del proyecto y no se despliegan con él. Como el
 panel tiene un único despliegue vivo, una sola versión de la documentación alcanza (P6 no aplica).
@@ -324,7 +325,7 @@ se releyeron el 2026-10-27 para este tema.
 | Hecho | Las cantidades de ramas y de versiones son las de la corrida del 2026-10-27; cambian con cada versión que publican esos proyectos |
 | Hecho | El registro de IDs es único para todo Lab-Documentos y otras guías ya chocaron en él: `MARCO-CONVENCIONES` está declarado como `doc_id` en cuatro guías de `Guides/`, y el Framework Concept tuvo que pasar sus temas al espacio propio `FC-TEM-nn`. Por eso este cuerpo usa `TEM-SDEI-nn` |
 | Interpretación | Que P4 sea «el valor por defecto» sale de la regla del mismo pull request y de Backstage; no hay una medición que compare topologías |
-| Hecho | Ningún índice versionado del laboratorio declara todavía `base_commit`; la forma de la tabla de anclas es la que busca el carril programado (`tools/docs-guard/semanal.sh`) |
+| Hecho | El índice para agentes de Lab-Documentos.Documentacion declara `base_commit` desde el 2026-10-27 (`ia-db/README.md`, l. 122), pero entre comillas invertidas, y la expresión del carril programado (`tools/docs-guard/semanal.sh`, l. 107-108) no lo ve: se escribe con la forma de la tabla de anclas o se ensancha la expresión |
 | Observación sobre la compuerta | `docs-guard` rechazaba `traces: []` como campo faltante, aunque el anexo del esquema admite la lista vacía; hoy lo acepta con el aviso `traces-vacio` (`tools/docs-guard/dg.py:342-346`), que recomienda trazar al menos al `doc_id` del README del cuerpo |
 | Criterio propio | El umbral de 24 meses y el de dos adopciones por práctica son del plan de implementación del expediente 0002, sin fuente externa |
 

@@ -29,6 +29,8 @@ fuentes por esas anclas sin leer la prosa.
 7. [Versionado, estilo y adopciones públicas](#7-versionado-estilo-y-adopciones-públicas)
 8. [Desarrollo guiado por especificación](#8-desarrollo-guiado-por-especificación)
 9. [Audiencias, ayuda en el punto de uso y entrega](#9-audiencias-ayuda-en-el-punto-de-uso-y-entrega)
+10. [Software](#10-software)
+11. [Industria y estándares](#11-industria-y-estándares)
 
 ## 1. Norma de citación
 
@@ -82,11 +84,17 @@ Plantillas:
 
 ## 4. Normas y estilos
 
-<a id="ref-iso-26514-2022"></a>ISO/IEC/IEEE. (2022). *ISO/IEC/IEEE 26514:2022 Systems and software engineering — Design and development of information for users* (1.ª ed.). https://committee.iso.org/standard/77451.html (consultado el 2026-10-26). Verificación: **sin verificar**: la definición de audiencia (§3.1.7) se cita adaptada y no se cotejó con la edición publicada (resolución 399 del expediente 0003 de DocAsCode, §8).
+<a id="ref-iso-26514-2022"></a>ISO/IEC/IEEE. (2022). *ISO/IEC/IEEE 26514:2022 Systems and software engineering — Design and development of information for users* (1.ª ed.). https://committee.iso.org/standard/77451.html (consultado el 2026-10-26). Verificación: **sin verificar**: la definición de audiencia (§3.1.7) se cita adaptada y no se cotejó con la edición publicada (resolución 399 del expediente 0003 de DocAsCode, §8). Ficha reverificada el 2026-11-01, sin cambios.
 
 <a id="ref-iso-690-2021"></a>ISO. (2021). *ISO 690:2021 Information and documentation — Guidelines for bibliographic references and citations to information resources*. Verificación: P.
 
 <a id="ref-apa-2020"></a>American Psychological Association. (2020). *Publication manual of the American Psychological Association* (7.ª ed.). Verificación: P.
+
+<a id="ref-rae-asale-2010"></a>Real Academia Española y Asociación de Academias de la Lengua Española. (2010). *Ortografía de la lengua española*. Espasa. https://www.rae.es/obras-academicas/ortografia/ortografia-2010 (consultado el 2026-11-01). Verificación: P (ficha por el buscador; el sitio de la obra respondió 403; se cita por título y año, sin apartado).
+
+<a id="ref-rae-asale-2005"></a>Real Academia Española y Asociación de Academias de la Lengua Española. (2005). *Diccionario panhispánico de dudas*. Santillana. https://www.rae.es/dpd/ (consultado el 2026-11-01). Verificación: P (el sitio respondió 403; año y editorial de la primera edición sin verificar en fuente primaria).
+
+<a id="ref-microsoft-spanish-neutral-2021"></a>Microsoft. (2021). *Spanish (Neutral) Style Guide* [Guía de estilo de localización, PDF]. https://aka.ms/spanish-neutral-styleguide (consultado el 2026-11-01). Verificación: V (PDF de 56 páginas creado el 2021-04-29; año tomado de esa fecha).
 
 ## 5. Modelos de lenguaje y documentación
 
@@ -102,25 +110,25 @@ Plantillas:
 
 ## 6. Práctica de la industria
 
-<a id="ref-bockeler-2025"></a>Böckeler, B. (2025, 15 de octubre). *Understanding spec-driven development: Kiro, spec-kit, and Tessl*. martinfowler.com. https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html (consultado el 2026-10-26). Verificación: V.
+<a id="ref-bockeler-2025"></a>Böckeler, B. (2025, 15 de octubre). *Understanding spec-driven development: Kiro, spec-kit, and Tessl*. martinfowler.com. https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01, sin cambios.
 
-<a id="ref-writethedocs-sf"></a>Write the Docs. (s. f.). *Docs as code*. https://www.writethedocs.org/guide/docs-as-code/ (consultado el 2026-10-26). Verificación: V.
+<a id="ref-writethedocs-sf"></a>Write the Docs. (s. f.). *Docs as code*. https://www.writethedocs.org/guide/docs-as-code/ (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01, sin cambios.
 
-<a id="ref-gitlab-sf"></a>GitLab. (s. f.). *Documentation workflow*. GitLab Docs. https://docs.gitlab.com/development/documentation/workflow/ (consultado el 2026-10-26). Verificación: V.
+<a id="ref-gitlab-sf"></a>GitLab. (s. f.). *Documentation workflow*. GitLab Docs. https://docs.gitlab.com/development/documentation/workflow/ (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01: «When possible, the merge request with the code should include the documentation».
 
-<a id="ref-gitlab-testing-sf"></a>GitLab. (s. f.). *Documentation testing*. GitLab Docs. https://docs.gitlab.com/development/documentation/testing/ (consultado el 2026-10-26). Verificación: V.
+<a id="ref-gitlab-testing-sf"></a>GitLab. (s. f.). *Documentation testing*. GitLab Docs. https://docs.gitlab.com/development/documentation/testing/ (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01: «Vale errors still fail the docs-lint markdown job»; sólo el trabajo `docs code_quality` «does not block merge requests».
 
 <a id="ref-backstage-sf"></a>Backstage. (s. f.). *TechDocs architecture*. https://backstage.io/docs/features/techdocs/architecture (consultado el 2026-10-26). Verificación: V.
 
 <a id="ref-docusaurus-sf"></a>Docusaurus. (s. f.). *Versioning*. https://docusaurus.io/docs/versioning (consultado el 2026-10-26). Verificación: V.
 
-<a id="ref-agentsmd-sf"></a>AGENTS.md. (s. f.). *AGENTS.md*. https://agents.md/ (consultado el 2026-10-26). Verificación: V.
+<a id="ref-agentsmd-sf"></a>AGENTS.md. (s. f.). *AGENTS.md*. https://agents.md/ (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01: «stewarded by the Agentic AI Foundation under the Linux Foundation».
 
-<a id="ref-howard-sf"></a>Howard, J. (s. f.). *The /llms.txt file*. https://llmstxt.org/ (consultado el 2026-10-26). Verificación: V.
+<a id="ref-howard-sf"></a>Howard, J. (s. f.). *The /llms.txt file*. https://llmstxt.org/ (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01: publicada el 2024-09-03.
 
 <a id="ref-owasp-2025"></a>OWASP GenAI Security Project. (2025). *LLM01:2025 Prompt injection*. https://genai.owasp.org/llmrisk/llm01-prompt-injection/ (consultado el 2026-10-26). Verificación: V.
 
-<a id="ref-thoughtworks-2025"></a>Thoughtworks. (2025, 5 de noviembre). *Spec-driven development* [Technology Radar, anillo Assess]. https://www.thoughtworks.com/radar/techniques/spec-driven-development (consultado el 2026-10-26). Verificación: V.
+<a id="ref-thoughtworks-2025"></a>Thoughtworks. (2025, 5 de noviembre). *Spec-driven development* [Technology Radar, anillo Assess]. https://www.thoughtworks.com/radar/techniques/spec-driven-development (consultado el 2026-10-26). Verificación: V. Reverificada el 2026-11-01: la ficha avisa que ya no está en la edición vigente del radar.
 
 <a id="ref-winters-2020"></a>Winters, T., Manshreck, T., y Wright, H. (Eds.). (2020). *Software engineering at Google*, cap. 10 «Documentation». O'Reilly. https://abseil.io/resources/swe-book/html/ch10.html (consultado el 2026-10-26). Verificación: V.
 
@@ -132,7 +140,7 @@ Las entradas de esta sección se consultaron el 2026-10-27 para los temas 01 a 0
 commit más reciente que tocó la ruta que materializa la práctica; el ensayo de adopciones del expediente 0002 de
 DocAsCode (`evidencia/E1-U4b/04-adopciones.sh`) reproduce la consulta.
 
-<a id="ref-procida-sf"></a>Procida, D. (s. f.). *Diátaxis: A systematic approach to technical documentation authoring*. https://diataxis.fr/ (consultado el 2026-10-27). Verificación: P (la página no nombra al autor; la autoría es la conocida del marco).
+<a id="ref-procida-sf"></a>Procida, D. (s. f.). *Diátaxis: A systematic approach to technical documentation authoring*. https://diataxis.fr/ (consultado el 2026-10-27). Verificación: P (la página no nombra al autor; la autoría es la conocida del marco). Reverificada el 2026-11-01, sin cambios.
 
 <a id="ref-prestonwerner-sf"></a>Preston-Werner, T. (s. f.). *Semantic Versioning 2.0.0*. https://semver.org/ (consultado el 2026-10-27). Verificación: V.
 
@@ -140,37 +148,37 @@ DocAsCode (`evidencia/E1-U4b/04-adopciones.sh`) reproduce la consulta.
 
 <a id="ref-fowler-2013"></a>Fowler, M. (2013, 21 de agosto). *GivenWhenThen*. martinfowler.com. https://martinfowler.com/bliki/GivenWhenThen.html (consultado el 2026-10-27). Verificación: V.
 
-<a id="ref-github-docs-2026"></a>GitHub. (2026). *github/docs* (commit ee20fda) [Repositorio]. https://github.com/github/docs/tree/ee20fda5d4810d2e641a1591754b699bb8677637 (consultado el 2026-10-27). Ruta `content/`; la verificación diaria de enlaces está en `.github/workflows/link-check-daily.yml` (commit 7abf80d, 2026-01-26). Verificación: V (API pública de GitHub).
+<a id="ref-github-docs-2026"></a>GitHub. (2026). *github/docs* (commit ee20fda) [Repositorio]. https://github.com/github/docs/tree/ee20fda5d4810d2e641a1591754b699bb8677637 (consultado el 2026-10-27). Ruta `content/`; la verificación diaria de enlaces está en `.github/workflows/link-check-daily.yml` (commit 7abf80d, 2026-01-26). Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `content/` en `33b1f4a` (2026-10-31).
 
-<a id="ref-github-openapi-2026"></a>GitHub. (2026). *github/rest-api-description* (commit a5c38c1) [Repositorio]. https://github.com/github/rest-api-description/tree/a5c38c137866bd959dcb7a5457c5181ee1224c0f (consultado el 2026-10-27). Ruta `descriptions/`, descripciones OpenAPI de la API REST. Verificación: V (API pública de GitHub).
+<a id="ref-github-openapi-2026"></a>GitHub. (2026). *github/rest-api-description* (commit a5c38c1) [Repositorio]. https://github.com/github/rest-api-description/tree/a5c38c137866bd959dcb7a5457c5181ee1224c0f (consultado el 2026-10-27). Ruta `descriptions/`, descripciones OpenAPI de la API REST. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `descriptions/` en `e85aa3d` (2026-10-31).
 
-<a id="ref-kubernetes-website-2026"></a>Kubernetes. (2026). *kubernetes/website* (commit ed70e31) [Repositorio]. https://github.com/kubernetes/website/tree/ed70e311737a341574ed5758b7af24e3bba232cb (consultado el 2026-10-27). Ruta `content/en/`; 33 ramas `release-1.*` (la última, `release-1.36`). Verificación: V (API pública de GitHub).
+<a id="ref-kubernetes-website-2026"></a>Kubernetes. (2026). *kubernetes/website* (commit ed70e31) [Repositorio]. https://github.com/kubernetes/website/tree/ed70e311737a341574ed5758b7af24e3bba232cb (consultado el 2026-10-27). Ruta `content/en/`; 33 ramas `release-1.*` (la última, `release-1.36`). Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `content/en` en `6dbc6e1`.
 
-<a id="ref-microsoft-azure-docs-2026"></a>Microsoft. (2026). *MicrosoftDocs/azure-docs* (commit d7e590b) [Repositorio]. https://github.com/MicrosoftDocs/azure-docs/tree/d7e590b2008f569384236af9abf02893d82c14db (consultado el 2026-10-27). Ruta `articles/`. Verificación: V (API pública de GitHub).
+<a id="ref-microsoft-azure-docs-2026"></a>Microsoft. (2026). *MicrosoftDocs/azure-docs* (commit d7e590b) [Repositorio]. https://github.com/MicrosoftDocs/azure-docs/tree/d7e590b2008f569384236af9abf02893d82c14db (consultado el 2026-10-27). Ruta `articles/`. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `articles/` en `c96c090` (2026-10-31).
 
-<a id="ref-stripe-openapi-2026"></a>Stripe. (2026). *stripe/openapi* (commit a6cd987) [Repositorio]. https://github.com/stripe/openapi/tree/a6cd9878ad3d86f46a4b81ec4368e76f690a1e09 (consultado el 2026-10-27). Ruta `openapi/`. Verificación: V (API pública de GitHub).
+<a id="ref-stripe-openapi-2026"></a>Stripe. (2026). *stripe/openapi* (commit a6cd987) [Repositorio]. https://github.com/stripe/openapi/tree/a6cd9878ad3d86f46a4b81ec4368e76f690a1e09 (consultado el 2026-10-27). Ruta `openapi/`. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `openapi/` en `aab1dee` (2026-10-29).
 
-<a id="ref-mintlify-docs-2026"></a>Mintlify. (2026). *mintlify/docs* (commit 4a8f15c) [Repositorio]. https://github.com/mintlify/docs/tree/4a8f15c3dc3f2e5a855098c16bc2ecab56242b4d (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub).
+<a id="ref-mintlify-docs-2026"></a>Mintlify. (2026). *mintlify/docs* (commit 4a8f15c) [Repositorio]. https://github.com/mintlify/docs/tree/4a8f15c3dc3f2e5a855098c16bc2ecab56242b4d (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01, sin cambios.
 
-<a id="ref-redhat-openshift-docs-2026"></a>Red Hat. (2026). *openshift/openshift-docs* (commit df83131) [Repositorio]. https://github.com/openshift/openshift-docs/tree/df831314fea6714928d2f9e4da6967ef03507c77 (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub).
+<a id="ref-redhat-openshift-docs-2026"></a>Red Hat. (2026). *openshift/openshift-docs* (commit df83131) [Repositorio]. https://github.com/openshift/openshift-docs/tree/df831314fea6714928d2f9e4da6967ef03507c77 (consultado el 2026-10-27). Archivo `.vale.ini`. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01, sin cambios.
 
-<a id="ref-grafana-2026"></a>Grafana Labs. (2026). *grafana/grafana* (commit 5427e8d) [Repositorio]. https://github.com/grafana/grafana/tree/5427e8d92b287503d5df1b272b9811e3ec0322f0 (consultado el 2026-10-27). Archivo `.vale.ini`; la documentación del producto vive en `docs/sources/` del mismo repositorio (commit 7b102dd, 2026-10-27). Verificación: V (API pública de GitHub).
+<a id="ref-grafana-2026"></a>Grafana Labs. (2026). *grafana/grafana* (commit 5427e8d) [Repositorio]. https://github.com/grafana/grafana/tree/5427e8d92b287503d5df1b272b9811e3ec0322f0 (consultado el 2026-10-27). Archivo `.vale.ini`; la documentación del producto vive en `docs/sources/` del mismo repositorio (commit 7b102dd, 2026-10-27). Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `docs/sources` en `a9c678d` (2026-10-30).
 
-<a id="ref-backstage-2026"></a>Backstage. (2026). *backstage/backstage* (commit 82079b4) [Repositorio]. https://github.com/backstage/backstage/tree/82079b4e75b68807eb83a718749663fb6d730236 (consultado el 2026-10-27). Ruta `docs/`, en el mismo repositorio que el código. Verificación: V (API pública de GitHub).
+<a id="ref-backstage-2026"></a>Backstage. (2026). *backstage/backstage* (commit 82079b4) [Repositorio]. https://github.com/backstage/backstage/tree/82079b4e75b68807eb83a718749663fb6d730236 (consultado el 2026-10-27). Ruta `docs/`, en el mismo repositorio que el código. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `docs/` en `f81ca4e` (2026-10-31).
 
-<a id="ref-istio-2026"></a>Istio. (2026). *istio/istio.io* (commit 2100f40) [Repositorio]. https://github.com/istio/istio.io/tree/2100f4033a629dd1986620fe1f7c3375e73945e1 (consultado el 2026-10-27). Ruta `content/`; 33 ramas `release-1.*` (la última, `release-1.31`). Verificación: V (API pública de GitHub).
+<a id="ref-istio-2026"></a>Istio. (2026). *istio/istio.io* (commit 2100f40) [Repositorio]. https://github.com/istio/istio.io/tree/2100f4033a629dd1986620fe1f7c3375e73945e1 (consultado el 2026-10-27). Ruta `content/`; 33 ramas `release-1.*` (la última, `release-1.31`). Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: `content/` en `5453c1c` (2026-10-29).
 
-<a id="ref-docusaurus-2026"></a>Docusaurus. (2026). *facebook/docusaurus* (commit 206e741) [Repositorio]. https://github.com/facebook/docusaurus/tree/206e741f1fed6b38eb0ddd6d31cc220652bf2e1b (consultado el 2026-10-27). Ruta `website/versioned_docs/`, doce versiones publicadas. Verificación: V (API pública de GitHub).
+<a id="ref-docusaurus-2026"></a>Docusaurus. (2026). *facebook/docusaurus* (commit 206e741) [Repositorio]. https://github.com/facebook/docusaurus/tree/206e741f1fed6b38eb0ddd6d31cc220652bf2e1b (consultado el 2026-10-27). Ruta `website/versioned_docs/`, doce versiones publicadas. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01: el repositorio se mudó a https://github.com/meta/docusaurus/tree/c5bc92e92849817453c7cffffb23c96ff923b912 (commit `c5bc92e`, 2026-10-29, doce versiones).
 
-<a id="ref-jest-2026"></a>Jest. (2026). *jestjs/jest* (commit ea7258e) [Repositorio]. https://github.com/jestjs/jest/tree/ea7258e3338b9df680c66a5198607da8accf25c3 (consultado el 2026-10-27). Ruta `website/versioned_docs/`, cuatro versiones publicadas. Verificación: V (API pública de GitHub).
+<a id="ref-jest-2026"></a>Jest. (2026). *jestjs/jest* (commit ea7258e) [Repositorio]. https://github.com/jestjs/jest/tree/ea7258e3338b9df680c66a5198607da8accf25c3 (consultado el 2026-10-27). Ruta `website/versioned_docs/`, cuatro versiones publicadas. Verificación: V (API pública de GitHub). Reverificada el 2026-11-01, sin cambios.
 
 ## 8. Desarrollo guiado por especificación
 
 Las entradas de esta sección se consultaron el 2026-10-27 para el tema 07.
 
-<a id="ref-github-2026"></a>GitHub. (2026). *Spec Kit* (v1.2.4) [Software]. https://github.com/github/spec-kit/tree/v1.2.4 (consultado el 2026-10-27). Verificación: V.
+<a id="ref-github-2026"></a>GitHub. (2026). *Spec Kit* (v1.2.4) [Software]. https://github.com/github/spec-kit/tree/v1.2.4 (consultado el 2026-10-27). Verificación: V. Reverificada el 2026-11-01: la última versión es v1.2.5.
 
-<a id="ref-kiro-sf"></a>Kiro. (s. f.). *Specs*. Kiro Docs. https://kiro.dev/docs/specs/ (consultado el 2026-10-27). Verificación: V.
+<a id="ref-kiro-sf"></a>Kiro. (s. f.). *Specs*. Kiro Docs. https://kiro.dev/docs/specs/ (consultado el 2026-10-27). Verificación: V. Reverificada el 2026-11-01: `requirements.md` (o `bugfix.md`), `design.md`, `tasks.md`.
 
 <a id="ref-nygard-2011"></a>Nygard, M. (2011, 15 de noviembre). *Documenting architecture decisions*. Cognitect. https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions (consultado el 2026-10-27). Verificación: V.
 
@@ -227,3 +235,55 @@ Las entradas de esta sección son las fuentes de §3.4 de la resolución 399 del
 <a id="ref-microsoft-copilot-privacy-2026"></a>Microsoft. (2026, 31 de octubre). *Data, privacy, and security for Microsoft 365 Copilot*. Microsoft Learn. https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy (consultado el 2026-11-02). Verificación: V.
 
 Volver al [Mapa](../01-Mapa.md#6-anexos).
+
+## 10. Software
+
+Las herramientas de la compuerta, con la versión que fija el repositorio.
+
+<a id="ref-lab-documentos-2026"></a>Lab-Documentos. (2026). *docs-guard* (commit 00171bd) [Software]. https://github.com/hdcm-dev/Lab-Documentos/tree/00171bd/tools/docs-guard (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-lycheeverse-2025"></a>lycheeverse. (2025, 11 de febrero). *lychee* (versión 0.18.1) [Software]. GitHub. https://github.com/lycheeverse/lychee/releases/tag/lychee-v0.18.1 (consultado el 2026-11-01). Verificación: V (registro de versiones de GitHub).
+
+<a id="ref-anson-2025a"></a>Anson, D. (2025a, 17 de enero). *markdownlint-cli2* (versión 0.17.2) [Software]. npm. https://github.com/DavidAnson/markdownlint-cli2/tree/v0.17.2 (consultado el 2026-11-01). Verificación: V (registro de npm).
+
+<a id="ref-anson-2025b"></a>Anson, D. (2025b, 15 de enero). *markdownlint* (versión 0.37.4) [Software]. npm. https://github.com/DavidAnson/markdownlint/tree/v0.37.4 (consultado el 2026-11-01). Verificación: V (registro de npm).
+
+<a id="ref-sveidqvist-2024"></a>Sveidqvist, K. (2024, 27 de noviembre). *mermaid* (versión 11.4.1) [Software]. npm y GitHub. https://github.com/mermaid-js/mermaid/releases/tag/mermaid%4011.4.1 (consultado el 2026-11-01). Verificación: V (registro de versiones de GitHub; autoría según el registro de npm).
+
+<a id="ref-jsdom-2024"></a>jsdom. (2024, 22 de septiembre). *jsdom* (versión 25.0.1) [Software]. GitHub. https://github.com/jsdom/jsdom/releases/tag/25.0.1 (consultado el 2026-11-01). Verificación: V (registro de versiones de GitHub).
+
+<a id="ref-github-checkout-2024"></a>GitHub. (2024, 23 de octubre). *actions/checkout* (v4.2.2) [Software]. GitHub. https://github.com/actions/checkout/releases/tag/v4.2.2 (consultado el 2026-11-01). Verificación: V (registro de versiones de GitHub).
+
+<a id="ref-lab-documentos-guia-sf"></a>Lab-Documentos. (s. f.). *Guía de un solo archivo* (`DOC-SDT-0001`) [Guía archivada en la etiqueta `sdei-v2.0.0-borrador`]. https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md (consultado el 2026-11-04, en el commit `31660d3`, que lleva la etiqueta). Verificación: V.
+
+## 11. Industria y estándares
+
+Las fuentes que suma el capítulo 18 del libro, reverificadas el 2026-11-01.
+
+<a id="ref-onesignal-sf"></a>OneSignal. (s. f., a). *Create user* [Referencia de la API, página HTML y fuente .md]. OneSignal Documentation. https://documentation.onesignal.com/reference/create-user (consultado el 2026-11-01). El fuente: https://documentation.onesignal.com/reference/create-user.md; el contrato: https://documentation.onesignal.com/openapi.json. Verificación: V (respuesta del propio sitio).
+
+<a id="ref-onesignal-llms-sf"></a>OneSignal. (s. f., b). *OneSignal* [Índice para agentes, llms.txt]. https://documentation.onesignal.com/llms.txt (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-mintlify-openapi-sf"></a>Mintlify. (s. f., a). *OpenAPI setup*. Mintlify Docs. https://www.mintlify.com/docs/api-playground/openapi-setup (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-mintlify-llmstxt-sf"></a>Mintlify. (s. f., b). *llms.txt*. Mintlify Docs. https://www.mintlify.com/docs/ai/llmstxt (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-molina-2024"></a>Molina, D., y Christensen, W. (2024, 8 de julio). *A new era for Twilio's documentation*. Twilio Blog. https://twilio.com/en-us/blog/developers/new-era-for-twilio-documentation (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-markdoc-sf"></a>Markdoc. (s. f.). *Markdoc: A powerful, flexible, Markdown-based authoring framework*. https://markdoc.dev/ (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-google-docguide-sf"></a>Google. (s. f.). *Documentation best practices*. Google Style Guides. https://google.github.io/styleguide/docguide/best_practices.html (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-iso-26515-2018"></a>ISO/IEC/IEEE. (2018). *ISO/IEC/IEEE 26515:2018 Systems and software engineering — Developing information for users in an agile environment* (2.ª ed.). https://committee.iso.org/standard/70880.html (consultado el 2026-11-01). Verificación: V (ficha de comité).
+
+<a id="ref-iec-82079-2019"></a>IEC. (2019). *IEC/IEEE 82079-1:2019 Preparation of information for use (instructions for use) of products — Part 1: Principles and general requirements* (ed. 2.0). https://webstore.iec.ch/en/publication/29075 (consultado el 2026-11-01). Verificación: V (ficha).
+
+<a id="ref-github-copilot-agents-sf"></a>GitHub. (s. f.). *Adding repository custom instructions for GitHub Copilot*. GitHub Docs. https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-microsoft-learn-mcp-2026"></a>Microsoft. (2026b, 5 de mayo). *Microsoft Learn MCP Server overview*. Microsoft Learn. https://learn.microsoft.com/en-us/training/support/mcp (consultado el 2026-11-01). Verificación: V.
+
+<a id="ref-gitbook-2026a"></a>GitBook. (2026a, 4 de febrero). *AI docs readership increased over 500% in 2025. What does it mean for you?* GitBook Blog. https://www.gitbook.com/blog/ai-docs-data-2025 (consultado el 2026-11-01). Verificación: V (dato del proveedor sobre los sitios de sus clientes).
+
+<a id="ref-gitbook-2026b"></a>GitBook. (2026b, 18 de marzo). *The State of Docs Report 2026 is live! Here are the highlights*. GitBook Blog. https://gitbook.com/blog/state-of-docs-2026 (consultado el 2026-11-01). Verificación: V (encuesta del proveedor).
+
+<a id="ref-mkdocs-material-sf"></a>Material for MkDocs. (s. f.). *Material for MkDocs*. https://squidfunk.github.io/mkdocs-material/ (consultado el 2026-11-01). Verificación: V.

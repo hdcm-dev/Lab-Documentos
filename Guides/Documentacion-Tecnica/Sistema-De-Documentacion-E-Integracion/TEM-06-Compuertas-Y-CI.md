@@ -32,8 +32,9 @@ nuevo, si tiene que bloquear, y leer el resultado de una corrida para saber qué
 
 ## Definición
 
-Una **compuerta** es un control que corre en la integración continua (CI) y termina con un código de salida: 0 si
-está en orden, 1 si bloquea. Las compuertas del carril PR viven en un solo workflow reutilizable de Lab-Documentos,
+Un **control** corre en la integración continua (CI) y termina con un código de salida: 0 si está en orden, 1 si
+bloquea; la **compuerta** es el carril PR, el conjunto de controles de cada pull request
+([Marco](00-Marco.md#1-definiciones)). Los controles del carril PR viven en un solo workflow reutilizable de Lab-Documentos,
 `docs-guard`, que otros repositorios de la misma organización llaman; el carril programado es otro workflow del mismo
 repositorio, `docs-enlaces-semanal`. Los controles propios están en un script de Python con biblioteca estándar,
 `tools/docs-guard/dg.py`.
@@ -69,7 +70,7 @@ convierte esas buenas intenciones en algo que se comprueba en cada cambio.
 flowchart LR
   PR["Pull request"] --> J["docs-guard<br/>un solo job, 10 min"]
   J --> P1["PR-1 enlaces"] & P2["PR-2 esquema"] & P3["PR-3 anti-inyección"] & P4["PR-4 estructura"]
-  J --> P5["PR-5 trazas"] & P6["PR-6 contrato"] & P7["PR-7 fijadas y reflint"] & AU["autoprueba"]
+  J --> P5["PR-5 trazas"] & P6["PR-6 contrato"] & P7["PR-7 fijadas y referencias"] & AU["autoprueba"]
   P1 & P2 & P3 & P4 & P5 & P6 & P7 & AU --> AG{"agregador estricto"}
   AG -->|"todos verdes"| V["verde: G3 de la guarda"]
   AG -->|"alguno rojo"| R["rojo: no se fusiona"]
@@ -90,7 +91,7 @@ caché de herramientas.
 | `PR-1` | Enlaces internos y anclas (lychee sin red, con fragmentos); enlaces relativos que salen del repositorio | Sí |
 | `PR-2` | Frontmatter contra su esquema, registro cerrado de prefijos, esquema del registro de requerimientos | Sí; un archivo sin frontmatter sólo bloquea dentro de un cuerpo nuevo |
 | `PR-3` | Anti-inyección AI-1 a AI-5 (detalle en `TEM-04`) | Sí, salvo AI-3, que avisa en todo el cuerpo, y AI-4, que avisa sólo dentro del anexo de referencias |
-| `PR-4` | Markdown estructural (sin la regla de largo de línea) y mermaid que parsea | Sí |
+| `PR-4` | Markdown estructural (sin la regla de largo de línea), mermaid que parsea y `mermaid-arroba`: una arroba seguida de un nombre con punto dentro de una etiqueta mermaid | Sí |
 | `PR-5` | `traces-resolve`: cada `ID@versión` contra el registro generado de los encabezados (detalle en `TEM-05`) | Sí |
 | `PR-6` | Diff del contrato OpenAPI, si la carpeta tiene un `contracts/openapi.json`: el contrato versionado contra el que emitió el código, `contracts/.generado/openapi.json`. Como `docs-guard` no compila, ese archivo llega de una de dos formas: está en el árbol del pull request (lo escribió el build y se versionó en el mismo cambio), o el `source.lock` de la carpeta tiene una línea `workflow:` que nombra otro workflow del repositorio, que compila, extrae y compara; su resultado es otro check del pull request y la guarda G3 lo exige en verde como a `docs-guard`. Sin ninguna de las dos, `PR-6` da rojo por falta de extracción. Es el caso de la mini demo, cuyo `source.lock` nombra `mini-demo-movilidad`. Cualquier operación nueva, quitada o cambiada da rojo, rompa o no la compatibilidad: un cambio legítimo de la API actualiza el contrato versionado en el mismo pull request, y el diff queda a la vista de quien revisa | Sí |
 | `PR-7` | Piezas fijadas con su SHA-256; `reflint` sobre las entradas del anexo de referencias (año, título en cursiva, fecha de consulta); `url-fecha`: toda URL y toda cita por dominio en un code span (como `example.org/docs`) lleva, en su mismo párrafo o fila, la fecha de consulta o la cita enlazada al anexo (`#ref-…`) | Sí; `reflint` y `url-fecha` avisan en lo heredado, y `url-fecha` también en un documento `obsoleto` |
@@ -212,8 +213,8 @@ GitLab corre en cada merge request que toca Markdown un conjunto de controles de
 Markdown, mermaid, enlaces relativos y redirecciones de páginas movidas, y falla cuando la documentación generada
 quedó desincronizada de su fuente ([GitLab, s. f., «Documentation testing»](99-Anexos/Referencias.md#ref-gitlab-testing-sf)). Su flujo pide,
 cuando se puede, que la documentación viaje en el mismo merge request que el código y la cuenta en la definición de
-«terminado» ([GitLab, s. f., «Documentation workflow»](99-Anexos/Referencias.md#ref-gitlab-sf)). El lint de estilo de prosa, en cambio, es
-informativo y no bloquea: la misma separación entre bloquear y avisar que formaliza la regla de este tema.
+«terminado» ([GitLab, s. f., «Documentation workflow»](99-Anexos/Referencias.md#ref-gitlab-sf)). Vale, su linter de prosa, corre dos veces: sus errores
+hacen fallar el trabajo de lint y sus hallazgos en el informe de calidad sólo se muestran (consulta del 2026-11-01). Es la misma separación entre bloquear y avisar que formaliza la regla de este tema, decidida por el nivel del hallazgo y no por la herramienta.
 
 ### 3.2 La compuerta de este repositorio
 

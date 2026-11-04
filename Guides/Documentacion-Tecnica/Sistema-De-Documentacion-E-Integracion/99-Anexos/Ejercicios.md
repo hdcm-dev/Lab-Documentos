@@ -108,7 +108,7 @@ Sin `confidence`, da rojo el grupo PR-2 (esquema) con la regla `esquema-cuerpo`,
 **EJR-SDEI-03.** No hay una única respuesta: se evalúa que cada celda cite su observable. Una lectura posible:
 X agrega poco (K1 alto), sirve a la persona usuaria y al agente desde la misma fuente (K5 alto) y la deriva se ve en
 el pull request del código (K7 = 5); Y suma una herramienta y un repositorio (K1 = 2) y un ancla entre repositorios
-(K7 = 4, aviso programado). Si X gana por 0,30 o más con pesos iguales, la decisión es firme. Ninguna cae por un filtro
+(K7 = 4, aviso programado). Si X gana por 0,30 o más con los pesos del anexo, y sigue ganando al mover ±10 % cualquier peso y con pesos iguales, la decisión es firme. Ninguna cae por un filtro
 si ambas corren en el runner del caso.
 
 **EJR-SDEI-04.** Se entra por §2, fila `ESC-SDEI-2`, y se ajusta por §3, fila `CTX-SDEI-3` (la pieza vive en otro

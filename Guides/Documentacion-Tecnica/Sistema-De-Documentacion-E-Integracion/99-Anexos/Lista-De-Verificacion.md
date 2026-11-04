@@ -89,7 +89,7 @@ verifica figura en la columna «Compuerta»; si el pull request está en verde, 
 | `VER-M05` | Tablas para resumir o comparar, sin celdas de texto largo | PR-4 (MD056, columnas) | Markdown |
 | `VER-M06` | Bloques de código con lenguaje indicado, mínimos y con contexto | — | Markdown |
 | `VER-M07` | Diagramas en mermaid, sólo cuando aportan y sin redundancia | — | Markdown |
-| `VER-M08` | Todo bloque mermaid es sintácticamente correcto | PR-4 (parser de mermaid) | Markdown |
+| `VER-M08` | Todo bloque mermaid es sintácticamente correcto y no lleva una arroba que el dibujo tome como correo | PR-4 (parser de mermaid y `mermaid-arroba`) | Markdown |
 | `VER-M09` | Los ejemplos reales salen de una ejecución; los ilustrativos están marcados | — | Markdown |
 | `VER-M10` | Enlaces válidos; se referencia en lugar de duplicar | PR-1 | Markdown |
 | `VER-M11` | Estilo técnico, didáctico y uniforme: el conjunto se lee como una única obra | — | Markdown |

@@ -71,8 +71,8 @@ Dos formas tienen su propio esquema:
 
 | Forma | Cómo se reconoce | Campos obligatorios |
 | --- | --- | --- |
-| README de un cuerpo | `README.md` con `corpus_id` | `corpus_id` (mayúsculas y guiones), `version` (SemVer, admite sufijo `-borrador`), `title`, `description`. Puede sumar los diez campos, como el [README de este cuerpo](../README.md) |
-| Página de ayuda al usuario final | Tiene `roles` o `translation_of` y no tiene `doc_id` | `title` y, según el caso, `roles` o `translation_of`. Opcionales: `delivery` (como arriba) y `contexto: <app>/<id>`, el identificador de contexto de la pantalla o del campo que pide la página; el mapa pantalla → página se deriva de esos campos y el control `contexto-resuelve` (página sin `contexto` que la pida o `contexto` sin página) entra en «avisa» con el expediente de herramienta. El esquema completo lo trae el ejemplo de la ayuda por rol |
+| README de un cuerpo | `README.md` con `corpus_id` | `corpus_id` (mayúsculas y guiones), `version` (SemVer, admite sufijo de versión previa, como `-borrador` o `-borrador.1`), `title`, `description`. Puede sumar los diez campos, como el [README de este cuerpo](../README.md) |
+| Página de ayuda al usuario final | Tiene `roles` o `translation_of` y no tiene `doc_id` | `title`, `description` y, según el caso, `roles` o `translation_of`; si lleva `traces`, cada una con `@MAYOR.MENOR`. Opcionales: `delivery` (como arriba) y `contexto: <app>/<id>`, el identificador de contexto de la pantalla o del campo que pide la página; el mapa pantalla → página se deriva de esos campos y el control `contexto-resuelve` (página sin `contexto` que la pida o `contexto` sin página) entra en «avisa» con el expediente de herramienta. El esquema completo lo trae el ejemplo de la ayuda por rol |
 
 `corpus_id` y `version` viven sólo en el README: un tema no repite la versión del cuerpo. Única excepción: el
 conocimiento de `Conocimientos/` lleva `version`, que repite su `**Versión:**` ([Marco, §5](../00-Marco.md#5-convenciones)).

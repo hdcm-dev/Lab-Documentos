@@ -265,7 +265,7 @@ decisión P-08).
 
 Pasar a vigente es un acto de una persona. Cuando están los siete temas y la revisión del escalón da su visto bueno,
 alguien pasa cada documento a `vigente` en un pull request propio; después la persona responsable del producto fija
-la versión en `2.0.0` y la marca con una etiqueta anotada [Compilado: README.md, l. 161–165].
+la versión en `2.0.0` y la marca con una etiqueta anotada [Compilado: README.md, l. 162–165].
 
 El diseño del cuerpo sale del expediente 0002 de DocAsCode, en el repositorio hermano Lab-Documentos.Documentacion:
 decisiones D27 (cuerpo documental y rutas), D28 (citación APA 7 con fecha de consulta), D09 (contrato de frontmatter y
@@ -425,12 +425,12 @@ compuerta la lea.
 Una **traza** es la declaración, en el frontmatter, de que un documento depende de otro identificador: si el
 identificador cambia de versión o desaparece, el documento hay que revisarlo. Tiene dos formas, `traces: [ID]` y
 `traces: [ID@MAYOR.MENOR]` [Compilado: 00-Marco.md, l. 48]. La traza apunta al identificador, nunca a la ruta del
-archivo: una ruta cambia cuando alguien reordena carpetas; el identificador, no [Compilado: 00-Marco.md, l. 179].
+archivo [Compilado: 00-Marco.md, l. 179]: una ruta cambia cuando alguien reordena carpetas; el identificador, no **[criterio propio]**.
 
 La compuerta resuelve cada traza contra un **registro de identificadores** que arma sola, sin que nadie lo mantenga a
 mano: lo forman los `doc_id` de todo el repositorio y los encabezados que empiezan con un identificador, con una línea
 `**Versión:** 1.1` debajo cuando el identificador tiene versión [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md,
-l. 89–92]. De ahí salen tres consecuencias que el resto del libro usa sin repetir:
+l. 89–92; 00-Marco.md, l. 48]. De ahí salen tres consecuencias que el resto del libro usa sin repetir:
 
 - **Con versión, la traza detecta el cambio.** Si la ficha sube de 1.0 a 1.1, la página que traza a `@1.0` da rojo.
   Una traza sin versión sólo comprueba que el identificador existe, y la subida no la pone en rojo; por eso traza con
@@ -476,7 +476,7 @@ instrumento. Mezclarlas lleva a buscar en el control equivocado.
 | Atraso | Commits que el SHA fijado (`base_commit`, `sha` de `source.lock`) está detrás de la rama principal del repositorio que fija; un entero mayor o igual a 0 | Control 3 (`atraso`) del carril programado | Avisa |
 | Deriva de copia fijada | Copia fijada cuya huella SHA-256 ya no coincide con la declarada | Control 4 del carril programado; el nombre es un alias hasta que se renombre el control | Avisa |
 
-[Compilado: 99-Anexos/Glosario.md, l. 47, 56, 64–67, 82–85; ../../../tools/docs-guard/semanal.sh, l. 14–15]
+[Compilado: 99-Anexos/Glosario.md, l. 47, 56, 64–65, 67, 82, 85; ../../../tools/docs-guard/semanal.sh, l. 14–15]
 
 El atraso y la deriva se confunden porque suelen aparecer juntos: el código avanzó y la página quedó atrás. Pero un
 SHA fijado puede estar cien commits atrás sin que ninguna afirmación de la página haya dejado de valer, y una página
@@ -509,7 +509,7 @@ La norma ISO/IEC/IEEE 26514:2022 mira el mismo problema desde el proceso: trata 
 producto con su propio desarrollo, que empieza por establecer qué información se necesita, decide cómo presentarla y
 recién después la prepara; y aclara que el diseño sigue a lo largo de todo el ciclo de vida
 ([ISO/IEC/IEEE, 2022](#ref-iso-26514-2022)) [Compilado: TEM-02-Ciclo-Documental.md, l. 85–88;
-TEM-05-Ayuda-Al-Usuario-Final.md, l. 38–40]. El registro de requerimientos documentales del capítulo 5 es la forma
+TEM-05-Ayuda-Al-Usuario-Final.md, l. 37–40]. El registro de requerimientos documentales del capítulo 5 es la forma
 escrita de ese primer paso. La norma se cita por su página oficial de alcance; su texto completo no se consultó
 [Compilado: TEM-02-Ciclo-Documental.md, l. 348].
 
@@ -528,7 +528,7 @@ prosa [Compilado: README.md, l. 44–47]. El tercero merece una sección aparte.
 
 A quién se le escribe, quién puede recibirlo y quién lee son tres preguntas distintas. La **audiencia** orienta qué se
 escribe y no da ni quita acceso; la **regla de entrega** decide quién recibe la pieza y es la que protege; el **lector**,
-persona o agente, es una dimensión de canal, y el agente lee con la audiencia de su usuario
+persona o agente, es una dimensión de canal, y el agente hereda la audiencia y el alcance de su usuario, sin acceso propio
 [Compilado: 99-Anexos/Glosario.md, l. 48, 96, 84]. El capítulo 7 desarrolla las tres.
 
 Una página tiene hoy dos lectores, una persona en el navegador y un agente que trabaja sobre el repositorio o le
@@ -549,7 +549,7 @@ fragmentos con procedencia), y la compuerta lo verifica con el esquema de frontm
 reciente sobre el otro extremo, el archivo que habla al agente a propósito: un estudio de 2303 archivos de contexto
 de agentes, en 1925 repositorios públicos, encontró que priorizan las pruebas, la implementación y la arquitectura,
 que rara vez cubren la seguridad y que evolucionan como código de configuración
-([Chatlatanagulchai et al., 2025](#ref-chatlatanagulchai-2025)) [Compilado: TEM-04-Doble-Audiencia.md, l. 123–128].
+([Chatlatanagulchai et al., 2025](#ref-chatlatanagulchai-2025)) [Compilado: TEM-04-Doble-Audiencia.md, l. 124–128].
 En este cuerpo ese archivo es un `AGENTS.md` que sólo apunta a la fuente y que decide una persona. El capítulo 7
 desarrolla los canales para cada lector.
 
@@ -573,11 +573,11 @@ no son las clases de pieza: la clase de pieza dice qué es la pieza; la de inter
 
 «H» quiere decir «la decide una persona», no siempre la responsable del producto. Una divergencia entre lo que la
 especificación dice y lo que se quiso decir la decide la analista, no el PO [Compilado: 00-Marco.md, l. 167–168]. Y
-una regla atraviesa las tres clases: **quien verifica no es quien redactó**, y una segunda identidad de la misma
-persona no aprueba a la primera [Compilado: 00-Marco.md, l. 168–171]. Que un agente fusione su propio pull request no
+una regla atraviesa a todos los actores: **quien verifica no es quien redactó**, y una segunda identidad de la misma
+persona no aprueba a la primera [Compilado: 00-Marco.md, l. 168–170]. Que un agente fusione su propio pull request no
 contradice la regla siempre que se den dos condiciones: quien verifica son los controles de la compuerta, que el
 agente no escribió en ese pull request, y una persona dejó asentada por escrito la delegación del merge
-[Compilado: 00-Marco.md, l. 171–172]. La comprobación que hace el agente antes de fusionar se llama **guarda de
+[Compilado: 00-Marco.md, l. 52, 171–172]. La comprobación que hace el agente antes de fusionar se llama **guarda de
 merge**: abierto, sin conflictos, con todos los controles en verde y sin una duda declarada; con una duda (una
 **reserva**), el merge vuelve a la persona [Compilado: 00-Marco.md, l. 52].
 
@@ -660,7 +660,7 @@ que lo repite con otras palabras; cuando el caso de uso cambia, la página no se
 `traces: [CU-08002@1.11]`, la página declara de qué versión del caso de uso depende, y la compuerta da rojo cuando esa
 versión deja de existir [Compilado: TEM-07-Marco-SDD.md, l. 67–72]. Un proyecto sin SDD no queda afuera: escribe sus
 reglas como fichas propias y su registro de requerimientos en `docs/_requisitos.md` [Compilado: 00-Marco.md,
-l. 138–140]. El capítulo 10 trata la integración con un marco SDD.
+l. 139–140]. El capítulo 10 trata la integración con un marco SDD.
 
 #### 1.9 El texto que leen agentes es superficie de ataque
 
@@ -678,7 +678,7 @@ buscan en el texto instrucciones escondidas: comentarios HTML, caracteres invisi
 fuera de una lista (AI-1 a AI-5) [Compilado: 00-Marco.md, l. 47].
 
 AI-3, que busca frases dirigidas al agente, sólo avisa: aparece también en textos que explican cómo se arma un agente
-[Compilado: TEM-04-Doble-Audiencia.md, l. 173–179].
+[Compilado: TEM-04-Doble-Audiencia.md, l. 177].
 
 La regla tiene un alcance que conviene ver de frente: al asistente que una persona usuaria usa para leer la ayuda de
 un producto no lo instruye el `AGENTS.md`, y sus instrucciones no las controla quien escribe la documentación. Por eso
@@ -1045,8 +1045,7 @@ flowchart LR
 
 Un repositorio dedicado a documentación formativa: lo que contiene son guías, y el código que aparece (las pruebas de
 concepto de `Examples/`) existe para ilustrarlas, no es un producto que se documente. El ejemplo es Lab-Documentos,
-que aloja varias guías; el cuerpo del que sale este libro es una de ellas. Las audiencias son quien estudia, quien
-enseña y los agentes. La versión se ancla con la versión del cuerpo en su README y una etiqueta por versión
+que aloja varias guías; el cuerpo del que sale este libro es una de ellas. Las audiencias típicas son quien estudia y quien enseña; los agentes leen el cuerpo como lectores, no como audiencia. La versión se ancla con la versión del cuerpo en su README y una etiqueta por versión
 [Compilado: 00-Marco.md, l. 78–81].
 
 ##### 3.2.2 App cliente sin roles (`ESC-SDEI-2`)
@@ -1069,8 +1068,7 @@ caso de uso de la unidad que la contiene, y la confidencialidad por rol se resue
 
 Un servicio que publica paquetes para que otros sistemas lo integren, con varias líneas de versión. El ejemplo es un
 servicio de repositorio privado, que el libro nombra `{servicio-privado}`: el segundo marco
-SDD del laboratorio, junto al de Lab-Geometria; el alias no es una sigla del producto. En este escenario, las audiencias son quien
-integra, quien opera y los agentes; la versión se ancla con la etiqueta de cada línea
+SDD del laboratorio, junto al de Lab-Geometria; el alias no es una sigla del producto. En este escenario, las audiencias típicas son quien integra y quien opera, y los agentes leen como lectores; la versión se ancla con la etiqueta de cada línea
 [Compilado: 00-Marco.md, l. 99–102].
 
 ##### 3.2.5 Qué cambia entre escenarios
@@ -1171,7 +1169,7 @@ escenario.
 
 Clase H quiere decir «la decide una persona», no siempre el PO: la tabla 3.3 dice qué persona decide cada cosa. Rige
 además la regla de §1.6: quien verifica no es quien redactó, y una segunda identidad de la misma persona no aprueba a
-la primera [Compilado: 00-Marco.md, l. 167–172].
+la primera [Compilado: 00-Marco.md, l. 167–170].
 
 #### 3.5 Convenciones
 
@@ -1183,7 +1181,7 @@ prólogo.
 
 | Convención | Regla | Detalle |
 | --- | --- | --- |
-| Frontmatter | Todo documento del cuerpo abre con los diez campos más `description`; `corpus_id` y `version` sólo en el README | Anexo C |
+| Frontmatter | Todo documento del cuerpo abre con los diez campos más `description`; `corpus_id` y `version` sólo en el README, salvo el conocimiento de `Conocimientos/`, cuyo `version` repite su `**Versión:**` | Anexo C |
 | Identificadores | Un prefijo del registro cerrado, guion y sufijo (`TEM-01`, `CQ-05`, `ESC-SDEI-2`). Una traza apunta al identificador, no a la ruta | Anexo C, registro de prefijos |
 | Trazas | `traces: [ID]` o `traces: [ID@MAYOR.MENOR]`; cada una tiene que resolver contra el registro, o la compuerta da rojo | §1.3.3; anexo C |
 | Enlaces | Relativos dentro del repositorio; nunca un relativo que salga del repositorio. Entre repositorios, `Repo@ancla:corpus_id/doc_id` con enlace permanente al SHA | Anexo A, cita entre repositorios |
@@ -1250,7 +1248,7 @@ a punta, con la historia de la versión 1.0 de la ficha, que dio rojo.
 5. ¿Qué control de la compuerta va a mirar la pieza que vas a producir, y qué tendría que estar mal para que dé rojo?
 6. Si la pieza no encaja en ninguna clase del catálogo, ¿quién decide abrir una nueva?
 
-[Compilado: 00-Marco.md, l. 210–214; 01-Mapa.md, l. 126–128]
+[Compilado: 00-Marco.md, l. 210–214; 01-Mapa.md, l. 127–128]
 
 #### 3.8 Resumen del capítulo 3
 
@@ -2266,9 +2264,9 @@ de Docusaurus y la de TechDocs de Backstage se releyeron el 2026-10-27 para el t
 | Hecho | El registro de IDs es único para todo Lab-Documentos y otras guías ya chocaron en él: `MARCO-CONVENCIONES` está declarado como `doc_id` en cuatro guías de `Guides/`, y el Framework Concept tuvo que pasar sus temas al espacio propio `FC-TEM-nn`. Por eso este cuerpo usa `TEM-SDEI-nn` |
 | Hecho | El índice para agentes de Lab-Documentos.Documentacion declara `base_commit` desde el 2026-10-27, pero entre comillas invertidas (`ia-db/README.md`, l. 122, en `e61c5df`, verificado el 2026-11-01); la expresión del carril programado no lo ve. El tema 03 todavía dice que ningún índice lo declara (co-cambio propuesto) |
 | Interpretación | Que «mismo repositorio» sea la topología por defecto sale de la regla del mismo pull request y de Backstage; no hay una medición que compare topologías |
-| Observación sobre la compuerta | `docs-guard` rechazaba `traces: []` como campo faltante, aunque el anexo del esquema admite la lista vacía; hoy lo acepta con el aviso `traces-vacio` (`tools/docs-guard/dg.py`, l. 342–346), que recomienda trazar al menos al `doc_id` del README del cuerpo |
+| Observación sobre la compuerta | `docs-guard` rechazaba `traces: []` como campo faltante, aunque el anexo del esquema admite la lista vacía; hoy lo acepta con el aviso `traces-vacio` (`tools/docs-guard/dg.py`, l. 345–350), que recomienda trazar al menos al `doc_id` del README del cuerpo |
 
-*Tabla 6.7. Observaciones del capítulo 6 [Compilado: TEM-03-Topologia-Y-Versionado.md, l. 322–329].*
+*Tabla 6.7. Observaciones del capítulo 6 [Compilado: TEM-03-Topologia-Y-Versionado.md, l. 322–323, 325–328].*
 
 #### Resumen del capítulo 6
 
@@ -2321,13 +2319,13 @@ audiencia adapta la de ISO/IEC/IEEE 26514:2022, §3.1.7, **sin verificar** contr
 | Registro de audiencias | Pieza versionada (prefijo `AUD-`, `doc_type: registro-audiencias`), una fila por audiencia; es la fuente. La matriz audiencia × página se deriva |
 | `delivery:` | Campo de la página: qué audiencias del registro la reciben. `audience` sigue siendo de orientación |
 
-*Tabla 7.1. Términos que no hay que confundir [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 56–66].*
+*Tabla 7.1. Términos que no hay que confundir [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 56–66; 99-Anexos/Glosario.md, l. 43, 48, 84, 94, 99].*
 
 #### 7.2 Dimensiones y perfil mínimo
 
 Cuatro dimensiones ortogonales describen la regla: **rol**, **tipo de alcance** (`generico` o `por-aplicacion`; los
 valores viven en el producto), **superficie** (panel, portal, app móvil, servicio, SDK) y **nivel de acceso**
-[Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 104–109]. El idioma no amplía el acceso y la pericia es opcional.
+[Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 104–105, 114–117]. El idioma no amplía el acceso y la pericia es opcional.
 
 | Dimensión | Cuándo es obligatoria | Qué se cuida |
 | --- | --- | --- |
@@ -2336,7 +2334,7 @@ valores viven en el producto), **superficie** (panel, portal, app móvil, servic
 | Tipo de alcance | Sólo si el inventario lo registra | En el repositorio va el tipo; el cruce de alcance lo prueba el producto, y en el repositorio se barren literales de inquilino |
 | Superficie | Sólo si el inventario la registra | Una fuente, salidas por superficie; el paquete instalable lleva sólo lo `publico` |
 
-*Tabla 7.2. Las cuatro dimensiones [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 109–119].*
+*Tabla 7.2. Las cuatro dimensiones [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 107–119].*
 
 El **perfil mínimo** son roles planos con jerarquía declarada, nivel y la regla `nivel-vs-repo`; lo demás son
 extensiones que se activan sólo si hacen falta. Un ejemplo ilustrativo, el de un aula: `coordinacion` incluye a
@@ -2361,7 +2359,7 @@ Un repositorio público sólo puede guardar fuentes `publico` o `producto` (regl
 La **prueba pareada** da el veredicto: el autorizado recibe 200 con contenido y el no autorizado recibe algo distinto
 de 200 y sin contenido (403 o 404, elegido y declarado). Una sola mitad no prueba nada: un 404 para todos también
 «niega». Ocultar una página en el menú es visibilidad; no entregarla es acceso, y sólo lo segundo protege. La tabla es
-una propuesta adoptada con revisión; el par ya corre, con contenido ficticio, en la prueba del capítulo 14.
+una propuesta adoptada con revisión, que queda firme cuando el par corra verde y rojo; ya corre, con contenido ficticio, en la prueba del capítulo 14.
 
 #### 7.4 Documentación de API por exposición
 
@@ -2404,7 +2402,7 @@ flowchart LR
 ```
 
 *Figura 7.1. La compuerta revisa la fuente (3); la regla de entrega (4) es una sola para la persona (5) y para su
-agente (6). `AGENTS.md` (7) sólo apunta [Compilado: TEM-04-Doble-Audiencia.md, l. 72–85].*
+agente (6). `AGENTS.md` (7) sólo apunta [Compilado: TEM-04-Doble-Audiencia.md, l. 72–85, 220–222].*
 
 **El agente hereda.** No existe una audiencia «agente» con nivel propio: un agente de código del equipo pertenece a la
 audiencia de desarrollo, y el asistente de una persona, a la de esa persona, con su alcance. Es la regla de OWASP para
@@ -2433,7 +2431,7 @@ la regla hacen falta. `CL-08` está activo por defecto en los cuatro ([sección 
 | Servicio con paquetes (`ESC-SDEI-4`) | El agente de quien integra y el del equipo | `AGENTS.md`, README y CHANGELOG del paquete (`CL-13`), contrato, índice interno | Nivel y API por exposición. Que el paquete diga contra qué versión vale |
 
 *Tabla 7.5. Canales y dimensiones por escenario [Compilado: TEM-04-Doble-Audiencia.md, l. 92–97; 00-Marco.md,
-l. 106–117].*
+l. 106–117; TEM-05-Ayuda-Al-Usuario-Final.md, l. 107–108, 141–144].*
 
 | Contexto | Qué cambia |
 | --- | --- |
@@ -2460,12 +2458,12 @@ La convención pone en la raíz lo que un agente de código necesita ([AGENTS.md
 [`AGENTS.md`](../../../AGENTS.md) apunta al README del cuerpo y a los anexos, sin repetirlos. Como habla **al** agente a
 propósito, tiene una excepción al control AI-3 atada a su huella: si cambia una letra, deja de valer y una persona la
 renueva. El caso pasó: un cambio del archivo dejó vencida la huella, se renovó, y hoy `dg.py ai AGENTS.md` da AI-3=0
-[Compilado: TEM-04-Doble-Audiencia.md, l. 128–132].
+[Compilado: TEM-04-Doble-Audiencia.md, l. 128–132; Salida registrada: corrida del 2026-11-01, grupo PR-3; tools/docs-guard/excepciones.txt, l. 7].
 
 ##### 7.7.2 El índice para agentes sale del frontmatter
 
 El ensayo del tema arma un índice con un script de diez líneas que lee `doc_id`, ruta y `description` sin mirar la
-prosa. Corrido dos veces sobre el cuerpo, las salidas son idénticas [Compilado: TEM-04-Doble-Audiencia.md, l. 141–157].
+prosa. Corrido dos veces sobre el cuerpo, da salidas idénticas [Compilado: TEM-04-Doble-Audiencia.md, l. 141–157].
 
 De ahí sale una regla: la `description` es obligatoria, y la revisa una persona al pasar el documento a vigente.
 
@@ -2524,9 +2522,9 @@ Los criterios citables son `CQ-13` y `CQ-05`, en el [anexo D](#d-criterios-de-ca
 | Instrucciones | Repartidas en comentarios | Sólo en `AGENTS.md`, decidido por una persona |
 | Canales derivados | `llms.txt` a mano, sin sitio | Ninguno sin sitio; con sitio, generado y reproducible |
 
-*Tabla 7.8. Versión pobre y versión buena [Compilado: TEM-04-Doble-Audiencia.md, l. 268–276].*
+*Tabla 7.8. Versión pobre y versión buena [Compilado: TEM-04-Doble-Audiencia.md, l. 268–276; TEM-05-Ayuda-Al-Usuario-Final.md, l. 46, 133–135; 99-Anexos/Glosario.md, l. 96].*
 
-Una versión buena también **declara lo que no sabe**, y si la escribió un agente pasa por una revisión registrada
+Una versión buena también **declara lo que no sabe** y, si la escribió un agente, pasa por una revisión registrada
 (`CQ-14`): en un estudio de 1997 pull requests de documentación, los que abren agentes se fusionan con poca
 modificación humana posterior ([Yamasaki et al., 2026](#ref-yamasaki-2026)).
 
@@ -2545,7 +2543,7 @@ Fuentes del cuerpo: [Tema 04](TEM-04-Doble-Audiencia.md), [Tema 05](TEM-05-Ayuda
 | Hecho | Ninguna familia de control de audiencias está implementada en `docs-guard`; todas avisan (`TEM-06`, §1.3) |
 | Sin verificar | La cita de ISO/IEC/IEEE 26514:2022, §3.1.7, contra la edición publicada |
 | Interpretación | El ejemplo del aula de 7.2 es ilustrativo: no describe un producto. El cuerpo ejemplifica la jerarquía con otros nombres; el libro no fija esos roles como modelo |
-| Propuesta | `canal_agente`, con `ninguno` por defecto en lo no público, es propuesta de la mesa del expediente 0003, sin puntuar; no es norma [Compilado: TEM-04-Doble-Audiencia.md, l. 228–232]. La tabla de niveles de 7.3, adoptada con revisión |
+| Propuesta | `canal_agente`, con `ninguno` por defecto en lo no público, es propuesta de la mesa del expediente 0003, sin puntuar; no es norma, y habilitarlo «por sesión» exige una prueba del `llms.txt` por audiencia en dos sesiones [Compilado: TEM-04-Doble-Audiencia.md, l. 228–232]. La tabla de niveles de 7.3 es una propuesta adoptada con revisión |
 
 *Tabla 7.9. Fuentes y observaciones del capítulo 7.*
 
@@ -2675,7 +2673,7 @@ el [capítulo 14](#14-caso-de-estudio-ayuda-por-rol).
 Si la página no está traducida, se sirve la del idioma fuente con un aviso, nunca un 404. Un control que avise la
 traducción atrasada es **[criterio propio de la propuesta de ayuda por rol; no existe todavía en `docs-guard`]**. Las
 dos traducciones de la prueba anclan `translation_of` a la versión del caso de uso, que es lo que hoy admite el esquema
-[Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 242–249].
+(al existir el control, avisará que cambió el caso y no la página) [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 242–249].
 
 #### 8.4 Ayuda en el punto de uso: pantallas, campos, paneles y portales
 
@@ -2691,7 +2689,7 @@ request y trace a la regla que valida el campo [Compilado: TEM-05-Ayuda-Al-Usuar
 | `ejemplo` | Un valor válido | Ficticio |
 | `validacion` | El mensaje de error bajo el campo | Dice qué pasó y cómo corregirlo |
 
-*Tabla 8.4. Capas del microtexto [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 258–268]; origen en
+*Tabla 8.4. Capas del microtexto [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 258–270]; origen en
 [GOV.UK Design System, s. f.](#ref-govuk-sf) y [Sherwin, 2014](#ref-sherwin-2014).*
 
 **Los números salen de la regla; la letra, de una persona.** El límite se interpola desde la constante o el atributo, y
@@ -2723,7 +2721,7 @@ el proyecto dice «no se usa»: es lo que rige en este cuerpo.
 ([W3C, s. f., b](#ref-w3c-wcag22-332)) y sugerir cómo corregir ([W3C, s. f., c](#ref-w3c-wcag22-333)). La asociación con
 `aria-describedby` es un agregado del cuerpo y se comprueba en las pruebas de interfaz. Medido en la prueba extendida:
 `ValidationMessage` emite el mensaje sin `id` e `InputText` no emite `aria-describedby`, así que la asociación la pone
-la vista [Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt, l. 75–76].
+la vista [Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt, l. 75–77].
 
 **Asistente, si lo hay.** Nada obliga a tenerlo. Si existe, recupera la misma pieza con el token del usuario, cita
 `ID@versión` y **sugiere, no envía** **[propuesta de la mesa del expediente 0003, rotulada como tal]**.
@@ -2747,12 +2745,12 @@ Los criterios citables son `CQ-01`, `CQ-03` y `CQ-09`, en el [anexo D](#d-criter
 | --- | --- | --- |
 | Origen | Copia del caso de uso | Derivada, en la voz del usuario, con su fila `RD-` |
 | Traza | Ninguna, o sin versión | `ID@MAYOR.MENOR`; rojo si la regla sube |
-| Divergencias | Repite la pantalla aunque el producto haga otra cosa | Se declara, con qué hacer y quién decide |
+| Divergencias | Repite la pantalla aunque el producto haga otra cosa | Se declaran, con qué hacer y quién decide |
 | Entrega | Se oculta del menú y se entrega por URL | El servidor no la entrega; mismo filtro en todos los canales |
 | Campo | El límite copiado a mano en la pista | Interpolado desde la regla, con traza desde la ficha |
 | Idioma | 404 si falta la traducción | Idioma fuente con aviso |
 
-*Tabla 8.5. Versión pobre y versión buena [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 372–380].*
+*Tabla 8.5. Versión pobre y versión buena [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 372–381].*
 
 #### 8.7 Anexo
 
@@ -2813,8 +2811,8 @@ Lab-Documentos tiene dos workflows para la documentación. Los controles del car
 reutilizable, `docs-guard`, que otros repositorios de la misma organización llaman; el carril programado es otro
 workflow del mismo repositorio, `docs-enlaces-semanal`. Los controles propios están en un script de Python con
 biblioteca estándar, `tools/docs-guard/dg.py` [Compilado: TEM-06-Compuertas-Y-CI.md, l. 36–39]. Las herramientas
-externas son medios de un control y no tema: lychee verifica enlaces, markdownlint la estructura del Markdown y un
-parser de mermaid los diagramas [Compilado: TEM-06-Compuertas-Y-CI.md, l. 84–86].
+externas son medios de un control y no tema: lychee verifica enlaces; markdownlint, la estructura del Markdown, y un
+parser de mermaid, los diagramas [Compilado: TEM-06-Compuertas-Y-CI.md, l. 84–86].
 
 ##### 9.1.1 Qué problema resuelve y qué no es
 
@@ -2826,7 +2824,7 @@ control de versiones, tener dueño claro y pasar revisión, porque la que no tie
 cambio [Compilado: TEM-06-Compuertas-Y-CI.md, l. 51–56].
 
 La compuerta no es un juicio de calidad completo: automatiza lo que se puede contar (enlaces, esquema, trazas,
-referencias), y la claridad se mide con una prueba de lectura y la corrección, con revisión. Tampoco es un lugar para
+referencias); la claridad se mide con una prueba de lectura, y la corrección, con revisión. Tampoco es un lugar para
 controles que «casi siempre» aciertan, porque uno con falsos positivos que bloquea enseña a ignorarla. Y no es un
 agente: el job no tiene secretos ni invoca modelos de lenguaje [Compilado: TEM-06-Compuertas-Y-CI.md, l. 58–64].
 
@@ -2911,7 +2909,7 @@ tools/docs-guard/semanal.sh, l. 11–17].*
 El carril programado mide atraso, no deriva por símbolo. Cuenta cuántos commits tiene el SHA fijado detrás de la
 rama principal; si el método que una ficha cita cambió, eso lo mide A1 cuando corre la demo. A1 no está programado:
 es deuda declarada, y se cierra con el pull request que lo programe o con el folio que decida no hacerlo
-[Compilado: 00-Marco.md, l. 200–204]. El [capítulo 17](#173-carril-programado-aplicado-al-libro) aplica este carril
+[Compilado: 00-Marco.md, l. 200–204]. La [sección 17.3](#173-carril-programado-aplicado-al-libro) aplica este carril
 al propio libro.
 
 ##### 9.1.4 La regla de bloqueo
@@ -2956,13 +2954,13 @@ de base alta (falla la 4) y bloquea sólo en un cuerpo nuevo [Compilado: TEM-06-
 Un archivo está en un cuerpo nuevo si su carpeta, o una carpeta superior dentro del repositorio, tiene un `README.md`
 con `corpus_id` en el frontmatter. Un repositorio que adopta la compuerta por primera vez mide antes su línea de
 base: si da hallazgos, los sanea antes de llamar al workflow, o lo llama sólo sobre una carpeta ya limpia, con el
-parámetro `ruta` [Compilado: TEM-06-Compuertas-Y-CI.md, l. 119–120, 145–147].
+parámetro `ruta` [Compilado: TEM-06-Compuertas-Y-CI.md, l. 119–120, 145–146].
 
 ##### 9.1.5 Familias de controles de audiencias y ayuda
 
 La regla de entrega y la ayuda en el punto de uso traen controles nuevos. Todos nacen **avisando**: ninguno tiene su par
 corrido en `autoprueba` (falla la condición 3) y **ninguno está implementado** en `docs-guard`; la tabla fija sus
-nombres. Pasan a bloquear de a uno, por el expediente de herramienta [Compilado: TEM-06-Compuertas-Y-CI.md, l. 149–174].
+nombres. Pasan a bloquear de a uno, por el expediente de herramienta, cuando su par corre en `autoprueba` y su línea de base da 0 [Compilado: TEM-06-Compuertas-Y-CI.md, l. 149–174].
 
 | Control | Qué detecta | Dónde corre | Estado |
 | --- | --- | --- | --- |
@@ -3177,7 +3175,7 @@ Fuentes primarias, con fecha de consulta en el [anexo B](#b-referencias): Write 
 | --- | --- |
 | Hecho | El bloque del workflow se cita de `docs-guard.yml` en `00171bd`, l. 50–61; la fuente lo cita del commit `4750354`, con las mismas líneas. La etiqueta de runner va como parámetro, porque la fija el caso por plataforma |
 | Hecho | El ensayo de 9.3.2 se repitió el 2026-11-01 sobre una copia de Lab-Documentos en `00171bd`: verde sin el defecto, código 1 con él (673 enlaces, 1 error) |
-| Hecho | En esa corrida, AI-3 avisó en `AGENTS.md:17` porque la huella de su excepción no coincide con el archivo vigente |
+| Hecho | En esa corrida, AI-3 avisó en `AGENTS.md:17` porque la huella de su excepción no coincidía con el archivo vigente |
 | Interpretación | La diferencia de cantidades entre la corrida del 2026-10-27 y la del 2026-11-01 se debe al crecimiento del cuerpo, no a un cambio del control |
 | Criterio propio | Un cambio que llega desde un fork no se fusiona solo: alguien con permiso lo lleva a una rama del repositorio y abre el pull request desde ahí (de la fuente, l. 174) |
 
@@ -3210,7 +3208,7 @@ resolver las trazas contra el registro del SDD en una versión fija. Lo que el S
 fuera de alcance se agrega; si dicen cosas distintas, decide una persona.
 
 **Estado.** El sistema documentador se pone a prueba en tres escalones: el 1 es el cuerpo SDEI con su mini demo; el 2,
-una piloto sobre Lab-Geometria, el primer proyecto con SDD que adopta la compuerta en su propia CI; el 3, `{servicio-privado}`. La
+una prueba piloto sobre Lab-Geometria, el primer proyecto con SDD que adopta la compuerta en su propia CI; el 3, `{servicio-privado}`. La
 fuente de este capítulo queda en `borrador` hasta que el escalón 2 pase su compuerta de escalón, con la compuerta
 corriendo en la CI de Lab-Geometria: sus reglas salen del diseño y de un ensayo sobre el SDD real de ese proyecto,
 pero todavía no corrieron en una CI de proyecto [Compilado: TEM-07-Marco-SDD.md, l. 24–28]. Lab-Geometria, IA.SDD y
@@ -3225,7 +3223,7 @@ negocio, decisiones de arquitectura) se escribe antes que el código y es el ref
 que se construye. La industria todavía no fijó el término. Böckeler distingue tres grados: la especificación que
 guía una tarea y se descarta (*spec-first*), la que se conserva para mantener la funcionalidad (*spec-anchored*) y la
 que es la única fuente que una persona edita (*spec-as-source*); advierte que la mayoría de las herramientas sólo
-cubre el primero ([Böckeler, 2025](#ref-bockeler-2025)). Thoughtworks la ubica en el anillo «evaluar» de su radar, no
+cubre el primero ([Böckeler, 2025](#ref-bockeler-2025)). Thoughtworks ubica el SDD en el anillo «evaluar» de su radar, no
 en «adoptar» ([Thoughtworks, 2025](#ref-thoughtworks-2025)) [Compilado: TEM-07-Marco-SDD.md, l. 47–53]. La idea de
 la especificación como fuente se presentó en [1.8](#18-la-especificación-como-fuente); acá se vuelve operativa.
 
@@ -3288,14 +3286,14 @@ esa versión deja de existir [Compilado: TEM-07-Marco-SDD.md, l. 67–72].
 
 *Traza* y *registro de IDs* en su forma general se definieron en
 [1.3.3](#133-traza-y-registro-de-identificadores); la
-especificación y el SDD, en el [capítulo 1](#18-la-especificación-como-fuente). Los términos que siguen son los que
+especificación y el SDD, en [1.8](#18-la-especificación-como-fuente). Los términos que siguen son los que
 este capítulo necesita para hablar de un SDD concreto.
 
 *Tabla 10.2. Términos del capítulo 10 [Compilado: TEM-07-Marco-SDD.md, l. 85–99].*
 
 | Término | Definición |
 | --- | --- |
-| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de escalón, el hito que la cierra: 1, el cuerpo SDEI y la mini demo; 2, la piloto en Lab-Geometria; 3, `{servicio-privado}` |
+| Escalón | Etapa de prueba del sistema documentador con su propia compuerta de escalón, el hito que la cierra: 1, el cuerpo SDEI y la mini demo; 2, la prueba piloto en Lab-Geometria; 3, `{servicio-privado}` |
 | Marco SDD y proyecto destino | El marco es un repositorio con las reglas y los orquestadores (IA.SDD); el proyecto destino es el que aplica el marco y guarda su especificación generada (Lab-Geometria, en `SDD/Docs/`). Las trazas resuelven contra el proyecto destino, no contra el marco |
 | Categoría (IA.SDD) | Cada una de las doce carpetas numeradas de la especificación generada: 01 necesidades, 02 especificación funcional, 05 arquitectura, 10 ejemplos, 11 documentación de entrega, entre otras |
 | Unidad de entrega (IA.SDD) | Parte del producto que se construye y se entrega por separado, con su propia especificación (en Lab-Geometria, la API y el front web). Una pantalla pertenece a la unidad del front que la dibuja |
@@ -3308,7 +3306,7 @@ este capítulo necesita para hablar de un SDD concreto.
 | Prefijo externo | Prefijo del registro cerrado del cuerpo (`CU`, `RN`, `ADR`, `NB`, `RF`…) pensado para IDs que declara el sistema que se documenta. Cómo se resuelve lo muestra la figura 10.2 |
 | Orquestador | El agente o la persona que conduce las fases del SDD, despacha el trabajo y decide cuándo se pasa de una fase a la siguiente |
 
-Las fichas `RN-LOC-nn` de la mini demo usan un prefijo externo pero se declaran en Lab-Documentos, así que resuelven
+Las fichas `RN-LOC-nn` de la mini demo usan un prefijo externo, pero se declaran en Lab-Documentos, así que resuelven
 contra el registro propio [Compilado: TEM-07-Marco-SDD.md, l. 98; tools/docs-guard/README.md, l. 102–105].
 
 ```mermaid
@@ -3503,7 +3501,7 @@ l. 243–246].*
 | En el mismo repositorio que el SDD (lo previsto para Lab-Geometria) | El commit del pull request: no hace falta `source.lock` ni `git archive` | Dos cambios a `dg.py`: una opción para excluir carpetas, porque hoy arma el registro con todo el repositorio, `_legacy/` incluido; y una forma de declarar que los prefijos externos se resuelven contra el propio repositorio |
 
 El segundo caso es el que importa para Lab-Geometria, y conviene ver por qué no alcanza con lo que hay. Sin
-`source.lock` ni `--fuente`, una traza `CU-` que no resuelve hoy sólo **avisa** (figura 10.2). Pasar el propio
+`source.lock` ni `--fuente`, una traza `CU-` que no resuelve, hoy, sólo **avisa** (figura 10.2). Pasar el propio
 `SDD/Docs` en `--fuente` tampoco sirve: `dg.py` lo leería dos veces y volvería ambiguo cada ID. Hasta que estén los
 dos cambios, la compuerta no cumple en ese proyecto la promesa de 10.1.3: una traza a un documento con versiones
 congeladas da ambigua, y una a un ID que desapareció sólo avisa [Compilado: TEM-07-Marco-SDD.md, l. 246].
@@ -3521,7 +3519,7 @@ alumnos y docentes que usan el panel. El hueco lo cubre el sistema documentador 
 [capítulo 8](#8-ayuda-al-usuario-final)): una página por tarea, con `traces` al caso de uso de la unidad que contiene
 la pantalla [Compilado: TEM-07-Marco-SDD.md, l. 263–266].
 
-La regla es una sola. La pantalla traza al caso de uso de su unidad, el front; si ese caso usa una operación de otra
+La regla es una sola. La ayuda de la pantalla traza al caso de uso de su unidad, el front; si ese caso usa una operación de otra
 unidad, la API, es el caso de uso del front el que cita a la API, no la página de ayuda. Cómo se sirve esa ayuda según
 el rol lo muestra la prueba de concepto del [capítulo 14](#14-caso-de-estudio-ayuda-por-rol)
 [Compilado: TEM-07-Marco-SDD.md, l. 266–269].
@@ -3575,7 +3573,7 @@ concretan para la integración con un SDD [Compilado: TEM-07-Marco-SDD.md, l. 30
 
 #### 10.6 Hoja de integración con un SDD
 
-La hoja de integración se completa una por proyecto, antes de la primera página que trace a la especificación. No es
+Se completa una hoja de integración por proyecto, antes de la primera página que trace a la especificación. No es
 un archivo aparte: es una sección más de la instancia de «Cómo intervenir» del proyecto
 ([capítulo 12](#12-cómo-intervenir-el-proceso-en-cinco-pasos)), y la de Lab-Documentos es
 [Cómo intervenir en Lab-Documentos](Examples/Como-Intervenir-Lab-Documentos.md)
@@ -3604,7 +3602,7 @@ Integrar con un SDD son tres cosas: trazar a sus IDs, poner el RRD junto a la es
 contra su registro en una versión fija. La frontera se decide por clase y en una línea: se cita lo que el SDD ya
 tiene, se agrega lo que declara fuera de alcance y decide una persona cuando dicen cosas distintas. El ensayo sobre
 Lab-Geometria enseña que la fuente del registro decide el resultado: con las versiones congeladas adentro, toda traza
-con historia da ambigua. Falta que la CI del proyecto haga lo que el guion hace a mano, y eso, como las lecciones de
+a un documento con historia da ambigua. Falta que la CI del proyecto haga lo que el guion hace a mano, y eso, como las lecciones de
 decisión, lo resuelve el escalón 2. La parte V pasa de los temas a la práctica, empezando por el
 [capítulo 11](#11-estoy-acá-qué-aplico).
 
@@ -3645,7 +3643,7 @@ flowchart LR
 ```
 
 *Figura 11.1. Tres puertas de entrada (2 a 5) que convergen en el ajuste por contexto (6) y terminan en un anexo (7).
-Redibujado de [01-Mapa.md](01-Mapa.md), l. 34–44, con las secciones del libro.*
+Redibujada de [01-Mapa.md](01-Mapa.md), l. 34–44, con las secciones del libro.*
 
 Las tablas que siguen conservan las celdas del Mapa y cambian sólo dos columnas: «Tema» pasa a «Capítulo» y «Anexo»
 apunta a los anexos del libro. Si una celda de este capítulo y la del Mapa dicen cosas distintas, vale el Mapa
@@ -3718,9 +3716,10 @@ responsabilidades de cada actor las define la [sección 3.4](#34-actores).*
 | Una plantilla para la pieza que tengo que producir | [G. Plantillas](#g-plantillas) | Anexos de `TEM-01` a `TEM-07`; [Como-Intervenir.md](Examples/Como-Intervenir.md) §8 |
 | Elegir entre alternativas de diseño | [Capítulo 15](#15-decidir-entre-alternativas) | `ANX-SDEI-DECIDIR` |
 | Comprobar que aprendí | [Capítulo 16](#16-ejercicios) y [H. Claves](#h-claves-de-los-ejercicios) | `ANX-SDEI-EJERCICIOS` |
+| Escribir la ayuda de un campo: etiqueta, pista, error, `contexto:` y traza desde la ficha | [Sección 8.4](#84-ayuda-en-el-punto-de-uso-pantallas-campos-paneles-y-portales) (no es un anexo: es la sección del capítulo) | `TEM-SDEI-05` |
 | Saber de qué archivo y línea del cuerpo sale una sección | [I. Correspondencia](#i-correspondencia) | Colofón |
 
-*Tabla 11.4. Lo que se busca y dónde está [Compilado: 01-Mapa.md, l. 112–121]. Las filas de plantillas y de
+*Tabla 11.4. Lo que se busca y dónde está [Compilado: 01-Mapa.md, l. 112–122]. Las filas de plantillas y de
 correspondencia son del libro: el cuerpo no tiene un anexo para cada una.*
 
 #### 11.6 Preguntas guía
@@ -3782,7 +3781,7 @@ flowchart LR
 ```
 
 *Figura 12.1. Los cinco pasos (1 a 4 y 8). El rojo de la validación vuelve a derivar, no a proponer; la clase de
-intervención (5) decide quién fusiona. Redibujado de [Como-Intervenir.md](Examples/Como-Intervenir.md), l. 49–60.*
+intervención (5) decide quién fusiona. Redibujada de [Como-Intervenir.md](Examples/Como-Intervenir.md), l. 49–60.*
 
 #### 12.3 Paso 1: ubicar
 
@@ -3822,7 +3821,7 @@ validaciones:
 
 Para la ficha `RN-LOC-01` de la mini demo, `grep -rl 'RN-LOC-01@'` sobre su carpeta `docs/` devuelve cuatro
 archivos: la ayuda, el registro y las dos páginas técnicas [Salida registrada: corrida del 2026-11-01 en
-Lab-Documentos `00171bd`]. Son las que se releen si la ficha sube de versión.
+Lab-Documentos `00171bd`]. Son los que se releen si la ficha sube de versión.
 
 #### 12.5 Paso 3: validar
 
@@ -3838,7 +3837,7 @@ PR-4 estructura y mermaid, PR-5 trazas, PR-6 contrato y PR-7 fijadas y referenci
 termina en verde, con código 0, o en rojo. Un grupo suelto se corre con su nombre (`scripts/ci-local.sh trazas
 <carpeta>`). Si el proyecto no tiene el guion, su instancia nombra el equivalente [Compilado:
 Examples/Como-Intervenir.md, l. 107–111]. Qué mira cada grupo lo explica el
-[capítulo 9](#9-compuertas-de-calidad-y-ci). Bloques [Compilado: Examples/Como-Intervenir.md, l. 113–122]:
+[capítulo 9](#9-compuertas-de-calidad-y-ci). Bloques del paso [Compilado: Examples/Como-Intervenir.md, l. 113–122]:
 
 ```yaml
 entradas:
@@ -3854,7 +3853,7 @@ validaciones:
 #### 12.6 Paso 4: proponer
 
 Se abre un pull request desde una rama propia. La descripción dice qué se cambió, qué piezas derivadas se tocaron, la
-salida recortada del paso 3 y, si hay, la reserva. Quién fusiona depende de la clase: D y P sin reserva los fusiona el
+salida recortada del paso 3 y, si la hay, la reserva. Quién fusiona depende de la clase: D y P sin reserva los fusiona el
 agente que los abrió, después de pasar la guarda, **sólo** si la persona responsable dejó asentada por escrito la
 delegación del merge en el repositorio; H, o cualquier pull request con reserva, lo decide una persona [Compilado:
 Examples/Como-Intervenir.md, l. 126–142].
@@ -3878,7 +3877,7 @@ el ciclo documental.
 #### 12.7 Paso 5: mantener
 
 Después del merge quedan dos cosas: el carril programado, que una vez por semana avisa de enlaces externos rotos,
-anclas atrasadas y documentos sin revisar hace más de un año, y la próxima intervención, que vuelve al paso 1
+anclas atrasadas y documentos sin revisar desde hace más de un año, y la próxima intervención, que vuelve al paso 1
 [Compilado: Examples/Como-Intervenir.md, l. 146–158].
 
 ```yaml
@@ -3904,7 +3903,7 @@ l. 162–172]. La plantilla comentada, con la pregunta que guía cada campo, est
 | Escenario | `ESC-SDEI-1` Corpus de guías. Clases activas por defecto: CL-02, CL-03, CL-08 a CL-13 (tabla de parámetros del Marco) |
 | Dónde vive cada pieza | Guías en `Guides/` y `Concepts/`; este cuerpo en `Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/`; ejemplos en su `Examples/`; controles en `tools/docs-guard/`; expedientes e índices en el repositorio hermano Lab-Documentos.Documentacion |
 | Guion de validación | `scripts/ci-local.sh todo <carpeta>` desde la raíz del repositorio. Sin `<carpeta>`, verifica este cuerpo. Requiere bash, curl, Python 3 y Node.js |
-| Compuerta en la CI | `.github/workflows/docs-guard.yml` en cada pull request, en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`; `docs-enlaces-semanal.yml` como carril programado |
+| Compuerta en la CI | `.github/workflows/docs-guard.yml` en cada pull request, en el runner con la etiqueta que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la de `.github/workflows/docs-guard.yml:60`; `docs-enlaces-semanal.yml` como carril programado |
 | Quién decide | Hay delegación del merge asentada en el [CHANGELOG](../../../CHANGELOG.md): D y P sin reserva los fusiona el agente por la guarda. Lo de clase H (pasar a `vigente`, etiquetar, cambiar un workflow) lo decide la persona responsable del producto |
 | Excepciones | Ninguna respecto de la plantilla |
 
@@ -3946,7 +3945,7 @@ verde del paso 3 no alcanza. El paso 2 tiene que preguntar por la línea entera,
 
 1. Tu cambio sube la versión de una ficha: ¿qué búsqueda hacés en el paso 2 y qué tiene que dar para seguir?
 2. La compuerta local da verde y la del pull request da rojo: ¿qué paso de la plantilla miente, y qué revisás primero?
-3. Un cambio de clase P no tiene reserva pero el repositorio no tiene delegación asentada: ¿quién fusiona?
+3. Un cambio de clase P no tiene reserva, pero el repositorio no tiene delegación asentada: ¿quién fusiona?
 4. ¿Qué seis preguntas tiene que responder la instancia de tu proyecto, y cuál de ellas no podés contestar todavía?
 
 #### 12.11 Resumen
@@ -4021,7 +4020,7 @@ flowchart LR
 ```
 
 *Figura 13.1. Lo que vive en Lab-Documentos (1 a 4) se comprueba contra el commit fijado (5) y bloquea; contra la rama
-principal (6) sólo avisa. Redibujado de [README de la mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md),
+principal (6) sólo avisa. Redibujada de [README de la mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md),
 l. 68–84.*
 
 La compuerta tiene dos partes, y conviene no confundirlas: una corre en todo pull request del repositorio, la otra sólo
@@ -4055,9 +4054,9 @@ scripts/ci-local.sh todo "$DEMO"     # docs-guard sobre la demo
 `verificar.sh` hace tres cosas en orden. Baja con `git archive` sólo las rutas de `source.lock` del SHA fijado y de la
 rama de comparación; compila la API de cada árbol, la arranca y le pide el contrato en ejecución; y corre los cinco
 controles con un agregador estricto [Compilado: Examples/MovilidadUrbana-Mini-Demo/verificar.sh, l. 5–17]. La carpeta
-de trabajo es `$TRABAJO`, y si no está definida, `$RUNNER_TEMP`, `$TMPDIR` o `/tmp` más `/mini-demo-movilidad` (l. 29).
+de trabajo es `$TRABAJO` y, si no está definida, `$RUNNER_TEMP`, `$TMPDIR` o `/tmp` más `/mini-demo-movilidad` (l. 29).
 
-Para este libro se corrió entera, en un contenedor efímero con el SDK de .NET:
+Para este libro, la verificación se corrió entera, en un contenedor efímero con el SDK de .NET:
 
 ```text
 == fuente: https://github.com/hdcm-dev/Lab-E2E.WebBlazor.git @ 8fb4c3a8b1cc629027f456c7c3ce19e041164c06 y main
@@ -4117,7 +4116,7 @@ En `docs/_requisitos.md`, una fila nueva con el número siguiente y las mismas o
 `Audiencia`, `Tarea`, `Pieza`, `Fuente`, `Criterio`, `Decisión` y `Decide y fecha`. La compuerta exige seis (`ID`,
 `Audiencia`, `Tarea`, `Pieza`, `Criterio`, `Decisión`); las otras dos se completan igual [Compilado:
 Examples/MovilidadUrbana-Mini-Demo/README.md, l. 124–126]. Las reglas de cada celda están en la fuente (l. 128–135); la
-que más se equivoca es la de **Decisión**: quien escribe no decide, así que una fila nueva va como `pendiente`, con
+que más errores provoca es la de **Decisión**: quien escribe no decide, así que una fila nueva va como `pendiente`, con
 quién la va a decidir y sin fecha.
 
 ```text
@@ -4214,7 +4213,7 @@ l. 303–314]. Agregar una fuente a una fila ya decidida no la reabre; cambiar s
 `pendiente` (l. 310–311). Después, una rama `demo-mu/<pantalla>`, un commit que diga qué pantalla se documentó y un
 pull request contra `main` (l. 326–334).
 
-En el pull request corren `docs-guard` y `mini-demo-movilidad` en el runner con la etiqueta de runner que fija el caso;
+En el pull request corren `docs-guard` y `mini-demo-movilidad` en el runner con la etiqueta que fija el caso;
 se fusiona sólo con los dos en verde. El cuerpo lleva qué pantalla se documentó, las piezas nuevas y cambiadas, las
 divergencias que quedan para decidir con su ficha, los supuestos y el final de las dos salidas (l. 337–340). Lo que
 **no** se toca: `verificar.sh`, el workflow y `source.lock`, porque C3 lee todas las fichas sin configurar nada; el
@@ -4307,7 +4306,7 @@ Examples/MovilidadUrbana-Mini-Demo/docs/fichas/RN-LOC-01.md, l. 47].
 sale del Marco [Compilado: 00-Marco.md, l. 85–88] y de la página de arquitectura de la demo [Compilado:
 Examples/MovilidadUrbana-Mini-Demo/docs/tecnica/arquitectura.md, l. 61–63].*
 
-La última fila es el hueco de la tabla 11.2, «la página no traza a nada», visto desde el código: si alguien cambiara
+La última fila es el hueco de la tabla 11.2, la página que no traza a ninguna ficha, visto desde el código: si alguien cambiara
 sólo la copia de la regla en la API, ninguna ancla lo notaría. Lo que no está anclado no da rojo.
 
 #### 13.8 Preguntas guía
@@ -4377,7 +4376,7 @@ El vínculo con la fila `RD-` va en la columna «Pieza» del registro y no en `t
 las páginas de ayuda sólo admite trazas con versión y las filas `RD-` no la tienen [Compilado:
 Examples/Prueba-Ayuda-Por-Rol/_requisitos.md, l. 27–30]. En la compuerta del repositorio, esas trazas a casos de uso
 quedan como aviso «no verificable»: la carpeta no tiene `source.lock`, porque todavía no hay un trabajo de la CI que
-baje Lab-Geometria en ese SHA. A mano, con el SDD de la unidad como fuente, las ocho resuelven (l. 55–65).
+baje Lab-Geometria en ese SHA. A mano, con el SDD de la unidad como fuente, las ocho resuelven (l. 64–67).
 
 ```mermaid
 flowchart LR
@@ -4395,9 +4394,9 @@ l. 205–227] y de [Compilado: Examples/Prueba-Ayuda-Por-Rol/README.md, l. 39–
 La tercera carpeta, `Audiencias/`, es la **prueba extendida**: lleva el catálogo a la regla de entrega. **Todo su
 contenido es ficticio** y no describe ningún producto real: sus nombres de audiencias y sus aplicaciones `app-a` y `app-b`
 son inventados y no son un modelo para copiar. Declara un registro con una jerarquía de tres roles y dos audiencias
-aparte, dos alcances, panel y paquete, dos documentos OpenAPI y un formulario. Como el repositorio es público, lo
-`restringido` y lo `interno` no existe como archivo: se plantan en memoria al correr
-[Compilado: Examples/Prueba-Ayuda-Por-Rol/README.md, l. 66–88].
+aparte, dos alcances (panel y paquete), dos documentos OpenAPI y un formulario. Como el repositorio es público, lo
+`restringido` y lo `interno` no existen como archivo: se plantan en memoria al correr
+[Compilado: Examples/Prueba-Ayuda-Por-Rol/README.md, l. 8, 66–88]. Sus cinco páginas tienen filas propias en el registro, `RD-28` a `RD-32`, con audiencias de `AUD-DEMO-AYR` y sin traza a casos de uso [Compilado: Examples/Prueba-Ayuda-Por-Rol/_requisitos.md, l. 35–37].
 
 #### 14.2 Qué probar y la consola
 
@@ -4445,7 +4444,7 @@ pruebas del producto [Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 223–227]
 [sección 8.3.3](#833-ayuda-por-rol-con-un-cruce-que-nadie-había-plantado).
 
 También son deliberados el `<script>` de la consola, que sale escapado, y dos enlaces de `Web/Ayuda/en/` a páginas
-sin traducción, que el panel resuelve sirviendo la de español con un aviso [Compilado:
+sin traducción, que el panel resuelve sirviendo la página en español con un aviso [Compilado:
 Examples/Prueba-Ayuda-Por-Rol/README.md, l. 64, 111].
 
 La prueba extendida corre con el mismo contenedor, sobre `Audiencias/`. Cada control corre dos veces, tal cual (verde)
@@ -4466,7 +4465,7 @@ y con un defecto plantado (rojo), y la consola sale con 0 sólo si los ocho pare
 termina con `Validador: 8/8 pares` y `[exit=0]` [Compilado: Examples/Prueba-Ayuda-Por-Rol/Audiencias/salida.txt,
 l. 92–93].*
 
-Dos límites. Son controles de la prueba, no de `docs-guard` ([9.1.5](#915-familias-de-controles-de-audiencias-y-ayuda)).
+Dos límites. Los ocho pares son controles de la prueba, no de `docs-guard` ([9.1.5](#915-familias-de-controles-de-audiencias-y-ayuda)).
 Y el paquete de E-3 es una carpeta que simula la app instalada: el empaquetado de satélites `.resx` en MAUI Android no
 se midió. La ayuda responde 404 a quien no la recibe; el documento de integradores, 401 sin sesión y 403 sin el rol.
 
@@ -4496,7 +4495,7 @@ devcontainers `@devcontainers/cli@0.89.0`; imagen del túnel `cloudflare/cloudfl
 
 ##### 14.3.2 Pasos
 
-Se ejecutan en orden y cada uno se verifica antes del siguiente; si uno falla, se detiene y se busca la causa en la
+Se ejecutan en orden y cada uno se verifica antes del siguiente; si uno falla, se detiene el procedimiento y se busca la causa en la
 tabla 14.6 (`PE-06`, instrucciones probadas en contenedor).
 
 **Paso 1. Levantar el devcontainer.** Desde `$P`, `npx -y @devcontainers/cli@0.89.0 up --workspace-folder .`. La
@@ -4546,7 +4545,7 @@ peticiones:
 
 *Tabla 14.5. Validaciones por HTTP [Compilado: Examples/Lanzar-Example.md, l. 136–142].*
 
-Toda afirmación sobre la prueba sale de una validación corrida en esa misma vez: no se dice «arriba» sin el `200` (l.
+Toda afirmación sobre la prueba sale de una validación hecha en esa misma corrida: no se dice «arriba» sin el `200` (l.
 144). La corrida que comprobó el procedimiento saneado (el tool-prompt de Lab-Documentos.Documentacion, con los mismos
 comandos que esta guía), el 2026-11-01, dio exactamente los cinco códigos esperados y este índice para el alumno:
 
@@ -4586,7 +4585,7 @@ Cuatro entradas y ninguna de administrador: el mismo filtro que decide el 404 de
 *Tabla 14.6. Errores frecuentes (`PE-05`) [Compilado: Examples/Lanzar-Example.md, l. 148–155]; la fuente trae dos
 filas más, sobre devcontainers huérfanos y la URL del túnel.*
 
-La primera fila pasó en la corrida de 14.3.3: el primer intento cortó por tiempo mientras la imagen bajaba (evidencia
+El caso de la primera fila se dio en la corrida de 14.3.3: el primer intento cortó por tiempo mientras la imagen bajaba (evidencia
 `P-06`, «Incidencias»). Para bajar la prueba se borra el túnel por su nombre y se detiene la app con `pkill`; el
 devcontainer se conserva parado [Compilado: Examples/Lanzar-Example.md, l. 159–165].
 
@@ -4605,7 +4604,7 @@ devcontainer se conserva parado [Compilado: Examples/Lanzar-Example.md, l. 159�
 La prueba de concepto demuestra, con un panel que corre, que la ayuda por rol se resuelve en el servidor: un solo
 filtro decide navegación, página, fuente `.md` y `llms.txt`, y lo que no pasa no se entrega. Sus siete páginas trazan a
 casos de uso de Lab-Geometria en un SHA fijo, con su registro `RD-21` a `RD-27`. La consola falla a propósito y una de
-sus fallas, el cruce de rol, la encontró el validador. El procedimiento de 14.3 la levanta con versiones fijas, y su
+sus fallas, el cruce de rol, la encontró el validador. El procedimiento de 14.3 levanta el panel con versiones fijas, y su
 corrida del 2026-11-01 dio los cinco códigos esperados; el túnel queda sin verificar.
 
 ### 15. Decidir entre alternativas
@@ -4617,7 +4616,7 @@ celda citando su observable, decir si la decisión es firme o lleva condición d
 
 Diseñar un sistema documentador obliga a elegir: un repositorio dedicado o el mismo del código, un generador de sitio
 o ninguno, un control que bloquea o uno que avisa. Sin una regla estable, cada sistema nuevo reabre el mismo debate
-[Compilado: 99-Anexos/Como-Decidir.md, l. 17–20]. Este capítulo es la pieza de «métodos y marcos» que pide el perfil de guía de
+[Compilado: 99-Anexos/Como-Decidir.md, l. 17–20]. Este capítulo es la pieza de «métodos y marcos» que pide el Profile de guía de
 estudio: enfoques alternativos y criterios para elegir entre ellos.
 
 #### 15.1 Definiciones del método de decisión
@@ -4677,7 +4676,7 @@ viola no se puntúa.
 
 | Filtro | Excluye la alternativa que… |
 | --- | --- |
-| F1 | no corre en el runner con la etiqueta de runner que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la del workflow `docs-guard` |
+| F1 | no corre en el runner con la etiqueta que fija el caso, por plataforma (Linux; Mac para iOS); en este repositorio, la del workflow `docs-guard` |
 | F2 | escribe rutas del equipo, usuarios o hosts en lo versionado |
 | F3 | nombra un repositorio privado (se usa su alias) |
 | F4 | modifica material del dueño del caso sin mandato |
@@ -4702,7 +4701,7 @@ flowchart TB
 ```
 
 *Figura 15.1. De la pregunta a la decisión. Una decisión con revisión (7) vuelve a la pregunta (1) cuando se cumple
-su condición. Redibujado de [Como-Decidir.md](99-Anexos/Como-Decidir.md), l. 93–102.*
+su condición. Redibujada de [Como-Decidir.md](99-Anexos/Como-Decidir.md), l. 93–102.*
 
 Con varios evaluadores, el expediente 0003 exigió además para FIRME una ventaja de tres o más puntos de celda, el
 ruido medido entre ellos (regla R-06) **[criterio propio del refutador, adoptado por el jurado]**. Su resolución,
@@ -4773,12 +4772,12 @@ flowchart TD
 ```
 
 *Figura 15.2. Lo que se puede deshacer y no es de clase H lo cierra la guarda (3); sólo lo de clase H (5) y lo
-irreversible con efecto externo (7) llegan a una persona. Redibujado de
+irreversible con efecto externo (7) llegan a una persona. Redibujada de
 [Como-Decidir.md](99-Anexos/Como-Decidir.md), l. 149–161.*
 
 #### 15.7 Preguntas guía del capítulo 15
 
-Las del anexo, que pone a prueba `EJR-SDEI-03` ([16.4](#164-ejercicio-3-decidir-con-la-escala-ejr-sdei-03))
+Las del anexo, que el ejercicio `EJR-SDEI-03` pone a prueba ([16.4](#164-ejercicio-3-decidir-con-la-escala-ejr-sdei-03))
 [Compilado: 99-Anexos/Como-Decidir.md, l. 168–172]:
 
 1. ¿Qué alternativas reales tiene tu pregunta, y alguna cae por un filtro antes de puntuar?
@@ -4790,8 +4789,8 @@ Las del anexo, que pone a prueba `EJR-SDEI-03` ([16.4](#164-ejercicio-3-decidir-
 #### 15.8 Resumen del capítulo 15
 
 Siete criterios con fuente, una escala cuyos puntos tienen observable, pesos fijados antes y ocho filtros que
-excluyen sin compensar. Firme es un margen de 0,30 que resiste ±10 % en cada peso; si no, la alternativa reversible
-con condición de revisión. Quién la cierra depende de la clase y de si el efecto se puede deshacer.
+excluyen sin compensar. Firme es un margen de 0,30 o más que resiste ±10 % en cada peso; si no, la alternativa reversible
+con condición de revisión. Quién cierra la decisión depende de la clase y de si el efecto se puede deshacer.
 
 ### 16. Ejercicios
 
@@ -4915,12 +4914,12 @@ enlaces se mide verde y en menos de 150 líneas.
 Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, cabecera y §10].*
 
 El conocimiento es la única pieza con `version` propia en un documento que no es el README. La convención del cuerpo
-dice lo contrario («`corpus_id` y `version` sólo en el README») [Compilado: 00-Marco.md, l. 178], y la excepción la
+lo recoge como salvedad («`corpus_id` y `version` sólo en el README, salvo el conocimiento de `Conocimientos/`, cuyo `version` repite su `**Versión:**`») [Compilado: 00-Marco.md, l. 178], y la excepción la
 decidió el expediente (P-23): «Manda `**Versión:**`; `version` del frontmatter la repite»
 [Compilado: resolución del 0003, l. 129]. Los estados son los de [P.6](#p6-versión-estado-y-origen): `borrador`,
 `vigente`, `obsoleto`; pasar a vigente es un acto de una persona [Compilado: 00-Marco.md, l. 186].
 La guía de un solo archivo se archiva con el libro (P.6): los enlaces a «la versión archivada» apuntan a la etiqueta
-anotada `sdei-v2.0.0-borrador`, creada antes de borrarla [Compilado: resolución del 0003, l. 114].
+anotada `sdei-v2.0.0-borrador`, creada antes de borrar esa guía [Compilado: resolución del 0003, l. 114].
 
 #### 17.3 Carril programado aplicado al libro
 
@@ -4954,7 +4953,7 @@ deuda declarada, que se cierra con el pull request que lo programe o con el foli
 El libro explica: por qué existe cada regla, cómo se aplicó en casos reales, qué ensayos la sostienen. El
 conocimiento de especificación especifica: qué hay que decidir para diseñar el sistema documentador de un proyecto,
 qué artefactos deja ese diseño y cómo se comprueba que quedó bien. Lo puede aplicar una persona o un agente que no
-conoce este laboratorio; la explicación la deja afuera y remite a esta sección
+conoce este laboratorio; el conocimiento deja afuera la explicación y remite a esta sección
 [Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §0; resolución del 0003, l. 333–334].
 
 ##### 17.4.1 Dos piezas, dos usos
@@ -4962,13 +4961,13 @@ conoce este laboratorio; la explicación la deja afuera y remite a esta sección
 | Rasgo | Libro | Conocimiento de especificación |
 | --- | --- | --- |
 | Para qué | Aprender el método y formar criterio | Diseñar o revisar el sistema documentador de un proyecto |
-| Forma | Partes, capítulos, ejemplos, ejercicios; Diátaxis por capítulo | Cabecera de once campos y secciones 0 a 10; tablas, decisiones `D-01`…`D-17`, criterios `DE-1`…`DE-26` |
+| Forma | Partes, capítulos, ejemplos, ejercicios; Diátaxis por capítulo | Cabecera de once campos y secciones 0 a 10; tablas, decisiones `D-01`…`D-18`, criterios `DE-1`…`DE-32` |
 | Normativo | No: cita las reglas del cuerpo | Sólo su §6; el resto es contrato de uso; es consultivo |
 | Alcance | Este cuerpo, con su laboratorio y sus casos | Cualquier proyecto en Git con pull requests y CI; neutral respecto de un marco de especificación concreto |
 | Cómo se carga | Se lee por rutas ([P.3](#p3-rutas-de-lectura)) | Por secciones, según su mapa de carga |
 
 *Tabla 17.3. El libro y el conocimiento, rasgo por rasgo [Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md,
-§0, §1, §8; resolución del 0003, l. 108, 128–130].*
+§0, §1, §3.2, §6, §8; resolución del 0003, l. 108, 128–130].*
 
 ##### 17.4.2 Qué parte del libro destila el conocimiento
 
@@ -4981,7 +4980,7 @@ explicación en un capítulo del libro:
 | --- | --- | --- |
 | §0 Terminología mínima | Un sentido por término | [1.3](#13-fuente-de-verdad-traza-y-ancla-de-versión), [1.6](#16-quién-decide-clases-dph), [3.1](#31-definiciones-del-marco), [anexo A](#a-glosario-índice) |
 | §2.1 Catálogo `CL-01`…`CL-14` | Las clases de pieza | [4.2](#42-arquitectura-de-referencia-y-catálogo-de-clases) |
-| §2.2 Invariantes `I-01`…`I-20` y regla de bloqueo | Lo que vale en cualquier proyecto | [3.5](#35-convenciones), [cap. 5](#5-el-ciclo-documental), [6.1](#61-definición-y-regla-para-ubicar-una-pieza), [9.1.4](#914-la-regla-de-bloqueo) |
+| §2.2 Invariantes `I-01`…`I-25` y regla de bloqueo | Lo que vale en cualquier proyecto | [3.5](#35-convenciones), [cap. 5](#5-el-ciclo-documental), [6.1](#61-definición-y-regla-para-ubicar-una-pieza), [9.1.4](#914-la-regla-de-bloqueo) |
 | §2.3 Apéndice por escenario | Los valores por tipo de sistema | [3.2](#32-escenarios-y-composición-por-unión) |
 | §3.1–§3.2 Procedimiento y decisiones | Qué decidir y en qué orden | Caps. [3](#3-marco-de-referencia) a [10](#10-integración-con-un-marco-sdd); entrada por el [11](#11-estoy-acá-qué-aplico) |
 | §3.3 Cómo decidir | Criterios, escala, pesos, filtros, firmeza | [Capítulo 15](#15-decidir-entre-alternativas) |
@@ -5009,7 +5008,7 @@ una decisión del proyecto que lo aplica:
 | El servicio privado por su alias | «Servicio con paquetes», sin un alias que contenga la sigla |
 
 *Tabla 17.5. Parámetros del laboratorio y su forma general [Compilado:
-Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §2.3, §3.2, §3.3, §7; resolución del 0003, l. 117, 130, 365].*
+Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §2.3, §3.2, §3.3, §3.6, §7; resolución del 0003, l. 117, 130, 365].*
 
 ##### 17.4.3 Cuándo usar cada uno
 
@@ -5040,7 +5039,7 @@ Una corrección de fondo en una fuente va al capítulo (17.1) y al conocimiento 
 subida de la cifra menor. Antes de su pull request, el conocimiento pasa la compuerta, `mermaid.sh` y dos cuentas en
 0: la sigla del marco de especificación y lo privado [Compilado: resolución del 0003, l. 375–376].
 
-El conocimiento vigente es la versión `1.4`, con el rótulo **«borrador ensayado, no probado»**: se ensayó en cuatro
+La versión actual del conocimiento es la `1.4`, con el rótulo **«borrador ensayado, no probado»**: se ensayó en cuatro
 rondas y en la última ninguna de las ocho corridas válidas pasó la métrica; quedan abiertos cuatro defectos P0. Se publicó
 así por decisión de la persona responsable del producto. Se usa como guía con criterio, no como procedimiento validado
 (`EXP0003-F208`, enmendado por `EXP0003-F209`). Los resultados están en el
@@ -5213,7 +5212,7 @@ que más simplifica el mantenimiento» es una interpretación del cuerpo, no una
 
 La reverificación también muestra cuánto dura cada parte del caso. El patrón (fuente servida como Markdown, contrato
 embebido, generador declarado, índice para agentes) siguió igual; tres de cinco cifras cambiaron en siete semanas. La
-mesa fijó una condición para que el libro no envejezca en silencio: si al publicarse la consulta tiene más de 90 días,
+mesa fijó una condición para que el libro no envejezca en silencio: si, al publicarse, la consulta tiene más de 90 días,
 se repite en el mismo pull request (P-07). La marca queda en el anexo J.
 
 #### 18.2 Adopciones públicas por práctica, con fecha
@@ -5297,7 +5296,7 @@ La corrección es esta. El cuerpo dice que en GitLab el lint de estilo de prosa 
 fallar `docs-lint markdown` y sus hallazgos en `docs code_quality` sólo se muestran. La separación entre
 bloquear y avisar sigue en pie, pero pasa por el nivel del hallazgo y no por la herramienta. El libro anota el cambio
 como co-cambio para `TEM-06`. La regla de bloqueo del cuerpo no cambia: un control bloquea sólo si cumple las cinco
-condiciones del capítulo 9; este capítulo las cita por su sección y no las repite.
+condiciones de la [sección 9.1.4](#914-la-regla-de-bloqueo); este capítulo las cita por su sección y no las repite.
 
 El mismo proyecto fija dónde viaja la documentación. Su flujo pide que, cuando se pueda, el merge request del código
 incluya la documentación; no es obligatorio en general, pero sí para las funciones marcadas con la etiqueta de
@@ -5352,13 +5351,13 @@ rotula así y la activa sólo en el contexto que corresponde.*
 
 De la familia ISO/IEC/IEEE 265xx, el libro cita sólo lo que abrió. La 26515 entró porque su ficha de comité
 respondió el 2026-11-01. Las 26511, 26512 y 26513 aparecen en buscadores asociadas a temas del cuerpo, pero sus fichas
-no se abrieron. Hasta abrir cada una, el libro no las cita: es la regla de evidencia del capítulo 2 aplicada a sí
-mismo. Por la misma regla, el atributo `@audience` de DITA, que la mesa nombró, queda sin citar: su página no se abrió.
+no se abrieron. Hasta abrir cada una, el libro no las cita: es la regla de evidencia del capítulo 2 aplicada al propio
+libro. Por la misma regla, el atributo `@audience` de DITA, que la mesa nombró, queda sin citar: su página no se abrió.
 
 #### 18.5 Tendencias
 
 Las tendencias de esta sección tienen fuente abierta y fecha, pero no todas tienen el mismo peso: algunas son datos
-de un proveedor sobre sus propios clientes. Cada fila dice de dónde sale.
+de un proveedor sobre sus propios clientes. Cada fila de la tabla 18.6 dice de dónde sale.
 
 ##### 18.5.1 Los agentes ya son lectores medidos
 
@@ -5372,7 +5371,7 @@ su base de clientes: sirven como tendencia, no como medición independiente. Las
 de metadatos (2026-10-30) distinta de la del encabezado; el libro usa la del encabezado.
 
 Para el sistema documentador, el dato cambia el estatus de la lectura por agentes del capítulo 7: deja de ser una
-previsión de diseño y pasa a ser tráfico medido. El 56 % que revisa más también es la división del trabajo que el
+previsión de diseño y pasa a ser tráfico medido. El 56 % que revisa más también coincide con la división del trabajo que el
 cuerpo prescribe: el agente propone, una persona decide **[criterio propio]**.
 
 ##### 18.5.2 Canales para agentes que genera la herramienta
@@ -5561,7 +5560,7 @@ Cada término del libro, con su definición, su equivalente en inglés, su sigla
 | Documentación como código | Escribir la documentación en texto plano, versionarla en Git, revisarla por pull request y verificarla en la CI, con las mismas herramientas que el código | docs as code | — | 1.2 |
 | Edición de lectura | Forma de este libro: reúne y ordena los documentos del cuerpo sin reemplazarlos; si discrepan, manda la fuente (P-01) | Reading edition | — | P.5 |
 | Escala anclada | Escala de 1 a 5 en la que cada punto tiene un observable; sin observable, la celda queda «s/d» | Anchored rating scale | — | 15.1 |
-| Escalón | Etapa de prueba del sistema documentador con su compuerta de escalón: 1, el cuerpo SDEI y la mini demo; 2, la piloto en Lab-Geometria; 3, `{servicio-privado}` | — | — | 10.1.4 |
+| Escalón | Etapa de prueba del sistema documentador con su compuerta de escalón: 1, el cuerpo SDEI y la mini demo; 2, la prueba piloto en Lab-Geometria; 3, `{servicio-privado}` | — | — | 10.1.4 |
 | Escenario | Tipo de sistema que se documenta; el cuerpo tiene cuatro | — | ESC-SDEI-n | 3.1 |
 | Especificación | Documentos del SDD que dicen qué tiene que hacer el sistema y por qué: NB-, CU-, RN-, ADR- | specification | — | 1.8 |
 | Estado de verificación | Marca al final de una referencia: V verificada en fuente primaria o registro oficial; P parcial | — | V / P | B |
@@ -5662,7 +5661,7 @@ DOI resuelto) viven en el [anexo de referencias del cuerpo](99-Anexos/Referencia
 quedan el autor, el año, el título, el identificador estable cuando lo hay, la fecha de consulta y el estado de
 verificación. Así el libro no lleva enlaces a dominios fuera de la lista permitida, que la compuerta bloquea fuera del
 anexo de referencias [Compilado: TEM-06-Compuertas-Y-CI.md, l. 92, 96]. Las entradas de B.1 a B.7 son las del
-anexo del cuerpo, en su orden [Compilado: 99-Anexos/Referencias.md, l. 57–175], salvo las tres de lengua de B.3,
+anexo del cuerpo, en su orden [Compilado: 99-Anexos/Referencias.md, l. 57–175], salvo Khan y Uddin (2022), que ningún capítulo cita, y las tres de lengua de B.3,
 que se suman en esta edición. También se suman B.8, el software de la compuerta; B.9, las fuentes de industria y
 las normas que cita el capítulo 18; y B.10, las de audiencias y punto de uso. Cuando un autor tiene dos obras del mismo año, o dos sin fecha, se distinguen con
 una letra (2026a, 2026b; s. f., a, s. f., b) que va igual en la cita del texto.
@@ -5845,20 +5844,20 @@ l. 17–19]. Para qué sirven la traza y el registro está en [1.3](#13-fuente-d
 | Campo | Obligatorio | Valores | Para qué sirve |
 | --- | --- | --- | --- |
 | `doc_id` | Sí | Prefijo registrado, guion y sufijo en mayúsculas (`TEM-01`, `ANX-SDEI-CQ`) | Identidad estable: las trazas y las citas entre repositorios apuntan a él, no a la ruta |
-| `doc_type` | Sí | `tema`, `marco-de-referencia`, `familia`, `mapa`, `anexo`, `anexo-referencias`, `indice`, `guia-practica`, `guia-de-estudio`, `operativa`, `study-note`, `rrd`, `proceso`, `ficha` | Decide qué estructura se espera y qué controles se relajan (en `anexo-referencias`, AI-4 sólo avisa) |
+| `doc_type` | Sí | `tema`, `marco-de-referencia`, `familia`, `mapa`, `anexo`, `anexo-referencias`, `indice`, `guia-practica`, `guia-de-estudio`, `operativa`, `study-note`, `rrd`, `proceso`, `ficha`, `registro-audiencias` | Decide qué estructura se espera y qué controles se relajan (en `anexo-referencias`, AI-4 sólo avisa) |
 | `title` | Sí | Texto, 3 caracteres o más | Título para índices y canales; el H1 visible puede ser más corto |
 | `status` | Sí | `borrador`, `vigente`, `obsoleto` | Ciclo de vida; pasar a `vigente` es acto de una persona |
 | `origin` | Sí | `human`, `ia-assisted`, `ia-generated` | Quién produjo el texto; gatilla la revisión según origen (`CQ-14`) |
 | `confidence` | Si `origin` no es `human` | `alta`, `media`, `baja` | Cuánto confía quien redactó en lo que afirma |
 | `owner` | Sí | Texto | Responsable de mantenerlo |
 | `last_review` | Sí | Fecha `AAAA-MM-DD` | Frescura: el carril programado avisa pasados 365 días |
-| `audience` | Sí | Lista con uno o más de: `humano`, `agente`, `estudiante`, `docente`, `desarrollo`, `qa`, `devops`, `po`, `analista`, `persona-usuaria` | A quién sirve; ordena las rutas de lectura |
+| `audience` | Sí | Lista con uno o más de: `humano`, `agente`, `estudiante`, `docente`, `desarrollo`, `qa`, `devops`, `po`, `analista`, `persona-usuaria` | A quién se dirige; ordena las rutas de lectura. Es de **orientación**: no da ni quita acceso. `agente` queda en el vocabulario sólo como valor heredado |
 | `traces` | Sí (puede ser `[]`) | Lista de `ID` o `ID@MAYOR.MENOR`, sin repetidos | De qué depende el documento; cada traza tiene que resolver |
-| `delivery` | No | Lista de audiencias del registro (`AUD-`) | Regla de entrega: qué audiencias reciben la página. Es el campo que protege; `audience` sólo orienta. Lo heredado sin `delivery` avisa |
+| `delivery` | No | Lista de audiencias del registro (`AUD-`) | Regla de entrega: qué audiencias reciben la página. Es el campo que protege; `audience` sólo orienta. Lo heredado sin `delivery` sólo avisará; hoy el esquema comprueba únicamente la forma del campo |
 | `description` | Sí | Texto de 10 a 160 caracteres | Resumen para índices y agentes. La revisa una persona en el pull request que pasa el documento a vigente |
 
 *Tabla C.1. El contrato de frontmatter de un documento del cuerpo [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md,
-l. 43–55]. Coincide campo por campo con `tools/docs-guard/esquemas/cuerpo.schema.json` en el commit de esta edición.*
+l. 43–56, 62–66]. Coincide campo por campo con `tools/docs-guard/esquemas/cuerpo.schema.json` en el commit de esta edición.*
 
 #### C.2 README del cuerpo y páginas de ayuda
 
@@ -5951,6 +5950,7 @@ documenta y se resuelve contra el SHA de su `source.lock`
 | `RD` | interno | Requerimiento documental |
 | `VER` | interno | Ítem de verificación |
 | `GP` | interno | Guía práctica de un ejemplo |
+| `GUIA` | interno | Guía de estudio de `Guides/` sin espacio de prefijos propio (`GUIA-NET-IA`) |
 | `DEMO` | interno | Pieza de una demo de `Examples/` (mini demo MovilidadUrbana: `DEMO-MU-nn`) |
 | `RF` | externo | Requisito funcional |
 | `RNF` | externo | Requisito no funcional |
@@ -5963,12 +5963,12 @@ documenta y se resuelve contra el SHA de su `source.lock`
 | `NB` | externo | Necesidad de negocio |
 
 *Tabla C.4. El registro cerrado de prefijos [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 114–146].
-Coincide fila por fila con `tools/docs-guard/prefijos.txt`, l. 8–40, en el commit de esta edición, `FC` y
-`PE` = patrón de ejemplo incluidos.*
+Coincide fila por fila con `tools/docs-guard/prefijos.txt`, l. 8–42, en el commit de esta edición, `FC` y
+`PE` = patrón de ejemplo incluidos; la fila `GUIA` sale del archivo, que manda, y es co-cambio para el anexo del cuerpo.*
 
 Los identificadores del marco y de los anexos llevan el `corpus_id` como segundo segmento (`ESC-SDEI-1`,
 `ANX-SDEI-CQ`) porque el registro es único para todo el repositorio y otras guías ya declaran `ESC-1`; es una
-convención del cuerpo, declarada como criterio propio [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 148–153].
+convención del cuerpo, declarada como criterio propio [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 151–153].
 
 #### C.5 Registro de requerimientos documentales
 
@@ -5991,7 +5991,7 @@ compuerta en cada celda está en [G.10](#g10-lo-que-la-compuerta-exige-a-un-rrd)
 
 #### C.6 Un frontmatter completo y sus errores
 
-Frontmatter válido de un tema, el de `TEM-03`, con la lista de `audience` y de `traces` recortada
+Frontmatter válido de un tema, el de `TEM-03`, con las listas de `audience` y de `traces` recortadas
 [Fragmento ilustrativo: frontmatter de `TEM-03`, l. 1–13, con `audience` y `traces` recortadas]:
 
 ```yaml
@@ -6030,7 +6030,7 @@ raíz de Lab-Documentos: `esquemas/cuerpo.schema.json` (documento con `doc_id`),
 (README de un cuerpo), `esquemas/ayuda.schema.json` (página de ayuda) y `prefijos.txt` (registro de prefijos)
 [Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 208–213]. Si una tabla y su archivo no coinciden,
 manda el archivo, y la diferencia se corrige en el anexo del cuerpo y en este libro en el mismo pull request
-[Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 215–216].
+[Compilado: 99-Anexos/Esquema-Frontmatter-Y-Prefijos.md, l. 215–216]; que el libro se corrija en ese mismo pull request es **[criterio propio]**.
 
 ### D. Criterios de calidad
 
@@ -6095,7 +6095,7 @@ prompts de la que sale cada ítem: el Profile de guía de estudio y las reglas *
 Antes de pasar un documento a `vigente`, quien revisa (no quien redactó) recorre las secciones que le aplican: un
 tema, E.2 a E.9; un anexo, E.2, E.5, E.6 y E.8; el conjunto, además, E.3. Lo que la compuerta ya verifica figura en
 la columna «Compuerta»; si el pull request está en verde, esos ítems se dan por cumplidos
-[Compilado: 99-Anexos/Lista-De-Verificacion.md, l. 37–39]. La usa el paso «validar» del
+[Compilado: 99-Anexos/Lista-De-Verificacion.md, l. 37–39]. La lista la usa el paso «validar» del
 [capítulo 12](#12-cómo-intervenir-el-proceso-en-cinco-pasos).
 
 #### E.2 Evidencia y veracidad
@@ -6276,7 +6276,7 @@ libro aplica `PE-01` en el [capítulo 13](#13-caso-de-estudio-la-mini-demo-movil
 Las plantillas comentadas del cuerpo: una por tema (G.1 a G.7), la instancia de «Cómo intervenir» (G.8), la página
 de ayuda en sus dos variantes (G.9), lo que la compuerta exige a un registro de requerimientos (G.10) y el registro de
 audiencias (G.11). Cada capítulo
-temático remite acá desde su sección «Anexo». Debajo de cada plantilla van las preguntas que guían sus campos: sin
+temático remite acá desde su sección «Anexo» o su equivalente. Debajo de cada plantilla van las preguntas que guían sus campos: sin
 ellas, una plantilla se llena por imitación.
 
 #### G.1 Inventario del sistema documentador
@@ -6430,7 +6430,7 @@ origin: ia-assisted       # ¿Quién la escribió? Si no fue una persona sola, h
 confidence: media         # ¿Cuánto confía quien la escribió en lo que afirma?
 owner: Lab-Documentos     # ¿Quién responde si queda desactualizada?
 last_review: 2026-10-27   # ¿Cuándo se revisó por última vez contra la fuente?
-audience: [persona-usuaria]   # ¿A quién se le escribe? Orienta, no da acceso; el agente hereda de su usuario
+audience: [persona-usuaria]   # ¿A quién se dirige? Orienta la escritura; no da acceso
 traces: [RN-LOC-01@1.1]   # ¿Qué regla o caso de uso explica, y en qué versión se leyó?
 ---
 ```
@@ -6484,7 +6484,7 @@ conviene hacer mientras se decide. Sin decidir cuál es el correcto.>
 <Tabla: mensaje bajo el campo, qué pasó, qué hacer. ¿Está el mensaje literal?>
 ```
 
-[Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 385–418]. Esta plantilla es la variante completa, con `doc_id`.
+[Compilado: TEM-05-Ayuda-Al-Usuario-Final.md, l. 385–418; la línea `description` se reescribe porque la fuente repite ahí la del propio tema]. Esta plantilla es la variante completa, con `doc_id`.
 En un panel con roles hay una segunda variante, sin `doc_id` y con `roles`, que la compuerta valida contra otro
 esquema; las dos están en G.9.
 
@@ -6498,7 +6498,7 @@ Cada fila es una pregunta que el pull request del control tiene que responder ([
 | Condición 1 | ¿Es determinista y corre sin red? | Sí: expresión regular sobre el texto |
 | Condición 2 | ¿El defecto lo introduce el mismo pull request? | Sí, si la URL es nueva |
 | Condición 3 | ¿Dónde están sus fixtures `rojo/` y `verde/`? | `tools/docs-guard/fixtures/<control>/` |
-| Condición 4 | ¿Cuál es su línea de base sobre la carpeta que vigila? | 0 en el cuerpo nuevo, sin contar la guía `obsoleta`; alta en las guías viejas |
+| Condición 4 | ¿Cuál es su línea de base sobre la carpeta que vigila? | 0 en el cuerpo nuevo, sin contar la guía en estado `obsoleto`; alta en las guías viejas |
 | Condición 5 | ¿Tiene falsos positivos conocidos? ¿Cómo se exceptúan? | Direcciones locales, dominios de ejemplo, imágenes de contenedor y direcciones de clonado: se exceptúan por clase, con un fixture verde que lo prueba |
 | Decisión | ¿Bloquea o avisa? ¿Dónde? | Bloquea en el cuerpo nuevo, donde la línea de base es 0; avisa en lo heredado y en un documento `obsoleto` |
 | Pasos | ¿Está en `ci-local.sh`, en el workflow y, si bloquea, en el agregador? | Paso `avisos`, que no entra al agregador |
@@ -6514,7 +6514,7 @@ una sección más de la instancia de «Cómo intervenir» del proyecto (G.8) ([c
 
 | Campo | Pregunta que guía el campo | Valor |
 | --- | --- | --- |
-| Marco SDD | ¿Qué marco y en qué versión? Si no hay, se usa la rama «sin SDD» de `CTX-SDEI-2` y esta ficha no hace falta | |
+| Marco SDD | ¿Qué marco y en qué versión? Si no hay, se usa la rama «sin SDD» de `CTX-SDEI-2` y esta hoja no hace falta | |
 | Repositorio y ancla | ¿En qué repositorio vive la especificación y contra qué SHA o etiqueta se resuelve? | |
 | Declaración del ID | ¿Qué encabezado declara un ID (por ejemplo, `# CU-08002 — …`) y dónde va la versión (`**Versión:** 1.11`)? | |
 | Prefijos que se trazan | ¿Qué prefijos de la especificación usan las páginas (`CU`, `RN`, `ADR`)? ¿Están como externos en el registro de prefijos? | |
@@ -6558,7 +6558,7 @@ queda fuera del esquema; sin `doc_id` y con `roles` o `translation_of`, el esque
 
 ##### G.9.1 Variante completa: diez campos más description
 
-Es la página de la mini demo, una app sin roles (`ESC-SDEI-2`): los mismos diez campos más description de G.4, sin
+Es la página de la mini demo, una app sin roles (`ESC-SDEI-2`). Lleva los mismos diez campos más description de G.4, sin
 comentarios y con valores propios: una `description` más larga, que nombra la app, y `origin: ia-generated`,
 `confidence: alta`, `audience: [persona-usuaria]` y `traces: [RD-01, RN-LOC-01@1.1, RN-LOC-02@1.0]`, que traza
 a la fila del RRD que la pidió y a las dos reglas que explica, con su versión
@@ -6568,7 +6568,7 @@ de G.5 es esta misma variante.
 ##### G.9.2 Variante de rol: esquema liviano
 
 Es una página de la prueba de concepto de ayuda por rol, un panel con roles (`ESC-SDEI-3`). No tiene `doc_id`: la
-cita el catálogo de ayuda del producto, que la filtra por `roles` con los nombres del rol tal como los guarda la
+cita el catálogo de ayuda del producto, que la filtra por `roles` con los nombres de los roles tal como los guarda la
 aplicación, y la ordena por `order` y `topic`.
 
 ```yaml
@@ -6595,7 +6595,7 @@ l. 4].
 | Vive en el catálogo de ayuda de un panel y se filtra por rol | De rol (G.9.2) | `title`, `description`, la forma de cada rol y que cada traza lleve versión |
 | Traduce otra página | De rol, con `translation_of` | La forma de la referencia a la página de origen |
 
-*Tabla G.8. Cuál variante elegir [Compilado: tools/docs-guard/esquemas/ayuda.schema.json, l. 6–18;
+*Tabla G.8. Qué variante elegir [Compilado: tools/docs-guard/esquemas/ayuda.schema.json, l. 6–18;
 tools/docs-guard/esquemas/cuerpo.schema.json; tools/docs-guard/dg.py, l. 334–356]. **[criterio propio]** en la
 columna «Si la página…»: la fuente no da una regla de elección. Con `doc_id`, un rol mal escrito pasa sin aviso
 (ensayo de [C.2](#c2-readme-del-cuerpo-y-páginas-de-ayuda)); si el panel filtra por rol, conviene la variante de rol.*
@@ -6646,7 +6646,7 @@ Cambiar la jerarquía es clase H. Un repositorio público no guarda fuentes de n
 
 *Forma: referencia.*
 
-Las claves de los cinco ejercicios del [capítulo 16](#16-ejercicios), para mirarlas después de intentar. El caso
+Las claves de los cinco ejercicios del [capítulo 16](#16-ejercicios), para mirarlas después de intentarlos. El caso
 resuelto de cada uno está antes, en el capítulo que el enunciado indica (`PE-02`) [Compilado: 99-Anexos/Ejercicios.md,
 l. 17–19]; donde valen varias respuestas, la clave da el criterio de corrección.
 
@@ -6701,7 +6701,7 @@ en `source.lock`, `traces-resolve` sigue en verde: el cambio no entró ahí. Un 
 de atraso tiene el SHA fijado frente a la rama principal; la deriva por símbolo la mide A1 cuando corre la demo, y
 **avisa**, porque la deriva no la introdujo el pull request de la documentación (no cumple la segunda condición de la
 regla de bloqueo). Deuda: A1 no está programado; se cierra con el PR que lo programe o con el folio que decida no
-hacerlo. Un agente propone actualizar la ficha y el `source.lock`; si el número de la regla es correcto lo decide una
+hacerlo. Un agente propone actualizar la ficha y el `source.lock`; si el número de la regla es correcto, lo decide una
 persona (analista) [Compilado: 99-Anexos/Ejercicios.md, l. 114–120].
 
 #### H.5 Clave del ejercicio 5: redactar un requerimiento documental (`EJR-SDEI-05`)
@@ -6801,7 +6801,7 @@ Cada marca con su sección y cada ensayo con su fecha. Las salidas registradas s
 | Marca o ensayo | Sección | Detalle |
 | --- | --- | --- |
 | A VERIFICAR | P.6 | La guía de un solo archivo se archiva en el mismo pull request con la etiqueta anotada sdei-v2.0.0-borrador |
-| A VERIFICAR | Colofón (tabla 0.1), fila 15 a 17 | Conocimientos/knowledge-DocsAsCode-Designing-Specification.md |
+| A VERIFICAR | Colofón (tabla 0.1), fila «15 a 17» | Conocimientos/knowledge-DocsAsCode-Designing-Specification.md |
 | A VERIFICAR | P.4 | Fila «NO VERIFICADO, HISTÓRICO, ESPECULACIÓN» remite al anexo J |
 | [criterio propio] | 1.10 | Tabla 1.4: selección y redacción de los doce principios |
 | [criterio propio: ejemplo construido] | 3.2.6 | Panel con roles que publica paquetes, ejemplo construido para ilustrar la composición por unión |
@@ -6812,20 +6812,20 @@ Cada marca con su sección y cada ensayo con su fecha. Las salidas registradas s
 | Medición en SHA | 3.2.5 | Fila «No presente en el ejemplo» de la tabla 3.2, ESC-SDEI-3 |
 | Fechas de consulta transcritas | 2.2.1 | Consultas del 2026-10-26 transcritas de las bitácoras del expediente 0002 sin reconsultar; las del 2026-10-27, directas (Referencias.md:41) |
 | Divergencia de fondo vigente | 3.6 | RN-LOC-01: letra e intención 60, comportamiento 80; sin decidir (ficha l. 37-39, 47) |
-| Ensayo: inventario | 4.4.1 | 2026-11-01; Piezas por doc_type (tema 7, proceso 2, rrd 1 sobre 0bed863); rc=0 |
-| Ensayo: inventario sobre 00171bd | 4.4.1 | 2026-11-01; Igual que sobre 0bed863 salvo rrd 2; rc=0 |
-| Ensayo: la evaluación deja huella | 5.3.2 | 2026-11-01; Rojo (rc=1, errores=2) y verde (rc=0); idéntico sobre 00171bd |
-| Ensayo: traza desfasada e ID ambiguo | 6.3.2 | 2026-11-01; Rojo (errores=1), verde, rojo (errores=5, ids-duplicados=2); idéntico sobre 00171bd |
-| Verificado el 2026-11-01: base_commit del índice de LDD fuera de la expresión del carril | 6.1.2; 6.7 | 2026-11-01; Sin coincidencias (rc=1) |
-| Deuda declarada: A1 no programado | 4.4.2; 4.8; 5.7 | —; Evento de cierre: PR que programe A1 o folio que decida no hacerlo |
-| Deuda declarada: clase de workflows y tools/docs-guard sin votar | 4.8 | —; Ninguna de las catorce clases |
-| [criterio propio] | 5.1.4 | —; Regla de estados para un vigente que deriva |
-| [criterio propio] (tabla) | 4.8; 5.7 | —; Lectura por columnas del catálogo; prefijo CLA- |
-| [Fragmento ilustrativo] | 5.3.3 | —; Cláusula CLA-1b-01 con prefijo no registrado |
-| ENSAYO FECHADO | 9.3.2 | Corrida del 2026-11-01 sobre una copia de Lab-Documentos en 00171bd: scripts/ci-local.sh todo → agregador verde (rc=0); con un enlace a #9-no-existe al final de TEM-06, scripts/ci-local.sh enlaces → 673 Total, 613 OK, 1 Error, 59  |
+| Ensayo: inventario | 4.4.1 | 2026-11-01; piezas por doc_type (tema 7, proceso 2, rrd 1 sobre 0bed863); rc=0 |
+| Ensayo: inventario sobre 00171bd | 4.4.1 | 2026-11-01; igual que sobre 0bed863 salvo rrd 2; rc=0 |
+| Ensayo: la evaluación deja huella | 5.3.2 | 2026-11-01; rojo (rc=1, errores=2) y verde (rc=0); idéntico sobre 00171bd |
+| Ensayo: traza desfasada e ID ambiguo | 6.3.2 | 2026-11-01; rojo (errores=1), verde, rojo (errores=5, ids-duplicados=2); idéntico sobre 00171bd |
+| Verificado el 2026-11-01: base_commit del índice de LDD fuera de la expresión del carril | 6.1.2; 6.7 | 2026-11-01; sin coincidencias (rc=1) |
+| Deuda declarada: A1 no programado | 4.4.2; 4.8; 5.7 | Evento de cierre: PR que programe A1 o folio que decida no hacerlo |
+| Deuda declarada: clase de workflows y tools/docs-guard sin votar | 4.8 | Ninguna de las catorce clases |
+| [criterio propio] | 5.1.4 | Regla de estados para un vigente que deriva |
+| [criterio propio] (tabla) | 4.8; 5.7 | Lectura por columnas del catálogo; prefijo CLA- |
+| [Fragmento ilustrativo] | 5.3.3 | Cláusula CLA-1b-01 con prefijo no registrado |
+| ENSAYO FECHADO | 9.3.2 | Corrida del 2026-11-01 sobre una copia de Lab-Documentos en 00171bd: scripts/ci-local.sh todo → agregador verde (rc=0); con un enlace a #9-no-existe al final de TEM-06, scripts/ci-local.sh enlaces → 673 Total, 613 OK, 1 Error, 59 Excluded, rc=1 |
 | HISTÓRICO (2026-10-27) | 9.3.2 | Corrida de la fuente en la rama del tema: 543 Total, 489 OK, 1 Error, 53 Excluded (TEM-06:227-243) |
 | SALIDA REGISTRADA | 9.3.3 | Aviso AI-3 en AGENTS.md:17 por huella de excepción desactualizada (corrida del 2026-11-01, grupo PR-3) |
-| ENSAYO FECHADO | 10.3.1 | Ensayo de trazas sobre LG 5f07b12: 2026-10-27 (fuente); repetido 2026-11-01 en clon nuevo (fuente, TEM-07:344); repetido 2026-11-01 por esta edición con dg.py de e3841b6 y de 00171bd: A rojo traza-ambigua, B verde, C rojo traza-version-desf |
+| ENSAYO FECHADO | 10.3.1 | Ensayo de trazas sobre LG 5f07b12: 2026-10-27 (fuente); repetido 2026-11-01 en clon nuevo (fuente, TEM-07:344); repetido 2026-11-01 por esta edición con dg.py de e3841b6 y de 00171bd: A rojo traza-ambigua, B verde, C rojo traza-version-desfasada, D rojo traza-no-resuelve |
 | A VERIFICAR | 10.3.1 | 829 IDs y 355 repetidos; 715 y 52 sin _legacy/ (TEM-07:234-236) |
 | MEDIDO (2026-11-01) | 10.2.3 | Conocimiento de lógica de decisión 1.0 en IA.SDD@bac7e48, §3.9 y §5.3; Master-Prompt.md l. 1025; Mesa-Rules.md l. 570; ADR-10010 l. 8 y 61 en LG 5f07b12 (TEM-07:172-178) |
 | CONSULTADO (2026-10-27) | 10.2.2 | IA.SDD@bac7e48, SDD/Devs/Rules/Rules-Documentacion.md, l. 102 (tabla de fronteras) |
@@ -6841,7 +6841,7 @@ Cada marca con su sección y cada ensayo con su fecha. Las salidas registradas s
 | HISTÓRICO (2026-09-19) | 14.1 | Capturas de capturas/ del 2026-09-19 |
 | [criterio propio] | 12.9 | Clasificación por pasos del cambio AC-25 (tabla 12.3) |
 | [criterio propio] | 13.4.6 | «La sección Supuestos vuelve aprendible el tutorial» |
-| ENSAYO FECHADO | 15.5 | Reproducción de la matriz de Como-Decidir.md §5 con Python 3 sin dependencias, 2026-11-01, Lab-Documentos 00171bd: totales 4,20 / 3,50 / 2,70; margen mínimo A-C 1,477 (±10 % por peso, renormalizado); A-B 0,66; pesos iguales 4,14 / |
+| ENSAYO FECHADO | 15.5 | Reproducción de la matriz de Como-Decidir.md §5 con Python 3 sin dependencias, 2026-11-01, Lab-Documentos 00171bd: totales 4,20 / 3,50 / 2,70; margen mínimo A-C 1,477 (±10 % por peso, renormalizado); A-B 0,66; pesos iguales 4,14 / 3,57 / 2,71; rc=0 |
 | [criterio propio] | 17.3 | Columna «Qué no ve» de la tabla 17.2, leída sobre semanal.sh:107-108 |
 | [criterio propio] | 17.4.2 | Destinos de la tabla 17.4 (sección del conocimiento → capítulo) |
 | [criterio propio] | 17.4.3 | «Para cambiar este mismo cuerpo rige el capítulo 12» |

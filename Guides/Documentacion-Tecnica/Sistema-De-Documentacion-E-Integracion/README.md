@@ -123,7 +123,7 @@ anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte 
 | [Anexo: ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` | anexo | borrador | Ejercicios de transferencia `EJR-SDEI-nn`, con claves al final |
 | [Conocimiento: diseñar el sistema documentador](Conocimientos/knowledge-DocsAsCode-Designing-Specification.md) | `ANX-SDEI-ESPECIFICACION` | anexo | borrador | Conocimiento 1.4 para diseñar la documentación como código de un proyecto: decisiones, artefactos A-01 a A-13 y compuertas |
 | [Plantilla A-01: ficha vacía](Conocimientos/A-01-ficha-vacia.md) | `ANX-SDEI-FICHA-VACIA` | anexo | borrador | Esqueleto vacío de la ficha de diseño documental que se entrega al aplicador |
-| [Libro: DocsAsCode Developer Guide](DocsAsCode-Developer-Guide.md) | `DOC-SDEI-LIBRO` | guía de estudio | borrador | Edición de lectura del cuerpo en un solo archivo, con citas ancladas a las fuentes; las fuentes siguen siendo estos documentos |
+| [Libro: DocsAsCode Developer Guide](DocsAsCode-Developer-Guide.md) | `DOC-SDEI-LIBRO` | guía de estudio | borrador | Edición de lectura del cuerpo: raíz con el índice general y el glosario-índice, y nueve piezas (`DOC-SDEI-LIBRO-P0` a `-P6`, la Parte V en `-P5A` y `-P5B`, y `-ANX`), con citas ancladas a las fuentes; las fuentes siguen siendo estos documentos |
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
 | [Ejemplo: lanzar la prueba de concepto](Examples/Lanzar-Example.md) | `GP-SDEI-LANZAR` | guía práctica | borrador | Cómo levantar el ejemplo anterior en su devcontainer y publicarlo |
@@ -144,7 +144,8 @@ Sistema-De-Documentacion-E-Integracion/
 ├── README.md                 este índice (corpus_id y versión viven acá; excepción: Conocimientos/)
 ├── 00-Marco.md               escenarios, contextos, actores, convenciones
 ├── 01-Mapa.md                estoy acá → qué aplico
-├── DocsAsCode-Developer-Guide.md  libro: edición de lectura del cuerpo
+├── DocsAsCode-Developer-Guide.md  libro: raíz con el índice general y el glosario-índice
+├── DocsAsCode-Developer-Guide-*.md  libro: una pieza por Parte (V en dos) y los anexos B a J
 ├── Conocimientos/            conocimiento de especificación (lleva su version) y plantilla A-01
 ├── 99-Anexos/                material de consulta
 └── Examples/                 ejemplos ejecutables y guías prácticas

@@ -25,7 +25,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 #### Agregado
 
-- **`DocsAsCode-Developer-Guide.md` (`DOC-SDEI-LIBRO`):** el libro del cuerpo, edición de lectura en un solo archivo, sobre las fuentes en `31660d3`.
+- **`DocsAsCode-Developer-Guide.md` (`DOC-SDEI-LIBRO`):** el libro del cuerpo, edición de lectura sobre las fuentes en `31660d3`. Partido por Parte (resolución 99 del expediente 0003, 2026-11-07): la raíz lleva el índice general y el glosario-índice (anexo A); nueve piezas `DocsAsCode-Developer-Guide-Parte-0`, `-I` a `-IV`, `-V-a`, `-V-b`, `-VI` y `-Anexos` (B a J), con navegación «anterior · índice · siguiente», ninguna por encima de 100 KB ni de 7 mermaid; las anclas internas y la entrante del conocimiento se remapean.
 - **Referencias (AC-39):** 24 entradas nuevas, secciones «Software» e «Industria y estándares», y la reverificación del 2026-11-01 en 23 entradas existentes.
 
 #### Cambiado

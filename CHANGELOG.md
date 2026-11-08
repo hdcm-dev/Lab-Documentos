@@ -3,6 +3,22 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-07 (Guía 18: guía de estudio sobre modelos de IA)
+
+### Guides/IA/IA-Model/ — expediente 0001 (Guia-De-Estudio-IA-Model) de `hdcm-dev/Lab-Documentos.Documentacion`, `PROMPTs/Guides/18-IA-Model/OUTPUTs/`
+
+#### Agregado
+
+- **Guía de estudio sobre modelos de IA (15 piezas, 8 880 líneas):** raíz `IA-Model-Guide.md` (índice y mapa de lectura), `Marco-De-Referencia.md` (escenarios/contextos/actores y glosario), `Cohesion-Global.md`, `Convenciones.md` y los núcleos `01`–`11` (`IAM-01`…`IAM-11`: representación del lenguaje, transformer, del modelo base al asistente, datos y corpus, preentrenamiento y leyes de escala, ajuste fino y alineación, evaluación y métricas, inferencia local, bases vectoriales y RAG, multimodalidad, panorama abierto). Laboratorios corridos contra un banco Ollama local con salidas reales transcriptas; primera familia de `Guides/IA/` con frontmatter propio (`doc_id`, `owner`, `entorno_validado`, `traces`). Piezas en `status: borrador`; deudas declaradas PD-01 y PD-02 en el folio 021 del expediente.
+
+### Delegación del merge (Conformacion-Pull-Request-Automatico 2.0, expediente 0001 de la guía 18)
+
+- **Fecha:** 2026-11-07. **Responsable:** el responsable del producto (PO), por su regla general asentada en este CHANGELOG el 2026-11-01 (fila del PR común del expediente 0003 de DocsAsCode) («siempre para conformar los pr sigue `KB-privada/Knowledges/Knowledge-Conformacion-Pull-Request-Automatico.md`»; antes: «vos te encargas de todos los pr»). **Asiento del caso:** folio 021 §4 del expediente 0001 (`PROMPTs/Guides/18-IA-Model/OUTPUTs/Expedientes/0001-Guia-De-Estudio-IA-Model/`, en `hdcm-dev/Lab-Documentos.Documentacion`).
+- **Alcance:** los PR del expediente 0001 de la guía 18 en `hdcm-dev/Lab-Documentos` y `hdcm-dev/Lab-Documentos.Documentacion`, incluido este PR común, que asienta la fila.
+- **Guarda:** G1–G4; techo de espera 120 minutos; intervalo de relectura 30 segundos; estado `clean` y controles de la cabeza en éxito (al menos uno).
+- **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio. El merge se anuncia a las otras sesiones que comparten el repositorio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual; lo irreversible con consecuencia externa sale al PO.
+
 ## 2026-11-04 (SDEI: libro DocsAsCode Developer Guide y archivado de la guía de un solo archivo)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 8

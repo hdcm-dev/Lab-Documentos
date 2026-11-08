@@ -22,7 +22,7 @@ con [`scripts/ci-local.sh`](../../scripts/ci-local.sh), que da los mismos pasos 
 
 | Término | Significado |
 | --- | --- |
-| Compuerta | Control que corre en la CI y termina con un código de salida: 0 en orden, 1 bloquea, 2 error de uso |
+| Control | Comprobación que corre en la CI y termina con un código de salida: 0 en orden, 1 bloquea, 2 error de uso. La compuerta es el carril PR |
 | Grupo `PR-n` | Conjunto de controles del carril PR (`PR-1` a `PR-7`). No confundir con `G1`–`G4`, la guarda de merge |
 | `AI-n` | Chequeo anti-inyección: AI-1 comentarios HTML, AI-2 caracteres invisibles, AI-3 frases dirigidas al agente, AI-4 URL fuera de la lista de dominios, AI-5 HTML oculto |
 | `AK-n` | Control anti-inyección del sistema. Acá viven AK-3 (excepciones con huella), AK-4 (lista de dominios), AK-5 (job sin secretos) y AK-7 (fixture permanente en rojo) |
@@ -65,7 +65,7 @@ Ejemplo de salida del agregador:
 flowchart LR
   PR["Pull request"] --> J["job docs-guard<br/>(un solo job)"]
   J --> G1["PR-1 enlaces"] & G2["PR-2 esquema"] & G3["PR-3 anti-inyección"] & G4["PR-4 estructura"]
-  J --> G5["PR-5 trazas"] & G6["PR-6 contrato"] & G7["PR-7 fijadas y reflint"] & AU["autoprueba G-c y AK-7"]
+  J --> G5["PR-5 trazas"] & G6["PR-6 contrato"] & G7["PR-7 fijadas y referencias"] & AU["autoprueba G-c y AK-7"]
   G1 & G2 & G3 & G4 & G5 & G6 & G7 & AU --> AG{"agregador estricto"}
   AG -->|todos verdes| V["verde"]
   AG -->|alguno rojo| R["rojo: bloquea el merge"]

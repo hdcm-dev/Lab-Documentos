@@ -1,10 +1,10 @@
 # Prueba de concepto — ayuda por rol
 
-Demuestra la propuesta de la sección 7 de [`Sistema-Documentador-Tecnico-Guide.md`](../../Sistema-Documentador-Tecnico-Guide.md) en dos pasos:
+Demuestra la propuesta de la sección 7 de la [guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#7-propuesta-ayuda-por-rol-en-lab-geometria), hoy archivada ([Lab-Documentos, s. f.](../../99-Anexos/Referencias.md#ref-lab-documentos-guia-sf)), en dos pasos:
 
 | Carpeta | Qué es |
 |---------|--------|
-| [`Consola/`](Consola/) | El motor aislado: catálogo, filtro por rol, `llms.txt` y validador, con tres defectos plantados |
+| [`Consola/`](Consola/) | El motor aislado: catálogo, filtro por rol, `llms.txt` y validador, con dos defectos plantados y un tercero que encontró el validador |
 | [`Audiencias/`](Audiencias/) | La prueba extendida de la resolución 399 del expediente 0003 (E-1 a E-6): tres roles en jerarquía y el integrador, dos alcances, panel y paquete, API por exposición, un formulario con ayuda de campo trazada a su regla y el nivel contra la visibilidad del repositorio. **Contenido ficticio** |
 | [`Web/`](Web/) | Un panel Blazor (.NET 10, render estático de servidor) con ingreso simulado por papel, ayuda contextual, 404 por rol, fuente `.md`, `llms.txt` y dos idiomas |
 | [`.devcontainer/`](.devcontainer/devcontainer.json) | Entorno reproducible: imagen `mcr.microsoft.com/devcontainers/dotnet:1-10.0`, puerto 5190 |
@@ -14,25 +14,9 @@ No es código de Lab-Geometria. El contenido de `Web/Ayuda/` deriva de los casos
 
 ## Levantarla
 
-Con VS Code: *Reopen in Container*. Sin VS Code, con el CLI oficial:
-
-```bash
-npx -y @devcontainers/cli up   --workspace-folder .
-npx -y @devcontainers/cli exec --workspace-folder . \
-  dotnet run --project Web/AyudaDemo.Web.csproj --no-launch-profile
-```
+El procedimiento vive en [Lanzar el ejemplo](../Lanzar-Example.md), con versiones fijas (`@devcontainers/cli@0.89.0`, `cloudflare/cloudflared:2026.10.5`) y la app en `Production`.
 
 Abrir `http://localhost:5190`. Al arrancar, el log dice `Catálogo de ayuda: 9 páginas, validador con 0 fallas`. El catálogo cuenta pares cultura-página: son 7 páginas fuente en español y 2 traducciones al inglés.
-
-Para mostrarla afuera sin tocar DNS ni cuentas, un túnel rápido de Cloudflare (la URL `*.trycloudflare.com` sale en el log y muere al borrar el contenedor):
-
-```bash
-docker run -d --name demo-ayuda-por-rol-tunnel --network host \
-  cloudflare/cloudflared:latest tunnel --no-autoupdate --url http://localhost:5190
-docker logs demo-ayuda-por-rol-tunnel 2>&1 | grep trycloudflare
-```
-
-Si se expone, correrla con `--remote-env ASPNETCORE_ENVIRONMENT=Production` en el `exec`: en `Development`, ASP.NET muestra la página de excepciones con trazas internas.
 
 ## Qué probar
 
@@ -108,4 +92,4 @@ en el contenedor del mensaje y el atributo en el campo. No se midió el empaquet
 Android: el paquete de E-3 es una carpeta que simula la app instalada, con el `.resources` escrito por
 `ResourceWriter`.
 
-En `Web/Ayuda/en/` hay dos enlaces a páginas que no tienen traducción (`comun/cambiar-la-contrasena.md` y `alumno/consultar-mis-trabajos.md`). También son deliberados: el panel los resuelve con el respaldo de cultura (sección 7.6 de la guía) y sirve la página en español con un aviso. Un verificador de enlaces sobre archivos los ve rotos; la compuerta de documentación del repositorio los excluye con nombre y motivo, igual que el defecto plantado de la consola.
+En `Web/Ayuda/en/` hay dos enlaces a páginas que no tienen traducción (`comun/cambiar-la-contrasena.md` y `alumno/consultar-mis-trabajos.md`). También son deliberados: el panel los resuelve con el respaldo de cultura ([`TEM-05` §3.4](../../TEM-05-Ayuda-Al-Usuario-Final.md#34-idiomas-sin-perder-la-ayuda)) y sirve la página en español con un aviso. Un verificador de enlaces sobre archivos los ve rotos; la compuerta de documentación del repositorio los excluye con nombre y motivo, igual que el defecto plantado de la consola.

@@ -15,7 +15,7 @@
 #   A1 deriva     contrato y anclas contra la rama de comparación de source.lock (main). Sólo avisa.
 #
 # Requiere bash, git, curl, Python 3 y el SDK de .NET 10. No toca el repositorio del código: lo baja por SHA.
-# Variables: TRABAJO (carpeta de trabajo; por defecto $RUNNER_TEMP o /tmp), PUERTO (por defecto 5099).
+# Variables: TRABAJO (carpeta de trabajo; por defecto $RUNNER_TEMP, $TMPDIR o /tmp, más /mini-demo-movilidad), PUERTO (por defecto 5099).
 set -uo pipefail
 
 PASO="${1:-todo}"

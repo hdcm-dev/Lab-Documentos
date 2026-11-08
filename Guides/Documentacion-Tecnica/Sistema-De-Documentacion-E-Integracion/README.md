@@ -96,8 +96,8 @@ flowchart TB
 | **Agente** | Un agente de IA que trabaja sobre el repositorio | [`AGENTS.md`](../../../AGENTS.md) en la raíz del repositorio → este README → [Convenciones](00-Marco.md#5-convenciones) → [Esquema de frontmatter](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md) → [Glosario](99-Anexos/Glosario.md) | Las reglas para producir una página que pasa la compuerta |
 
 Los siete temas están escritos, así que la ruta «aprender» ya no pasa por la guía de un solo archivo: esa guía está
-`obsoleta` y su [tabla de destinos](Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) dice en qué tema o
-anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte.
+archivada y su [tabla de destinos](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) dice en qué tema o
+anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte ([Lab-Documentos, s. f.](99-Anexos/Referencias.md#ref-lab-documentos-guia-sf)).
 
 ## 4. Tabla de contenido
 
@@ -123,7 +123,7 @@ anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte.
 | [Anexo: ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` | anexo | borrador | Ejercicios de transferencia `EJR-SDEI-nn`, con claves al final |
 | [Conocimiento: diseñar el sistema documentador](Conocimientos/knowledge-DocsAsCode-Designing-Specification.md) | `ANX-SDEI-ESPECIFICACION` | anexo | borrador | Conocimiento 1.4 para diseñar la documentación como código de un proyecto: decisiones, artefactos A-01 a A-13 y compuertas |
 | [Plantilla A-01: ficha vacía](Conocimientos/A-01-ficha-vacia.md) | `ANX-SDEI-FICHA-VACIA` | anexo | borrador | Esqueleto vacío de la ficha de diseño documental que se entrega al aplicador |
-| [Guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) | `DOC-SDT-0001` | nota de estudio | obsoleto | La primera forma del mismo dominio en un archivo. La reemplaza este cuerpo: su [tabla de destinos](Sistema-Documentador-Tecnico-Guide.md#tabla-de-destinos) lleva cada sección a su tema o anexo. Se archiva en la versión siguiente del cuerpo |
+| [Libro: DocsAsCode Developer Guide](DocsAsCode-Developer-Guide.md) | `DOC-SDEI-LIBRO` | guía de estudio | borrador | Edición de lectura del cuerpo: raíz con el índice general y el glosario-índice, y nueve piezas (`DOC-SDEI-LIBRO-P0` a `-P6`, la Parte V en `-P5A` y `-P5B`, y `-ANX`), con citas ancladas a las fuentes; las fuentes siguen siendo estos documentos |
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
 | [Ejemplo: lanzar la prueba de concepto](Examples/Lanzar-Example.md) | `GP-SDEI-LANZAR` | guía práctica | borrador | Cómo levantar el ejemplo anterior en su devcontainer y publicarlo |
@@ -144,6 +144,8 @@ Sistema-De-Documentacion-E-Integracion/
 ├── README.md                 este índice (corpus_id y versión viven acá; excepción: Conocimientos/)
 ├── 00-Marco.md               escenarios, contextos, actores, convenciones
 ├── 01-Mapa.md                estoy acá → qué aplico
+├── DocsAsCode-Developer-Guide.md  libro: raíz con el índice general y el glosario-índice
+├── DocsAsCode-Developer-Guide-*.md  libro: una pieza por Parte (V en dos) y los anexos B a J
 ├── Conocimientos/            conocimiento de especificación (lleva su version) y plantilla A-01
 ├── 99-Anexos/                material de consulta
 └── Examples/                 ejemplos ejecutables y guías prácticas
@@ -157,7 +159,8 @@ está en el [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md).
 
 ## 6. Versión y estado
 
-La versión del cuerpo sigue SemVer y vive sólo en este README. Es la 2 porque el cuerpo reemplaza a la guía de un
+La versión del cuerpo sigue SemVer y vive sólo en este README; la única excepción es el conocimiento de
+especificación, que repite en `version` la de su **Versión:** ([Marco §5](00-Marco.md#5-convenciones)). Es la 2 porque el cuerpo reemplaza a la guía de un
 solo archivo, primera forma del mismo contenido **[criterio propio del plan de implementación]**. El orden es este:
 la compuerta `docs-guard` corre en cada pull request y pasa con documentos en borrador; cuando están los siete temas y
 la revisión del escalón da su visto bueno, una persona pasa cada documento a `vigente` en un pull request propio

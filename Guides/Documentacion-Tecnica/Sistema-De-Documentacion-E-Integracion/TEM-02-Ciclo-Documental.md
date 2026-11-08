@@ -75,7 +75,7 @@ recibe su clase. Un cambio que toca una pieza de clase H (un `AGENTS.md`, por ej
 | 3 Diseño | Fichas, catálogo de clases | Clase asignada a cada pieza; decisión de arquitectura propuesta | **Acepta** la decisión de arquitectura | Redacta la decisión y las plantillas | La clase existe en el [catálogo](01-Mapa.md#4-por-artefacto) |
 | 4 Implementación | Diseño aceptado | Páginas en `borrador`; referencia emitida en el build | — | Redacta borradores | Grupos PR-1 a PR-7 de `docs-guard` |
 | 5 Integración | Pull request con la compuerta | Merge; anclas fijadas | **Pasa a `vigente`**, etiqueta, publica; fusiona lo de clase H | Fusiona lo de clase D o P sin reserva, con la guarda | Guarda de merge, con la delegación asentada |
-| 5m Control de deriva | Repositorios, `last_review` | Issue de aviso con lo que derivó | Prioriza el aviso | Propone la corrección (vuelve a 1a o a 4) | Carril programado semanal |
+| 5m Control de deriva | Repositorios, `last_review` | Issue de aviso con lo que derivó | Prioriza el aviso | Propone la corrección (vuelve a 1a o a 4) | Carril programado semanal: atraso, frescura y deriva de copia fijada; A1 cuando corre la demo |
 
 ### Qué problema resuelve
 
@@ -164,9 +164,9 @@ requerimientos y qué tan pesada es cada fase.
 | Escenario | De dónde salen los requerimientos (1a) | Qué pesa más | Quién decide en 1b |
 | --- | --- | --- | --- |
 | `ESC-SDEI-1` Corpus de guías | Objetivos de aprendizaje y preguntas de quien estudia | Fase 4 (redacción) y la prueba de lectura | `ACT-SDEI-2`; ocupa el rol la responsable de la guía o quien el PO designe por delegación asentada |
-| `ESC-SDEI-2` App sin roles | Pantallas, endpoints y defectos conocidos del código | Fase 2: fichas de reglas ancladas al SHA | Analista |
-| `ESC-SDEI-3` Panel con roles | Casos de uso del marco de especificación, uno por pantalla y rol | Fase 3: qué rol ve qué ayuda | Analista, con el PO para la confidencialidad |
-| `ESC-SDEI-4` Servicio con paquetes | Cambios del contrato público entre versiones | Fase 5: CHANGELOG y contrato por línea de versión | PO |
+| `ESC-SDEI-2` App sin roles | Pantallas, endpoints y defectos conocidos del código | Fase 2: fichas de reglas ancladas al SHA | `ACT-SDEI-2`; ocupa el rol la analista |
+| `ESC-SDEI-3` Panel con roles | Casos de uso del marco de especificación, uno por pantalla y rol | Fase 3: qué rol ve qué ayuda | `ACT-SDEI-2`; ocupa el rol la analista, con el PO para la confidencialidad |
+| `ESC-SDEI-4` Servicio con paquetes | Cambios del contrato público entre versiones | Fase 5: CHANGELOG y contrato por línea de versión | `ACT-SDEI-2`; ocupa el rol el PO |
 
 | Contexto | Qué cambia en el ciclo |
 | --- | --- |
@@ -202,7 +202,7 @@ Leída por fases, cada parte de la fila y de la mini demo es la salida de una fa
 decisión `aceptado`, de 1b (la columna «Decide y fecha» del archivo dice que la tomó la mesa del expediente, por
 delegación del PO, el 2026-10-27); las fichas `RN-LOC-01` y `RN-LOC-02`, ancladas al código, salen de 2; la clase
 CL-06 de la pieza, de 3; la página con `traces: [RD-01, RN-LOC-01@1.1, RN-LOC-02@1.0]`, de 4; y el pull request con
-`docs-guard` en verde que la fusionó, de 5. Si mañana el código cambia el límite, el aviso de deriva devuelve la
+`docs-guard` en verde que la fusionó, de 5. Si mañana el código cambia el límite, el aviso de atraso del carril programado, o A1 cuando corre la demo, devuelve la
 pieza a 4 (la tarea de la persona usuaria es la misma; cambia el número); si la pantalla de alta desapareciera, la
 devolvería a 1a.
 

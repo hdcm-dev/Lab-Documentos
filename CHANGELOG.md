@@ -19,6 +19,24 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 - **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio. El merge se anuncia a las otras sesiones que comparten el repositorio.
 - **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual; lo irreversible con consecuencia externa sale al PO.
 
+## 2026-11-04 (SDEI: libro DocsAsCode Developer Guide y archivado de la guía de un solo archivo)
+
+### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/ — resolución 099 del expediente 0003 de DocsAsCode, §5.6, PR 8
+
+#### Agregado
+
+- **`DocsAsCode-Developer-Guide.md` (`DOC-SDEI-LIBRO`):** el libro del cuerpo, edición de lectura sobre las fuentes en `31660d3`. Partido por Parte (resolución 99 del expediente 0003, 2026-11-07): la raíz lleva el índice general y el glosario-índice (anexo A); nueve piezas `DocsAsCode-Developer-Guide-Parte-0`, `-I` a `-IV`, `-V-a`, `-V-b`, `-VI` y `-Anexos` (B a J), con navegación «anterior · índice · siguiente», ninguna por encima de 100 KB ni de 7 mermaid; las anclas internas y la entrante del conocimiento se remapean.
+- **Referencias (AC-39):** 24 entradas nuevas, secciones «Software» e «Industria y estándares», y la reverificación del 2026-11-01 en 23 entradas existentes.
+
+#### Cambiado
+
+- **Co-cambios de las intervenciones editoriales** en temas, anexos, ejemplos, `tools/docs-guard/README.md` y el conocimiento: control y compuerta (P-13), atraso y deriva (P-18), `CL-08` en los cuatro escenarios, `mermaid-arroba` en PR-4, la regla R-06 en `Como-Decidir.md`.
+- **Remisiones a la guía de un solo archivo (AC-38):** apuntan a la etiqueta `sdei-v2.0.0-borrador`; las trazas de `README.md` y `Guides/README.md` van a `IDX-SDEI`.
+
+#### Eliminado
+
+- **`Sistema-Documentador-Tecnico-Guide.md` (`DOC-SDT-0001`):** queda archivada en la etiqueta `sdei-v2.0.0-borrador` (P-08).
+
 ## 2026-11-02 (SDEI: prueba extendida de ayuda por rol, audiencias y entrega)
 
 ### Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Examples/Prueba-Ayuda-Por-Rol/ — resolución 399 del expediente 0003 de DocsAsCode (ciclo 3), §5.2.3, paso 4

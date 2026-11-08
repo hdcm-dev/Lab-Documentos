@@ -56,7 +56,7 @@ Cinco términos sostienen el resto del tema. Los cinco están en el [Glosario](9
 | Pieza documental | Unidad que se escribe, se versiona y se valida por separado | Una página de ayuda, un `AGENTS.md`, el `openapi.json` |
 | Fuente de verdad | El lugar del que sale lo que la pieza afirma; si la pieza y la fuente discrepan, manda la fuente | El código para la referencia de la API; la ficha de una regla para la ayuda que la menciona |
 | Clase de pieza (`CL-nn`) | Categoría cerrada que fija dónde vive la pieza, contra qué se ancla, qué control la revisa y quién interviene | `CL-06` ayuda al usuario final |
-| Compuerta | Control de la integración continua (CI) que termina en verde o en rojo en cada pull request | `docs-guard`, grupos PR-1 a PR-7 |
+| Compuerta | El carril PR: el conjunto de controles de la integración continua (CI) que corre en cada pull request y termina en verde o en rojo. Un control suelto no es una compuerta | `docs-guard`, grupos PR-1 a PR-7 más `autoprueba` |
 | Clase de intervención D/P/H | Clasifica el **acto** de producir o cambiar una pieza, no a la persona: lo hace un generador determinista (D), lo propone un agente o una persona y entra si la compuerta da verde (P), o sólo lo decide una persona (H). Una pieza puede tener dos actos: una decisión de arquitectura la redacta un agente (P) y la acepta una persona (H) | El contrato REST es D; la ayuda es P; la especificación es «P redacta; H acepta» |
 
 ### Qué problema resuelve
@@ -167,9 +167,9 @@ Los contextos cambian una respuesta dentro de cada fila:
 
 ### Un caso de industria: el portal de un proveedor de notificaciones
 
-La [guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md#1-qué-es-el-sitio-consultado) de este mismo
-directorio analiza el portal público de documentación de OneSignal, un proveedor de notificaciones push, y verifica
-cada afirmación con la respuesta del propio sitio. Leído con este tema, el portal se descompone así:
+La [guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md#1-qué-es-el-sitio-consultado), hoy archivada,
+analizó el portal público de documentación de OneSignal ([OneSignal, s. f., a](99-Anexos/Referencias.md#ref-onesignal-sf)), un proveedor público y externo de notificaciones push, y verificó
+cada afirmación con la respuesta del propio sitio; el libro lo reverificó el 2026-11-01 (18.1). Leído con este tema, el portal se descompone así:
 
 | Pieza | Fuente de verdad | Cómo se produce | Clase |
 | --- | --- | --- | --- |
@@ -218,7 +218,7 @@ piezas que no son prosa y los workflows que corren las compuertas.
 
 [Compilado: `evidencia/E1-U4b/01-tem01-inventario.sh` del expediente 0002 de DocAsCode, en el repositorio
 Lab-Documentos.Documentacion; salida del 2026-10-27 sobre «PR #19, merge `e3841b6`» de Lab-Documentos (equivale a `080f158`, anterior a la reescritura de la historia: el árbol de `tools/docs-guard`, `Guides/Documentacion-Tecnica`, `scripts` y `.github` es idéntico), recortada. Sobre `e3841b6` la salida se reproduce
-igual; sobre `main` de hoy suma `tema 7` y `proceso 2`, los temas y los documentos de proceso que se agregaron después
+igual; sobre `main` de hoy suma `tema 7` y `proceso 2`, los temas y los documentos de proceso que se agregaron después, y desde `00171bd` también `rrd 2`, el registro de la prueba de ayuda por rol
 ([U25](https://github.com/hdcm-dev/Lab-Documentos.Documentacion/tree/09a451867a05e7718d064067e4dc84377e042ffe/PROMPTs/DEVs/Enchacement/01-Replanteo-Y-Analisis/OUTPUTs/Expedientes/0003-Reedicion-DocsAsCode-Y-Especificacion/evidencia/U25), medida el 2026-11-01)]
 
 ```text
@@ -241,9 +241,9 @@ workflows que corren compuertas: docs-enlaces-semanal.yml, docs-guard.yml, frame
 ```
 
 Leído con el tema: el cuerpo de estudio (`indice`, `marco-de-referencia`, `mapa`, `anexo`) es CL-10; las doce
-páginas de ayuda de las pruebas de concepto son CL-06; la `rrd` y las dos `ficha` son la mini demo de MovilidadUrbana
-(CL-02, y CL-01 como fichas propias sin SDD, en un repositorio dedicado con `source.lock`); el `openapi.json` es CL-05 y el `source.lock` es su ancla. Cuatro workflows ejecutan
-controles: dos bloquean en cada pull request (`docs-guard.yml` y el de la mini demo) y uno sólo avisa por semana.
+páginas de ayuda de las pruebas de concepto son CL-06; los registros `rrd` son CL-02 (el de la mini demo de MovilidadUrbana y el de la prueba de ayuda por rol), y las dos
+`ficha` son CL-01, fichas propias sin SDD, en un repositorio dedicado con `source.lock`; el `openapi.json` es CL-05 y el `source.lock` es su ancla. De los cuatro
+workflows que ejecutan controles, `docs-guard.yml` bloquea en cada pull request, el de la mini demo bloquea en los pull request que tocan la demo, el semanal sólo avisa y el cuarto es la compuerta de la demo del Framework Concept.
 
 ### Ensayo reproducible: adopciones con fecha
 
@@ -276,8 +276,10 @@ responde el sistema documentador cuando alguien corrige el código:
 1. La ficha `RN-LOC-01` de la [mini demo](Examples/MovilidadUrbana-Mini-Demo/README.md) declara la regla y dónde se
    aplica en el código, con la forma `ruta#Símbolo@SHA`.
 2. La página de ayuda que menciona el límite lleva `traces: [RN-LOC-01@1.1]` en su frontmatter.
-3. Si el código cambia, dos controles lo detectan. El workflow de la mini demo compara el código fijado con la rama
-   principal del código y **avisa** que el símbolo que cita la ficha cambió. Cuando alguien actualiza el SHA fijado,
+3. Si el código cambia en su repositorio, el sistema se entera en dos tiempos. El carril programado cuenta cada semana
+   cuántos commits de atraso tiene el SHA fijado frente a la rama principal del código; la deriva por símbolo la mide A1
+   cuando corre el workflow de la demo, y sólo **avisa** (deuda: A1 no está programado; el workflow corre en los pull
+   request que tocan la demo o a mano). Cuando alguien actualiza el SHA fijado,
    la compuerta busca de nuevo cada ancla `ruta#Símbolo@SHA` y da **rojo** si el símbolo ya no está en ese SHA. Un agente (`ACT-SDEI-4`) propone entonces actualizar la ficha y subir su versión, y la página
    que traza a la versión anterior queda en rojo hasta que alguien la revisa. Ningún control lee el número «60» de
    la página y lo compara con el «80» del código: lo que se automatiza es que la página quede marcada para revisar

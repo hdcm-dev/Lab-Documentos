@@ -129,5 +129,5 @@ CL-14 está latente: no se activa mientras ningún escenario publique sitio (`CT
 
 Documento anterior: [00 Marco](00-Marco.md). Siguiente documento: [Tema 01 — Qué es un sistema
 documentador](TEM-01-Sistema-Documentador.md), en el orden que da el [README](README.md#3-rutas-de-lectura). La
-[guía de un solo archivo](Sistema-Documentador-Tecnico-Guide.md) está `obsoleta`; su tabla de destinos lleva cada
+[guía de un solo archivo](https://github.com/hdcm-dev/Lab-Documentos/blob/sdei-v2.0.0-borrador/Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Sistema-Documentador-Tecnico-Guide.md) está archivada ([Lab-Documentos, s. f.](99-Anexos/Referencias.md#ref-lab-documentos-guia-sf)); su tabla de destinos lleva cada
 sección vieja a su tema.

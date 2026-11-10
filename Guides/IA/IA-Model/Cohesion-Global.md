@@ -6,7 +6,7 @@ status: borrador
 origin: ia-generated
 confidence: alta
 owner: ACT-06
-last_review: 2026-11-07
+last_review: 2026-11-10
 audience: [humano, agente]
 traces: [IAM-M0, IAM-M1, IAM-M3]
 ---
@@ -213,8 +213,10 @@ laboratorios efectivamente escritos:
 
 Condiciones vigentes sobre este mapa (folio 011 §4 y §5): los laboratorios de embeddings de IAM-09
 corren por el camino alternativo mientras dure el obstáculo del banco (§6, lectura 8); el tramo
-final del lab 6.B de IAM-06 —servir en el banco, pasos 5–6— queda condicionado a la decisión del
-operador (ACT-03) sobre crear modelos en el banco compartido (IAM-06 §3.2); la generación de
+final del lab 6.B de IAM-06 —servir en el banco, pasos 5–6— estaba condicionado a la decisión del
+operador (ACT-03) sobre crear modelos en el banco compartido: esa decisión se dio (folio 022) y el
+tramo se corrió el 2026-11-10 con los modelos de prueba creados por API y borrados al terminar
+(IAM-06 §3.2), de modo que la condición queda cumplida y cerrada; la generación de
 imagen queda en nivel conceptual con ejemplo ilustrativo (fila 2 del lote). Todo
 laboratorio corre en el banco y se declara reproducible en CTX-01, o marca su contexto (IAM-M3
 §3).

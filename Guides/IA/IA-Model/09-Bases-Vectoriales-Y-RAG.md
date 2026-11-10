@@ -6,10 +6,10 @@ status: borrador
 origin: ia-generated
 confidence: alta
 owner: ACT-06
-last_review: 2026-11-07
+last_review: 2026-11-10
 audience: [humano, agente]
 traces: [IAM-01, IAM-08, IAM-10]
-entorno_validado: sentence-transformers 5.1.2 + faiss-cpu 1.12.0 + torch 2.9.1+cpu + numpy 2.5.4 sobre Python 3.12.16 (contenedor python:3.12-slim), CTX-01; generación verificada contra el banco (CTX-03, Ollama 0.32.0-rc0, qwen2.5:7b-instruct); 2026-11-07
+entorno_validado: sentence-transformers 5.1.2 + faiss-cpu 1.12.0 + torch 2.9.1+cpu + numpy 2.5.4 sobre Python 3.12.16 (contenedor python:3.12-slim), CTX-01; generación verificada contra el banco (CTX-03, Ollama 0.32.0-rc0, qwen2.5:7b-instruct); corrida completa 2026-11-07; revisión del modelo de embeddings e8f8c211226b894fcb81acc59f3b34ba3efd5f42 observada el 2026-11-10
 ---
 
 # 09. Bases vectoriales y RAG
@@ -402,6 +402,7 @@ Ranking contra '¿Cuántos libros me puedo llevar a casa?':
   dimensión 384; norma 1,0000
 - **Modelo**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` (384 dimensiones;
   ficha consultada el 2026-11-07)
+- **Revisión del modelo**: `e8f8c211226b894fcb81acc59f3b34ba3efd5f42` (observada en descarga del 2026-11-10)
 - **Motor**: sentence-transformers 5.1.2, torch 2.9.1+cpu, numpy 2.5.4, Python 3.12.16
 - **Parámetros**: `normalize_embeddings=True`; el resto en su default
 - **Semilla**: no aplica — la inferencia del bi-encoder es determinista
@@ -421,7 +422,7 @@ calibran mirando rankings del corpus propio, como advierte el documento 01 §1.4
 A diferencia de los laboratorios con muestreo, esta salida es determinista para estas versiones:
 si difiere, revisá primero versión del modelo y de la biblioteca (`pip show sentence-transformers`)
 — un modelo distinto da vectores de otro espacio, no «parecidos». Y un descargo sobre la vigencia:
-estas similitudes valen para la revisión del modelo con que se corrió la verificación; otra
+estas similitudes valen para la revisión fijada en el protocolo; otra
 revisión del mismo modelo puede desplazar los valores y reordenar un empate fino.
 
 ### 3.2 Ejemplo 2 — mini-RAG sin framework
@@ -579,6 +580,7 @@ días corridos, renovable una sola vez si ningún otro socio reservó el materia
 - **Cifra**: 3 documentos → 15 chunks; top-3 recuperado con similitudes 0,421 / 0,421 / 0,362
 - **Modelo**: *embeddings* `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`;
   generación `qwen2.5:7b-instruct` servido por el banco (digest `845dbda0ea48`, Q4_K_M, 7.6B)
+- **Revisión del modelo**: `e8f8c211226b894fcb81acc59f3b34ba3efd5f42` (observada en descarga del 2026-11-10)
 - **Motor**: sentence-transformers 5.1.2 + faiss-cpu 1.12.0 (fase local); Ollama 0.32.0-rc0
   (generación)
 - **Parámetros**: `normalize_embeddings=True`, `TOP_K=3`; generación con `temperature 0.0`, resto
@@ -596,8 +598,8 @@ salas de estudio, que comparte vocabulario (socio, cupos, plazos) pero no habla 
 **distractor plausible**, la forma típica en que la recuperación vectorial se equivoca. El
 pasaje correcto llega segundo, a menos de una milésima (ambos redondean a 0,421), y trae la
 respuesta completa; como `TOP_K=3` lo inyectó igual, el modelo respondió bien. Rige acá el mismo
-descargo de §3.1: un empate así de fino vale para la revisión del modelo de *embeddings* con que
-se verificó la corrida, y otra revisión puede reordenarlo. Con `TOP_K=1`
+descargo de §3.1: un empate así de fino vale para la revisión del modelo de *embeddings* fijada
+en el protocolo, y otra revisión puede reordenarlo. Con `TOP_K=1`
 este caso habría fallado con el pasaje correcto a una milésima de distancia — la demostración
 más barata de por qué *k* no se hereda de un tutorial sino que se mide, y de por qué imprimir
 el *top-k* con sus similitudes es la herramienta de diagnóstico del anexo (§6).
@@ -700,6 +702,7 @@ P: ¿Qué pasa con el anexo cuando llueve fuerte?
 - **Cifra**: troceo a 200 caracteres → 15 chunks (largo medio 149); a 1000 → 3 chunks (largo
   medio 749); top-1 por pregunta con las similitudes transcriptas
 - **Modelo**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+- **Revisión del modelo**: `e8f8c211226b894fcb81acc59f3b34ba3efd5f42` (observada en descarga del 2026-11-10)
 - **Motor**: sentence-transformers 5.1.2 + faiss-cpu 1.12.0, Python 3.12.16
 - **Parámetros**: `normalize_embeddings=True`, top-1 por pregunta; troceo por oraciones con techo
   de 200 y 1000 caracteres (función transcripta)

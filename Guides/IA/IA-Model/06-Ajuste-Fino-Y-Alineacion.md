@@ -4,12 +4,12 @@ doc_type: tema
 title: Ajuste fino y alineación
 status: borrador
 origin: ia-generated
-confidence: media
+confidence: alta
 owner: ACT-06
-last_review: 2026-11-07
+last_review: 2026-11-10
 audience: [humano, agente]
 traces: [IAM-05, IAM-07]
-entorno_validado: "parcial — datos, cálculos, entrenamiento reducido, fusión y conversión a GGUF corridos en CTX-01 (Python 3.11.2, trl 1.17.1, llama.cpp v0.9.0) el 2026-11-07; la corrida completa de entrenamiento y el servido en el banco quedan ilustrativos (exceden el tope de la verificación / crear modelos en el banco es del operador; banco: ollama 0.32.0-rc0)"
+entorno_validado: "sí — datos, cálculos, entrenamiento reducido, fusión, conversión a GGUF, creación por API en el banco (con autorización de ACT-03 y borrado posterior) y comparación servida corridos el 2026-11-10 en CTX-01 compartido (Python 3.11.18 en contenedor, trl 1.17.1, llama.cpp v0.9.0; banco: ollama 0.32.0-rc0); la corrida completa de entrenamiento queda como apartamiento declarado (primer paso medido 1.525,7 s → ~229 min proyectados, sobre el tope)"
 ---
 
 # 06. Ajuste fino y alineación
@@ -341,10 +341,12 @@ oficio del documento [04](04-Datos-Y-Corpus.md).
 ### 3.2 Laboratorio 6.B — receta LoRA completa: de los pesos de HF al banco (operable, CTX-01 declarado)
 
 La receta entera, paso a paso, sobre `Qwen/Qwen2.5-0.5B-Instruct`. Corre en CTX-01; el
-entrenamiento en CPU es lento (la medición va en el paso 2). Estado de verificación (2026-11-07):
-pasos 0–4 corridos de punta a punta en CTX-01 — el entrenamiento, en versión reducida por el tope
-de tiempo del banco de verificación —; los pasos 5–6 (servir en el banco) quedan ilustrativos
-porque crear modelos en el banco compartido es decisión del operador (ACT-03).
+entrenamiento en CPU es lento (la medición va en el paso 2). Estado de verificación (2026-11-10):
+pasos 0–6 corridos de punta a punta en CTX-01 y contra el banco — el entrenamiento, en versión
+reducida por el costo medido de la completa (apartamiento declarado en el paso 2) —; los pasos
+5–6 se corrieron con autorización del operador (ACT-03, expediente 0001 folio 022): los modelos
+de prueba `taller-qwen` y `taller-qwen-base` se crearon por la API del banco y se borraron al
+terminar la comparación.
 
 **Paso 0 — verificar el banco** (se enseña en [08](08-Inferencia-Local.md) y acá se cita):
 
@@ -444,37 +446,39 @@ fracción del modelo (≈494M parámetros): 0.2189%
 - **Fecha de la corrida**: 2026-11-07
 </details>
 
-Duración del entrenamiento: la corrida completa (9 pasos de optimización, 3 épocas) quedó
-**[Ilustrativo — no verificado en el banco]** porque excede el tope de ~10 minutos por corrida
-del banco de verificación: en el intento real (CTX-01 compartido con otras cargas, ~1,2 núcleos
-efectivos para el proceso), 10 minutos no alcanzaron para completar ni el primer paso de
-optimización. Lo que sí se corrió entero es una **corrida reducida** — el mismo script con
-`max_steps=3`, `per_device_train_batch_size=1`, `gradient_accumulation_steps=1`,
-`logging_steps=1` —, que entrena y guarda el adaptador; su salida real:
+Duración del entrenamiento: la corrida completa (9 pasos de optimización, 3 épocas) sigue sin
+transcribirse entera por costo — apartamiento declarado: en la corrida del 2026-11-10 se la lanzó
+literal y el primer paso de optimización midió 1.525,7 s (CTX-01 compartido con otras cargas),
+lo que proyecta ~229 minutos de total; superado el tope de la corrida de verificación (150 min),
+se la cortó tras ese primer paso medido. Lo que sí corre entero — y entrena y guarda el adaptador
+que usan los pasos 3–6 — es la **corrida reducida**: el mismo script con `max_steps=3`,
+`per_device_train_batch_size=1`, `gradient_accumulation_steps=1`, `logging_steps=1`; su salida
+real:
 
 ```text
 $ python entrena_lora_reducido.py   # corrida reducida; la completa excede el tope del banco
 {'loss': '4.481', 'grad_norm': '9.988', 'learning_rate': '0.0001', 'mean_token_accuracy': '0.3457', 'num_tokens': '82', 'epoch': '0.05'}
-{'loss': '5.221', 'grad_norm': '7.007', 'learning_rate': '6.667e-05', 'mean_token_accuracy': '0.3086', 'num_tokens': '164', 'epoch': '0.1'}
-{'loss': '4.618', 'grad_norm': '5.16', 'learning_rate': '3.333e-05', 'mean_token_accuracy': '0.3766', 'num_tokens': '242', 'epoch': '0.15'}
-{'train_runtime': '380.3', 'train_samples_per_second': '0.008', 'train_steps_per_second': '0.008', 'train_loss': '4.773', 'epoch': '0.15'}
+{'loss': '4.232', 'grad_norm': '9.817', 'learning_rate': '6.667e-05', 'mean_token_accuracy': '0.3867', 'num_tokens': '158', 'epoch': '0.1'}
+{'loss': '4.285', 'grad_norm': '5.201', 'learning_rate': '3.333e-05', 'mean_token_accuracy': '0.3797', 'num_tokens': '238', 'epoch': '0.15'}
+{'train_runtime': '600.2', 'train_samples_per_second': '0.005', 'train_steps_per_second': '0.005', 'train_loss': '4.333', 'epoch': '0.15'}
 ```
 
 <details>
 <summary>Protocolo de la cifra</summary>
 
-- **Cifra**: 380,3 s para 3 pasos de 1 ejemplo (~127 s por micro-lote); loss por paso 4,481 / 5,221 / 4,618
+- **Cifra**: 600,2 s para 3 pasos de 1 ejemplo (~200 s por micro-lote); loss por paso 4,481 / 4,232 / 4,285; primer paso de la corrida completa, medido antes de cortarla: 1.525,7 s
 - **Entrada / dataset**: `taller_sft.jsonl` (20 ejemplos del laboratorio 6.A); semilla 42
-- **Herramienta**: trl 1.17.1, transformers 5.22.2, peft 0.21.2, torch 2.15.0+cpu, Python 3.11.2
-- **Contexto de hardware**: CTX-01 compartido (8 núcleos nominales, ~1,2 efectivos por carga ajena)
-- **Fecha de la corrida**: 2026-11-07
+- **Herramienta**: trl 1.17.1, transformers 5.22.2, peft 0.21.2, torch 2.15.0+cpu, Python 3.11.18 (contenedor)
+- **Contexto de hardware**: CTX-01 compartido (8 núcleos nominales, carga ajena concurrente)
+- **Fecha de la corrida**: 2026-11-10
 </details>
 
 Tres pasos de a un ejemplo no imponen el estilo del taller (la loss apenas se mueve y es ruidosa:
-cada paso ve un solo ejemplo); muestran que la mecánica corre y cuánto cuesta cada paso. A ese
-ritmo medido, los 72 micro-lotes de la corrida completa proyectan horas en ese banco compartido;
-en un CTX-01 dedicado, la referencia sigue siendo la estimación de decenas de minutos a una hora
-para 20 ejemplos × 3 épocas sobre 0.5B en float32.
+cada paso ve un solo ejemplo); muestran que la mecánica corre y cuánto cuesta cada paso. El costo
+de la completa quedó medido directamente: 1.525,7 s su primer paso de optimización (8 micro-lotes
+de 2 ejemplos), que proyecta ~229 minutos para los 9 pasos en ese banco compartido; en un CTX-01
+dedicado, la referencia sigue siendo la estimación de decenas de minutos a una hora para
+20 ejemplos × 3 épocas sobre 0.5B en float32.
 
 **Paso 3 — fusionar el adaptador con el modelo base:**
 
@@ -546,7 +550,11 @@ ollama run taller-qwen "¿Qué es un adaptador?"
 
 En CTX-03 crear modelos en el banco es una decisión del operador (ACT-03): pedí permiso antes de
 ocupar su disco. La importación por Modelfile es el procedimiento documentado de Ollama, que
-además no re-cuantiza GGUF al importar (Ollama, s. f.).
+además no re-cuantiza GGUF al importar (Ollama, s. f.). Verificado el 2026-11-10 (con
+autorización de ACT-03 y borrado posterior): sin cliente `ollama` instalado, el mismo paso corre
+por la API — el GGUF se sube con `POST $OLLAMA_HOST/api/blobs/sha256:<digest>` (respuesta `201`)
+y el modelo se crea con `POST /api/create` pasando `files` con ese digest y `template`/`system`
+copiados del `POST /api/show` de `qwen2.5:7b-instruct` (respuesta `{"status":"success"}`).
 
 **Paso 6 — comparar antes y después.** La comparación justa es contra el mismo 0.5B sin ajustar,
 no contra otro modelo del banco: convertí también el base descargado (el mismo
@@ -564,16 +572,47 @@ for m in taller-qwen-base taller-qwen; do
 done
 ```
 
-**[Ilustrativo — no verificado en el banco]** — crear modelos en el banco compartido es decisión
-del operador (ACT-03), como fija la fila CTX-03 de §2, y el mandato de la corrida de verificación
-de este documento no permitía subirle modelos: la comparación servida queda para una corrida con
-banco propio. Lo estable sigue siendo el contraste de estilo (el ajustado debe responder en una o
-dos frases con la terminología del glosario); el texto exacto varía. De la cadena previa sí quedó
-verificado el 2026-11-07: la fusión del paso 3 produce un modelo que genera texto coherente
-(transformers 5.22.2, decodificación voraz, CTX-01), el GGUF Q8_0 del paso 4 pesa 531.067.904
-bytes (~506 MiB: el «~500 MB» anunciado), y la plantilla que pide el paso 5 es la ChatML de la
-familia, confirmada contra el banco por `POST /api/show`. El contraste de estilo en sí exige la
-corrida completa de entrenamiento, que excede el tope del banco de verificación (ver paso 2).
+Salida real de la comparación servida (2026-11-10; extracto — la respuesta completa de cada
+modelo, cinco y siete puntos de lista respectivamente, está en la evidencia de la corrida):
+
+```text
+== taller-qwen-base ==
+Ollama no es un modelo de lenguaje natural tradicionalmente conocido como "oLLAMA". Sin embargo,
+puedo proporcionarte información sobre cómo podrías usar ollama en tu proyecto de aprendizaje
+automático:
+
+1. **Entrenamiento de modelos**: Ollama puede ser útil para entrenar modelos de aprendizaje
+automático debido a su capacidad para aprender y mejorar con el tiempo. […]
+== taller-qwen ==
+Ollama no es un modelo de lenguaje natural tradicionalmente conocido como "oLLAMA". Sin embargo,
+puedo proporcionarte información sobre cómo podrías usar ollama en tu proyecto de aprendizaje
+automático:
+
+1. **Entrenamiento de modelos**: Ollama puede ser útil para entrenar modelos de aprendizaje
+automático basados en el lenguaje natural. […]
+```
+
+<details>
+<summary>Protocolo de la cifra</summary>
+
+- **Cifra**: dos respuestas servidas por `/api/chat` (temperature 0, seed 42), mismas preguntas a `taller-qwen-base` y `taller-qwen`
+- **Entrada / dataset**: adaptador de la corrida reducida del paso 2 (3 pasos, semilla 42) fusionado y convertido a GGUF Q8_0; base: el mismo snapshot sin ajustar, convertido igual
+- **Herramienta**: banco ollama 0.32.0-rc0 (`$OLLAMA_HOST`); modelos creados por API (paso 5) y borrados tras la comparación
+- **Semilla**: 42; temperature 0
+- **Contexto de hardware**: el del banco (CTX-03)
+- **Fecha de la corrida**: 2026-11-10
+</details>
+
+La aclaración que esta salida exige: el adaptador venía de la **corrida reducida** (3 micro-pasos
+de 1 ejemplo — el apartamiento declarado en el paso 2), así que el contraste de estilo vale lo que
+vale — ninguno de los dos responde «en una o dos frases con la terminología del glosario», y ambos
+confunden qué es Ollama; las diferencias entre base y ajustado son de redacción, no de conducta.
+Eso es exactamente lo que anticipa el paso 2: tres pasos no imponen la conducta — la cadena
+técnica completa (entrenar → fusionar → GGUF → crear por API → servir → comparar) quedó verificada
+de punta a punta; el contraste de estilo en sí exige la corrida completa de entrenamiento. De la
+cadena previa además sigue verificado: la fusión del paso 3 produce un modelo que genera texto
+coherente, el GGUF Q8_0 del paso 4 pesa 531.067.904 bytes (~506 MiB: el «~500 MB» anunciado) y la
+plantilla del paso 5 es la ChatML de la familia, confirmada contra el banco por `POST /api/show`.
 
 Esta comparación de dos salidas es un juicio a ojo; el juicio con protocolo — un eval propio
 corrido sobre el modelo antes y después del ajuste — es el laboratorio del documento

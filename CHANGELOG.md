@@ -3,6 +3,18 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-10 (Guía 18: cierre de deudas PD-01 y PD-02)
+
+### Guides/IA/IA-Model/ — expediente 0001, folios 022–023
+
+#### Cambiado
+
+- **`06-Ajuste-Fino-Y-Alineacion.md`:** el tramo final del laboratorio 6.B quedó **servido de verdad** contra el banco: los dos bloques antes «[Ilustrativo]» llevan salidas reales (creación de `taller-qwen`/`taller-qwen-base` por API y comparación del paso 6 con `temperature 0, seed 42`); la corrida completa de entrenamiento se cortó por costo medido (~229 min proyectados) y rige la reducida con apartamiento declarado; `entorno_validado` 2026-11-10, `confidence: alta` (sigue `status: borrador`). Los modelos de prueba se borraron del banco con comprobación.
+- **`09-Bases-Vectoriales-Y-RAG.md`:** la revisión del modelo de *embeddings* (`e8f8c211226b894fcb81acc59f3b34ba3efd5f42`, observada en descarga fresca) quedó fijada en los tres bloques «Protocolo de la cifra»; los descargos de vigencia remiten ahora a esa revisión.
+- **`Cohesion-Global.md` §5:** la condición vigente del 6.B (decisión de ACT-03) se dio y quedó cerrada.
+
+Constancias `verif-06b`/`verif-09b` y folios 022–023 en el expediente 0001 (`hdcm-dev/Lab-Documentos.Documentacion`). Compuerta local verde. La delegación del merge del 2026-11-07 cubre este PR.
+
 ## 2026-11-07 (Guía 18: guía de estudio sobre modelos de IA)
 
 ### Guides/IA/IA-Model/ — expediente 0001 (Guia-De-Estudio-IA-Model) de `hdcm-dev/Lab-Documentos.Documentacion`, `PROMPTs/Guides/18-IA-Model/OUTPUTs/`

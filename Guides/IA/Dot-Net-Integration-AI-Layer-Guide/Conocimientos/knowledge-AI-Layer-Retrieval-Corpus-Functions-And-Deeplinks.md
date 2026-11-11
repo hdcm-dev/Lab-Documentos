@@ -8,7 +8,7 @@
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.3
+**Versión:** 1.4
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
 **Fecha:** 2026-11-11
 
@@ -529,6 +529,23 @@ Implementa [K2 R3](knowledge-AI-Layer-Console-Assistant-Building.md#k2-r3): nada
    dice «la segunda» de la tercera → rechazados en los dos casos; la batería incluye un fixture con categorías de
    cifras distintas pero cercanas.
 
+<a id="k6-12-8"></a>
+8. **Lo que el validador de cifras no ve.** Una afirmación falsa sin números pasa intacta: en Movilidad Urbana
+   salió una paráfrasis que invertía el sentido de una nota y una restricción inventada («sólo en Corrientes»).
+   Por eso, además de las cifras, el texto redactado se contrasta contra la plantilla en **negaciones,
+   restricciones y entidades**: cada «no», «sólo», «nunca», «excepto» y cada nombre propio del dominio tiene que
+   estar en la plantilla o en un resultado; si no, va la plantilla. *Límite:* una lista cerrada de entidades del
+   dominio frena las conocidas, no las inventadas; el control correcto es «todo nombre propio del texto está en
+   la fuente», no «ningún nombre de la lista falta». *Prueba:* doble que invierte una nota y doble que agrega
+   «sólo en <localidad>» → rechazados.
+9. **Normalizá el formato de las citas antes de comparar.** El atajo «idénticas salvo citas» no vio «100 %[1]»
+   sin espacio. Normalizá el espaciado (o exigí un espacio antes de «[») y tratá una respuesta que difiere de la
+   plantilla sólo en citas como plantilla, no como redactada. *Prueba:* doble con «[1]» pegado → corregido o
+   rechazado.
+10. **El validador informa su tasa de rechazo** por forma y por corrida (cuántas redacciones descartó y por qué
+   regla). *Porqué:* en Movilidad Urbana un caso a temperatura 0 incumplía la regla de citas y otro traía una
+   insinuación falsa, y «0 cifras inventadas» lo escondía. *Prueba:* el registro de la batería tiene la columna.
+
 <a id="k6-13"></a>
 ## 13. Ejemplo real extractado
 
@@ -756,6 +773,8 @@ Cada ítem es sí/no; un «no» impide cerrar el PR.
 | <a id="k6-ap-8"></a>K6-AP-8 | El argumento de una llamada fallida respalda una cifra | «hubo 99999» con un id inexistente | §12.2 |
 | <a id="k6-ap-9"></a>K6-AP-9 | El botón, el deeplink y el servidor deciden el permiso por separado | 403 al confirmar el alta | §16 criterio único |
 | <a id="k6-ap-10"></a>K6-AP-10 | Ofrecer siempre el primer destino de la página | el alta llevaba a la lista | §15.1 destino por intención |
+| <a id="k6-ap-11"></a>K6-AP-11 | Validar sólo números | Movilidad Urbana: nota invertida y restricción inventada sin cifras | §12.8 |
+| <a id="k6-ap-12"></a>K6-AP-12 | «Idénticas salvo citas» sin normalizar el formato | «100 %[1]» pasó | §12.9 |
 
 Los antipatrones de construcción que este conocimiento detalla siguen en K2:
 [K2-AP-7](knowledge-AI-Layer-Console-Assistant-Building.md#k2-ap-7) (respuesta como puntero, palabras sueltas),
@@ -825,6 +844,7 @@ página (§3.6).
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |
+| 1.4 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana: §12.8 afirmaciones sin números y entidades no cerradas; §12.9 formato de citas; §12.10 tasa de rechazo; K6-AP-11 y K6-AP-12. |
 | 1.3 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) (Movilidad Urbana): §12.7 cifra atada a su categoría y a su orden. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría rotulado como del libro; ficha de concepto con `contexto` opcional y cobertura por términos. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas (sistema de reservas sintético, 24 huecos): gramática de `::: roles`; `delivery` como audiencia y qué pasa sin `roles` o sin `status`; frontmatter completo de ejemplo; ficha frente a página por tarea; cálculo de la raíz; calibración del umbral de coseno; §8.0 criterio de palabra común; qué se compara antes de pasar una intención al modelo; fechas y horas como argumento y como cifra con origen; una sola política (ver) y el hacer por el criterio de §16; `Alcance` del dominio; propuesta de id de instancia; criterios de frontera de la ayuda. |

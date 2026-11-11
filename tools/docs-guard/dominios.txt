@@ -63,3 +63,6 @@ papers.nips.cc                   # actas de NeurIPS (Sculley et al., 2015)
 www.w3.org                       # recomendación W3C PROV-O (procedencia)
 doi.org                          # resolutor DOI de artículos citados (Saltzer y Schroeder, Clopper y Pearson, Biggs, Sweller)
 martinfowler.com                 # artículo «Feature Toggles» de Pete Hodgson
+# Guía 16 — sección 3.7 (frontera del asistente): diseño conversacional
+www.nngroup.com                  # heurísticas de usabilidad de Nielsen Norman Group
+developers.google.com            # guía «Conversation Design» de Google

@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.4
+**Versión:** 1.5
 **Estado:** Vigente
 **Fecha:** 2026-11-11
+
+**Cambios en 1.5** (rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor)): R2.8 los controles de anclaje no miden calidad; compuerta «no peor que la fija» a ciegas, ejercida, y tasa de rechazo del validador en el informe; K3-AP-12 y K3-AP-13.
 
 **Cambios en 1.4** (banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor)): R8.4 mismo redondeo en código y SQL, con medios exactos en el fixture.
 
@@ -177,6 +179,13 @@ agrega casos (con motivo) o crea una `v2` con fecha; no cambia oráculos de caso
 
 **Implementación en K7.** El script de la batería ×3, el umbral, las inestables y el registro por corrida se
 arman según [K7 §9](knowledge-AI-Layer-Testing-Strategy.md#k7-9); la latencia, según [K7 §10](knowledge-AI-Layer-Testing-Strategy.md#k7-10).
+
+**R2.8 — Pasar los controles de cifras y citas no es pasar la calidad.** En Movilidad Urbana la redacción
+pasó todos los controles de anclaje y aun así salió peor que la plantilla fija en 6 de 13 pares a ciegas. Para
+aceptar una forma redactada se exige, además, la compuerta «la redactada no es peor que la fija» leída a ciegas
+(K5 CD-8), con pares efectivamente juzgados (K7 R9.8), y el informe declara la tasa de rechazo del validador
+(K6 §12.10). Sin pares juzgados, la compuerta queda **NO EJECUTADO** y la fase no se entrega. *Prueba:* el
+informe MEDIDO tiene «pares juzgados», «peores a ciegas» y «rechazos del validador» por forma.
 
 <a id="k3-3-condiciones"></a>
 ## 3. Condiciones de medición: en frío y pagando el cambio de modelo
@@ -486,6 +495,8 @@ Cada ítem se tacha sólo con un artefacto que existe.
 | <a id="k3-ap-9"></a>K3-AP-9 | Creer la tasa automática sin leer | 95 % con una cifra inventada adentro | R5.1, R5.3 |
 | <a id="k3-ap-10"></a>K3-AP-10 | Ajustar la batería para que pase | Mediría el oráculo, no el sistema | R2.7 |
 | <a id="k3-ap-11"></a>K3-AP-11 | Confiar en la demo | La demo no mostraba la IA apagada ni la plantilla equivocada | R7.1 |
+| <a id="k3-ap-12"></a>K3-AP-12 | Tomar el anclaje como calidad | Movilidad Urbana: 6 de 13 pares peores con 0 cifras inventadas | R2.8 |
+| <a id="k3-ap-13"></a>K3-AP-13 | «Peores 0» sin que el juez actúe | ronda 3 no aprobada: la compuerta nunca se ejerció | R2.8; K7 R9.8 |
 
 La tabla índice de todos los antipatrones del conjunto está en AI-Layer-Integration-Working-Method; acá viven
 los que esta fase previene.

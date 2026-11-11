@@ -8,7 +8,7 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` (libro hermano en redacción: cuando se publique, este conocimiento remite a sus secciones y, si algo choca, rige el libro)
-**Versión:** 0.10
+**Versión:** 0.11
 **Estado:** Borrador provisorio (las reglas están medidas en un sistema; pasa a 1.0 cuando se publique la guía de diseño conversacional y se agreguen sus remisiones)
 **Fecha:** 2026-11-11
 
@@ -76,6 +76,7 @@ alcance (K2 §3). Tampoco cubre el texto de pantallas que no son del asistente.
 | <a id="k5-r4"></a>CD-4 | **Toda cifra lleva su nota de métrica** (qué se contó, período, filtro) | «suscriptores» eran dispositivos, no personas; sin la nota, la cifra se lee mal | en la batería, cada respuesta con número tiene nota |
 | <a id="k5-r5"></a>CD-5 | **Ante un nombre que coincide con varias cosas, se aclara con candidatas y su cifra; nunca se elige ni se suma en silencio** | la persona tiene que ver sobre qué objeto se le responde | resolutor con dos coincidencias → aclaración, sin cifra agregada |
 | <a id="k5-r6"></a>CD-6 | **El asistente no actúa ni dice que actúa:** explica y lleva; la acción la hace la persona en la pantalla | el anillo 1 es de lectura y navegación (K2 §1); «yo te lo creo» promete lo que el software no hace | control del texto: ninguna oración en primera persona de acción |
+| <a id="k5-r8"></a>CD-8 | **Redactá con el modelo sólo donde aporta** (cifras con su contexto) y aceptá cada forma redactada sólo si **no es peor que su plantilla fija**, medido a ciegas | en el banco Movilidad Urbana de [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) la redacción pasó todos los controles de cifras y citas y aun así salió peor que la plantilla en 6 de 13 pares a ciegas: el anclaje no mide calidad | compuerta a ciegas por forma (K3 R2.8); una respuesta que sólo suma citas a la plantilla no cuenta como redactada |
 | <a id="k5-r7"></a>CD-7 | **La forma de los datos (torta, barras, número solo) la decide el código por regla**, no el modelo | el modelo no sabe cuántas categorías hay ni si suman un todo | tabla de casos `(n categorías, tipo) → forma` |
 
 **Texto de la abstención.** La plantilla es fija y vive en el código; el texto exacto lo elige cada proyecto. En
@@ -145,7 +146,9 @@ herramienta y se filtra por permiso como cualquier otra.
 ## 7. Voz y sugerencias
 
 1. **Una sola persona gramatical, la del producto** (en PushDispatch, voseo y segunda persona). *Prueba:* control
-   del texto en la batería (tuteo o voseo mezclado = falla).
+   del texto en la batería (tuteo o voseo mezclado = falla). El control es de **registro**, no de pronombre suelto:
+   «vuestra» es de la segunda del plural peninsular y no es voseo; en Movilidad Urbana se coló así. La lista de
+   formas ajenas tiene su prueba de falsos positivos (palabras legítimas que no deben marcarse), K7 R9.10.
 2. **El asistente no se presenta como quien actúa** (CD-6). *Prueba:* ninguna oración del tipo «yo creo», «te lo
    configuro».
 3. **Explicá el término del producto la primera vez** cuando la persona usó un sinónimo
@@ -177,6 +180,8 @@ columnas y cada forma F1–F8 tiene al menos un caso.
 - [ ] Los chips salen del catálogo, tienen verbo y objeto y abren la acción (§6).
 - [ ] Voz única y ninguna primera persona de acción (§7).
 - [ ] Las sugerencias de cada rol son realizables por ese rol (§7).
+- [ ] Cada forma redactada pasó la compuerta «no peor que la fija» a ciegas (CD-8).
+- [ ] El control de registro detecta formas ajenas («vuestra», tuteo) y tiene prueba de falsos positivos (§7).
 - [ ] La lectura humana tiene una columna por criterio de §8 y cada forma tiene un caso.
 
 <a id="k5-10"></a>
@@ -190,6 +195,10 @@ columnas y cada forma F1–F8 tiene al menos un caso.
 | <a id="k5-ap-4"></a>K5-AP-4 | Cifra sin nota de métrica | dispositivos leídos como personas | CD-4 |
 | <a id="k5-ap-5"></a>K5-AP-5 | Destino que termina en 403 | «Ir a Credenciales» a quien no podía cargar | CD-3, §6.3 |
 | <a id="k5-ap-6"></a>K5-AP-6 | Sugerencia que el rol no puede hacer | el raíz recibía sugerencias ajenas | §7.4 |
+| <a id="k5-ap-8"></a>K5-AP-8 | Aceptar la redacción porque pasó el anclaje | Movilidad Urbana: 6 de 13 pares peores que la plantilla con 0 cifras inventadas | CD-8 |
+| <a id="k5-ap-9"></a>K5-AP-9 | Afirmación falsa sin números (paráfrasis que invierte una nota; restricción inventada «sólo en una localidad») | escapa al validador de cifras | [K6 §12.8](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-12-8) |
+| <a id="k5-ap-10"></a>K5-AP-10 | Nota que habla de porcentajes donde sólo hay conteos («no suman 100 %») | persistió en la redactada y en la plantilla fija | la nota nombra la unidad que se muestra; caso de batería con conteos sin porcentaje |
+| <a id="k5-ap-11"></a>K5-AP-11 | Mismo «[1]» repetido en cada oración cuando hay una sola fuente | la IA sólo agregaba citas: ~1 s contra 2 ms de la plantilla | una cita por respuesta con fuente única; si la redacción sólo suma citas, va la plantilla |
 | <a id="k5-ap-7"></a>K5-AP-7 | Marcas de formato crudas en el panel (`**Encuesta**`) | en [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) se veían los asteriscos en respuestas fijas y redactadas | el panel renderiza un subconjunto cerrado (negrita, listas) o lo quita; captura sin `**` ni `#` |
 
 La tabla índice de todos los antipatrones de la integración está en
@@ -233,5 +242,6 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 0.11 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): CD-8 redactar sólo donde aporta con compuerta «no peor que la fija» a ciegas; control de registro (§7.1); K5-AP-8 a K5-AP-11. |
 | 0.10 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): K5-AP-7 marcas de formato crudas. |
 | 0.9 | 2026-11-11 | Creación como borrador provisorio, a pedido de la prueba a ciegas (K2 y K4 lo citaban sin que existiera). Reglas medidas en PushDispatch; en espera de la guía de diseño conversacional. |

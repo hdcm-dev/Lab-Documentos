@@ -8,7 +8,7 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.2
+**Versión:** 1.3
 **Estado:** Vigente
 **Fecha:** 2026-11-11
 
@@ -393,6 +393,24 @@ una copia) y una prueba compara la configuración efectiva de ambos.
 `ModeloRealTests` usa `[SkippableFact]` con `Skip.If(…, "sin IA__Endpoint / IA__Modelo: la corrida rotulada no
 corre en la CI")` (ver R12.3).
 
+**R9.7 — La estabilidad se mide variando semilla y temperatura.** Tres corridas idénticas palabra por palabra
+miden la caché, no la estabilidad. Cada corrida declara su semilla y su temperatura en el registro (en Movilidad
+Urbana: 7/0, 11/0,5 y 23/0,5). *Prueba:* el script rechaza tres corridas con la misma pareja.
+
+**R9.8 — La compuerta a ciegas tiene que ejercerse.** «Peores a ciegas: 0» sin ninguna consulta al juez no prueba
+nada (pasó en la ronda 3: todas las redactadas cayeron en el atajo «idénticas sin citas»). La batería fuerza
+casos en que el juez actúa (redacciones que difieren de la plantilla) e informa cuántos pares juzgó; con 0 pares
+juzgados el resultado es **NO EJECUTADO**. Si se puede, el juez es un modelo o una persona distinta del que
+redacta. *Prueba:* el informe tiene «pares juzgados» > 0 por forma redactada.
+
+**R9.9 — El eco de instrucción no se frena con una lista corta en un idioma.** Una lista de palabras clave no es
+frontera: faltaban «omití», «no hagas caso», «salteá», «override» y «system prompt». La lista es un control
+adicional; la frontera es que el texto del usuario nunca se trate como instrucción. Las adversas prueban
+variantes en voseo, tuteo, inglés y con mayúsculas o acentos cambiados. *Prueba:* cada variante → no hay eco.
+
+**R9.10 — Todo control de texto fija también sus falsos positivos.** El control de registro (K5 §7.1) y el de
+entidades (K6 §12.8) tienen casos que **no** deben marcarse. *Prueba:* tabla de frases legítimas → sin marca.
+
 ---
 
 <a id="k7-10"></a>
@@ -555,6 +573,10 @@ Cuando el error es el mismo que uno de K3, la fuente es K3 y acá sólo se remit
 | <a id="k7-ap-6"></a>K7-AP-6 | E2E que sólo captura y nunca falla | R8.3 |
 | <a id="k7-ap-7"></a>K7-AP-7 | Cifra comparada contra la misma herramienta | R11.2; consulta SQL escrita a mano |
 | <a id="k7-ap-8"></a>K7-AP-8 | Clave leída por el código ausente en la plantilla | R5.4 (ver K3-AP-4) |
+| <a id="k7-ap-9"></a>K7-AP-9 | ×3 con la misma semilla y temperatura | R9.7 |
+| <a id="k7-ap-10"></a>K7-AP-10 | Compuerta a ciegas que nunca consulta al juez | R9.8 |
+| <a id="k7-ap-11"></a>K7-AP-11 | Eco detectado por una lista corta en un idioma | R9.9 |
+| <a id="k7-ap-12"></a>K7-AP-12 | Control de texto sin prueba de falsos positivos | R9.10 |
 | — | Un 90 % sin repetir | ver [K3-AP-6](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-6) |
 | — | Medir con el modelo cargado | ver [K3-AP-7](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-7) |
 | — | Ajustar la batería para que pase | ver [K3-AP-10](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-10) |
@@ -620,5 +642,6 @@ manifiesto de claves exportado y el repo del despliegue lo verifica en su CI.
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.3 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): R9.7 semilla y temperatura variadas; R9.8 compuerta a ciegas ejercida; R9.9 eco sin lista corta; R9.10 falsos positivos; K7-AP-9 a K7-AP-12. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría corregido (lectura docente en el oráculo; manifiesto de claves con despliegue en otro repo). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: `status: borrador` (no `estado:`), igual que K6; R5.2 con una sola política (ver) y el hacer por el criterio de K6 §16; fila y compuerta de recuperación (R12.5); embeddings en proceso permitidos en la CI; criterio de la capa de integración; página destino con parámetro en bUnit y recorrido chip → acción en E2E; caso de batería de ejemplo y R9.6 (reloj inyectado y base sembrada); contrato del motivo de habilitación; mutación contra `origin/main...HEAD` en una carpeta del worktree. |

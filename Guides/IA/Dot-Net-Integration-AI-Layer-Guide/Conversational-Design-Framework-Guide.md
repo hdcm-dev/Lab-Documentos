@@ -2,7 +2,7 @@
 doc_id: GUIA-DISENO-CONVERSACIONAL
 doc_type: guia-de-estudio
 title: Diseño conversacional de un asistente de producto — un método por competencia
-version: 1.0.0
+version: 1.1.0
 status: vigente
 origin: ia-assisted
 confidence: media
@@ -19,7 +19,7 @@ related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
-> **Versión** 1.0.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+> **Versión** 1.1.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
 
 <a id="prologo"></a>
 ## Prólogo
@@ -2843,6 +2843,10 @@ Criterio de terminado de E7 (se repite en [A.7](#anexo-a-7)):
 | Guardar conversaciones «para analizar» | Depósito de datos de terceros; nadie las lee | Campos cerrados + reproducción con batería |
 | Sólo una tasa global | Esconde las filas rotas | Corte por intención |
 | Comentario libre en el voto | Es texto del usuario y no se suma | Motivos cerrados |
+| Aceptar la redacción porque pasó el control de cifras y citas | El anclaje no mide calidad: en el banco Movilidad Urbana la redactada salió peor que la plantilla en 6 de 13 pares a ciegas | Redactar sólo donde aporta; compuerta «no peor que la fija» leída a ciegas, con pares realmente juzgados |
+| Validar sólo números | Una nota invertida o una restricción inventada no tiene cifras | Contrastar negaciones, restricciones y nombres propios contra la fuente |
+| Repetir ×3 con la misma semilla y temperatura | Tres textos idénticos miden la caché, no la estabilidad | Variar semilla y temperatura por corrida y declararlas |
+| Controlar la voz por pronombres sueltos | «vuestra» no es voseo y se cuela | Control de registro con prueba de falsos positivos |
 | Umbrales fijados después de mirar los datos | Se acomodan al resultado | Fijarlos en A.7 antes de publicar |
 | Mover la frontera por una queja | Conducta tomada como tasa | Esperar la ventana y el mínimo ([P-7](#p-7)) |
 | Prometer en la respuesta al rechazo lo que se está evaluando | Viola [P-4](#p-4) | El rechazo dice qué hace hoy el producto |

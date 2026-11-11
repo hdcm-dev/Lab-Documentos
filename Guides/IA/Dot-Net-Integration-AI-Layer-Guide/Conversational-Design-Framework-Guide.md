@@ -2,7 +2,7 @@
 doc_id: GUIA-DISENO-CONVERSACIONAL
 doc_type: guia-de-estudio
 title: Diseño conversacional de un asistente de producto — un método por competencia
-version: 1.1.0
+version: 1.2.0
 status: vigente
 origin: ia-assisted
 confidence: media
@@ -19,7 +19,7 @@ related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
-> **Versión** 1.1.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+> **Versión** 1.2.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
 
 <a id="prologo"></a>
 ## Prólogo
@@ -37,8 +37,8 @@ La figura muestra el orden del libro, de lo general a lo particular. Las flechas
 ```mermaid
 flowchart TD
   P0["Cap. 0 · Cómo usar este libro"] --> I["Parte I · Fundamentos<br/>c1 Qué es diseñar una conversación<br/>c2 Principios P-1…P-9"]
-  I --> II["Parte II · Marco<br/>c3 Anillos de competencia · c4 Vocabulario<br/>c5 Destinos y deeplink · c6 El código elige, el modelo redacta"]
-  II --> III["Parte III · Método por etapas<br/>c7 Flujo E0→E7 · c8 E0 Encuadre · c9 E1 Inventario<br/>c10 E2 Anillos · c11 E3 Glosario · c12 E4 Destinos<br/>c13 E5 Batería y aceptación · c14 E6 Maqueta y crítica"]
+  I --> II["Parte II · Marco<br/>c3 Anillos de competencia · c4 Vocabulario<br/>c5 Destinos y deeplink · c6 El código elige, el modelo redacta<br/>(RAG por dentro, vectores, forma del gráfico)"]
+  II --> III["Parte III · Método por etapas<br/>c7 Flujo E0→E7 y ciclo de la intención · c8 E0 Encuadre · c9 E1 Inventario<br/>c10 E2 Anillos · c11 E3 Glosario · c12 E4 Destinos<br/>c13 E5 Batería y aceptación · c14 E6 Maqueta y crítica"]
   III --> IV["Parte IV · Producción y medición<br/>c15 E7 Plan de medición · c16 Mover la frontera"]
   IV --> V["Parte V · Integración<br/>c17 Relación con la guía de capa de IA<br/>c18 Caso ilustrativo de punta a punta"]
   V --> C["Cierre · c19 Autoevaluación"]
@@ -1155,6 +1155,27 @@ flowchart TD
   D --> V
 ```
 
+<a id="c6-2-1"></a>
+#### 6.2.1 Qué es RAG, por dentro
+
+*Recuperar antes de redactar.* Esa es toda la idea de la recuperación con cita [REF-010]: antes de que el modelo escriba, el sistema busca en el corpus los pasajes más relevantes para la pregunta y se los pasa junto con ella; el modelo redacta apoyado en esos pasajes y la respuesta los cita. Para un estudiante conviene ver las piezas una por una:
+
+1. **Trozos.** La ayuda se corta en fragmentos que se puedan recuperar solos. Un criterio simple y efectivo es **un trozo por párrafo** (o por sección corta), con el título de la página adelante para que no pierda contexto. Trozos muy largos traen ruido; muy cortos pierden el sentido.
+2. **Embeddings.** Cada trozo se convierte en un vector de números con un *modelo de embeddings*. Textos de significado parecido quedan cerca en ese espacio, aunque usen palabras distintas: «cuántos usuarios tengo» queda cerca de «suscripciones activas». La cercanía se mide habitualmente con la **similitud coseno** (el ángulo entre los dos vectores). Es lo que permite que el inexperto encuentre la ayuda con sus palabras ([P-6](#p-6)).
+3. **Búsqueda híbrida.** La búsqueda semántica sola falla con lo literal (un código de error, un nombre propio, una sigla); la búsqueda **léxica** (por palabras) sola falla con los sinónimos. Se corren las dos y se combinan sus rankings. Un método simple y robusto es la **fusión por rango recíproco** (RRF): cada trozo suma 1/(k + posición) en cada lista, y gana el que aparece arriba en las dos; sus autores mostraron que esa combinación suele superar al mejor de los rankings individuales [REF-021].
+4. **Redacción con cita.** El modelo recibe la pregunta y los mejores trozos, responde sólo con lo que dicen y cita de dónde salió. Si ningún trozo supera el umbral de relevancia, la respuesta es «No está en la ayuda» ([P-5](#p-5)).
+
+<a id="c6-2-2"></a>
+#### 6.2.2 Dónde viven los vectores y de dónde sale el corpus
+
+**En memoria o en una base vectorial.** Con un corpus chico (decenas o pocos cientos de páginas de ayuda), lo razonable es calcular los vectores **al arrancar** y tenerlos en memoria: no hay infraestructura extra y la búsqueda es instantánea. Conviene pasar a una **base con soporte vectorial** cuando el corpus crece, cuando los vectores son caros de recalcular en cada arranque o cuando varias instancias del servicio tienen que compartirlos. Hoy los motores relacionales comunes lo ofrecen: SQL Server 2025 incorpora un tipo de dato `vector` con funciones de distancia [REF-018], y PostgreSQL lo suma con la extensión pgvector, que incluye la distancia coseno [REF-019]. La decisión es de escala y de operación, no de calidad: los mismos vectores dan los mismos resultados en un lado o en el otro (*criterio de la guía*).
+
+**La documentación es la fuente del corpus.** Si la ayuda se escribe como código (*DocsAsCode*: archivos versionados junto al producto, revisados en el mismo flujo), el corpus del asistente sale de ahí y se actualiza con cada versión. Así, lo que el asistente puede citar es exactamente lo que el equipo revisó ([§11](#c11)).
+
+**Cambiar el modelo de embeddings obliga a revectorizar.** Los vectores de dos modelos distintos no son comparables: si se cambia el modelo, hay que recalcular **todo** el corpus. Por eso el modelo de embeddings se elige y se versiona aparte del modelo de redacción ([§17.3.8](#c17-3-8)).
+
+**Una trampa de operación.** Embeddings y redacción suelen correr en el mismo servidor de modelos. Si ese servidor admite **un solo modelo cargado en memoria a la vez**, cada pregunta obliga a descargar uno y cargar el otro, y en el caso ilustrativo los embeddings quedaron esperando detrás del modelo de redacción hasta agotar el tiempo de respuesta. La recuperación «fallaba» sin que el corpus ni el código tuvieran nada mal. La regla: el **cupo de modelos cargados** del servidor tiene que alcanzar para los dos a la vez, o se usan servidores separados (*experiencia propia medida, conducta*).
+
 <a id="c6-3"></a>
 ### 6.3 Presentación de datos
 
@@ -1179,6 +1200,9 @@ Tabla 6.2. Regla de forma del gráfico.
 | Una sola cifra | Texto, sin gráfico | Un gráfico de una barra no agrega nada |
 
 La elección de forma la hace el código, por regla, a partir de la cantidad de categorías y del tipo de dato: el modelo no decide «hagamos una torta». *Experiencia propia medida (conducta):* el patrón torta top N + «Otras» con nota de métrica debajo se observó en otro software de notificaciones y funcionó en las rondas de crítica del caso ilustrativo ([§14](#c14)). En Geometría, la misma regla daría barras para «ejercicios resueltos por semana» y texto para «¿cuántas figuras guardé?».
+
+<a id="c6-3-pedido"></a>
+**El pedido explícito del usuario se respeta o se explica.** La regla de forma es el valor por defecto, no una prohibición. Si el usuario pide «mostrámelo en torta» y la serie lo admite, se hace. Si no lo admite, no se ignora en silencio: se explica y se ofrece una alternativa que sí se lee. «Con 22 aplicaciones una torta no se lee; ¿querés las 5 primeras en torta y el resto como "Otras", o todas en barras?». Siempre que haya gráfico, la **tabla con las cifras** queda al lado (o a un toque), porque es lo que permite leer el valor exacto y es accesible para quien no ve el gráfico. La forma la diseña el equipo por la **naturaleza de la serie** (partes de un todo, ranking, evolución); el modelo no la decide (*criterio de la guía*).
 
 <a id="c6-3-nota"></a>
 **Nota de métrica siempre.** Debajo de toda cifra o gráfico: qué se contó, período, filtro y, si aplica, la hora de corte («datos hasta las 14:00»). Si la herramienta no puede dar la nota, la cifra no se muestra.
@@ -1373,6 +1397,12 @@ Tabla 6.4. Decisiones del capítulo y qué perfil suele tomarlas.
 
 **¿Cuándo una torta y cuándo barras?** Torta sólo si son partes de un todo y entre 2 y 6 categorías, con «Otras» para el resto; en cualquier otro caso, barras ordenadas. La regla vive en el código ([S-2](#c6-s-2)) para que dos preguntas iguales den el mismo gráfico. Aplica a toda salida gráfica; ante la duda, que gane la barra, que nunca engaña sobre proporciones.
 
+**¿Y si el usuario pide una torta que la regla no permite? (OA-DIS1)** Se respeta si la serie la admite; si no, se explica por qué no se lee y se ofrece la alternativa (las N primeras con «Otras», o barras). Ignorar el pedido en silencio rompe la confianza tanto como un gráfico engañoso ([§6.3](#c6-3-pedido)).
+
+**¿Por qué no basta con buscar por palabras en la ayuda? (OA-DEV2)** Porque el inexperto usa otras palabras. Los embeddings encuentran por significado, la búsqueda léxica encuentra lo literal (códigos, nombres), y la búsqueda híbrida combina las dos ([§6.2.1](#c6-2-1)).
+
+**¿Cuándo hace falta una base vectorial? (OA-DEV3)** Cuando el corpus crece, cuando recalcular vectores al arrancar es caro o cuando varias instancias los comparten. Con un corpus chico, en memoria alcanza ([§6.2.2](#c6-2-2)).
+
 **¿Qué hago cuando el asistente no tiene con qué responder?** Decir «No está en la ayuda», ofrecer un camino y registrar el no-encontrado. En la batería ([§13](#c13)) esto se prueba a propósito con preguntas sin fuente: pasa si el asistente no inventa, aunque el texto sea corto. Aplica siempre; el no-encontrado medido es justamente lo que permite mover la frontera ([§16](#c16)).
 
 <a id="c6-calidad"></a>
@@ -1392,6 +1422,10 @@ Antipatrones:
 - **El modelo como calculadora.** Pasarle filas crudas y pedirle que sume.
 - **Consulta libre.** Una herramienta que acepta texto SQL o filtros arbitrarios del modelo.
 - **Gráfico por ocurrencia.** Que la forma la decida la redacción en cada turno.
+- **Pedido ignorado.** El usuario pide una forma y recibe otra sin explicación.
+- **Gráfico sin tabla.** La forma sin los valores exactos al lado.
+- **Cambiar el modelo de embeddings sin revectorizar.** Vectores de dos modelos mezclados en el mismo índice.
+- **Un solo lugar en memoria para dos modelos.** Embeddings y redacción se desalojan mutuamente y la recuperación vence por tiempo.
 - **Cifra huérfana.** Un número sin período ni filtro.
 - **Descargo de rutina.** «Puede contener errores» al pie de todo, en lugar de señalar la duda donde está [REF-009].
 - **Demo como prueba.** Validar con datos de juguete y no con datos reales del sistema ([P-8](#p-8)).
@@ -1468,6 +1502,41 @@ La Tabla 7.1 es el resumen que conviene tener impreso. La columna *Compuerta* es
 
 <a id="c7-2-orden"></a>
 **Por qué en este orden.** El orden va de lo que decide el negocio a lo que decide la técnica. E0 a E2 son decisiones de producto: si conviene, qué se responde, qué no. E3 y E4 son decisiones de lenguaje y de datos que dependen de las anteriores. E5 a E7 prueban y miden. Invertirlo, por ejemplo empezar por la maqueta, es la tentación más común: una consola linda convence al equipo antes de saber si contesta lo que importa.
+
+<a id="c7-2-1"></a>
+#### 7.2.1 El ciclo de vida de una intención
+
+La Figura 7.1 ordena las etapas del primer diseño. Una vez que el asistente está en uso, el trabajo cotidiano no recorre E0→E7 entero: gira alrededor de **una intención por vez**. Este ciclo es la versión chica y repetible del flujo, y es la que más se usa durante la vida del producto (*criterio de la guía*).
+
+```mermaid
+flowchart LR
+  R["1 · Relevar preguntas reales<br/>sesiones · 👎 · «No encontré» · pedidos"] --> C{"2 · ¿Qué necesita<br/>la respuesta?"}
+  C -- "un dato del sistema" --> F["Función (herramienta)<br/>con los permisos de quien pregunta"]
+  C -- "ir a hacer algo" --> D["Enlace profundo<br/>el código elige pantalla y acción"]
+  C -- "saber cómo" --> G["RAG sobre la ayuda<br/>con cita"]
+  C -- "nada del producto" --> X["Rechazo amable<br/>con salida"]
+  F & D & G & X --> K["3 · Contrato de la intención"]
+  K --> B["4 · Batería y medición"]
+  B --> R
+```
+
+*Figura 7.2. El ciclo de vida de una intención. Cada vuelta empieza y termina en preguntas reales.*
+
+1. **Relevar.** Las fuentes son las que el producto ya genera: sesiones de uso, votos negativos, respuestas «No encontré» (o «No está en la ayuda»), pedidos a soporte. No se inventan preguntas de escritorio si hay preguntas reales.
+2. **Clasificar por lo que necesita la respuesta**, no por el tema. Es la Tabla 6.1 aplicada a cada pregunta nueva:
+   - **Dato del sistema → función.** El modelo pide la función (*function calling*); el código la ejecuta con los permisos de quien pregunta y devuelve el dato calculado ([§6](#c6-def-herramienta)).
+   - **Ir a hacer algo → enlace profundo.** El código elige la pantalla y la acción del catálogo y revalida el permiso antes de mostrar el enlace ([§5](#c5)).
+   - **Saber cómo → RAG sobre la ayuda**, con cita ([§6.2.1](#c6-2-1)).
+   - **Fuera de alcance → rechazo amable con salida**: decir qué sí se puede preguntar o a quién recurrir ([§3](#c3)).
+3. **Escribir el contrato de la intención.** Cuatro respuestas por intención, que van a la fila de A.4: *qué devuelve* (el dato o el destino), *con qué forma* (cifra con nota, lista, gráfico por regla de [§6.3](#c6-3-grafico), enlace), *qué pasa sin resultados* y *qué rol la puede usar*. La tercera es la que más se olvida: sin resultados no se responde «no» a secas sino **por cercanía**, ofreciendo lo más parecido que sí existe («No tenés una organización llamada *Acme*, pero tenés una llamada *Acme Sur*; ¿es esa?»). El cercano sale del código, filtrado por permisos, igual que cualquier otro dato.
+4. **Batería y medición.** La intención entra a A.5 con su respuesta esperada y a A.7 con su evento. Lo que la medición muestre (no-encontrados, votos, reformulaciones) es el relevamiento de la vuelta siguiente.
+
+<a id="c7-2-1-caso"></a>**Caso: la intención que no estaba en el catálogo.** En el caso ilustrativo ([§18](#c18)), un administrador preguntó «¿tengo una organización llamada notions?». La pregunta es claramente un dato del sistema, pero la intención «buscar organización por nombre» no estaba en el catálogo: el asistente no tenía función para eso y la pregunta cayó a la ayuda, que respondió con un pasaje sobre cómo crear organizaciones. No hubo invención (el modelo no afirmó que existía ni que no existía), pero la respuesta no servía. La lección es de método, no de modelo: **una pregunta de dato que cae a la ayuda indica una intención faltante**, y se corrige agregando la función y su contrato (con respuesta por cercanía), no ajustando el prompt (*experiencia propia medida, conducta*).
+
+<a id="c7-2-2"></a>
+#### 7.2.2 Quién decide: la mesa de diseño
+
+Clasificar una intención y escribir su contrato son decisiones con consecuencias de seguridad, de datos y de interfaz a la vez. Por eso no las toma una sola persona: las toma una **mesa de diseño** con, como mínimo, cinco miradas: **conversacional** (cómo se pregunta y se responde), **UX** (dónde aparece y qué tapa), **arquitectura** (qué pieza la resuelve), **seguridad** (qué rol la ve y qué dato sale) y **datos** (de dónde sale la cifra y qué cuenta). A la mesa se suman **refutadores**: personas cuyo papel explícito es intentar romper la propuesta (buscar la pregunta que la hace fallar, el rol que ve de más, el caso sin resultados). Una propuesta se aprueba cuando sobrevive a la refutación, no cuando nadie objeta. En un trabajo práctico, la mesa puede ser el grupo con roles rotativos y el docente como refutador (*criterio de la guía*).
 
 <a id="c7-3"></a>
 ### 7.3 Por dónde empiezo: el día 0
@@ -1566,6 +1635,10 @@ Que una conversación no siempre sea la respuesta, y que un asistente mal plante
 
 **¿Y si está por desarrollar? (OA-PO1)** Las decisiones de E0 y E2 son hipótesis y se rotulan así. La ventaja es E4: los destinos se diseñan con la navegación ([§5](#c5)) y las pantallas nacen enlazables. El riesgo es creerse la frontera de escritorio; por eso la primera medición ([§15](#c15)) se lee con más atención y se espera mover la frontera varias veces.
 
+**¿Qué hago con una pregunta real que el asistente contestó mal? (OA-EQ4)** Llevarla al ciclo de [§7.2.1](#c7-2-1): clasificarla por lo que necesita la respuesta. Si es un dato y cayó a la ayuda, falta una intención en el catálogo; si es «saber cómo» y no encontró pasaje, falta ayuda. En los dos casos el arreglo está en un entregable, no en el prompt.
+
+**¿Qué pasa cuando una búsqueda no encuentra nada? (OA-DIS1)** Lo dice el contrato de la intención: se responde por cercanía con lo más parecido que el usuario puede ver, o se dice que no hay y se ofrece un camino. «No» a secas deja al usuario sin salida, y adivinar es peor ([§7.2.1](#c7-2-1)).
+
 **¿Puedo escribir el prompt antes para ir probando? (OA-EQ3)** No antes de E3. Probar con un prompt temprano da conducta («una vez contestó bien»), no tasa, y el prompt termina definiendo la frontera por omisión. Si hace falta mostrar algo a quien decide, usá una maqueta descartable ([§7](#c7-decision)) y dejala fuera de la batería.
 
 <a id="c7-calidad"></a>
@@ -1583,6 +1656,9 @@ Que una conversación no siempre sea la respuesta, y que un asistente mal plante
 - **Compuerta de cortesía.** Se firma porque se acabó la semana. Si no se cumple la condición, se retrocede.
 - **QA que firma su propio diseño.** La persona que escribió la batería no la aprueba.
 - **Primera vuelta ancha.** Tres tareas y dos roles en la primera vuelta esconden el método detrás del volumen.
+- **Arreglar en el prompt lo que falta en el catálogo.** Una pregunta de dato que cae a la ayuda se «corrige» con una instrucción en vez de agregar la función ([§7.2.1](#c7-2-1)).
+- **Contrato sin caso vacío.** La intención define qué devuelve pero no qué pasa sin resultados.
+- **Mesa sin refutadores.** Se aprueba lo que nadie objetó, no lo que resistió un intento de romperlo.
 - **E7 sin regreso.** Se mide y nadie mueve la frontera. Ver [§16](#c16) para decidir moverla o abandonar el asistente.
 
 <a id="c8"></a>
@@ -2611,6 +2687,11 @@ Mirar cómo resolvió otro producto una consulta parecida ahorra rondas. El ries
 
 Tres reglas acompañan la tabla. **Primera:** lo observado en capturas es conducta vista una vez, no una regla; antes de adoptarla, la forma se prueba con la batería propia y se acepta por tasa ([P-7](#p-7), [§13](#c13)). **Segunda:** del producto de referencia no entra nada a la documentación ni a la guía de estilo que lo identifique: ni nombre, ni logo, ni capturas, ni frases literales. Se describe la forma con palabras propias. **Tercera:** si una forma sólo tiene sentido con una función que el producto propio no tiene, la forma se descarta o la función se registra como pedido de producto para quien decide el alcance; nunca se maqueta «por si acaso» ([P-4](#p-4)).
 
+<a id="c14-3-1"></a>
+#### 14.3.1 El panel del asistente no tapa el producto
+
+Una regla de maqueta que se olvida porque no es conversacional: **el panel del asistente nunca tapa el encabezado ni el menú del usuario**. El usuario tiene que poder cerrar sesión, cambiar de cuenta o abrir su perfil **sin cerrar el chat**. Si el panel se superpone al encabezado, la conversación se vuelve una trampa: para salir hay que perderla. En la ronda de crítica se verifica con una captura del panel abierto, en escritorio y en teléfono, donde se vea el encabezado completo (*criterio de la guía*, observado como conducta en el caso ilustrativo).
+
 <a id="c14-escenarios"></a>
 ### 14.4 Aplicación por escenario
 
@@ -2671,6 +2752,7 @@ Criterio de terminado de E6:
 - Toda observación tiene categoría, decisión, dueño y etapa de vuelta.
 - La última ronda se hizo en el sitio real, por rol.
 - Ninguna captura, logo, nombre ni frase literal de un producto de referencia quedó en la documentación.
+- Con el panel del asistente abierto, el encabezado y el menú del usuario siguen visibles y usables.
 - Aprobación del registro con fecha por quien decide sobre el producto.
 
 | Antipatrón | Por qué falla | Corrección |
@@ -2681,6 +2763,7 @@ Criterio de terminado de E6:
 | Rondas infinitas sobre redacción | El texto lo redacta el modelo; la ronda fija formas ([P-3](#p-3)) | Discutir forma, dato, destino y promesa; el tono va al glosario y a la guía de estilo |
 | Cerrar la etapa con la demo | Los fallos del sitio real aparecen en producción | Última ronda en el sitio real |
 | Observaciones en un chat, sin registro | Nadie sabe qué se decidió ni a qué etapa volvió | Anotar sobre la captura y en el registro de 14.6 |
+| Panel del asistente sobre el encabezado | Para cerrar sesión hay que cerrar el chat | El panel deja libres encabezado y menú del usuario ([§14.3.1](#c14-3-1)) |
 
 *Tabla 14.3. Antipatrones de E6. Criterio de la guía.*
 
@@ -2743,6 +2826,27 @@ flowchart LR
 
 *Figura 15.1. De la pregunta al umbral, sin guardar el texto. Criterio de la guía.*
 
+<a id="c15-2-1"></a>
+#### 15.2.1 Pastillas: preguntas sugeridas ranqueadas por éxito
+
+Las preguntas sugeridas ([§4](#c4)) suelen mostrarse como **pastillas**: botones cortos que el usuario toca en lugar de escribir. Una vez en uso, la pregunta de diseño cambia: ya no es «qué sugerimos» sino «qué sugerencias funcionan». La propuesta de esta guía es **curarlas y ranquearlas por éxito**, no generarlas con el modelo en cada sesión (*criterio de la guía*).
+
+| Señal | Tipo | Cómo se registra |
+|---|---|---|
+| Voto positivo (👍) | Éxito | Voto sin texto ([P-9](#p-9)) |
+| El usuario sigue el enlace «Ir a…» de la respuesta | Éxito | Evento de clic en el destino |
+| El usuario no reformula en el turno siguiente | Éxito | Ausencia de una pregunta parecida inmediata |
+| Voto negativo (👎) | Fracaso | Voto sin texto, motivo cerrado opcional |
+| Respuesta «No encontré» / «No está en la ayuda» | Fracaso | Resultado `no-encontrado` |
+| Abandono de la consola tras la respuesta | Fracaso | Cierre sin otra interacción |
+
+*Tabla 15.2. Señales de éxito y de fracaso de una pastilla.*
+
+- **Ranking por contexto.** Cada pastilla acumula su tasa de éxito **por rol y por pantalla**, y se muestran primero las que mejor funcionan en ese contexto. La pastilla que sirve al administrador en la pantalla de envíos no es la que sirve al miembro en la de inicio.
+- **Las que fallan no se muestran: se diseñan.** Una pregunta frecuente con tasa de fracaso alta sale de las pastillas y entra como intención al ciclo de [§7.2.1](#c7-2-1). Una pastilla que no funciona hace más daño que no tener pastilla: es una promesa del producto ([P-4](#p-4)).
+- **El modelo propone, el equipo aprueba.** Un modelo de lenguaje puede sugerir pastillas candidatas a partir de las preguntas relevadas, pero ninguna se muestra sin aprobación humana y sin pasar por la batería. Es [P-3](#p-3) aplicado a la interfaz.
+- **Votos sin texto.** Toda la medición funciona con votos y eventos, sin guardar lo que el usuario escribió ([P-9](#p-9)).
+
 <a id="c15-3"></a>
 ### 15.3 Cómo se arma, paso a paso
 
@@ -2779,7 +2883,7 @@ public sealed record EventoConsola(
 | Riesgo de privacidad | Ya hay logs del producto que quizás guardan texto: revisarlos, no sumar otro | Se diseña sin texto desde el primer día, que es lo más barato |
 | Motivos | Salen de las quejas reales que ya se conocen | Salen de los criterios de aceptación de E5 y se ajustan tras la primera ventana |
 
-*Tabla 15.2. E7 según el estado del sistema. Criterio de la guía.*
+*Tabla 15.3. E7 según el estado del sistema. Criterio de la guía.*
 
 <a id="c15-ejemplos"></a>
 ### 15.5 Ejemplos
@@ -2794,7 +2898,7 @@ Ejemplo neutro, el sistema de turnos para consultorios de [§10](#c10-ejemplos),
 | facturar-obra-social (anillo 3) | 30 | 0 % | 9 de 12 (*me mandó a otro lado*) | La derivación es correcta pero la gente la espera adentro: dato para el PO, no para el asistente |
 | fuera de alcance | 25 | — | — | 4 % del total: dentro del umbral |
 
-*Tabla 15.3. Lectura por intención de una ventana. Datos de ejemplo, no medidos.*
+*Tabla 15.4. Lectura por intención de una ventana. Datos de ejemplo, no medidos.*
 
 El caso de `facturar-obra-social` muestra por qué los motivos importan: la tasa de votos negativos sola diría «la fila anda mal»; el motivo dice que la fila hace lo que se firmó y que lo que se discute es la frontera. Eso se lleva a [§16](#c16) y lo decide el PO, sin prometer lo que el software no hace ([P-4](#p-4)).
 
@@ -2825,6 +2929,8 @@ Los tres casos de la guía muestran el mismo plan con intenciones distintas:
 
 **¿Cómo sé que el plan funciona antes de tener usuarios? (OA-QA2)** Corriendo la batería en el sitio real y verificando que cada pregunta dejó un evento con la intención y el resultado esperados y sin texto ([P-8](#p-8)). Si la batería no se ve reflejada en la medición, la medición tampoco va a ver a los usuarios. Aplica antes de publicar y tras cada cambio del mapa.
 
+**¿Por qué no dejar que el modelo genere las preguntas sugeridas? (OA-DIS1)** Porque una pastilla es una promesa: el usuario la toca esperando que funcione. Generadas al vuelo, aparecen preguntas que el asistente no sabe responder. El modelo puede proponer candidatas; se muestran las aprobadas y, entre ellas, las que mejor funcionan para ese rol y esa pantalla ([§15.2.1](#c15-2-1)).
+
 <a id="c15-calidad"></a>
 ### 15.8 Criterios de calidad y antipatrones
 
@@ -2850,8 +2956,10 @@ Criterio de terminado de E7 (se repite en [A.7](#anexo-a-7)):
 | Umbrales fijados después de mirar los datos | Se acomodan al resultado | Fijarlos en A.7 antes de publicar |
 | Mover la frontera por una queja | Conducta tomada como tasa | Esperar la ventana y el mínimo ([P-7](#p-7)) |
 | Prometer en la respuesta al rechazo lo que se está evaluando | Viola [P-4](#p-4) | El rechazo dice qué hace hoy el producto |
+| Pastillas generadas por el modelo en cada sesión | Sugiere preguntas que el asistente no sabe contestar | Curadas, aprobadas y ranqueadas por éxito ([§15.2.1](#c15-2-1)) |
+| Pastilla que falla y sigue visible | Promete lo que no cumple | Sacarla y llevarla al ciclo de la intención ([§7.2.1](#c7-2-1)) |
 
-*Tabla 15.4. Antipatrones del plan de medición.*
+*Tabla 15.5. Antipatrones del plan de medición.*
 
 <a id="c16"></a>
 ## Capítulo 16 · Mover la frontera y cuándo abandonar
@@ -3118,6 +3226,14 @@ flowchart LR
 <a id="c17-3-7"></a>
 **Decisiones → registro.** Las decisiones de diseño que condicionan piezas (dar al asistente un lugar central en la interfaz, abandonar una intención, no ofrecer una acción irreversible) se registran con el formato de [§14](./Dot-Net-Integration-AI-Layer-Guide.md#c14): contexto, alternativas descartadas, consecuencias y cuándo dejan de valer. Así una decisión de diseño no se pierde cuando cambia el equipo.
 
+<a id="c17-3-8"></a>
+**Proveedores de modelo → abstracción y configuración.** El diseño no debería depender de un proveedor de IA. En .NET, la biblioteca Microsoft.Extensions.AI define abstracciones comunes, `IChatClient` para conversar e `IEmbeddingGenerator` para generar embeddings, que las bibliotecas de cada proveedor implementan; el código de la aplicación habla con la abstracción y el proveedor queda como un **adaptador** intercambiable [REF-020]. Así, un servidor propio de modelos (por ejemplo, con Ollama), Claude, OpenAI o Gemini son opciones de configuración, no de arquitectura. Esa libertad abre decisiones que **sí son de diseño** y que conviene tomar en la mesa ([§7.2.2](#c7-2-2)) antes de construir (*criterio de la guía*):
+
+- **Dónde se configura.** Un panel del administrador raíz, con las claves de cada proveedor **cifradas** en reposo y que **nunca** aparecen en registros, en respuestas ni en la pantalla después de cargadas.
+- **Aviso y consentimiento.** Con un proveedor externo, la pregunta del usuario y los pasajes de ayuda (y a veces datos devueltos por herramientas) **salen del servidor**. El panel lo dice con claridad y el raíz lo acepta explícitamente antes de activarlo; con un servidor propio, los datos no salen.
+- **Redacción y embeddings, por separado.** Son dos configuraciones independientes. Cambiar el de redacción es inmediato; cambiar el de embeddings obliga a revectorizar todo el corpus ([§6.2.2](#c6-2-2)).
+- **Elegir modelo.** El raíz **habilita** sólo los modelos que pasaron la batería ([§13](#c13)); un modelo nuevo corre la batería ×3 antes de habilitarse. Recién entre los habilitados, y como opción a evaluar, el usuario podría elegir. Dejar elegir cualquier modelo es dejar que alguien use uno que no cumple los criterios de aceptación.
+
 <a id="c17-escenarios"></a>
 ### 17.4 Aplicación por escenario
 
@@ -3171,6 +3287,8 @@ Antes de abrir un capítulo de la guía de capa de IA conviene hacerse una pregu
 
 **¿Qué pasa si la guía de capa de IA cambia un capítulo? (OA-DEV3)** Las anclas (#c5 … #c14) son estables, así que el puente no se rompe; lo que se revisa es si cambió lo que el capítulo espera recibir. Se vuelve a correr la batería y se anota la versión consultada en el Anexo F ([anexo-f](#anexo-f)).
 
+**¿Cambiar de proveedor de IA es un cambio de diseño? (OA-DEV3)** El código, no: con una abstracción como `IChatClient` el proveedor es un adaptador [REF-020]. Pero sí lo es para el usuario: dónde viajan sus datos, quién consiente, qué modelos pasaron la batería. Esas decisiones se toman en el panel del raíz con aviso y consentimiento ([§17.3](#c17-3-8)).
+
 **¿Un permiso puede quedar resuelto en la redacción del modelo? (OA-DEV1)** No. El diseño dice qué ve cada rol ([§5](#c5)); el código lo impone en el servidor (§12). Un permiso en el prompt es una pieza que se puede convencer de no aplicarse.
 
 <a id="c17-calidad"></a>
@@ -3186,6 +3304,9 @@ Antes de abrir un capítulo de la guía de capa de IA conviene hacerse una pregu
 - *Pieza huérfana:* el índice vectorial está, el glosario no.
 - *Entregable huérfano:* el glosario está, pero en una planilla que el corpus no lee.
 - *Puente de una sola vía:* se mide en producción y la frontera nunca se mueve.
+- *Proveedor cableado:* el código llama a un proveedor concreto en lugar de a la abstracción, y cambiarlo exige tocar la aplicación.
+- *Clave en el registro:* la credencial del proveedor aparece en un log o en una respuesta.
+- *Datos afuera sin aviso:* se activa un proveedor externo sin que el raíz haya aceptado que la información sale del servidor.
 - *Permiso en el prompt:* «no muestres datos de otras cuentas» como instrucción al modelo en lugar de filtro en el servidor.
 
 <a id="c18"></a>
@@ -3385,6 +3506,13 @@ Estas lecciones son **experiencia propia medida**. Salvo que se diga otra cosa, 
 5. **El sitio real mostró fallos que la demo no mostró.** La consola pasaba la batería en el entorno de demostración y, en el sitio real, apareció lo que la demo no tenía: un volumen de datos que hacía lenta una consulta repetida, lecturas que fallaban en parte (y que tuvieron que rotularse como «k de N aplicaciones leídas» en lugar de dar un total falso), y ajustes de diseño visibles sólo a cierto ancho de pantalla. Por eso [P-8](#p-8) es un principio y no una recomendación.
 <a id="c18-l6"></a>
 6. **Rondas de crítica con capturas lado a lado, y batería ×3.** Cada ronda puso la captura propia junto a las de referencia y la del panel real, y cada cambio se volvió a correr tres veces en la batería. Las diferencias de una sola corrida no se tomaron como mejora ([P-7](#p-7)).
+
+<a id="c18-l7"></a>
+7. **La intención que faltaba.** «¿Tengo una organización llamada…?» cayó a la ayuda porque no había función de búsqueda por nombre en el catálogo. Se corrigió agregando la intención con su contrato y respuesta por cercanía ([§7.2.1](#c7-2-1)).
+<a id="c18-l8"></a>
+8. **Recuperación que vencía por tiempo.** Con un servidor de modelos que admitía un solo modelo cargado, los embeddings esperaban detrás del modelo de redacción ([§6.2.2](#c6-2-2)). No era un problema de corpus ni de código sino de cupo.
+<a id="c18-l9"></a>
+9. **El panel tapaba la salida.** La consola abierta cubría el encabezado y, para cerrar sesión, había que cerrar el chat ([§14.3.1](#c14-3-1)).
 
 <a id="c18-decision"></a>
 ### 18.5 Decisión: qué llevarse del caso a otro sistema
@@ -3790,6 +3918,15 @@ Cada término tiene **un solo sentido** en todo el libro. Si un capítulo lo usa
 | <a id="gl-corpus"></a>Corpus | El conjunto de textos de ayuda del que el asistente puede recuperar y citar | [§1](#c1-def-corpus) |
 | <a id="gl-herramienta"></a>Herramienta | Una función del producto que el asistente invoca para obtener un dato real | [§6](#c6-def-herramienta) |
 | <a id="gl-rag"></a>RAG (recuperación con cita) | Responder recuperando pasajes del corpus y citándolos [REF-010] | [§6](#c6-def-rag) |
+| <a id="gl-embedding"></a>Embedding | Vector numérico que representa el significado de un texto; textos parecidos quedan cerca (similitud coseno) | [§6.2.1](#c6-2-1) |
+| <a id="gl-hibrida"></a>Búsqueda híbrida | Combinar búsqueda léxica y semántica, por ejemplo con fusión por rango recíproco (RRF) [REF-021] | [§6.2.1](#c6-2-1) |
+| <a id="gl-base-vectorial"></a>Base vectorial | Almacenamiento de vectores con búsqueda por cercanía; conviene cuando el corpus crece o se comparte entre instancias | [§6.2.2](#c6-2-2) |
+| <a id="gl-revectorizar"></a>Revectorizar | Recalcular los vectores de todo el corpus, obligatorio al cambiar el modelo de embeddings | [§6.2.2](#c6-2-2) |
+| <a id="gl-contrato"></a>Contrato de la intención | Qué devuelve, con qué forma, qué pasa sin resultados y qué rol la usa | [§7.2.1](#c7-2-1) |
+| <a id="gl-cercania"></a>Respuesta por cercanía | Ante una búsqueda sin resultados, ofrecer lo más parecido que el usuario puede ver | [§7.2.1](#c7-2-1) |
+| <a id="gl-mesa"></a>Mesa de diseño | Grupo que decide intenciones y contratos (conversacional, UX, arquitectura, seguridad, datos) con refutadores | [§7.2.2](#c7-2-2) |
+| <a id="gl-pastilla"></a>Pastilla | Pregunta sugerida en forma de botón, curada y ranqueada por éxito por rol y pantalla | [§15.2.1](#c15-2-1) |
+| <a id="gl-adaptador"></a>Adaptador de proveedor | Implementación de una abstracción común (`IChatClient`, `IEmbeddingGenerator`) para un proveedor de IA concreto | [§17.3](#c17-3-8) |
 | <a id="gl-desglose"></a>Desglose ofrecido | Dar primero el total y ofrecer la división por partes, en lugar de volcarla | [§6](#c6-def-desglose) |
 | <a id="gl-nota-metrica"></a>Nota de métrica | La línea que dice qué cuenta una cifra (por ejemplo, dispositivos y no personas) | [§6](#c6-def-nota-metrica) |
 | <a id="gl-bateria"></a>Batería | El conjunto de preguntas con respuesta esperada con el que se acepta el asistente | [§13](#c13) |
@@ -3828,6 +3965,10 @@ Todas fueron consultadas el **2026-11-11**; la última columna da además la fec
 | <a id="ref-015"></a>REF-015 | Google for Developers | Create a persona (Conversation Design) | https://developers.google.com/assistant/conversation-design/create-a-persona | actualizado 2024-09-18; consultado 2026-11-11 |
 | <a id="ref-016"></a>REF-016 | Microsoft Learn | Set topic triggers (Copilot Studio) | https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-triggers | ms.date 2026-11-09; consultado 2026-11-11 |
 | <a id="ref-017"></a>REF-017 | Microsoft Learn | Hand off to a live agent (Copilot Studio) | https://learn.microsoft.com/en-us/microsoft-copilot-studio/advanced-hand-off | ms.date 2026-04-30; consultado 2026-11-11 |
+| <a id="ref-018"></a>REF-018 | Microsoft Learn | Vector data type (SQL Server) | https://learn.microsoft.com/en-us/sql/t-sql/data-types/vector-data-type | Aplica a SQL Server 2025 (17.x); ms.date 2026-10-13; consultado 2026-11-11 |
+| <a id="ref-019"></a>REF-019 | pgvector | pgvector: open-source vector similarity search for Postgres | https://github.com/pgvector/pgvector | Repositorio; operador de distancia coseno `<=>`; consultado 2026-11-11 |
+| <a id="ref-020"></a>REF-020 | Microsoft Learn | Microsoft.Extensions.AI libraries | https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai | ms.date 2026-09-14; consultado 2026-11-11 |
+| <a id="ref-021"></a>REF-021 | Gordon V. Cormack, Charles L. A. Clarke, Stefan Büttcher | Reciprocal Rank Fusion outperforms Condorcet and individual rank learning methods | https://doi.org/10.1145/1571941.1572114 | SIGIR 2009, pp. 758–759; consultado 2026-11-11 |
 
 *Tabla 20.3. Referencias.*
 
@@ -3877,6 +4018,18 @@ Este libro cita fuentes que cambian. La tabla dice qué se verificó, cuándo, y
 | REF-006 a REF-009 (NN/g) | Fechas de publicación o revisión de la tabla D | Revisión nueva del artículo | Releer la parte citada |
 | REF-010, REF-011 (arXiv) | Versiones de arXiv | No envejecen; puede haber trabajos que las superen | Sumar en G, no reemplazar |
 | REF-013 (HAX) | En línea | Cambia la URL o el conjunto de pautas | Se cita sólo como conjunto: verificar que siga existiendo |
+| REF-018 (SQL Server `vector`) | ms.date 2026-10-13; algunas variantes en vista previa | Cambia ms.date o el alcance por versión | Releer [§6.2.2](#c6-2-2) |
+| REF-019 (pgvector) | Repositorio activo | Cambian operadores o tipos | Releer [§6.2.2](#c6-2-2) |
+| REF-020 (Microsoft.Extensions.AI) | ms.date 2026-09-14 | Cambian los nombres de las abstracciones | Releer [§17.3](#c17-3-8) |
+| REF-021 (RRF) | Artículo publicado | No envejece | Sumar trabajos nuevos en G |
+
+<a id="anexo-f-historial"></a>
+**Historial de versiones.**
+
+| Versión | Fecha | Cambios |
+|---|---|---|
+| 1.2.0 | 2026-11-11 | Ciclo de vida de una intención, contrato con respuesta por cercanía y mesa de diseño ([§7.2.1](#c7-2-1), [§7.2.2](#c7-2-2)); RAG por dentro y dónde viven los vectores ([§6.2.1](#c6-2-1), [§6.2.2](#c6-2-2)); pedido explícito de gráfico ([§6.3](#c6-3-pedido)); pastillas ranqueadas por éxito ([§15.2.1](#c15-2-1)); panel que no tapa el producto ([§14.3.1](#c14-3-1)); proveedores de IA detrás de una abstracción ([§17.3](#c17-3-8)); lecciones 7–9 del caso; REF-018 a REF-021; glosario, preguntas guía y antipatrones |
+| 1.1.0 | 2026-11-11 | Versión vigente anterior |
 
 *Tabla 20.4. Versiones y señales.*
 
@@ -3892,7 +4045,7 @@ Para profundizar, en este orden:
 1. **El método completo de Google** (REF-001, REF-002, REF-003, REF-014, REF-015): el origen del vocabulario de diseño conversacional y la pregunta de si conviene conversar. Leer como método: la plataforma ya no existe.
 2. **Microsoft, Bot Framework y Copilot Studio** (REF-004, REF-005, REF-012, REF-016, REF-017): cómo un fabricante piensa los temas, el respaldo cuando no se entiende y la medición.
 3. **NN/g** (REF-007, REF-008, REF-009, REF-006): la mirada de usabilidad: qué esperan los usuarios de un chatbot, cómo sugerir preguntas, cómo diseñar alrededor de las alucinaciones.
-4. **Los dos artículos técnicos** (REF-010, REF-011): para quien desarrolla, el fundamento de la recuperación con cita y del uso de herramientas.
+4. **Los artículos técnicos** (REF-010, REF-011, REF-021): para quien desarrolla, el fundamento de la recuperación con cita, del uso de herramientas y de la búsqueda híbrida. Para el almacenamiento de vectores y la abstracción de proveedores, REF-018 a REF-020.
 5. **HAX** (REF-013): un conjunto de pautas para la interacción entre personas e IA, útil como lista de control complementaria.
 6. **La guía de capa de IA** ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)): cómo se construye en .NET lo que este libro diseña ([§17](#c17)).
 

@@ -6,33 +6,53 @@
 **Consumidor:** un agente IA o una persona que especifica la capa de IA de un servicio .NET, nuevo o existente; quien preside una mesa de diseño sobre ella
 **Condicion-de-carga:** al decidir si un servicio necesita capa de IA; al escribir o revisar su especificación; al armar el checklist de completitud; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
-**Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 0.12.0; las remisiones `[Guía §x]` usan esa numeración: el capítulo 1 es «Fundamentos del framework» y los capítulos de la 0.11.0 corren uno, salvo la autoevaluación, que es el 17)
-**Versión:** 1.0
-**Estado:** Vigente (falta la revisión humana del checklist en los casos y en la prueba)
-**Fecha:** 2026-11-01
+**Sustituye:** la versión 1.0 de este mismo archivo (2026-11-01)
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan su numeración y sus anclas estables `cN-k` [Guía §0.7]: el capítulo 1 es «Fundamentos del framework», la frontera de competencia es §3.7 y la autoevaluación es el capítulo 17); `Conversational-Design-Framework-Guide.md` (libro hermano en preparación: este conocimiento no lo cita por sección hasta que se publique); los conocimientos hermanos de esta carpeta: [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construir la consola), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (verificar y aceptar), [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa) y [K5](knowledge-AI-Layer-Conversational-Design.md) (formas de respuesta, borrador provisorio)
+**Versión:** 1.1
+**Estado:** Vigente (falta la revisión humana del checklist en los casos y en la prueba; las reglas nuevas de 1.1 están probadas en un caso, PushDispatch)
+**Fecha:** 2026-11-11
+
+**Cambios en 1.1** (respecto de 1.0; nada de 1.0 se quitó ni cambió de sentido):
+
+| # | Cambio | Dónde |
+|---|---|---|
+| 1 | Frontera de competencia: la especificación la escribe como cuatro anillos decididos por el código | [§3.1](#k1-3-1-frontera) → [Guía §3.7](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7) |
+| 2 | Reglas de arquitectura ARQ-1 a ARQ-6 (el código elige herramienta, alcance y destino; el filtro de rol va antes de la búsqueda; el corpus va antes que la búsqueda; el permiso se revalida; ver no es hacer). El diseño las llamaba A1–A6; se renombran para no chocar con la escalera de agencia (A0–A3) | [§4.1](#k1-4-1-reglas-arq) |
+| 3 | Grupo C de requisitos, REQ-IA-22 a REQ-IA-33, con su prueba: validador de cifras, alcance, ruteo, cobertura del corpus, filtro de rol, destino revalidado, ver ≠ hacer, motivo exacto de habilitación, huella del voto sin texto, modelo por variable de entorno con una sola clave, consola por rol, «No está en la ayuda». Los requisitos propios del proyecto pasan a empezar en REQ-IA-40 | [§9](#k1-9) |
+| 4 | LLM08 deja de estar «a definir»: lo cubre REQ-IA-26 | [§10](#k1-10) |
+| 5 | Pasos 3a y 8a del procedimiento y criterios de parada | [§11](#k1-11), [§11.1](#k1-11-1-parada) |
+| 6 | Ocho ítems más del checklist, C-20 a C-27 | [§12](#k1-12) |
+| 7 | Antipatrones de especificación con su control | [§12.1](#k1-12-1-antipatrones) |
+| 8 | PushDispatch como caso aplicado ([Caso P]) y la demo de Movilidad Urbana como [Caso M] | [§13](#k1-13) |
+| 9 | Reglas provisorias F-7 (dominio de riesgo profesional) y F-8 (categorías especiales de datos), en espera del libro | [§3.1](#k1-3-1-frontera) |
+| 10 | Anclas estables `k1-N` en todas las secciones; enlaces a los conocimientos hermanos, que ya existen | todo el documento |
 
 ---
 
 ## Índice
 
-- [0. Propósito y alcance](#0-propósito-y-alcance)
-- [1. Cuándo usarlo y cuándo no](#1-cuándo-usarlo-y-cuándo-no)
-- [2. Principios y reglas que no se negocian](#2-principios-y-reglas-que-no-se-negocian)
-- [3. Marco: escenarios, contextos, actores y escaleras](#3-marco-escenarios-contextos-actores-y-escaleras)
-- [4. Arquitectura de referencia](#4-arquitectura-de-referencia)
-- [5. Contrato del puerto y patrones de salida](#5-contrato-del-puerto-y-patrones-de-salida)
-- [6. Clientes y fronteras](#6-clientes-y-fronteras)
-- [7. Plantilla de especificación (arc42 reducido)](#7-plantilla-de-especificación-arc42-reducido)
-- [8. Decisiones (ADR)](#8-decisiones-adr)
-- [9. Requisitos `REQ-IA-nn`](#9-requisitos-req-ia-nn)
-- [10. Seguridad: matriz OWASP por nivel de agencia](#10-seguridad-matriz-owasp-por-nivel-de-agencia)
-- [11. Procedimiento de aplicación](#11-procedimiento-de-aplicación)
-- [12. Checklist binario de completitud](#12-checklist-binario-de-completitud)
-- [13. Casos de uso y referencias](#13-casos-de-uso-y-referencias)
-- [14. Límites de este conocimiento](#14-límites-de-este-conocimiento)
-- [Glosario](#glosario)
+- [0. Propósito y alcance](#k1-0)
+- [1. Cuándo usarlo y cuándo no](#k1-1)
+- [2. Principios y reglas que no se negocian](#k1-2)
+- [3. Marco: escenarios, contextos, actores y escaleras](#k1-3)
+  - [3.1 Frontera de competencia](#k1-3-1-frontera)
+- [4. Arquitectura de referencia](#k1-4)
+  - [4.1 Reglas de arquitectura ARQ-1 a ARQ-6](#k1-4-1-reglas-arq)
+- [5. Contrato del puerto y patrones de salida](#k1-5)
+- [6. Clientes y fronteras](#k1-6)
+- [7. Plantilla de especificación (arc42 reducido)](#k1-7)
+- [8. Decisiones (ADR)](#k1-8)
+- [9. Requisitos `REQ-IA-nn`](#k1-9)
+- [10. Seguridad: matriz OWASP por nivel de agencia](#k1-10)
+- [11. Procedimiento de aplicación](#k1-11)
+  - [11.1 Criterios de parada](#k1-11-1-parada)
+- [12. Checklist binario de completitud](#k1-12)
+  - [12.1 Antipatrones de especificación con su control](#k1-12-1-antipatrones)
+- [13. Casos de uso y referencias](#k1-13)
+- [14. Límites de este conocimiento](#k1-14)
+- [Glosario](#k1-glosario)
 
+<a id="k1-0"></a>
 ## 0. Propósito y alcance
 
 Este conocimiento dice **qué decidir, en qué orden y con qué criterio** para especificar la capa de IA de un
@@ -53,7 +73,13 @@ regla de forma del framework de prompts, que no rige en Lab-Documentos: los dos 
 | `[P-n]` | principio de §2 | ADR de origen en la guía §13 |
 | `[MAUI cap. n]` | capítulo del libro MAUI | `Concepts/Framework-Concept/MAUI-Framework-Developer-Guide.md`, desde la raíz de Lab-Documentos |
 | `[Ind-n]` | estándar de la industria con URL en §13 | §13 de este documento |
-| `[Caso G]`, `[Caso N]`, `[Prueba]` | regla que nació de aplicar este conocimiento a un caso o a su prueba de autocontención | §13 de este documento |
+| `[Caso G]`, `[Caso N]`, `[Caso P]`, `[Caso M]`, `[Prueba]` | regla que nació de aplicar este conocimiento a un caso o a su prueba de autocontención | §13 de este documento |
+
+Desde 1.1, las remisiones nuevas al libro llevan enlace con su ancla estable, por ejemplo
+[Guía §3.7](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7); las de 1.0 se resuelven por número de sección.
+**Regla de coordinación con los libros.** Los libros son la fuente para personas; este conocimiento es su
+destilación operativa. Si una regla de acá parece contradecir al libro, **rige el libro** y la contradicción se
+informa a quien mantiene la guía; el agente no la resuelve por su cuenta.
 
 Las cifras de la demo de la guía son **parámetros de la demo, no norma** [Guía §14.1]. **Niveles de exigencia (BCP 14).** «DEBE» es obligatorio, «DEBERÍA» es recomendado (se omite sólo con motivo
 escrito) y «PUEDE» es opcional [Ind-4]. Las columnas PROTO y PROD de §9 y §12 aplican esos niveles según el
@@ -65,12 +91,15 @@ contexto CTX-PROTO o CTX-PROD del proyecto (§3).
 |---|---|
 | decidir si el servicio necesita capa de IA | §1, §3 |
 | fijar las reglas que no se negocian | §2 |
-| dibujar la arquitectura | §4, §5, §6 |
+| especificar un asistente o consola de ayuda dentro del producto | §3.1, §4.1, grupo C de §9, C-20 a C-27, §12.1, [Caso P] |
+| dibujar la arquitectura | §4, §4.1, §5, §6 |
 | escribir la especificación | §7, §8, §9 |
 | analizar la seguridad | §10 |
-| aplicar el conocimiento de punta a punta | §11 |
-| decidir si la especificación está completa | §12 |
+| aplicar el conocimiento de punta a punta | §11, §11.1 |
+| decidir si la especificación está completa | §12, §12.1 |
+| construir, verificar o desplegar lo especificado | **no es este conocimiento**: va a [K2](knowledge-AI-Layer-Console-Assistant-Building.md) y [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), y al libro en [Guía cap. 11](../Dot-Net-Integration-AI-Layer-Guide.md#c11) y [Guía cap. 13](../Dot-Net-Integration-AI-Layer-Guide.md#c13) |
 
+<a id="k1-1"></a>
 ## 1. Cuándo usarlo y cuándo no
 
 **Definición.** La *capa de IA* es la parte de la solución que habla con un modelo de lenguaje: adaptador del
@@ -130,6 +159,7 @@ código puede validar lo que el modelo propone antes de que tenga efecto [Guía 
 **No conviene** cuando la tarea es un dato exacto (va por un caso de uso, nunca por recuperación por parecido)
 [P-4]; cuando una función la resuelve [REF-117]; o cuando nadie puede decir qué cuenta como éxito [REF-04].
 
+<a id="k1-2"></a>
 ## 2. Principios y reglas que no se negocian
 
 Diez principios, condensados como **regla · razón · fuente**. Ninguno nombra un tipo de .NET.
@@ -162,6 +192,7 @@ Diez principios, condensados como **regla · razón · fuente**. Ninguno nombra 
 | R-07 | **Lo irreversible y masivo nunca lo dispara el modelo.** Una acción irreversible de alcance masivo (envío a muchos, borrado en lote) queda en borrador con confirmación humana, aunque el resto de la capacidad sea A1 | P-6 | [Caso N] |
 | R-08 | **Nace apagada.** En CTX-EXISTENTE con producción, cada capacidad nueva tiene un parámetro que la apaga; apagada, el comportamiento previo no cambia | P-8 | [Caso N] |
 
+<a id="k1-3"></a>
 ## 3. Marco: escenarios, contextos, actores y escaleras
 
 Catálogo mínimo para especificar sin la guía [Guía §3.1]–[Guía §3.3], [Guía §4.2]. Un caso que no encaja **no
@@ -225,6 +256,46 @@ cada capacidad y activa filas de §9 y §10.
 | A2 Workflow | camino fijo en código, con estado | hereda los controles de A1 |
 | A3 Agente | el modelo dirige el bucle | hereda los de A1; no se especifica sin ADR propia (§14) |
 
+<a id="k1-3-1-frontera"></a>
+### 3.1 Frontera de competencia
+
+**Definición.** La *frontera de competencia* de un asistente es el conjunto de pedidos que atiende con una
+conducta definida y comprobable: dar pasos, explicar, derivar o rechazar. Se define por **lo que el asistente
+hace con el pedido**, no por el tema [Guía §3.7.1](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-1). Toda
+capacidad que reciba texto libre de ACT-USR (un ESC-01 con chat o consola) la DEBE especificar.
+
+**Qué escribe la especificación.** Una tabla de cuatro anillos con criterio de pertenencia, conducta y pieza que
+la sostiene [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2):
+
+| Anillo | Conducta | Pieza que la sostiene | Qué no puede pasar |
+|---|---|---|---|
+| 1 · Operar el producto | pasos, datos reales y enlace profundo a la acción | herramientas de lectura sobre casos de uso; dato exacto por el carril aparte; escritura sólo con aprobación | una cifra que no salió de una herramienta |
+| 2 · Entender el dominio | explicación corta en lenguaje llano y después el paso del anillo 1 | glosario y sinónimos versionados como datos; sin herramientas | una explicación improvisada que no cita su entrada |
+| 3 · Lo de al lado | orientar y derivar, y decir cómo se vuelve al producto | fragmentos de derivación con cita; sin herramientas | inventar pasos de un sistema ajeno |
+| Afuera | rechazo amable con dos o tres preguntas de ejemplo | texto fijo del código, sin llamada al modelo | una respuesta del modelo |
+
+**Reglas.**
+
+| Id | Regla (imperativo) | Porqué | Prueba |
+|---|---|---|---|
+| F-1 | El código clasifica el pedido en un anillo; si el modelo lo propone, se valida contra un `enum` cerrado y la duda cae al anillo más seguro (2 o Afuera), nunca al 1 | el anillo decide qué viaja al modelo: es privilegio, no redacción [Guía §3.7.4](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-4) | pregunta no reconocida → `Afuera` sin llamada al modelo |
+| F-2 | Sólo el anillo 1 lleva herramientas | reduce la superficie de inyección [Guía §12.2](../Dot-Net-Integration-AI-Layer-Guide.md#c12-2) | ningún anillo distinto de Operar arma una lista de herramientas no vacía |
+| F-3 | Los sinónimos se aplican en código antes de clasificar y antes de buscar | la persona inexperta no conoce el término del producto [Guía §3.7.3](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-3) | «aviso», «mensaje» y «notificación» llevan a la misma intención |
+| F-4 | Sin fragmento que alcance el umbral, la respuesta es el texto fijo «No está en la ayuda» | abstenerse cuesta menos que un dato inventado [Caso P] | con un corpus vacío para la intención, no hay llamada de redacción y se muestra el texto fijo (REQ-IA-33) |
+| F-5 | La frontera se mide con un evento de campos cerrados, sin el texto de la persona | lo que no se guarda no se filtra [Guía §3.7.5](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-5) | el tipo del evento no tiene campos de texto libre (REQ-IA-30) |
+| F-6 | La frontera no se amplía con el prompt; crece cuando el producto suma la capacidad o el conocimiento versionado | el prompt da permiso para improvisar, no capacidad [Guía §3.7.6](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-6) | revisión: ningún cambio de frontera toca sólo el prompt de sistema |
+| F-7 | **(Provisoria, en espera del libro.)** Si el dominio es de riesgo profesional (clínico, legal, financiero o de seguridad de personas), las preguntas que piden criterio profesional (diagnóstico, indicación, interpretación de una norma para un caso) van a **Afuera** con texto fijo que deriva a quien corresponde, aunque parezcan del anillo 2 o 3; sólo una decisión escrita y firmada por ACT-ARQ o ACT-SEC puede pasar una intención concreta a otro anillo | una explicación del anillo 2 o una orientación del anillo 3 se lee como consejo profesional, y el error no se compensa con aciertos | un caso por rol en la batería con una pregunta de criterio profesional → `Afuera`, texto fijo, sin llamada al modelo; toda excepción tiene su firma en la especificación |
+| F-8 | **(Provisoria, en espera del libro.)** Si el sistema trata categorías especiales de datos (salud, por ejemplo), es CTX-SENS: al modelo **no viaja** ningún dato que identifique a la persona ni texto libre cargado por terceros (observaciones, notas); el destino LOCAL o NUBE lo decide ACT-SEC por escrito (C-13) antes de construir | la minimización de R-02 no alcanza si el dato es de categoría especial: lo que no viaja no se filtra | la proyección que llega al modelo no tiene campos de identificación ni de texto libre de terceros (prueba con el doble de `IChatClient`); la decisión LOCAL/NUBE tiene firma |
+
+F-7 y F-8 cubren un hueco que la Guía 16 hoy no trata; cuando el libro lo resuelva, rige el libro y estas
+reglas se ajustan. **Texto de la abstención:** «No está en la ayuda» nombra una plantilla fija, no un texto
+literal; cada proyecto elige el suyo ([K5 §2](knowledge-AI-Layer-Conversational-Design.md#k5-2)).
+
+Las formas de la respuesta (chat o fichas, negativa útil, aclaración entre candidatas, visualizaciones) no se
+especifican acá: son de [K5](knowledge-AI-Layer-Conversational-Design.md) y de su libro. La especificación sólo
+fija que existan como texto o plantilla del código cuando llevan cifras o destinos (ARQ-1).
+
+<a id="k1-4"></a>
 ## 4. Arquitectura de referencia
 
 **Definición.** La arquitectura de referencia ubica la capa de IA entre Presentation, Application, Domain,
@@ -282,6 +353,26 @@ proyecto real · cómo se comprueba la regla», y los requisitos y diagramas usa
 `Application/` por didáctica (excepción I-5, [Guía §5.8]). La especificación toma la ubicación de la demo y de
 ADR-CAPA (§8).
 
+<a id="k1-4-1-reglas-arq"></a>
+### 4.1 Reglas de arquitectura ARQ-1 a ARQ-6
+
+Para toda capacidad conversacional sobre datos propios (asistente, consola de ayuda). Nacieron en [Caso P] y
+aplican [P-4], [P-6] y [P-8] a lo que el libro deja en manos del diseño. Cada una se cumple **en el código** y
+se prueba **sin modelo**.
+
+| Id | Regla (imperativo) | Porqué | Prueba (garantía) | Requisito | Fuente |
+|---|---|---|---|---|---|
+| ARQ-1 | **El código elige herramienta, alcance y destino; el modelo sólo redacta** sobre resultados ya calculados | un modelo chico elige mal herramienta y alcance; un ruteo determinista se prueba en cada build | tabla de preguntas → (intención, herramienta) con un doble del modelo que no recibe herramientas | REQ-IA-24 | [Caso P]; [Guía §3.7.4](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-4), [Guía §9.4](../Dot-Net-Integration-AI-Layer-Guide.md#c9-4) |
+| ARQ-2 | **Resolver el alcance antes de responder**: cuenta, aplicación o global sale de la sesión y de la pantalla; si hay varias candidatas, el código ofrece elegir entre ellas con sus cifras, nunca «no encuentro» seco | en [Caso P] la falla de «¿cuántos suscriptores tengo?» no era de herramienta sino de alcance | con dos cuentas o dos aplicaciones de nombre parecido, la respuesta es una aclaración con candidatas, sin llamada de redacción | REQ-IA-23 | [Caso P]; [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2) |
+| ARQ-3 | **El permiso filtra la consulta de recuperación antes del top-k**, no después | filtrar después deja huecos y puede traer fragmentos ajenos al rol | un fragmento marcado para otro rol nunca está en los candidatos, aunque sea el más parecido | REQ-IA-26 | [Caso P]; [Guía §8.4](../Dot-Net-Integration-AI-Layer-Guide.md#c8-4), [Guía §12.1](../Dot-Net-Integration-AI-Layer-Guide.md#c12-1) |
+| ARQ-4 | **El corpus va antes que la búsqueda**: se mide la cobertura pantalla → ayuda y es compuerta del RAG | en [Caso P] se diagnosticó como falla de búsqueda lo que era falta de documento (unas 7 de 38 pantallas con ayuda; páginas de una sección enteras en borrador) | un script lista las pantallas del producto y las que tienen ayuda publicada; bajo el umbral declarado, la capacidad no pasa a PROD | REQ-IA-25 | [Caso P]; [Guía §8.5](../Dot-Net-Integration-AI-Layer-Guide.md#c8-5) |
+| ARQ-5 | **El destino sale de un catálogo por id y se revalida por permiso en el servidor**; toda URL libre en el texto del modelo se elimina | el modelo nunca arma rutas; una inyección «llevame a…» no debe producir enlace | con el doble que devuelve una URL, la respuesta sale sin ella; con un id de destino que el rol no ve, no hay destino | REQ-IA-27 | [Caso P]; [Guía §12.3](../Dot-Net-Integration-AI-Layer-Guide.md#c12-3) |
+| ARQ-6 | **Ver no es hacer**: un destino que lleva a una acción se ofrece sólo si el permiso de **la acción** pasa, no el de la página; si se ofrece, abre la acción (no sólo la pantalla) | ofrecer un destino que termina en «prohibido» es una negativa disfrazada | un rol que ve la página pero no puede ejecutar la acción recibe la negativa útil, no el destino | REQ-IA-28 | [Caso P] |
+
+**Prioridad.** ARQ-5 y ARQ-6 son formas de P-6; si chocan con una comodidad de diseño (por ejemplo, un enlace
+más directo), prevalecen.
+
+<a id="k1-5"></a>
 ## 5. Contrato del puerto y patrones de salida
 
 **Definición.** El *puerto propio* es una interfaz de Application con la firma de la capacidad en palabras del
@@ -336,6 +427,7 @@ herramientas de otro proceso. Microsoft Agent Framework entra desde A2 (workflow
 serializable y composición, no decisión; criterio: Microsoft.Extensions.AI primero, Agent Framework por lo que
 el bucle no trae [Guía §9.6], [Guía §9.7], [Guía B.2].
 
+<a id="k1-6"></a>
 ## 6. Clientes y fronteras
 
 **Definición.** Un *cliente* es una aplicación que consume el servicio con capa de IA; la *frontera* es lo que
@@ -348,6 +440,7 @@ cruza entre ellos. Los mecanismos de cliente se citan del libro MAUI, no se rede
 | una app que trabaja sin red | base local y outbox [MAUI cap. 5] | qué devuelve el puerto en *degradado* cuando el pedido llega diferido |
 | una aplicación web renderizada en el servidor | — | **no aplica** esta sección: la capa de IA y la página viven del mismo lado [Caso G] |
 
+<a id="k1-7"></a>
 ## 7. Plantilla de especificación (arc42 reducido)
 
 arc42 es una plantilla de documentación de arquitectura de doce secciones [Ind-1]. Se usan siete; las
@@ -371,6 +464,7 @@ motivo: ni ADR, ni requisitos, ni ítems del checklist, que se aplican a las «e
 |---|---|---|---|---|
 | 1 | (nombre) | ESC-0n | −1 / A0 / A1 lectura / A1 escritura | especificada · sin modelo (−1, con su ADR-SIN-IA) · sólo diseño |
 
+<a id="k1-8"></a>
 ## 8. Decisiones (ADR)
 
 **Definición.** Un ADR registra una decisión con su contexto, alternativas descartadas, consecuencias (también
@@ -407,12 +501,13 @@ las negativas), confianza y «deja de valer si»; el registro es de sólo agrega
 Las demás decisiones de la guía (conocimiento, almacén, salida, cadena de opciones, pruebas) se escriben cuando
 la especificación las toma; lo que la guía no decide (sincronía, A3, autorización real) no se decide acá [Guía §14.15].
 
+<a id="k1-9"></a>
 ## 9. Requisitos `REQ-IA-nn`
 
 **Definición.** Un *requisito de la capa de IA* es una condición verificable, con Id `REQ-IA-nn` (dos dígitos
 o más, único), nivel BCP 14, criterio de aceptación y **prueba nombrada**. Un requisito sin criterio o sin
 prueba está incompleto. El **verificador** (un script del proyecto, o a mano si no hay) comprueba por fila: Id
-con dos dígitos o más y único, criterio y prueba no vacíos, NO APLICA con motivo; a mano, la especificación deja la tabla de esa comprobación con su resultado (eso es la «salida 0»). Los requisitos propios siguen desde REQ-IA-22; una segunda métrica es otro Id, nunca un sufijo («12b» no pasa). Columnas, en orden: Id · Requisito · PROTO ·
+con dos dígitos o más y único, criterio y prueba no vacíos, NO APLICA con motivo; a mano, la especificación deja la tabla de esa comprobación con su resultado (eso es la «salida 0»). Los requisitos propios siguen desde REQ-IA-40 (22 a 33 son del grupo C; 34 a 39 quedan reservados); una segunda métrica es otro Id, nunca un sufijo («12b» no pasa). Columnas, en orden: Id · Requisito · PROTO ·
 PROD · Criterio de aceptación · Prueba · Tipo · Estado de la prueba.
 
 - **Tipo**: *garantía* (prueba sin servidor de modelos, en cada build) o *conducta* (corrida rotulada con
@@ -466,8 +561,31 @@ especificación los agrega (todas las base son *garantía*, salvo REQ-IA-12, que
 | REQ-IA-07 | Con texto no confiable al armar el pedido no se montan escrituras | DEBE | DEBE | con contexto no confiable, la lista de herramientas no tiene escrituras | `ContextoNoConfiable_SinHerramientasDeEscritura` |
 | REQ-IA-20 | Ninguna herramienta ejecuta una acción irreversible y masiva (R-07) | DEBE | DEBE | la acción masiva sólo produce un borrador pendiente de confirmación | `AccionMasiva_SoloBorrador` |
 
-Fuente de los criterios de REQ-IA-01 a 12: [Guía B.1]–[Guía B.5]. REQ-IA-13 a 21 son de este conocimiento.
+*Grupo C, asistente o consola sobre datos propios (además del 0 y del A1 lectura; se activa con §3.1 y §4.1):*
 
+| Id | Requisito | PROTO | PROD | Criterio de aceptación | Prueba |
+|---|---|---|---|---|---|
+| REQ-IA-22 | **Validador de cifras**: cada número de la respuesta aparece en un resultado de herramienta de esa llamada; si alguno no, se muestra un texto fijo armado por el código con las cifras calculadas | DEBE | DEBE | con el doble que inventa una cifra, se muestra el texto fijo con la cifra real y el evento cuenta un *rechazado* | `CifraSinOrigen_TextoFijoConCifrasDelCodigo` |
+| REQ-IA-23 | El alcance (cuenta, aplicación, global) lo resuelve el código antes de redactar; con varias candidatas, aclaración con 2 a 4 opciones y sus cifras (ARQ-2) | DEBE | DEBE | dos aplicaciones de nombre parecido producen la aclaración, sin llamada de redacción | `NombreAmbiguo_AclaracionConCandidatas` |
+| REQ-IA-24 | El ruteo pregunta → herramienta es determinista y el modelo de redacción no recibe herramientas (ARQ-1) | DEBE | DEBE | la tabla de preguntas de referencia da la herramienta esperada; las opciones del pedido de redacción no traen herramientas | `Ruteo_TablaDeReferencia`; `Redaccion_SinHerramientas` |
+| REQ-IA-25 | La cobertura pantalla → ayuda se mide y es compuerta (ARQ-4) | DEBERÍA | DEBE | el script informa k de N pantallas con ayuda; bajo el umbral firmado por ACT-ARQ, falla | `CoberturaDelCorpus_SobreUmbral` |
+| REQ-IA-26 | El filtro de rol se aplica en la consulta de recuperación, antes del top-k (ARQ-3) | DEBE | DEBE | un fragmento de otro rol nunca está entre los candidatos | `FragmentoDeOtroRol_NoEsCandidato` |
+| REQ-IA-27 | El destino sale de un catálogo por id, revalidado por permiso en el servidor; las URL libres del texto se eliminan (ARQ-5) | DEBE | DEBE | URL inventada por el doble → no aparece; id sin permiso → sin destino | `UrlLibre_SeElimina`; `DestinoSinPermiso_NoSeOfrece` |
+| REQ-IA-28 | El destino de una acción exige el permiso de la acción, no el de la página (ARQ-6) | DEBE | DEBE | rol que ve pero no hace → negativa útil sin destino | `VeLaPaginaPeroNoHace_SinDestinoDeAccion` |
+| REQ-IA-29 | **Habilitación con motivo exacto**: si la IA queda apagada, el arranque registra una vez el motivo de un catálogo cerrado (falta endpoint, falta modelo, clave desconocida, apagada por parámetro) sin dirección ni nombre del modelo, y una pantalla o chequeo de salud lo muestra | DEBE | DEBE | con la variable del modelo ausente, el chequeo devuelve el motivo `FaltaModelo` y el registro no contiene la dirección | `SinModelo_MotivoExacto_SinDireccion` |
+| REQ-IA-30 | **Huella del voto sin texto**: el voto (útil / no útil con motivo cerrado) se persiste con la huella del turno (intención, anillo, resultado, versión del conocimiento, día), nunca la pregunta, la respuesta ni la persona; no basta con un registro de log | DEBE | DEBE | el tipo persistido no tiene campos de texto libre ni de identidad; el voto se lee después desde el almacenamiento | `Voto_SinTextoNiPersona`; `Voto_SePersisteYSeLee` |
+| REQ-IA-31 | **Modelo por variable de entorno con una sola clave**: modelo, endpoint y tiempos vienen del entorno, nunca del repositorio; hay un único nombre de clave por valor (por ejemplo `IA__Modelo`) y el arranque informa una clave parecida desconocida | DEBE | DEBE | sin la clave canónica y con una variante, REQ-IA-29 da `ClaveDesconocida` nombrando la clave, no su valor | `ClaveVariante_MotivoClaveDesconocida`; `Repo_SinModeloNiEndpoint` |
+| REQ-IA-32 | Cada rol con acceso al panel tiene consola o un «no» explícito y probado; ningún rol queda sin ella por omisión (también el raíz) | DEBE | DEBE | una prueba por rol abre la consola y obtiene respuesta no vacía o el «no» declarado | `ConsolaPorRol_{Rol}` |
+| REQ-IA-33 | Sin fragmento sobre el umbral, la respuesta es el texto fijo «No está en la ayuda», sin llamada de redacción (F-4) | DEBE | DEBE | intención sin corpus → texto fijo; el doble del modelo no recibe pedido | `SinFragmento_NoEstaEnLaAyuda` |
+
+Todos los del grupo C son *garantía*; la calidad de la redacción que queda (claridad, tono) es *conducta* y va a
+REQ-IA-12. Fuente de los criterios de REQ-IA-01 a 12: [Guía B.1]–[Guía B.5]. REQ-IA-13 a 21 son de este
+conocimiento; REQ-IA-22 a 33 son de este conocimiento, nacidos en [Caso P], y REQ-IA-22, 30 y 33 bajan a
+requisito lo que [Guía §3.7.5](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-5) y
+[Guía §3.7.6](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-6) piden; REQ-IA-31 baja
+[Guía §13.5](../Dot-Net-Integration-AI-Layer-Guide.md#c13-5).
+
+<a id="k1-10"></a>
 ## 10. Seguridad: matriz OWASP por nivel de agencia
 
 La matriz usa los nombres en inglés de OWASP para aplicaciones con modelos de lenguaje, 2025 [REF-161], y
@@ -481,10 +599,10 @@ este conocimiento.
 | LLM02:2025 Sensitive Information Disclosure | A0 con CTX-SENS | entrada mínima; agregados; contenido fuera de las trazas | REQ-IA-09, 10, 15 |
 | LLM05:2025 Improper Output Handling | A0 | consumo seguro o filtro posterior antes de usar la salida | REQ-IA-03, REQ-IA-13 |
 | LLM06:2025 Excessive Agency | A1 | casos de uso; toda escritura aprobable; nada masivo | REQ-IA-04, 05, 20 |
-| LLM08:2025 Vector and Embedding Weaknesses | K2 o K3 | el permiso filtra la consulta de recuperación | a definir por el proyecto |
+| LLM08:2025 Vector and Embedding Weaknesses | K2 o K3 | el permiso filtra la consulta de recuperación antes del top-k (ARQ-3) | REQ-IA-26 |
 | LLM09:2025 Misinformation | A0 que explica, afirma datos o clasifica | anclaje (R-03), filtro con métrica (R-04) o validación contra catálogo; persona en el circuito | REQ-IA-03, 13 o 14 |
 | LLM10:2025 Unbounded Consumption | A0 | largo máximo de entrada, concurrencia limitada, sin reintentos; en A1, tope del bucle | REQ-IA-21; A1: REQ-IA-08 |
-| ASI02 Tool Misuse and Exploitation | A1 | lista permitida; argumentos resueltos en código | REQ-IA-04 |
+| ASI02 Tool Misuse and Exploitation | A1 | lista permitida; argumentos resueltos en código; en el grupo C, ruteo determinista y destino por catálogo | REQ-IA-04; grupo C: 24, 27, 28 |
 | ASI03 Identity and Privilege Abuse | A1 | sesión e inquilino los pone el código | REQ-IA-06, REQ-IA-18 |
 | ASI09 Human-Agent Trust Exploitation | A0 con persona que firma; A1 escritura | el pedido de aprobación o el borrador lo arma el código y muestra qué propone el modelo | REQ-IA-05; en A0, uno propio |
 
@@ -511,6 +629,7 @@ control de acceso [Guía §12.5].
 | Lo que no cubre | ¿qué queda sin control? (R-04) |
 | Quién decide | ACT-SEC decide; ACT-DEV implementa |
 
+<a id="k1-11"></a>
 ## 11. Procedimiento de aplicación
 
 | Paso | Qué se hace | Entregable |
@@ -519,11 +638,13 @@ control de acceso [Guía §12.5].
 | 1 | Responder las cuatro preguntas y recorrer el árbol | arc42 §1; ADR-SIN-IA si sale por «no» |
 | 2 | Fijar ESC-, CTX- y ACT- con el catálogo de §3; armar el inventario de capacidades | arc42 §1 |
 | 3 | Por capacidad, fijar escalón de conocimiento, nivel de agencia y patrón de salida | arc42 §5 |
+| 3a | Si la capacidad recibe texto libre de ACT-USR: escribir la frontera (§3.1), aplicar ARQ-1 a ARQ-6 (§4.1) y activar el grupo C; medir la cobertura del corpus antes de elegir K2 | arc42 §5 y §8 |
 | 4 | En CTX-EXISTENTE, tabla de correspondencia de capas; dibujar C4 y validarlos | arc42 §3 y §5 |
 | 5 | Una ficha del puerto por capacidad; entrada mínima (R-02) | arc42 §5 |
 | 6 | ADR mínimas por tema, numeradas en el registro del proyecto | arc42 §9 |
 | 7 | Requisitos de los grupos activados, con tipo y estado de la prueba | arc42 §10 |
 | 8 | Filas de la matriz según el nivel; excluidos con motivo; una ficha de riesgo por capacidad | arc42 §11 |
+| 8a | Despliegue mínimo que la especificación fija: claves de entorno con su nombre único, motivos de habilitación, chequeo posterior al despliegue en el sitio real con una sesión por rol (lo hace la verificación; acá se nombra) | arc42 §8 |
 | 9 | Si hay clientes, la frontera (§6); si una herramienta no alcanza, la brecha a deuda (R-06) | arc42 §3 y §11 |
 | 10 | Checklist de §12, por un agente y por una persona | checklist al 100 % |
 
@@ -531,6 +652,19 @@ control de acceso [Guía §12.5].
 («en parte»: respaldo). A0 con persona que firma, ESC-01, texto libre; ADR-LLAMADA, -PROVEEDOR, -CAPAS; grupo 0 y
 REQ-IA-13; filas LLM01, LLM05, LLM09, LLM10 y ASI09; el envío a todos es R-07 y queda en la persona.
 
+<a id="k1-11-1-parada"></a>
+### 11.1 Criterios de parada
+
+| Situación | Qué hace el agente |
+|---|---|
+| El checklist da 100 % en DEBE con la columna del contexto | **para**: la especificación está completa; lo que sigue es construir |
+| Un ítem de decisión (C-02, C-08, C-13, C-17 y el umbral de cobertura de C-23) no tiene quién firme | **para y eleva** a quien preside la mesa con una propuesta y su motivo; no rotula «dado» |
+| Una regla de este conocimiento parece contradecir al libro | **para esa regla**, aplica el libro e informa la contradicción; no la resuelve |
+| La cobertura del corpus está bajo el umbral | **no especifica K2 en PROD**: especifica el corpus como deuda y la capacidad como PROTO |
+| Una capacidad necesita A2 o A3 | **para**: fuera de alcance (§14) hasta una ADR propia |
+| Se intenta ampliar la frontera con el prompt (F-6) | **para** y lo registra como antipatrón (§12.1) |
+
+<a id="k1-12"></a>
 ## 12. Checklist binario de completitud
 
 Una especificación está **completa** cuando cada ítem DEBE de su columna está en **SÍ** con fuente (sección de
@@ -562,13 +696,44 @@ ACT-x»; en PROD eso es NO [Prueba].
 | C-17 | **Por capacidad**: métrica con denominador, umbral **con su valor** y con el denominador de cada cifra (en «en parte», además no peor que la línea base, con cómo se mide; en «sí» no hay línea base) y error caro, con quien fija el umbral. Si el caso no trae el umbral o el error caro, o algún dato suyo (la cifra o su denominador), la especificación propone lo que falta con su motivo y queda «pendiente de firma» del rol que fija; completarlo y rotularlo «dado» es NO | DEBE | DEBE |
 | C-18 | Si hay varios inquilinos, R-01 con REQ-IA-18 en cada capacidad especificada, también en segundo plano (el inquilino sale del registro guardado, validado al crearlo); con un rol global, el paso validado por el código que elige el inquilino, con su prueba; un recurso común a todos los inquilinos se declara con su motivo en la fila de REQ-IA-18 y no exime el resto | DEBE | DEBE |
 | C-19 | Cada filtro declara lo que mide y lo que no ve (R-04) | DEBE | DEBE |
+| C-20 | Si hay texto libre de ACT-USR: frontera escrita como cuatro anillos con criterio, conducta y pieza; el anillo lo elige el código (F-1, F-2) | DEBE | DEBE |
+| C-21 | ARQ-1: el ruteo pregunta → herramienta es una tabla del código con prueba; el modelo de redacción no recibe herramientas (REQ-IA-24) | DEBE | DEBE |
+| C-22 | ARQ-2: el alcance y la aclaración entre candidatas están especificados con su prueba (REQ-IA-23) | DEBE | DEBE |
+| C-23 | ARQ-3 y ARQ-4: filtro de rol antes del top-k y cobertura del corpus medida con su umbral (REQ-IA-25, 26) | DEBERÍA | DEBE |
+| C-24 | ARQ-5 y ARQ-6: destinos por catálogo revalidados por permiso y con el permiso de la acción (REQ-IA-27, 28) | DEBE | DEBE |
+| C-25 | Validador de cifras con caída a texto fijo y «No está en la ayuda» como texto fijo (REQ-IA-22, 33) | DEBE | DEBE |
+| C-26 | Habilitación con motivo exacto y modelo por variable de entorno con una sola clave (REQ-IA-29, 31); ningún nombre de modelo ni dirección en el repositorio | DEBE | DEBE |
+| C-27 | Voto con motivo cerrado persistido sin texto ni persona, y una consola o un «no» probado por cada rol, raíz incluido (REQ-IA-30, 32) | DEBERÍA | DEBE |
 
+C-20 a C-27 aplican sólo si la capacidad es conversacional (paso 3a); si no, van en NO APLICA con ese motivo.
+
+<a id="k1-12-1-antipatrones"></a>
+### 12.1 Antipatrones de especificación con su control
+
+Errores que costaron en [Caso P]. Acá van los que se previenen al especificar; los de construcción y medición
+(estilos sin enlazar, medir con el modelo ya cargado, un porcentaje informado sin repetir la corrida) son de los
+conocimientos hermanos de construcción y verificación.
+
+| Antipatrón | Qué pasó | Control en la especificación |
+|---|---|---|
+| Rol olvidado | la consola no existía para el rol raíz y el reclamo llegó del usuario | REQ-IA-32 con una prueba por rol; matriz rol × pantalla en arc42 §8 |
+| IA apagada en silencio | el despliegue configuró una clave con otro nombre que la que el código leía | REQ-IA-29 y REQ-IA-31; paso 8a con chequeo en el sitio real |
+| Secreto o dirección en un registro | volcar la configuración entera para diagnosticar | el motivo nombra la clave, nunca su valor (REQ-IA-29); C-14 |
+| Gesto sin destino del dato | los votos sólo iban a un log y nadie los leía | REQ-IA-30: almacenamiento y lector definidos antes de construir el gesto |
+| La ayuda como respuesta | la respuesta era un puntero a la guía y la búsqueda emparejaba por una palabra suelta | la ayuda es contexto para redactar, con umbral real de rechazo (REQ-IA-33) |
+| Falla de búsqueda que era falta de corpus | se ajustaba la recuperación sobre páginas que no existían | ARQ-4 y REQ-IA-25 antes de elegir K2 |
+| Destino que termina en «prohibido» | se validaba el permiso de la página, no el de la acción | ARQ-6 y REQ-IA-28 |
+| Frontera ampliada con el prompt | «también podés ayudar con X» sin capacidad detrás | F-6 y §11.1 |
+
+<a id="k1-13"></a>
 ## 13. Casos de uso y referencias
 
 | Caso | Dónde | Qué aportó |
 |---|---|---|
-| **[Caso G]** Lab-Geometria: pistas sobre observaciones y borrador del comentario del docente, nivel A0 | carpeta `ai-layer/` y expediente 0002 del repositorio público Lab-Geometria; recorrido inverso en el capítulo «Caso aplicado: Geometría» de la guía | rama «en parte», catálogo, escalera de conocimiento, patrón filtro + plantilla, LLM09, R-02, R-04, paso 0 |
+| **[Caso G]** Lab-Geometria: pistas sobre observaciones y borrador del comentario del docente, nivel A0 | carpeta `ai-layer/` y expediente 0002 del repositorio público Lab-Geometria; recorrido inverso en [Guía cap. 16](../Dot-Net-Integration-AI-Layer-Guide.md#c16) | rama «en parte», catálogo, escalera de conocimiento, patrón filtro + plantilla, LLM09, R-02, R-04, paso 0 |
 | **[Caso N]** un servicio privado de notificaciones: consulta en lenguaje natural con herramientas de sólo lectura | sólo en abstracto | R-01, R-03, R-05 a R-08, A1 lectura, correspondencia de capas, ADR por tema, firma |
+| **[Caso P]** PushDispatch, un servicio de notificaciones push diseñado desde cero: consola de ayuda con IA dentro de su panel de control, A1 lectura + K2 sobre la ayuda del producto | el repositorio de PushDispatch (expediente de la consola de IA) | frontera aplicada, ARQ-1 a ARQ-6, grupo C, C-20 a C-27, antipatrones de §12.1. Evidencia sin host: la redacción anclada dio 19 de 20 (95 %) en una sola corrida; repetida tres veces cayó al 64 % (21 de 33); con los arreglos de troceo, recorte y anclaje llegó a 27 de 30 en tres corridas, y se aceptó con 36 de 36 en cada una de tres corridas y 81 de 81 casos sin falla; cobertura inicial de unas 7 de 38 pantallas con ayuda; brecha tabulada contra un producto de referencia del mercado (totales con desglose, elección entre aplicaciones de nombre parecido, gráfico con las mayores y «Otras», nota de qué métrica se muestra) |
+| **[Caso M]** la demo de Movilidad Urbana del libro | [Guía cap. 15](../Dot-Net-Integration-AI-Layer-Guide.md#c15) | ejemplos del anillo 1 y 2 de la frontera; arquitectura de referencia con componentes reales |
 | **[Prueba]** caso ficticio público de una red de bibliotecas (prueba de autocontención) | registro de trabajo no publicado de la guía 16 (ver su Anexo H) | línea base manual, PROTO por capacidad, actores como roles, NO APLICA con criterio, Application y Persistence |
 
 | Id | Estándar | Qué toma este conocimiento | Fuente |
@@ -580,6 +745,7 @@ ACT-x»; en PROD eso es NO [Prueba].
 | — | OWASP LLM Top 10 2025 y Agentic 2026 | nombres de riesgos | [REF-161], [REF-164] |
 | — | Nygard; Azure Well-Architected | forma del ADR | [REF-184], [REF-185] |
 
+<a id="k1-14"></a>
 ## 14. Límites de este conocimiento
 
 - **Probado en dos casos (A0 y A1 lectura) y en tres rondas de autocontención** con un caso ficticio. A1 escritura,
@@ -589,11 +755,21 @@ ACT-x»; en PROD eso es NO [Prueba].
 - **Los filtros de texto son parciales** (R-04): ningún requisito de este documento promete que un modelo no
   diga algo; promete lo que el código no deja pasar.
 - **Los niveles PROTO/PROD** son criterio de este conocimiento: se endurecen; se relajan sólo con motivo escrito.
+- **Las reglas de 1.1 (§3.1, §4.1, grupo C) se probaron en un solo caso** ([Caso P], un panel web renderizado en
+  el servidor). En un cliente móvil o en un asistente sin panel pueden necesitar ajuste; un segundo caso las
+  pasa a firmes.
+- **No especifica la forma de la conversación** (chat o fichas, negativa útil, visualizaciones, tono): eso es de
+  [K5](knowledge-AI-Layer-Conversational-Design.md) y de su libro.
+- **No dice cómo se construye ni cómo se acepta**: la batería, las capturas y la verificación en el sitio real
+  son de [K2](knowledge-AI-Layer-Console-Assistant-Building.md) y [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); acá sólo se nombran los requisitos que miden.
 - **No resuelve** cómo medir sin sesgo cuando la persona que confirma ve la propuesta (el oráculo queda influido),
   ni consentimiento y retención de datos de terceros: son decisiones de ACT-SEC y del proyecto.
 
+<a id="k1-glosario"></a>
 ## Glosario
 
 Los términos de la capa de IA se definen en el glosario de la guía [Guía Anexo C]. Los propios se definen una vez,
 donde se usan: especificación (§0), nivel de agencia (§3), respaldo y patrón de salida (§5), inventario de
-capacidades (§7), ADR por tema y ASR (§8), `REQ-IA-nn` (§9), anclaje (R-03), completa (§12).
+capacidades (§7), ADR por tema y ASR (§8), `REQ-IA-nn` (§9), anclaje (R-03), completa (§12); desde 1.1, frontera de
+competencia y anillo (§3.1), alcance, destino y cobertura del corpus (§4.1), huella del voto (REQ-IA-30), motivo de
+habilitación (REQ-IA-29).

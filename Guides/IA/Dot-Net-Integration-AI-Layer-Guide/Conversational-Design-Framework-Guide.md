@@ -6,29 +6,28 @@ version: 1.0.0
 status: vigente
 origin: ia-assisted
 confidence: media
-confidence_nota: alta en lo referenciado y en lo observado al construir el caso; media en lo rotulado como criterio de la guía; lo no verificado está marcado
+confidence_nota: alta en lo referenciado y en lo observado al construir los casos; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
 last_review: 2026-11-11
 tope_palabras: 60000
-audience: [producto, diseño, desarrollo, qa, soporte]
-audience_nota: equipos sin experiencia en diseño conversacional ni en IA que tienen que diseñar e integrar un asistente en un producto existente o por desarrollar
+audience: [estudiante, docente, po, desarrollo, qa]
+audience_nota: guía académica y general para estudiantes, docentes y profesionales sin experiencia en diseño conversacional ni en IA que quieren aplicar el marco a cualquier sistema, existente o por desarrollar
 traces: []
-description: Manual de trabajo para diseñar la conversación de un asistente de producto por anillos de competencia, con etapas, entregables, plantillas y un caso completo.
+description: Guía académica para diseñar la conversación de un asistente de producto por anillos de competencia, con método por etapas, plantillas y casos.
 related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 ---
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
+> **Versión** 1.0.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+
 <a id="prologo"></a>
 ## Prólogo
-
-Un asistente dentro de un producto no se diseña escribiendo un prompt: se diseña decidiendo qué sabe hacer, con qué palabras lo van a buscar, adónde lleva al usuario y cómo se mide si cumple. Este libro ordena esas decisiones en un método por etapas, con entregables concretos y un caso completo, y acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña.
-
 
 <a id="c0"></a>
 ## Capítulo 0 · Cómo usar este libro
 
-Este libro es un manual de trabajo. Está pensado para un equipo que nunca diseñó una conversación de producto ni integró un modelo de lenguaje y que tiene que hacerlo con un sistema concreto. Si lo leen de punta a punta, salen con un método de ocho etapas (E0 a E7), con los entregables de cada etapa en forma de plantillas listas para llenar y con un caso completo para mirar: PushDispatch, un servicio de notificaciones push con panel de administración, diseñado desde cero. Este capítulo no enseña diseño conversacional. Les dice qué van a poder hacer, por dónde entrar según su situación, cómo leer las marcas de evidencia y dónde está cada plantilla.
+Este libro es una guía académica de diseño conversacional para asistentes de producto. Está escrita para estudiantes, docentes y profesionales que nunca diseñaron una conversación ni integraron un modelo de lenguaje, y que quieren un marco para hacerlo en cualquier sistema. Quien lo lea de punta a punta sale con un criterio (la frontera por competencia), un método de ocho etapas (E0 a E7) con entregables en forma de plantillas y tres casos ilustrativos para contrastar: Movilidad Urbana, Geometría y PushDispatch, un servicio de notificaciones push con panel de administración, presentado como un producto diseñado desde cero. Los casos ejemplifican; el objetivo es el método. Este capítulo no enseña diseño conversacional: dice qué vas a poder hacer, por dónde entrar según la situación del sistema, cómo leer las marcas de evidencia y dónde está cada plantilla.
 
 <a id="c0-0"></a>
 ### 0.0 Índice
@@ -41,7 +40,7 @@ flowchart TD
   I --> II["Parte II · Marco<br/>c3 Anillos de competencia · c4 Vocabulario<br/>c5 Destinos y deeplink · c6 El código elige, el modelo redacta"]
   II --> III["Parte III · Método por etapas<br/>c7 Flujo E0→E7 · c8 E0 Encuadre · c9 E1 Inventario<br/>c10 E2 Anillos · c11 E3 Glosario · c12 E4 Destinos<br/>c13 E5 Batería y aceptación · c14 E6 Maqueta y crítica"]
   III --> IV["Parte IV · Producción y medición<br/>c15 E7 Plan de medición · c16 Mover la frontera"]
-  IV --> V["Parte V · Integración<br/>c17 Relación con la guía de capa de IA<br/>c18 Caso PushDispatch desde cero"]
+  IV --> V["Parte V · Integración<br/>c17 Relación con la guía de capa de IA<br/>c18 Caso ilustrativo de punta a punta"]
   V --> C["Cierre · c19 Autoevaluación"]
   C --> AN["Anexos A–H<br/>plantillas · listas por rol · glosario · referencias<br/>recorrido guiado · versiones · lecturas · procedencia"]
   III -.->|A.1–A.6| AN
@@ -56,7 +55,7 @@ flowchart TD
 | [Parte II](#parte-ii) | [c3](#c3)–[c6](#c6) | ¿Dónde termina lo que el asistente sabe hacer y cómo responde? |
 | [Parte III](#parte-iii) | [c7](#c7)–[c14](#c14) | ¿Por dónde empiezo y qué entrego en cada etapa? |
 | [Parte IV](#parte-iv) | [c15](#c15), [c16](#c16) | ¿Cómo sé si funciona y cuándo cambio la frontera? |
-| [Parte V](#parte-v) | [c17](#c17), [c18](#c18) | ¿Cómo lo llevo al código y cómo queda en un producto real? |
+| [Parte V](#parte-v) | [c17](#c17), [c18](#c18) | ¿Cómo lo llevo al código y cómo se ve aplicado a un caso completo? |
 | [Cierre](#c19) y [Anexos](#anexo-a) | c19, A–H | ¿Aprendí? ¿Dónde está la plantilla? |
 
 *Tabla 0.1. Partes del libro y la pregunta que responde cada una.*
@@ -64,14 +63,14 @@ flowchart TD
 <a id="c0-1"></a>
 ### 0.1 Qué vas a poder hacer al terminar
 
-Esta tabla es la única fuente de los objetivos de aprendizaje (OA). De ella salen las rutas de [§0.2](#c0-2) y la autoevaluación de [§19](#c19). Ninguna pregunta guía existe sin un OA. El prefijo dice el rol:
+Esta tabla es la única fuente de los objetivos de aprendizaje (OA). De ella salen las rutas de [§0.2](#c0-2) y la autoevaluación de [§19](#c19). Ninguna pregunta guía existe sin un OA. Diseñar una conversación es trabajo de varios perfiles; el prefijo dice qué perfil ejerce cada objetivo. En un curso o en un equipo chico una misma persona puede ejercer varios, y conviene leerlos todos:
 
-- **EQ:** todo el equipo; es el tronco común.
+- **EQ:** tronco común, para cualquier lector.
 - **PO:** dueño del producto; decide la frontera y la firma.
 - **DIS:** diseño de experiencia y contenido.
 - **DEV:** desarrollo.
 - **QA:** verificación.
-- **SOP:** soporte y operación, la gente que hoy contesta las preguntas que el asistente va a recibir.
+- **SOP:** soporte y operación, quienes hoy contestan las preguntas que el asistente va a recibir.
 
 | OA | Al terminar, vas a poder… | Dónde se enseña | Plantilla o paso |
 |---|---|---|---|
@@ -109,18 +108,18 @@ flowchart LR
 
 *Figura 0.2. Tres rutas con tronco común.*
 
-<a id="c0-2-novato"></a>**Recién empiezo.** Lean la Parte I completa, después [§7](#c7) y hagan el recorrido guiado del [Anexo E](#anexo-e) con una sola tarea del producto y un solo rol de usuario. La primera vuelta tiene que ser chica a propósito. Sirve para que el equipo vea el método entero una vez, con todas las plantillas en una fila, antes de ensancharlo. Recién entonces vuelvan a [§8](#c8) para hacerlo en serio.
+<a id="c0-2-novato"></a>**Recién empiezo.** Leé la Parte I completa, después [§7](#c7) y hacé el recorrido guiado del [Anexo E](#anexo-e) con una sola tarea de un sistema que conozcas y un solo rol de usuario. La primera vuelta tiene que ser chica a propósito: sirve para ver el método entero una vez, con todas las plantillas en una fila, antes de ensancharlo. Funciona bien como trabajo práctico. Recién entonces volvé a [§8](#c8) para hacerlo en serio.
 
-<a id="c0-2-existente"></a>**Tengo un sistema existente.** El producto ya tiene pantallas, usuarios y soporte. Después del tronco, lean en [§8](#c8)–[§14](#c14) las celdas *sistema existente* de cada sección de escenarios. Ahí el inventario sale de lo que ya hay (pantallas, tickets, búsquedas fallidas). Terminen en [§15](#c15), porque en un sistema con uso real la medición arranca enseguida y es la que va a mover la frontera.
+<a id="c0-2-existente"></a>**Tengo un sistema existente.** El producto ya tiene pantallas, usuarios y soporte. Después del tronco, leé en [§8](#c8)–[§14](#c14) las celdas *sistema existente* de cada sección de escenarios. Ahí el inventario sale de lo que ya hay (pantallas, tickets, búsquedas fallidas). Terminá en [§15](#c15), porque en un sistema con uso real la medición arranca enseguida y es la que va a mover la frontera.
 
-<a id="c0-2-nuevo"></a>**Estoy por desarrollar.** Todavía no hay pantallas o se están diseñando. Después del tronco, lean las celdas *por desarrollar* de [§8](#c8)–[§14](#c14). Después lean [§5](#c5): el catálogo de destinos se puede pensar junto con la navegación, y eso conviene hacerlo antes de que exista el código. Terminen en [§18](#c18), que recorre PushDispatch justamente como un producto diseñado desde cero.
+<a id="c0-2-nuevo"></a>**Estoy por desarrollar.** Todavía no hay pantallas o se están diseñando. Después del tronco, leé las celdas *por desarrollar* de [§8](#c8)–[§14](#c14). Después leé [§5](#c5): el catálogo de destinos se puede pensar junto con la navegación, y eso conviene hacerlo antes de que exista el código. Terminá en [§18](#c18), que recorre un caso completo como producto diseñado desde cero.
 
 <a id="c0-3"></a>
 ### 0.3 Qué necesitás
 
 | Tema | Se da por sabido | Se explica acá |
 |---|---|---|
-| Producto | Saber usar el sistema propio como usuario | Cómo convertir su uso en inventario de tareas ([§9](#c9)) |
+| Producto | Saber usar como usuario el sistema que se va a estudiar | Cómo convertir su uso en inventario de tareas ([§9](#c9)) |
 | Diseño | Haber visto un formulario y una navegación | Conversación, intención, turno, frontera, anillo ([§1](#c1), [§3](#c3), [Anexo C](#anexo-c)) |
 | IA | Nada | Modelo, recuperación con cita, herramienta, anclaje, en el nivel que el diseño necesita ([§6](#c6)) |
 | Desarrollo | Para DEV: un lenguaje de servidor y una API | El cableado .NET vive en la guía de capa de IA ([§17](#c17)) |
@@ -128,7 +127,7 @@ flowchart LR
 
 *Tabla 0.3. Lo que se da por sabido y lo que se explica.*
 
-Para el lector, el caso guía es un producto conocido, PushDispatch ([§18](#c18)). Tiene un panel de administración con aplicaciones, suscripciones, mensajes, credenciales y roles (titular, owner, member, desarrollador y raíz), y una consola del asistente. No hace falta conocerlo de antes: el libro lo presenta. Los ejemplos de los demás capítulos son neutros a propósito, para que el método no parezca atado a un dominio.
+Los casos se usan como ejemplos ilustrativos, no como objeto de estudio. Movilidad Urbana y Geometría vienen de la guía de capa de IA ([§17](#c17)). PushDispatch es un servicio de notificaciones push presentado como diseñado desde cero: un panel de administración con aplicaciones, suscripciones, mensajes, credenciales y roles, más una consola del asistente; [§18](#c18) lo recorre entero. No hace falta conocer ninguno de antes: el libro los presenta. Los ejemplos de los capítulos temáticos son neutros a propósito, para que el método no parezca atado a un dominio.
 
 <a id="c0-4"></a>
 ### 0.4 Patrón de capítulo y rótulos de evidencia
@@ -139,7 +138,7 @@ Los capítulos temáticos (de [§3](#c3) a [§16](#c16)) siguen siempre el mismo
 |---|---|---|
 | Definición | `cN-k` | El concepto, con un solo sentido (el del [Anexo C](#anexo-c)) |
 | Escenarios | `cN-escenarios` | Sólo las celdas que cambian entre *sistema existente* y *por desarrollar* |
-| Ejemplo | `cN-ejemplos` | Un caso neutro trabajado |
+| Ejemplo | `cN-ejemplos` | Un caso neutro trabajado y, cuando ayuda, su contraste en uno de los casos ilustrativos |
 | Decisión | `cN-decision` | Qué se decide, quién lo decide y con qué criterio |
 | Preguntas guía | `cN-preguntas` | Hasta cinco, en negrita, cada una con su OA y una respuesta que forma criterio |
 | Calidad | `cN-calidad` | Criterios de terminado y antipatrones |
@@ -164,7 +163,7 @@ Una conducta no es una tasa. Que el asistente haya contestado bien una vez demue
 <a id="c0-5"></a>
 ### 0.5 Mapa de plantillas y del caso
 
-| Plantilla | Etapa | Se enseña en | Fila del caso en | Quién la llena / quién firma |
+| Plantilla | Etapa | Se enseña en | Caso completo en | Perfil que la llena / que la firma |
 |---|---|---|---|---|
 | [A.1](#anexo-a-1) Inventario de tareas y pantallas | E1 | [§9](#c9) | [§18](#c18) | DIS + SOP / PO |
 | [A.2](#anexo-a-2) Mapa de anillos | E2 | [§3](#c3), [§10](#c10) | [§18](#c18) | DIS / PO |
@@ -176,12 +175,12 @@ Una conducta no es una tasa. Que el asistente haya contestado bien una vez demue
 
 *Tabla 0.6. Plantillas, etapa, capítulo y responsables.*
 
-E0 (encuadre, [§8](#c8)) y E6 (maqueta y crítica, [§14](#c14)) no tienen plantilla propia. Su entregable es una decisión escrita y una ronda de capturas comentadas. Cada plantilla del [Anexo A](#anexo-a) trae una fila de ejemplo de PushDispatch, una fila vacía y su criterio de terminado.
+E0 (encuadre, [§8](#c8)) y E6 (maqueta y crítica, [§14](#c14)) no tienen plantilla propia. Su entregable es una decisión escrita y una ronda de capturas comentadas. Cada plantilla del [Anexo A](#anexo-a) trae una fila de ejemplo tomada de uno de los casos ilustrativos, una fila vacía y su criterio de terminado.
 
 <a id="c0-6"></a>
-### 0.6 Documento compañero privado
+### 0.6 De la guía a tu propio sistema
 
-Hay un documento compañero que aplica este método al sistema real: sus nombres internos, sus pantallas y su código. Es privado y este libro no depende de él. Todo lo necesario para aprender y aplicar el método está acá. Si tu equipo trabaja sobre otro producto, el equivalente es el documento que van a escribir ustedes con las plantillas llenas.
+El libro es autocontenido: todo lo necesario para aprender y aplicar el método está acá. Al aplicarlo a un sistema concreto, el resultado natural es un documento de aplicación propio, con las plantillas llenas, los nombres de sus pantallas y las decisiones firmadas. Ese documento es del proyecto que lo produce y no forma parte de la guía; en un curso, es el entregable del trabajo práctico.
 
 <a id="c0-7"></a>
 ### 0.7 Anclas estables
@@ -200,20 +199,20 @@ Si una sección se reescribe, conserva su ancla. Si desaparece, su ancla queda a
 <a id="c0-preguntas"></a>
 ### 0.8 Preguntas guía
 
-**¿Tengo que leer todo antes de empezar a diseñar? (OA-EQ4)** No. El tronco común ([§0](#c0), [§2](#c2), [§7](#c7)) sí es obligatorio, porque sin los principios cada etapa se vuelve una receta. Lo que conviene es una primera vuelta chica, con una tarea y un rol ([Anexo E](#anexo-e)), y después leer las etapas a medida que llegan. Esto aplica siempre que el equipo sea nuevo en el tema. Un equipo con experiencia puede ir directo a la plantilla de la etapa en la que está.
+**¿Tengo que leer todo antes de empezar a diseñar? (OA-EQ4)** No. El tronco común ([§0](#c0), [§2](#c2), [§7](#c7)) sí es obligatorio, porque sin los principios cada etapa se vuelve una receta. Lo que conviene es una primera vuelta chica, con una tarea y un rol ([Anexo E](#anexo-e)), y después leer las etapas a medida que llegan. Esto aplica siempre que el lector sea nuevo en el tema. Quien ya tiene experiencia puede ir directo a la plantilla de la etapa en la que está.
 
-**Mi producto ya existe, pero la parte que quiero cubrir con el asistente todavía no está hecha. ¿Qué ruta sigo? (OA-EQ4)** Sigan la de *por desarrollar* para esa parte y la de *existente* para el resto. Las rutas responden al estado de lo que el asistente va a cubrir, no al producto entero. En la práctica, el inventario ([§9](#c9)) mezcla filas de las dos clases, y cada fila toma la celda de escenario que le corresponde.
+**Mi producto ya existe, pero la parte que quiero cubrir con el asistente todavía no está hecha. ¿Qué ruta sigo? (OA-EQ4)** Seguí la de *por desarrollar* para esa parte y la de *existente* para el resto. Las rutas responden al estado de lo que el asistente va a cubrir, no al producto entero. En la práctica, el inventario ([§9](#c9)) mezcla filas de las dos clases, y cada fila toma la celda de escenario que le corresponde.
 
 **¿Puedo citar como evidencia algo que vimos funcionar en una demostración? (OA-EQ5)** Sí, pero como *conducta*, no como tasa. Sirve para decir «es posible». No sirve para firmar la aceptación, que pide k de M en la batería ([§13](#c13)) y prueba en el sitio real ([§2](#c2), P-8). Si nadie lo corrió, va **NO EJECUTADO**. Si sólo se cree, va **NO VERIFICADO**, y no sostiene ninguna decisión.
 
-**¿Por qué cada plantilla tiene un firmante distinto de quien la llena? (OA-EQ4)** Porque quien llena ve el detalle y quien firma responde por la frontera. La frontera es una decisión de producto, no técnica ([§10](#c10), [§16](#c16)). La única excepción es la batería: la firma QA, porque su calidad se juzga por cobertura y respuesta esperada. Los criterios de aceptación ([A.6](#anexo-a-6)), en cambio, vuelven al PO.
+**¿Por qué cada plantilla tiene un firmante distinto de quien la llena? (OA-EQ4)** Porque quien llena ve el detalle y quien firma responde por la frontera. Aunque una sola persona haga las dos cosas, como en un trabajo práctico, conviene separar los dos momentos. La frontera es una decisión de producto, no técnica ([§10](#c10), [§16](#c16)). La única excepción es la batería: la firma QA, porque su calidad se juzga por cobertura y respuesta esperada. Los criterios de aceptación ([A.6](#anexo-a-6)), en cambio, vuelven al PO.
 
 <a id="c0-calidad"></a>
 ### 0.9 Criterios de calidad de este capítulo
 
 - Cada OA de [§0.1](#c0-1) aparece en por lo menos una pregunta guía y en [§19](#c19).
 - Cada plantilla de [§0.5](#c0-5) existe en el [Anexo A](#anexo-a) con una fila del caso y una fila vacía.
-- Antipatrón: una ruta de lectura que se salta [§2](#c2). Sin principios, el equipo copia pantallas de otro producto en lugar de razonar desde la competencia.
+- Antipatrón: una ruta de lectura que se salta [§2](#c2). Sin principios, el lector copia pantallas de otro producto en lugar de razonar desde la competencia.
 - Antipatrón: enlazar por número de sección en lugar de ancla.
 
 <a id="parte-i"></a>
@@ -222,7 +221,7 @@ Si una sección se reescribe, conserva su ancla. Si desaparece, su ancla queda a
 <a id="c1"></a>
 ## Capítulo 1 · Qué es diseñar una conversación de producto
 
-Este capítulo fija el vocabulario mínimo con el que trabaja el resto del libro. Si el equipo no comparte el sentido de cinco palabras (*asistente de producto*, *intención*, *turno*, *corpus* y *anclaje*), cada etapa del método ([Parte III](#c8)) se discute dos veces: una por la decisión y otra por lo que cada uno entendió. Las definiciones de acá son las mismas del [glosario del Anexo C](#anexo-c) y tienen un solo sentido en todo el libro.
+Este capítulo fija el vocabulario mínimo con el que trabaja el resto del libro. Quien estudia diseño conversacional se encuentra con cinco palabras (*asistente de producto*, *intención*, *turno*, *corpus* y *anclaje*) que la literatura y la práctica usan con sentidos distintos; si no se fijan desde el principio, cada etapa del método ([Parte III](#c8)) se discute dos veces: una por la decisión y otra por lo que cada uno entendió. Las definiciones de acá son las mismas del [glosario del Anexo C](#anexo-c) y tienen un solo sentido en todo el libro.
 
 <a id="c1-1"></a>
 ### 1.1 Diseñar una conversación: de qué se trata
@@ -232,14 +231,14 @@ Google define el diseño conversacional como una disciplina que toma principios 
 > «Conversation design is a design language based on human conversation» [REF-002].
 > *Glosa:* el diseño conversacional es un lenguaje de diseño que toma como modelo la conversación entre personas.
 
-En un **producto** (un panel de administración, una aplicación de gestión) el asistente no conversa por conversar: existe para que alguien haga una tarea del producto o entienda lo necesario para hacerla. Por eso, en este libro, *diseñar la conversación* significa decidir, antes de escribir un prompt o una línea de código:
+En un **producto** (un panel de administración, una aplicación de gestión, una herramienta educativa) el asistente no conversa por conversar: existe para que alguien haga una tarea del producto o entienda lo necesario para hacerla. Por eso, en este libro, *diseñar la conversación* significa decidir, antes de escribir un prompt o una línea de código:
 
 1. qué tareas del producto va a atender el asistente y cuáles no (la frontera, [c3](#c3));
 2. con qué palabras las piden los usuarios reales ([c4](#c4));
 3. de dónde sale cada dato o cada paso que el asistente dice (el corpus y las herramientas, [c6](#c6));
 4. cómo se comprueba que lo dice bien ([c13](#c13)) y cómo se mide en uso ([c15](#c15)).
 
-*Criterio de la guía:* el entregable del diseño son los documentos de las plantillas del [Anexo A](#anexo-a), no el prompt. El prompt es una consecuencia de ellos.
+*Criterio de la guía:* el resultado del diseño son los documentos de las plantillas del [Anexo A](#anexo-a), no el prompt. El prompt es una consecuencia de ellos.
 
 <a id="c1-2"></a>
 ### 1.2 Definiciones de base
@@ -248,7 +247,7 @@ En un **producto** (un panel de administración, una aplicación de gestión) el
 **Asistente de producto.** Interfaz conversacional embebida en un producto que responde preguntas sobre ese producto y ayuda a operarlo, con los permisos de quien lo usa. Se distingue de un chat general en que su frontera la fija el producto, no el conocimiento del mundo. *Criterio de la guía.*
 
 <a id="c1-def-intencion"></a>
-**Intención.** Lo que el usuario quiere lograr con un mensaje, con independencia de las palabras que usa. «¿Cuántos suscriptores tengo?» y «¿a cuánta gente le llega?» son la misma intención (*consultar el total de suscripciones*). La intención es la unidad con la que se diseña, se prueba y se mide: la batería se arma por intención y la medición cuenta por intención, nunca por texto ([P-9](#p-9)). *Criterio de la guía:* en sentido estricto, este libro no exige que la implementación tenga un clasificador de intenciones: la intención es una categoría de diseño.
+**Intención.** Lo que el usuario quiere lograr con un mensaje, con independencia de las palabras que usa. En un servicio de notificaciones push, «¿cuántos suscriptores tengo?» y «¿a cuánta gente le llega?» son la misma intención (*consultar el total de suscripciones*). La intención es la unidad con la que se diseña, se prueba y se mide: la batería se arma por intención y la medición cuenta por intención, nunca por texto ([P-9](#p-9)). *Criterio de la guía:* en sentido estricto, este libro no exige que la implementación tenga un clasificador de intenciones: la intención es una categoría de diseño.
 
 <a id="c1-def-turno"></a>
 **Turno.** Una intervención completa de una de las partes: el usuario escribe (turno del usuario) y el asistente responde (turno del asistente). Una conversación es una secuencia de turnos. Google construye sus diálogos de ejemplo turno por turno, alternando usuario y sistema [REF-001]; este libro escribe así las respuestas esperadas de la batería ([A.5](#anexo-a-5)). Un turno del asistente puede incluir texto, una cifra, un gráfico, una pregunta de aclaración o un enlace a una pantalla.
@@ -298,28 +297,41 @@ Tabla 1.2. Qué cambia en las definiciones según el escenario.
 <a id="c1-ejemplos"></a>
 ### 1.4 Ejemplos
 
-Un sistema de reservas de salas (ejemplo neutro), con un usuario que escribe: «¿cuántas reservas tuve el mes pasado?».
+Los ejemplos de este capítulo son ilustrativos: muestran cómo se leen las cinco definiciones en sistemas distintos. Los tres casos que recorren la guía (Movilidad Urbana, Geometría y PushDispatch, un servicio de notificaciones push que se toma como producto diseñado desde cero) se presentan en [c2](#c2).
+
+Primero, un sistema de reservas de salas (ejemplo neutro), con un usuario que escribe: «¿cuántas reservas tuve el mes pasado?».
 
 - **Respuesta anclada.** La intención es *consultar total de reservas por período*; el código consulta y devuelve 42; el turno del asistente dice «Tuviste 42 reservas en octubre» y ofrece ver el desglose por sala. El 42 se rastrea a la herramienta.
 - **Respuesta no anclada.** El modelo, sin herramienta, contesta «Tuviste alrededor de 40 reservas». Suena razonable y es inverificable: es exactamente lo que NN/g describe como el riesgo de la alucinación, una respuesta segura de sí misma y falsa [REF-009] (tratado en [c6](#c6)).
 - **Fuera del corpus.** «¿Cómo exporto a la planilla del área contable?» y el producto no tiene esa exportación: el turno correcto es «No está en la ayuda» y, si existe, ofrecer lo cercano (exportar a CSV), sin prometer lo que el software no hace ([P-4](#p-4)).
 
+Tabla 1.3. Las mismas definiciones en los tres casos de la guía.
+
+| Término | Movilidad Urbana | Geometría | PushDispatch |
+|---|---|---|---|
+| Intención | «¿dónde estaciono cerca?» = *buscar lugar disponible* | «¿qué es una mediatriz?» = *entender un concepto* | «¿a cuánta gente le llega?» = *consultar total de suscripciones* |
+| Turno | respuesta con mapa y enlace a la zona | explicación con figura de ejemplo | cifra, gráfico y enlace a la pantalla de suscripciones |
+| Corpus | reglas de estacionamiento y ayuda de la app | definiciones y ejercicios del curso | ayuda del panel y descripción de sus pantallas |
+| Anclaje | la disponibilidad la da el servicio, no el modelo | la definición sale del material del curso | el total lo calcula el código; el modelo lo redacta |
+
+*Experiencia propia medida (caso PushDispatch):* en las pruebas con preguntas reales, la regla que más errores evitó fue que la cifra la elija y la calcule el código y el modelo sólo la redacte; cuando el dato no estaba en la ayuda, responder «No está en la ayuda» fue preferible a una respuesta plausible.
+
 <a id="c1-decision"></a>
 ### 1.5 Decisión que deja este capítulo
 
-El equipo acuerda usar estas cinco palabras con este sentido y anota cualquier término propio del producto en el glosario ([A.3](#anexo-a-3)). *Criterio de la guía:* si en una reunión dos personas usan «intención» o «corpus» en sentidos distintos, se para y se vuelve a la Tabla 1.1.
+Quien aplique el marco a un sistema adopta estas cinco palabras con este sentido y anota cualquier término propio del producto en el glosario ([A.3](#anexo-a-3)). *Criterio de la guía:* si en un trabajo práctico o en una reunión dos personas usan «intención» o «corpus» en sentidos distintos, conviene parar y volver a la Tabla 1.1.
 
 <a id="c1-preguntas"></a>
 ### 1.6 Preguntas guía
 
-**¿El asistente de producto es un chat con el modelo de IA conectado al panel? (OA-EQ-1)**
+**¿El asistente de producto es un chat con un modelo de IA conectado a la aplicación? (OA-EQ-1)**
 No. Lo que lo define es la frontera y el anclaje, no la tecnología: responde sobre el producto, con los permisos del usuario y desde un corpus cerrado. Un modelo conectado sin corpus ni herramientas es un chat general dentro de una pantalla. Aplica a los dos escenarios; la frontera se diseña en [c3](#c3).
 
 **¿Por qué diseñar por intención y no por pregunta? (OA-EQ-1)**
-Porque las mismas ganas se escriben de muchas formas, y lo que hay que garantizar es la respuesta a la intención, no a una frase. Si la batería prueba frases sueltas, pasa con las frases del equipo y falla con las del usuario. Las frases distintas de una intención son justamente el insumo de los sinónimos ([c4](#c4)).
+Porque las mismas ganas se escriben de muchas formas, y lo que hay que garantizar es la respuesta a la intención, no a una frase. Si la batería prueba frases sueltas, pasa con las frases de quien diseña y falla con las del usuario. Las frases distintas de una intención son justamente el insumo de los sinónimos ([c4](#c4)).
 
 **¿El corpus es «toda la documentación que tengamos»? (OA-EQ-2)**
-No: es lo que el equipo decidió que el asistente puede afirmar, revisado y versionado. Documentación vieja o de otro producto dentro del corpus produce respuestas ancladas pero falsas. En un sistema existente es el trabajo principal de [c11](#c11); en uno por desarrollar, se escribe con cada pantalla.
+No: es lo que el equipo decidió que el asistente puede afirmar, revisado y versionado. Documentación vieja o ajena al producto dentro del corpus produce respuestas ancladas pero falsas. En un sistema existente es el trabajo principal de [c11](#c11); en uno por desarrollar, se escribe con cada pantalla.
 
 **¿Cómo sé si una respuesta está anclada? (OA-EQ-2)**
 Señalando, para cada afirmación, la fuente: un párrafo del corpus o un dato que devolvió el código en ese turno. Si alguna cifra o paso no se puede señalar, no está anclada aunque sea correcta por casualidad. La prueba formal está en los criterios de aceptación ([c13](#c13)).
@@ -330,7 +342,7 @@ Es la intervención completa de una parte, que puede tener texto, cifra, gráfic
 <a id="c1-calidad"></a>
 ### 1.7 Criterios de calidad y antipatrones
 
-- **Calidad:** cada término de la Tabla 1.1 aparece en el glosario del equipo con un solo sentido; cada fila de la batería nombra su intención; cada respuesta esperada dice su fuente.
+- **Calidad:** cada término de la Tabla 1.1 aparece en el glosario del proyecto con un solo sentido; cada fila de la batería nombra su intención; cada respuesta esperada dice su fuente.
 - **Antipatrón «el prompt es el diseño»:** empezar escribiendo instrucciones al modelo sin inventario ni corpus. Resultado: nadie puede decir qué debería responder.
 - **Antipatrón «corpus = internet»:** dejar que el modelo complete con conocimiento general lo que falta en la ayuda; viola [P-5](#p-5).
 - **Antipatrón «medir frases»:** contar o guardar textos de usuarios en lugar de intenciones; viola [P-9](#p-9).
@@ -338,14 +350,14 @@ Es la intervención completa de una parte, que puede tener texto, cifra, gráfic
 <a id="c2"></a>
 ## Capítulo 2. Principios
 
-Este capítulo responde la primera pregunta que se hace un equipo que nunca diseñó una conversación: **¿con qué criterio creo el diseño?** La respuesta son nueve principios, P-1 a P-9. No son consejos sueltos: son las reglas con que se decide cada vez que dos opciones parecen igual de razonables. Los capítulos siguientes los citan por su Id (por ejemplo, «por P-3») y no los vuelven a enunciar. Si una decisión de diseño no se puede justificar con alguno, falta un principio o la decisión está mal tomada.
+Este capítulo responde la primera pregunta de quien diseña una conversación por primera vez: **¿con qué criterio creo el diseño?** La respuesta son nueve principios, P-1 a P-9. No son consejos sueltos: son las reglas con que se decide cada vez que dos opciones parecen igual de razonables, en cualquier sistema. Se ilustran con los tres casos de la guía —Movilidad Urbana (una encuesta de transporte con su ABM de localidades), Geometría (un laboratorio donde el alumno arma a mano la descripción de sus figuras) y PushDispatch (el panel de administración de un servicio de notificaciones push)—, que son ejemplos para fijar ideas, no el objetivo del capítulo. Los capítulos siguientes los citan por su Id (por ejemplo, «por P-3») y no los vuelven a enunciar. Si una decisión de diseño no se puede justificar con alguno, falta un principio o la decisión está mal tomada.
 
 <a id="c2-1"></a>
 ### 2.1 Qué es un principio en esta guía
 
 Un **principio** es una regla de decisión con tres partes: el enunciado (qué se hace), la *Razón:* (por qué, con su fuente o con el rótulo de criterio de la guía o experiencia propia medida) y la consecuencia práctica (qué cambia en los entregables). Un principio no es una buena intención («el asistente debe ser útil») ni la descripción de un producto («el asistente usa tal modelo»): si no descarta ninguna opción, no es un principio.
 
-Los nueve se agrupan en tres familias, que siguen el orden en que el equipo se los va a cruzar:
+Los nueve se agrupan en tres familias, que siguen el orden en que aparecen al diseñar:
 
 | Familia | Principios | Pregunta que contestan |
 |---|---|---|
@@ -372,7 +384,7 @@ Figura 2.1. Las tres familias forman un ciclo: lo que se mide en producción vue
 
 El asistente se diseña a partir de **lo que el usuario necesita poder hacer** con el producto, no de una lista de temas sobre los que «sabe hablar». La competencia se ordena en anillos: operar el producto, entender el dominio, lo de al lado y afuera ([§3](#c3)). Una pregunta entra o no según qué anillo toca, no según de qué tema trata.
 
-*Razón:* un mismo tema atraviesa varios anillos. «Credenciales» puede ser «¿dónde cargo la clave?» (operar), «¿qué es un certificado de envío?» (dominio) o «¿cómo genero ese certificado en la consola del fabricante?» (lo de al lado). Una lista de temas los mete en la misma bolsa y el asistente termina inventando sobre lo que no le toca. La práctica publicada de diseño conversacional organiza el trabajo alrededor de las tareas e intenciones del usuario y de un tema de respaldo para lo que no reconoce [REF-004] [REF-005]; los anillos son la forma que esta guía le da a esa idea (criterio de la guía).
+*Razón:* un mismo tema atraviesa varios anillos. En un panel de notificaciones push, «credenciales» puede ser «¿dónde cargo la clave?» (operar), «¿qué es un certificado de envío?» (dominio) o «¿cómo genero ese certificado en la consola del fabricante?» (lo de al lado). En Geometría, «área» puede ser «¿dónde veo la advertencia de área?» (operar), «¿qué diferencia hay entre área declarada y derivada?» (dominio) o «calculame el área» (afuera: el asistente no debe resolver el trabajo del alumno). Una lista de temas los mete en la misma bolsa y el asistente termina inventando sobre lo que no le toca. La práctica publicada de diseño conversacional organiza el trabajo alrededor de las tareas e intenciones del usuario y de un tema de respaldo para lo que no reconoce [REF-004] [REF-005]; los anillos son la forma que esta guía le da a esa idea (criterio de la guía).
 
 Consecuencia práctica: el primer entregable no es un temario sino el inventario de tareas ([§9](#c9)) y su mapa de anillos ([§10](#c10)).
 
@@ -381,7 +393,7 @@ Consecuencia práctica: el primer entregable no es un temario sino el inventario
 
 Antes de diseñar una conversación hay que demostrar que la tarea **gana** algo al pasar por el asistente frente a una pantalla bien hecha. Si un botón, un filtro o un texto de ayuda en el lugar resuelven lo mismo, se mejora la pantalla.
 
-*Razón:* Google plantea como paso previo preguntarse si la conversación es la forma adecuada para el caso de uso [REF-003]. Nielsen Norman Group observó que los usuarios de chatbots se frustran cuando la conversación los obliga a hacer en varios turnos lo que una interfaz gráfica resuelve en un clic [REF-007] (cita original: los bots funcionan mejor en tareas acotadas y simples; glosa de la guía). Un asistente que reemplaza pantallas que funcionaban agrega costo y quita velocidad.
+*Razón:* Google plantea como paso previo preguntarse si la conversación es la forma adecuada para el caso de uso [REF-003]. Nielsen Norman Group observó que los usuarios de chatbots se frustran cuando la conversación los obliga a hacer en varios turnos lo que una interfaz gráfica resuelve en un clic [REF-007] (cita original: los bots funcionan mejor en tareas acotadas y simples; glosa de la guía). Un asistente que reemplaza pantallas que funcionaban agrega costo y quita velocidad. Ejemplo: en Movilidad Urbana, dar de alta una localidad se resuelve mejor en su formulario; en cambio, «¿qué medio se usa más para ir al laburo?» no tiene pantalla y justifica la conversación.
 
 Consecuencia práctica: la compuerta E0 ([§8](#c8)) pide, para las tareas más frecuentes, una razón concreta para la conversación (buscar sin saber el nombre del lugar, cruzar datos de dos pantallas, entender un término) y deja documentado «cuándo no» ([§8](#c8-cuando-no)).
 
@@ -390,7 +402,7 @@ Consecuencia práctica: la compuerta E0 ([§8](#c8)) pide, para las tareas más 
 
 Todo lo que tiene una respuesta exacta en el sistema —una cifra, un registro, el destino de un enlace, lo que el usuario tiene permitido hacer— lo **elige el código**: consulta, filtra, cuenta y valida. El modelo de lenguaje sólo **redacta** a partir de lo que el código le entrega, y no agrega datos que no estén ahí.
 
-*Razón:* un modelo de lenguaje genera texto plausible, no texto verificado; por eso puede afirmar con seguridad cosas falsas [REF-009]. Las dos técnicas establecidas para atar el modelo a la realidad son recuperar documentos antes de generar [REF-010] y dejar que el modelo invoque herramientas que devuelven datos exactos [REF-011]. En la experiencia propia medida, cuando la cifra salía del modelo aparecían totales que no coincidían con el panel; cuando salió de una consulta, dejó de pasar en la batería (experiencia propia medida, conducta; la tasa se mide en [§13](#c13)).
+*Razón:* un modelo de lenguaje genera texto plausible, no texto verificado; por eso puede afirmar con seguridad cosas falsas [REF-009]. Las dos técnicas establecidas para atar el modelo a la realidad son recuperar documentos antes de generar [REF-010] y dejar que el modelo invoque herramientas que devuelven datos exactos [REF-011]. En la experiencia propia medida (caso PushDispatch), cuando la cifra salía del modelo aparecían totales que no coincidían con el panel; cuando salió de una consulta, dejó de pasar en la batería (experiencia propia medida, conducta; la tasa se mide en [§13](#c13)).
 
 Consecuencia práctica: cada tarea del inventario se etiqueta como «herramienta» (dato exacto), «ayuda con cita» (explicación del corpus) o «derivar» ([§6](#c6), [§12](#c12)).
 
@@ -401,7 +413,7 @@ El asistente nunca ofrece, sugiere ni describe una función que el producto no t
 
 *Razón:* la respuesta conversacional se lee como palabra del producto; una promesa falsa le cuesta al usuario el tiempo de buscarla y al equipo la confianza en todo lo demás. La heurística de correspondencia entre el sistema y el mundo real pide que la interfaz hable de lo que efectivamente hay [REF-006], y las alucinaciones más dañinas son justamente las que suenan a función plausible [REF-009]. Es además el único punto donde **la frontera no se mueve midiendo** ([P-9](#p-9)): que muchos usuarios pidan algo justifica construirlo, no prometerlo (criterio de la guía).
 
-Ejemplo neutro: el usuario escribe «programame el envío para todos los martes». Si el producto sólo permite programar envíos de una vez, la respuesta correcta es «Hoy se puede programar un envío por vez; para repetirlo hay que crear uno nuevo», no un paso a paso de una repetición que no existe.
+Ejemplo (caso PushDispatch): el usuario escribe «programame el envío para todos los martes». Si el producto sólo permite programar envíos de una vez, la respuesta correcta es «Hoy se puede programar un envío por vez; para repetirlo hay que crear uno nuevo», no un paso a paso de una repetición que no existe.
 
 <a id="p-5"></a>
 #### P-5. «No está en la ayuda» antes que inventar
@@ -419,14 +431,14 @@ Lo que un usuario puede pedir está limitado por las palabras que conoce. Al ine
 
 *Razón:* la heurística de reconocer antes que recordar pide hacer visibles las opciones en lugar de exigir que el usuario las recuerde [REF-006]; las sugerencias de consulta cumplen ese papel en las interfaces conversacionales y ayudan a quien no sabe qué escribir [REF-008]. Un asistente que sólo entiende el vocabulario del equipo atiende a quien menos lo necesita.
 
-Ejemplo neutro: «¿cuánta gente tengo?» y «¿cuántos suscriptos hay?» son la misma intención; el glosario registra «gente», «usuarios» y «dispositivos» como sinónimos de «suscripciones» y la primera respuesta explica el término en una línea.
+Ejemplo (caso PushDispatch): «¿cuánta gente tengo?» y «¿cuántos suscriptos hay?» son la misma intención; el glosario registra «gente», «usuarios» y «dispositivos» como sinónimos de «suscripciones» y la primera respuesta explica el término en una línea. En Movilidad Urbana pasa lo mismo con «bondi», «a pata» o «facu», que el glosario lleva a colectivo, caminata y estudio.
 
 <a id="p-7"></a>
 #### P-7. Se acepta por tasa, no por conducta
 
 Que una respuesta salió bien **una vez** es una conducta; que sale bien **k de M veces** sobre una batería fija es una tasa. El asistente se acepta por tasa: cada pregunta de la batería se corre al menos tres veces y el criterio de aceptación se expresa como proporción ([§13](#c13)).
 
-*Razón:* la salida de un modelo de lenguaje varía entre corridas con la misma entrada; una prueba única confunde suerte con calidad. En la experiencia propia medida, preguntas que pasaban en la primera corrida fallaban en la segunda o tercera, y sólo la batería repetida ×3 lo mostró (experiencia propia medida, conducta observada en varias preguntas). La guía distingue siempre ambos rótulos ([§0.4](#c0-4)).
+*Razón:* la salida de un modelo de lenguaje varía entre corridas con la misma entrada; una prueba única confunde suerte con calidad. En la experiencia propia medida, preguntas que pasaban en la primera corrida fallaban en la segunda o tercera, y sólo la batería repetida ×3 lo mostró (experiencia propia medida, conducta observada en varias preguntas). En Geometría pasó lo mismo con una regla didáctica: el filtro dejaba pasar 0 de 30 cifras, pero 24 de 30 respuestas decían la operación en palabras (experiencia propia medida, tasa). La guía distingue siempre ambos rótulos ([§0.4](#c0-4)).
 
 Consecuencia práctica: un informe de prueba que dice «funciona» sin «k de M» no alcanza para aprobar una etapa.
 
@@ -447,7 +459,7 @@ En producción se registra **qué pasó**, no **qué escribió** el usuario: cu�
 <a id="c2-escenarios"></a>
 ### 2.3 Aplicación por escenario
 
-Los principios valen igual en los dos escenarios; cambia dónde muerden primero. Sólo se listan las celdas que cambian.
+Los principios valen igual en los dos escenarios; cambia dónde muerden primero (Movilidad Urbana y Geometría ilustran la columna izquierda; un producto que recién se especifica, la derecha). Sólo se listan las celdas que cambian.
 
 | Principio | Sistema existente | Sistema por desarrollar |
 |---|---|---|
@@ -461,7 +473,7 @@ Tabla 2.2. Celdas que cambian entre sistema existente y por desarrollar.
 <a id="c2-ejemplos"></a>
 ### 2.4 Ejemplo: una sola pregunta, nueve decisiones
 
-Un usuario de un panel de notificaciones push escribe: «¿cuántos me abrieron lo del viernes y cómo hago para que no se vaya a los de prueba?». El equipo resuelve:
+Para ver los principios trabajando juntos, tomemos el caso PushDispatch. Un usuario del panel escribe: «¿cuántos me abrieron lo del viernes y cómo hago para que no se vaya a los de prueba?». El diseño resuelve:
 
 1. Son dos tareas en distintos anillos: un dato (operar) y una configuración (operar, con un concepto de dominio: segmento) — [P-1](#p-1).
 2. El dato gana con conversación (el usuario no recuerda el nombre del mensaje); la configuración termina en una pantalla, con un enlace profundo — [P-2](#p-2).
@@ -475,7 +487,7 @@ Un usuario de un panel de notificaciones push escribe: «¿cuántos me abrieron 
 <a id="c2-decision"></a>
 ### 2.5 Cómo decidir cuando dos principios tiran para lados opuestos
 
-Hay un orden de precedencia (criterio de la guía): **P-4 y P-5 ganan siempre** —no inventar está por encima de ser útil—; después **P-3** —la exactitud está por encima de la fluidez de la redacción—; después **P-1, P-2 y P-6**, que definen el alcance; **P-7, P-8 y P-9** no compiten con los demás: dicen cómo comprobar que se cumplieron.
+Hay un orden de precedencia (criterio de la guía): **P-4 y P-5 ganan siempre** —no inventar está por encima de ser útil; en un caso didáctico como Geometría pesa igual «no resolver por el alumno»—; después **P-3** —la exactitud está por encima de la fluidez de la redacción—; después **P-1, P-2 y P-6**, que definen el alcance; **P-7, P-8 y P-9** no compiten con los demás: dicen cómo comprobar que se cumplieron.
 
 ```mermaid
 flowchart TD
@@ -492,19 +504,19 @@ Figura 2.2. Precedencia entre principios.
 <a id="c2-preguntas"></a>
 ### 2.6 Preguntas guía
 
-**¿Con qué criterio creo el diseño, si nunca diseñé una conversación? (OA-EQ-1)**
+**¿Con qué criterio creo el diseño, si nunca diseñé una conversación?**
 Con estos nueve principios aplicados en orden: primero qué abarca el asistente (P-1, P-2, P-6), después de dónde sale cada respuesta (P-3, P-4, P-5) y, al final, cómo se prueba (P-7, P-8, P-9). Aplica siempre, en cualquier producto; lo que cambia por producto son los entregables que se llenan con ellos, empezando por el inventario de tareas ([§9](#c9)) y el mapa de anillos ([§3](#c3-preguntas)). Si después de leer esto no sabés por dónde empezar, el flujo está en [§7](#c7).
 
-**¿Por qué no alcanza con darle al modelo el manual y dejarlo responder? (OA-EQ-1)**
+**¿Por qué no alcanza con darle al modelo el manual y dejarlo responder?**
 Porque eso resuelve sólo la mitad «explicar» y deja sin control la mitad «dato exacto». El manual sirve como corpus de ayuda con cita [REF-010], pero las cifras, los registros y los permisos cambian a cada minuto y no están en ningún manual: por P-3 se obtienen con herramientas. Aplica en cuanto el asistente tenga que responder algo sobre los datos del usuario; si sólo explica conceptos, el corpus puede alcanzar.
 
-**Un usuario pide una función que no existe pero que tiene sentido. ¿La frontera no se mueve midiendo? (OA-PO-1)**
-Se mueve para el equipo, no para el asistente. P-9 dice que la demanda medida informa qué construir; P-4 dice que hasta que esté construida no se ofrece. La respuesta correcta es explicar lo que hoy se puede y registrar la intención como fuera de alcance para que el PO la evalúe ([§16](#c16)). Aplica a toda pregunta del anillo «afuera» que sea en realidad un pedido de función.
+**Un usuario pide una función que no existe pero que tiene sentido. ¿La frontera no se mueve midiendo?**
+Se mueve para quienes construyen el producto, no para el asistente. P-9 dice que la demanda medida informa qué construir; P-4 dice que hasta que esté construida no se ofrece. La respuesta correcta es explicar lo que hoy se puede y registrar la intención como fuera de alcance para que el responsable del producto la evalúe ([§16](#c16)). Aplica a toda pregunta del anillo «afuera» que sea en realidad un pedido de función.
 
-**¿Cuántas veces tengo que probar una pregunta para decir que anda? (OA-QA-1)**
+**¿Cuántas veces tengo que probar una pregunta para decir que anda?**
 Al menos tres corridas por pregunta sobre una batería fija, y el resultado se informa como k de M (P-7), primero en preproducción y después en el sitio real (P-8). Una sola corrida exitosa es una conducta, útil para descubrir problemas pero no para aprobar. Los umbrales concretos de aceptación se fijan en [§13](#c13).
 
-**Si no guardo el texto, ¿cómo sé qué se preguntó mal? (OA-SOP-1)**
+**Si no guardo el texto, ¿cómo sé qué se preguntó mal?**
 Por la intención detectada, la respuesta tipo («No está en la ayuda», fuera de alcance, respondida) y el motivo cerrado del voto, todo por rol (P-9). Eso dice *dónde* falla sin exponer *qué* escribió nadie; para reproducir un caso se escribe una pregunta equivalente y se suma a la batería. Aplica en producción; durante el diseño, con usuarios de prueba que consienten, sí se trabaja con texto ([§14](#c14)).
 
 <a id="c2-calidad"></a>
@@ -542,7 +554,7 @@ Este capítulo da la herramienta central del marco: el **mapa de anillos**, que 
 
 - **Anillo.** Franja de competencia del asistente, definida por *lo que el usuario logra* con la respuesta, no por el tema de la pregunta. Una misma palabra («suscripción») puede caer en el anillo 1 («¿cuántas suscripciones activas tiene mi aplicación?») o en el 2 («¿qué es una suscripción?»).
 - **Frontera.** El borde entre lo que el asistente responde y lo que deriva o rechaza. Se fija por anillo y se mueve sólo midiendo ([P-9](#p-9), [c16](#c16)).
-- **Mapa de anillos.** La tabla que asigna cada intención de la batería a un anillo único, con su riesgo, el rol que puede pedirla y la salida esperada (Anexo A.2). Es un **contrato** entre producto, diseño, desarrollo y prueba: lo que no está en el mapa no se construye ni se acepta.
+- **Mapa de anillos.** La tabla que asigna cada intención de la batería a un anillo único, con su riesgo, el rol que puede pedirla y la salida esperada (Anexo A.2). Funciona como un **contrato** entre quienes definen, diseñan, construyen y prueban el asistente: lo que no está en el mapa no se construye ni se acepta.
 
 Los cuatro anillos, de adentro hacia afuera:
 
@@ -588,7 +600,7 @@ El anillo dice *qué tipo* de respuesta corresponde; no alcanza para decidir *si
 
 *Tabla 3.2. Superposición del anillo 1 con el riesgo. Criterio de la guía.*
 
-La regla que se deriva: **el asistente lleva a la acción, la interfaz la ejecuta**. Así la confirmación, la validación y el permiso siguen donde ya estaban probados, y el diseño conversacional no abre un segundo camino de escritura. El rol se aplica dos veces: al elegir el destino y al revalidarlo justo antes de mostrarlo ([c5](#c5)). En la práctica medida en el caso guía, un enlace elegido por código y revalidado por permiso evitó que se ofrecieran pantallas que el rol no podía abrir (experiencia propia medida, conducta: se observó en las rondas de crítica; la tasa se mide en la batería, [c13](#c13)).
+La regla que se deriva: **el asistente lleva a la acción, la interfaz la ejecuta**. Así la confirmación, la validación y el permiso siguen donde ya estaban probados, y el diseño conversacional no abre un segundo camino de escritura. El rol se aplica dos veces: al elegir el destino y al revalidarlo justo antes de mostrarlo ([c5](#c5)). En la experiencia propia con el asistente de un panel de notificaciones, elegir el enlace por código y revalidarlo por permiso evitó ofrecer pantallas que el rol no podía abrir (experiencia propia medida, conducta observada en rondas de crítica; la tasa se mide con la batería, [c13](#c13)).
 
 ```mermaid
 flowchart LR
@@ -646,7 +658,7 @@ Criterio de la guía (umbral elegido, no derivado de una fuente). Si se supera, 
 <a id="c3-ejemplos"></a>
 ### 3.6 Ejemplos
 
-Un panel de reservas de un consultorio, para ver los anillos sin el caso guía:
+Un panel de reservas de un consultorio, como primer ejemplo neutro:
 
 | Pregunta | Anillo | Riesgo | Salida |
 |---|---|---|---|
@@ -658,7 +670,15 @@ Un panel de reservas de un consultorio, para ver los anillos sin el caso guía:
 
 *Tabla 3.5. Ejemplo neutro de mapa de anillos.*
 
-En el caso guía, PushDispatch ([c18](#c18)): «¿cuántas suscripciones activas tiene mi aplicación?» es anillo 1, leer; «¿qué es un segmento?» es anillo 2; «enviá el mensaje ahora» es anillo 1, irreversible: el asistente explica y lleva a la pantalla de envío, donde confirma la interfaz.
+El mismo mapa, en los tres casos ilustrativos de la guía:
+
+| Caso | Anillo 1 | Anillo 2 | Anillo 3 / afuera |
+|---|---|---|---|
+| Movilidad Urbana | «¿Cuánto saldo me queda?» (leer) | «¿Qué es una zona tarifaria?» | «¿Cómo pago una multa?» → derivar al organismo que la gestiona |
+| Geometría | «¿Cómo cargo un triángulo por sus vértices?» (actuar) | «¿Qué es la mediatriz?» | «Resolveme la tarea de física» → afuera |
+| PushDispatch ([c18](#c18)) | «¿Cuántas suscripciones activas tiene mi aplicación?» (leer); «enviá el mensaje ahora» (irreversible: explica y lleva a la pantalla de envío, donde confirma la interfaz) | «¿Qué es un segmento?» | «¿Cómo publico mi app en la tienda?» → derivar a la documentación de la tienda |
+
+*Tabla 3.6. Ejemplos ilustrativos; PushDispatch se presenta como producto diseñado desde cero.*
 
 <a id="c3-decision"></a>
 ### 3.7 Decisión
@@ -681,7 +701,7 @@ En el anillo 1 si hay un dato que la responda (cifras por período y causa regis
 Llevarlo a la pantalla donde se ejecuta con la confirmación de la interfaz, explicando la consecuencia. El asistente no ejecuta: así la validación y el permiso siguen en un solo lugar. Aplica aunque el rol tenga permiso; el permiso decide si el enlace se muestra, no quién confirma ([c5](#c5)).
 
 **¿Cuándo dejo de usar anillos y paso a intenciones con respaldo? (OA-PO-1)**
-Cuando la condición de falsación se cumple después de haber revisado el glosario: más del 20 % de la batería sin anillo único. También cuando el producto es pequeño y el costo de mantener el mapa supera lo que aporta distinguir dominio, vecino y afuera. La decisión es del PO y se registra en el plan de medición ([c15](#c15)).
+Cuando la condición de falsación se cumple después de haber revisado el glosario: más del 20 % de la batería sin anillo único. También cuando el producto es pequeño y el costo de mantener el mapa supera lo que aporta distinguir dominio, vecino y afuera. La decisión la toma quien es responsable del producto y queda registrada en el plan de medición ([c15](#c15)).
 
 **¿Cómo pruebo que el mapa se respeta? (OA-QA-1)**
 Con la batería: cada pregunta trae su anillo esperado y su salida esperada, y se mide por separado si el asistente eligió bien (anillo y destino) y si redactó fiel. Una sola pasada muestra conducta; la aceptación pide tasa sobre corridas repetidas ([P-7](#p-7), [c13](#c13)). Las preguntas de afuera y del anillo 3 son parte de la batería, no un extra.
@@ -704,7 +724,7 @@ Antipatrones:
 <a id="c4"></a>
 ## Capítulo 4 · El vocabulario del inexperto
 
-> **Qué vas a poder hacer al terminar.** Armar el glosario de un asistente de producto con sus sinónimos, decidir cuándo explicar un término y cuándo no, y escribir preguntas sugeridas que le muestren al usuario qué puede preguntar (OA-DIS-2, OA-EQ-3, OA-DEV-2, OA-QA-3).
+> **Qué vas a poder hacer al terminar.** Entender por qué el vocabulario marca la frontera del usuario inexperto y saber armar el glosario de un asistente de producto con sus sinónimos, decidir cuándo explicar un término y cuándo no, y escribir preguntas sugeridas que le muestren al usuario qué puede preguntar (OA-DIS-2, OA-EQ-3, OA-DEV-2, OA-QA-3).
 
 El capítulo 3 ([c3](#c3)) dibujó los anillos de competencia. Este capítulo se mete en el anillo 2, *entender el dominio*, que es donde vive el usuario que recién llega. Lo que sigue aplica el principio P-6 ([p-6](#p-6)). La etapa que produce el entregable es E3 ([c11](#c11)), con la plantilla A.3 ([anexo-a3](#anexo-a-3)).
 
@@ -712,13 +732,13 @@ El capítulo 3 ([c3](#c3)) dibujó los anillos de competencia. Este capítulo se
 ### 4.1 Definiciones
 
 <a id="c4-1-1"></a>
-**Vocabulario del usuario.** Las palabras con las que el usuario nombra lo que quiere hacer. No coinciden con las del producto. Alguien que recién llega a un servicio de notificaciones push dice «los usuarios que tengo» y el panel dice «suscripciones». El asistente tiene que entender la primera forma y contestar con la segunda.
+**Vocabulario del usuario.** Las palabras con las que el usuario nombra lo que quiere hacer. No coinciden con las del producto. Alguien que recién llega a un servicio de notificaciones push dice «los usuarios que tengo» y el panel dice «suscripciones»; un pasajero dice «el bondi» y el sistema de movilidad dice «línea»; un alumno dice «el dibujito» y la herramienta de geometría dice «figura». El asistente tiene que entender la primera forma y contestar con la segunda.
 
 <a id="c4-1-2"></a>
 **Frontera por vocabulario.** Para el usuario inexperto, el límite de lo que puede pedir no lo fija el producto: lo fija lo que sabe nombrar. Si no conoce la palabra «segmento», nunca va a preguntar cómo crear uno, aunque sea justo lo que necesita. Por eso el anillo 2 se diseña desde el vocabulario y no desde el menú (criterio de la guía, derivado de P-6).
 
 <a id="c4-1-3"></a>
-**Glosario.** La lista cerrada de términos del dominio que el asistente usa. Cada entrada tiene un único sentido (la misma regla que el Anexo C, [anexo-c](#anexo-c)), una definición de una o dos oraciones en lenguaje llano, y la pantalla donde el término aparece. El glosario no es un apéndice para el usuario: es un contrato del equipo, porque el corpus, las herramientas, los destinos y la batería dependen de él.
+**Glosario.** La lista cerrada de términos del dominio que el asistente usa. Cada entrada tiene un único sentido (la misma regla que el Anexo C, [anexo-c](#anexo-c)), una definición de una o dos oraciones en lenguaje llano, y la pantalla donde el término aparece. El glosario no es un apéndice para el usuario: funciona como un acuerdo de diseño, porque el corpus, las herramientas, los destinos y la batería dependen de él.
 
 <a id="c4-1-4"></a>
 **Sinónimo.** Una forma del usuario que apunta a una entrada del glosario. Hay tres clases, y conviene anotarlas por separado porque se tratan distinto:
@@ -791,7 +811,7 @@ En el sistema existente, el glosario documenta un idioma que ya está en uso, co
 <a id="c4-ejemplos"></a>
 ### 4.5 Ejemplos
 
-Los ejemplos usan un servicio de notificaciones push genérico. El recorrido completo sobre PushDispatch está en el capítulo 18 ([c18](#c18)).
+Los ejemplos son ilustrativos y salen de los tres casos de la guía: PushDispatch (un servicio de notificaciones push, presentado como producto diseñado desde cero), Movilidad Urbana y Geometría. Sirven para ver el mecanismo; el método vale para cualquier sistema.
 
 <a id="c4-ejemplo-1"></a>
 **Ejemplo 4.1. Una entrada de glosario con sus sinónimos.**
@@ -800,13 +820,16 @@ Los ejemplos usan un servicio de notificaciones push genérico. El recorrido com
 |---|---|---|---|---|---|
 | Suscripción | Un dispositivo o navegador que aceptó recibir notificaciones de una aplicación. | suscriptor, alta | dispositivo, usuario registrado, contacto | usuario (quien administra el panel) | Suscripciones |
 
-*Tabla 4.3. Entrada de ejemplo. La plantilla vacía está en A.3.*
+| Línea (Movilidad Urbana) | Un recorrido con número fijo que hacen los colectivos de una empresa. | colectivo, bondi | ramal, recorrido | parada (lugar, no recorrido) | Líneas |
+| Figura (Geometría) | Un objeto geométrico construido con puntos y sus relaciones. | dibujo, forma | polígono, construcción | punto (es parte de la figura, no la figura) | Lienzo |
+
+*Tabla 4.3. Entradas de ejemplo de los tres casos. La plantilla vacía está en A.3.*
 
 <a id="c4-ejemplo-2"></a>
 **Ejemplo 4.2. Explicar la primera vez y no repetir.** El usuario pregunta «¿cuántos usuarios tengo?». La primera respuesta dice: «Tenés 1.240 suscripciones activas. Una *suscripción* es un dispositivo o navegador que aceptó recibir tus notificaciones; una misma persona puede tener varias». Si después pregunta «¿y cuántas se dieron de baja este mes?», la respuesta ya no repite la definición. La cifra la trae una herramienta, no el modelo ([c6](#c6)); el ejemplo sólo muestra la redacción.
 
 <a id="c4-ejemplo-3"></a>
-**Ejemplo 4.3. Falso amigo.** El usuario pregunta «¿cómo agrego un usuario?». En el producto eso puede ser invitar a alguien al panel o sumar una suscripción. El asistente no elige: «¿Querés invitar a una persona a administrar el panel con vos, o querés que más dispositivos reciban tus notificaciones?». Cada opción lleva a su destino del catálogo ([c5](#c5)).
+**Ejemplo 4.3. Falso amigo.** El usuario pregunta «¿cómo agrego un usuario?». En el producto eso puede ser invitar a alguien al panel o sumar una suscripción. El asistente no elige: «¿Querés invitar a una persona a administrar el panel con vos, o querés que más dispositivos reciban tus notificaciones?». Cada opción lleva a su destino del catálogo ([c5](#c5)). El mismo patrón aparece en Movilidad Urbana con «¿cuándo pasa el 60?»: si la línea tiene dos ramales, se pregunta cuál antes de dar un horario.
 
 <a id="c4-ejemplo-4"></a>
 **Ejemplo 4.4. Preguntas sugeridas que enseñan vocabulario.** Al abrir la consola por primera vez, en lugar de una caja vacía:
@@ -815,7 +838,7 @@ Los ejemplos usan un servicio de notificaciones push genérico. El recorrido com
 - «¿Qué es un segmento y para qué me sirve?»
 - «¿Cómo envío mi primer mensaje?»
 
-Cada una usa un término del glosario. El usuario que toca la segunda aprende que existe la palabra «segmento» y, con ella, toda una tarea que antes no sabía pedir. Después de una respuesta, las sugerencias cambian y apuntan a la tarea siguiente («¿Querés ver el desglose por aplicación?»).
+Cada una usa un término del glosario. El usuario que toca la segunda aprende que existe la palabra «segmento» y, con ella, toda una tarea que antes no sabía pedir. Después de una respuesta, las sugerencias cambian y apuntan a la tarea siguiente («¿Querés ver el desglose por aplicación?»). En Geometría, la sugerencia «¿Qué es una mediatriz?» cumple la misma función con un alumno.
 
 <a id="c4-ejemplo-5"></a>
 **Ejemplo 4.5. Tabla de sinónimos resuelta por código.** Un recorte representativo de cómo el código normaliza la palabra antes de elegir la herramienta:
@@ -841,7 +864,7 @@ public static class Sinonimos
 }
 ```
 
-El falso amigo trae dos términos: el código no elige entre ellos y le pide al modelo una pregunta de aclaración con las dos opciones. La tabla vive en el repositorio, versionada, y la batería la prueba ([c13](#c13)). La guía de capa de IA trata cómo esta pieza se conecta con las herramientas ([../Dot-Net-Integration-AI-Layer-Guide.md#c9](./Dot-Net-Integration-AI-Layer-Guide.md#c9)).
+El falso amigo trae dos términos: el código no elige entre ellos y le pide al modelo una pregunta de aclaración con las dos opciones. La tabla vive en el repositorio, versionada, y la batería la prueba ([c13](#c13)). La guía de capa de IA trata cómo esta pieza se conecta con las herramientas ([§9 de esa guía](./Dot-Net-Integration-AI-Layer-Guide.md#c9)).
 
 <a id="c4-decision"></a>
 ### 4.6 Decisión y alternativas
@@ -885,7 +908,7 @@ Para las preguntas sugeridas la alternativa es no ponerlas y confiar en el mensa
 
 **Antipatrones.**
 
-- **El glosario del equipo.** Escribir el glosario con las palabras que usa el equipo y llamar sinónimo a lo que dice el código. El usuario no habla así.
+- **El glosario de los diseñadores.** Escribir el glosario con las palabras que usan quienes construyen el producto y llamar sinónimo a lo que dice el código. El usuario no habla así.
 - **Explicar todo, siempre.** Cada respuesta abre con tres definiciones; el usuario que ya sabe deja de leer.
 - **La caja vacía.** La consola abre sin sugerencias y espera que el inexperto sepa qué preguntar.
 - **Sugerencias que prometen.** Una pregunta sugerida sobre algo que el producto no hace. Viola P-4 ([p-4](#p-4)): la sugerencia es una promesa del producto, no una invitación a probar.
@@ -894,16 +917,16 @@ Para las preguntas sugeridas la alternativa es no ponerlas y confiar en el mensa
 <a id="c5"></a>
 ## Capítulo 5 · Destinos y enlace profundo
 
-Una respuesta del asistente que explica bien pero deja al usuario buscando la pantalla resolvió la mitad del problema. En el anillo 1 ([c3](#c3)) la conversación termina, casi siempre, en una acción que se hace en el producto. Este capítulo enseña a diseñar el puente: **qué destinos existen, quién los elige, cómo se revalidan y qué pasa cuando la pregunta no alcanza para saber a qué cuenta o aplicación se refiere el usuario**. Aplica los principios [P-3](#p-3) (el código elige, el modelo redacta) y [P-4](#p-4) (no prometer lo que el software no hace).
+Una respuesta del asistente que explica bien pero deja al usuario buscando la pantalla resolvió la mitad del problema. En el anillo 1 ([c3](#c3)) la conversación termina, casi siempre, en una acción que se hace en el producto. Este capítulo presenta cómo se diseña ese puente en cualquier sistema: **qué destinos existen, quién los elige, cómo se revalidan y qué pasa cuando la pregunta no alcanza para saber a qué cuenta o aplicación se refiere el usuario**. Aplica los principios [P-3](#p-3) (el código elige, el modelo redacta) y [P-4](#p-4) (no prometer lo que el software no hace).
 
 <a id="c5-1"></a>
 ### 5.1 Definiciones
 
-- **Destino.** Un par *pantalla + acción* del producto con identificador estable, permiso requerido y etiqueta para el usuario. Ejemplo: `mensajes.nuevo` = «la pantalla para crear un mensaje», que pide el permiso de enviar. Un destino no es una URL: la URL se arma a partir de él.
-- **Catálogo de destinos.** La lista cerrada y versionada de todos los destinos a los que el asistente puede llevar. Lo que no está en el catálogo no existe para el asistente. Se llena con la plantilla [A.4](#anexo-a-4) en la etapa E4 ([c12](#c12)).
-- **Enlace profundo (deeplink).** El enlace concreto a un destino, con sus parámetros resueltos (qué aplicación, qué mensaje), que la interfaz muestra como un botón o *chip* debajo de la respuesta. En esta guía, un enlace profundo es siempre **un destino del catálogo resuelto por código y revalidado por permiso**.
+- **Destino.** Un par *pantalla + acción* del producto con identificador estable, permiso requerido y etiqueta para el usuario. Ejemplos: en un servicio de notificaciones push, «crear un mensaje» (pide permiso de enviar); en una encuesta de movilidad, «dar de alta una localidad»; en un laboratorio de geometría, «reeditar una entrega». Un destino no es una URL: la URL se arma a partir de él.
+- **Catálogo de destinos.** La lista cerrada y versionada de todos los destinos a los que el asistente puede llevar. Lo que no está en el catálogo no existe para el asistente. Su forma se describe en la plantilla [A.4](#anexo-a-4) y su lugar en el método, en la etapa E4 ([c12](#c12)).
+- **Enlace profundo (deeplink).** El enlace concreto a un destino, con sus parámetros resueltos (qué aplicación, qué localidad, qué entrega), que la interfaz muestra como un botón o *chip* debajo de la respuesta. En esta guía, un enlace profundo es siempre **un destino del catálogo resuelto por código y revalidado por permiso**.
 - **Revalidación doble.** El permiso se controla dos veces: (1) al **resolver** el enlace, antes de mostrar el chip; (2) al **abrir** la pantalla destino, con la autorización normal del producto. La primera evita ofrecer lo que no se puede; la segunda es la barrera real.
-- **Desambiguación entre cuentas.** Cuando una pregunta admite más de un objeto visible para el usuario (dos aplicaciones con nombre parecido, dos cuentas a las que pertenece), el asistente **pregunta** mostrando las candidatas con un dato distintivo, en lugar de elegir. Las candidatas y sus cifras salen del código, ya filtradas por permiso.
+- **Desambiguación entre cuentas.** Cuando una pregunta admite más de un objeto visible para el usuario (dos aplicaciones con nombre parecido, una palabra que nombra una ciudad y una provincia, dos comisiones de un mismo docente), el asistente **pregunta** mostrando las candidatas con un dato distintivo, en lugar de elegir. Las candidatas y sus cifras salen del código, ya filtradas por permiso.
 
 Tabla 5.1. Quién hace qué en un enlace profundo (criterio de la guía).
 
@@ -921,7 +944,7 @@ Tabla 5.1. Quién hace qué en un enlace profundo (criterio de la guía).
 
 Un modelo de lenguaje produce texto plausible, y una URL plausible no es una URL válida. Si se le deja armar rutas, el peor caso es un enlace a una pantalla que no existe, a otra aplicación o a una acción que el rol no permite; la literatura de diseño sobre IA generativa insiste en que las respuestas fabricadas suenan igual de seguras que las correctas [REF-009]. Con un catálogo cerrado, el peor caso se reduce a **«no hay chip»**, y eso es una degradación aceptable: la respuesta sigue explicando el camino en texto.
 
-El catálogo también hace visible el alcance del anillo 1. Si una tarea del inventario ([c9](#c9), plantilla A.1) no tiene destino, o no existe la pantalla o falta diseñarla; en los dos casos el asistente no debe insinuar que puede llevar ahí ([P-4](#p-4)).
+El catálogo también hace visible el alcance del anillo 1. Si una tarea del inventario ([c9](#c9), plantilla A.1) no tiene destino, o la pantalla no existe o falta diseñarla; en ambos casos el asistente no debe insinuar que puede llevar ahí ([P-4](#p-4)).
 
 <a id="c5-3"></a>
 ### 5.3 El flujo de un enlace profundo
@@ -934,9 +957,9 @@ flowchart TD
   C -- sí --> O{¿El objeto es único entre los visibles?}
   O -- varios --> D[Pregunta de aclaración con candidatas y cifra distintiva]
   D --> O
-  O -- ninguno --> N[«No encontré esa aplicación entre las tuyas»]
+  O -- ninguno --> N[«No encontré ese objeto entre los tuyos»]
   O -- uno --> P1{Revalidación 1: ¿el rol tiene el permiso del destino?}
-  P1 -- no --> R[Derivar: «No tenés acceso; pedíselo a un titular»]
+  P1 -- no --> R[Derivar: «No tenés acceso; pedíselo a quien administra»]
   P1 -- sí --> E[Chip con etiqueta del catálogo]
   E --> P2{Revalidación 2: la pantalla autoriza al abrir}
   P2 -- no --> X[Pantalla de acceso denegado del producto]
@@ -945,23 +968,21 @@ flowchart TD
 
 Figura 5.1. Del texto a la acción: el modelo no aparece en ninguna decisión del diagrama; sólo redacta los textos de las hojas.
 
-La revalidación 2 no es redundante. Entre que el chip se dibujó y el usuario lo toca pueden pasar minutos, y en ese tiempo su rol puede cambiar o la aplicación puede borrarse. El chip es una **comodidad**, no un **permiso**: quien protege la acción es la pantalla, igual que si el usuario hubiera llegado por el menú.
+La revalidación 2 no es redundante. Entre que el chip se dibujó y el usuario lo toca pueden pasar minutos, y en ese tiempo su rol puede cambiar o el objeto puede borrarse. El chip es una **comodidad**, no un **permiso**: quien protege la acción es la pantalla, igual que si el usuario hubiera llegado por el menú.
 
 <a id="c5-4"></a>
 ### 5.4 Desambiguación entre cuentas
 
-Los usuarios nombran las cosas por aproximación («la app de prueba», «la de producción»). Cuando hay más de una candidata, hay tres salidas malas y una buena:
+Las personas nombran las cosas por aproximación («la app de prueba», «Corrientes», «la comisión de la tarde»). Cuando hay más de una candidata, hay tres salidas malas y una buena:
 
-- *Mala:* elegir la primera. La respuesta parece correcta y es de otra aplicación.
-- *Mala:* sumar todo sin decirlo. La cifra mezcla cuentas.
+- *Mala:* elegir la primera. La respuesta parece correcta y es de otro objeto.
+- *Mala:* sumar todo sin decirlo. La cifra mezcla objetos distintos.
 - *Mala:* preguntar sin datos («¿cuál?»). El usuario tampoco sabe distinguirlas por nombre.
-- *Buena:* preguntar mostrando las candidatas con **un dato que las distinga** (por ejemplo, envíos de los últimos 30 días) y dejar elegir.
+- *Buena:* preguntar mostrando las candidatas con **un dato que las distinga** (actividad reciente, provincia, cantidad de entregas) y dejar elegir.
 
 El dato distintivo es una cifra, así que sale de una herramienta ([c6](#c6)) y respeta el mismo filtro de permiso: **el código filtra las candidatas antes de que el modelo las vea**. Si el filtro se aplicara después, el modelo podría mencionar en su redacción una aplicación de una cuenta ajena. Esta regla es la que separa una aclaración útil de una filtración de datos (criterio de la guía).
 
-La heurística de visibilidad del estado del sistema [REF-006] da la razón de diseño: el usuario tiene que ver *sobre qué objeto* se está respondiendo. Por eso, aun cuando la candidata es única, la respuesta nombra la aplicación («En *Tienda — producción*, …») y el chip lleva a esa y no a otra.
-
-Un patrón observado en un producto de referencia del mercado, otro software de notificaciones, va en la misma línea: ante un nombre aproximado, ofrece las coincidencias con su cifra y un chip por cada una. Se toma la forma, no la promesa ([c14](#c14)).
+La heurística de visibilidad del estado del sistema [REF-006] da la razón de diseño: el usuario tiene que ver *sobre qué objeto* se está respondiendo. Por eso, aun cuando la candidata es única, la respuesta nombra el objeto («En la aplicación *Tienda — producción*, …», «En la localidad de Corrientes, …») y el chip lleva a ese y no a otro.
 
 <a id="c5-escenarios"></a>
 ### 5.5 Aplicación por escenario
@@ -978,20 +999,20 @@ Tabla 5.2. Sólo cambian las celdas de origen del catálogo y de riesgo.
 <a id="c5-ejemplos"></a>
 ### 5.6 Ejemplos
 
-**Ejemplo 5.1 — Destino único y permitido.** Una usuaria con rol de miembro pregunta «¿cómo mando un mensaje a todos los suscriptores de la tienda?». La intención es *crear mensaje*; el catálogo tiene `mensajes.nuevo`; hay una sola aplicación visible con ese nombre; su rol tiene permiso de enviar. Respuesta: dos o tres pasos en texto, y el chip «Crear un mensaje» que abre la pantalla de esa aplicación.
+**Ejemplo 5.1 — Destino único y permitido (servicio de notificaciones push).** En PushDispatch, una usuaria con rol de miembro pregunta «¿cómo mando un mensaje a todos los suscriptores de la tienda?». La intención es *crear mensaje*; el catálogo tiene ese destino; hay una sola aplicación visible con ese nombre; su rol permite enviar. Respuesta: dos o tres pasos en texto y el chip «Crear un mensaje», que abre la pantalla de esa aplicación.
 
-**Ejemplo 5.2 — Destino sin permiso.** La misma pregunta, de un usuario con rol de sólo lectura. La revalidación 1 falla: no hay chip. El asistente explica qué hace falta y deriva: «Tu rol no permite enviar mensajes. Un titular de la cuenta te lo puede habilitar». No promete «te llevo» ni ofrece un enlace que terminaría en acceso denegado.
+**Ejemplo 5.2 — Destino sin permiso (laboratorio de geometría).** Un alumno pregunta «¿cómo veo las entregas de toda la comisión?». El destino existe, pero pide el permiso de docente. La revalidación 1 falla: no hay chip. El asistente explica y deriva: «Esa vista es del docente. Vos podés ver y reeditar tus propias entregas», y ofrece, si corresponde, el chip a *sus* entregas. No promete «te llevo» ni ofrece un enlace que terminaría en acceso denegado.
 
-**Ejemplo 5.3 — Ambigüedad entre cuentas.** Un usuario que pertenece a dos cuentas pregunta «¿cuántos mensajes mandó la app de prueba este mes?». La herramienta encuentra dos aplicaciones visibles con ese nombre aproximado y devuelve candidatas, no un total:
+**Ejemplo 5.3 — Ambigüedad (encuesta de movilidad y notificaciones push).** En una encuesta de movilidad, «¿cuántas encuestas hay de Corrientes?» admite dos lecturas: la localidad o la provincia. En un servicio de notificaciones, un usuario que pertenece a dos cuentas pregunta «¿cuántos mensajes mandó la app de prueba este mes?». En los dos casos la herramienta devuelve candidatas, no un total:
 
 ```text
 Encontré dos aplicaciones que coinciden con «prueba»:
-  • Prueba — cuenta Comercio   · 1 240 envíos en 30 días
-  • Prueba interna — cuenta Soporte · 18 envíos en 30 días
+  • Prueba — cuenta A          · 1 240 envíos en 30 días
+  • Prueba interna — cuenta B  · 18 envíos en 30 días
 ¿De cuál querés el detalle?
 ```
 
-Las cifras salen de la herramienta; el modelo sólo redacta la pregunta. Elegida una, sigue el flujo de la Figura 5.1.
+Las cifras (ilustrativas) salen de la herramienta; el modelo sólo redacta la pregunta. Elegida una, sigue el flujo de la Figura 5.1.
 
 **Ejemplo 5.4 — Snippet representativo del resolvedor.** Ver la arquitectura en la [guía 16](./Dot-Net-Integration-AI-Layer-Guide.md#c5); acá basta la forma.
 
@@ -1007,14 +1028,14 @@ public EnlaceProfundo? Resolver(string destinoId, Guid appId, ClaimsPrincipal us
 ```
 
 ```csharp
-// Asistente/Herramientas/HerramientasDeMensajes.cs
-var candidatas = await _apps.BuscarPorNombreAproximado(_usuario.Id, aplicacion); // sólo las visibles
+// Asistente/Herramientas/HerramientaDeResumen.cs
+var candidatas = await _objetos.BuscarPorNombreAproximado(_usuario.Id, nombre); // sólo los visibles
 if (candidatas.Count != 1)
-    return ResumenEnvios.Ambiguo(candidatas.Select(c => (c.Nombre, c.Cuenta, c.EnviosUltimos30)));
+    return Resumen.Ambiguo(candidatas.Select(c => (c.Nombre, c.Contexto, c.CifraDistintiva)));
 // …
 ```
 
-**Experiencia propia medida (conducta, no tasa).** En el caso de [c18](#c18), cuando el enlace pasó a elegirlo el código, dejaron de aparecer chips hacia pantallas que el rol no podía abrir en las corridas de la batería; y la aclaración entre cuentas apareció en el sitio real con un usuario de dos cuentas, situación que los datos de demostración no tenían. Son observaciones de conducta; la tasa se acepta con la batería ×3 ([c13](#c13), [P-7](#p-7), [P-8](#p-8)).
+**Experiencia propia medida (conducta, no tasa).** En el desarrollo del asistente de PushDispatch que acompaña esta guía ([c18](#c18)), cuando el enlace pasó a elegirlo el código dejaron de aparecer, en las corridas de la batería, chips hacia pantallas que el rol no podía abrir; y la necesidad de aclarar entre cuentas apareció recién en el sitio real, con un usuario de dos cuentas, situación que los datos de demostración no tenían. Son observaciones de conducta; una tasa se acepta sólo con la batería ×3 ([c13](#c13), [P-7](#p-7), [P-8](#p-8)).
 
 <a id="c5-decision"></a>
 ### 5.7 Decisión
@@ -1035,19 +1056,19 @@ Tabla 5.3. Qué hacer según lo que se sabe al responder.
 <a id="c5-preguntas"></a>
 ### 5.8 Preguntas guía
 
-**1. ¿Por qué no dejar que el modelo arme el enlace si casi siempre acierta? (OA-DEV-3)**
+**1. ¿Por qué no dejar que el modelo arme el enlace si casi siempre acierta?**
 Porque «casi siempre» es una tasa y lo que se rompe en el caso restante es un permiso o un dato ajeno. Con catálogo cerrado, el error posible es la ausencia de chip, que no daña a nadie. Aplica siempre que la respuesta lleve a una pantalla con datos o acciones; para un enlace a una página pública de ayuda alcanza con la cita de RAG ([c6](#c6)).
 
-**2. Si la interfaz ya oculta el chip a quien no tiene permiso, ¿para qué revalidar al abrir? (OA-DEV-3)**
+**2. Si la interfaz ya oculta el chip a quien no tiene permiso, ¿para qué revalidar al abrir?**
 Porque la interfaz decide en un momento y la acción ocurre en otro: el rol puede cambiar en el medio y un enlace se puede copiar y pegar. La revalidación 1 es diseño (no ofrecer lo imposible); la 2 es seguridad. Si sólo hubiera presupuesto para una, es la 2, pero el diseño correcto lleva las dos.
 
-**3. ¿Qué cifra muestro para distinguir candidatas? (OA-DIS)**
-La que el usuario reconoce sin pensar y que ya puede ver en el panel: actividad reciente, cantidad de suscriptores, nombre de la cuenta. Nunca un dato que su rol no ve en pantalla, porque la aclaración no puede revelar más que el producto. Aplica a toda búsqueda por nombre aproximado; si los nombres son únicos por diseño, la aclaración no hace falta.
+**3. ¿Qué cifra muestro para distinguir candidatas?**
+La que el usuario reconoce sin pensar y que ya puede ver en el panel: actividad reciente, cantidad de elementos, nombre de la cuenta o del contexto. Nunca un dato que su rol no ve en pantalla, porque la aclaración no puede revelar más que el producto. Aplica a toda búsqueda por nombre aproximado; si los nombres son únicos por diseño, la aclaración no hace falta.
 
-**4. ¿Cómo sé que el catálogo está completo? (OA-PO)**
+**4. ¿Cómo sé que el catálogo está completo?**
 Cruzándolo con el inventario de tareas ([c9](#c9)): cada tarea del anillo 1 tiene destino o una nota explícita de «sin pantalla». Y con la medición ([c15](#c15)): respuestas del anillo 1 sin chip son la señal de que falta un destino. En un sistema existente, el primer cruce suele mostrar pantallas que nadie había listado.
 
-**5. ¿Cómo pruebo esto antes de publicar? (OA-QA)**
+**5. ¿Cómo pruebo esto antes de publicar?**
 Con la batería ([c13](#c13)): la misma pregunta por cada rol, comparando chip esperado contra chip obtenido; preguntas con nombres ambiguos hechas por un usuario de varias cuentas; y un enlace abierto después de quitarle el permiso al usuario. Se corre ×3 y en el sitio real ([P-8](#p-8)), porque las cuentas múltiples casi nunca están en los datos de prueba.
 
 <a id="c5-calidad"></a>
@@ -1067,12 +1088,12 @@ Antipatrones:
 - **El chip como llave:** pantalla destino que confía en que, si llegaste por el asistente, tenés permiso.
 - **Sumar en silencio:** totales de varias aplicaciones presentados como de una.
 - **Filtrar tarde:** pasarle al modelo todas las coincidencias y pedirle que «muestre sólo las del usuario».
-- **Prometer el viaje:** «te llevo a la pantalla de credenciales» cuando no hay chip o no hay permiso.
+- **Prometer el viaje:** «te llevo a la pantalla de configuración» cuando no hay chip o no hay permiso.
 
 <a id="c6"></a>
 ## Capítulo 6 · El código elige, el modelo redacta
 
-Este capítulo baja a reglas de trabajo el principio [P-3](#p-3): en un asistente de producto, **qué** se dice (la cifra, la lista, el destino, el paso) lo decide el código o el corpus; el modelo de lenguaje sólo decide **cómo** se dice. Sirve para tres decisiones que el equipo va a tomar muchas veces: cuándo una pregunta se responde con una herramienta y cuándo con la ayuda recuperada y citada; cómo se presenta un dato para que se entienda sin engañar, y qué hace el asistente cuando no está seguro. Al final hay cinco snippets representativos (S-1 a S-5) que muestran cómo se ve la regla en código .NET; la arquitectura completa de la capa de IA está en la guía de integración ([guía 16, §6 y §9](./Dot-Net-Integration-AI-Layer-Guide.md#c6)).
+Este capítulo baja a reglas de trabajo el principio [P-3](#p-3): en un asistente de producto, **qué** se dice (la cifra, la lista, el destino, el paso) lo decide el código o el corpus; el modelo de lenguaje sólo decide **cómo** se dice. Ordena tres decisiones que aparecen en el diseño de cualquier asistente: cuándo una pregunta se responde con una herramienta y cuándo con la ayuda recuperada y citada; cómo se presenta un dato para que se entienda sin engañar, y qué hace el asistente cuando no está seguro. Al final hay cinco snippets representativos (S-1 a S-5) que muestran cómo se ve la regla en código .NET; la arquitectura completa de la capa de IA está en la guía de integración ([guía 16, §6 y §9](./Dot-Net-Integration-AI-Layer-Guide.md#c6)).
 
 <a id="c6-1"></a>
 ### 6.1 Definiciones
@@ -1090,7 +1111,7 @@ Este capítulo baja a reglas de trabajo el principio [P-3](#p-3): en un asistent
 **Nota de métrica.** Línea breve que acompaña a toda cifra y dice qué se contó, en qué período y con qué filtro («envíos confirmados, últimos 30 días, sólo la aplicación elegida»). Sin nota, dos personas leen la misma cifra de dos maneras. *Criterio de la guía.*
 
 <a id="c6-def-desglose"></a>
-**Desglose ofrecido.** Patrón de respuesta en el que el asistente da primero el total agregado y **ofrece**, sin imponerlo, abrirlo por una dimensión (por aplicación, por plataforma, por día). *Experiencia propia medida (conducta):* se observó en un producto de referencia del mercado de notificaciones y se adoptó en el caso del [c18](#c18) porque la primera respuesta queda corta y el usuario elige la profundidad.
+**Desglose ofrecido.** Patrón de respuesta en el que el asistente da primero el total agregado y **ofrece**, sin imponerlo, abrirlo por una dimensión (por aplicación, por plataforma, por día). *Experiencia propia medida (conducta):* se observó en un producto de referencia del mercado de notificaciones y se adoptó en el caso ilustrativo de PushDispatch ([c18](#c18)) porque la primera respuesta queda corta y el usuario elige la profundidad.
 
 <a id="c6-2"></a>
 ### 6.2 Cuándo herramienta y cuándo RAG con cita
@@ -1105,6 +1126,8 @@ Tabla 6.1. Fuente de la respuesta según el tipo de contenido.
 | Cómo se hace algo o qué significa un término | RAG con cita sobre la ayuda | «¿Qué es un segmento?» | Resume el pasaje y lo cita |
 | Ir a hacer algo | Catálogo de destinos ([c5](#c5)) | «Quiero crear un mensaje» | Propone un Id; el código arma el enlace |
 | Nada de lo anterior | Ninguna | «¿Cuál es la mejor hora para publicar en redes?» | «No está en la ayuda» o derivar ([c3](#c3)) |
+
+El mismo reparto vale en los otros casos del libro. En Movilidad Urbana, «¿cuántos viajes hice este mes?» es herramienta, «¿qué es una tarifa combinada?» es ayuda con cita y «quiero recargar la tarjeta» es destino. En Geometría, «¿qué figuras tengo guardadas?» es herramienta y «¿qué es un punto medio?» es ayuda con cita; «resolveme el ejercicio» queda fuera del anillo 1 y se responde orientando ([c3](#c3)).
 
 Reglas que salen de la tabla (*criterio de la guía*):
 
@@ -1152,7 +1175,7 @@ Tabla 6.2. Regla de forma del gráfico.
 | Evolución en el tiempo | Barras por período (o línea si hay muchos puntos) | La torta no tiene eje de tiempo |
 | Una sola cifra | Texto, sin gráfico | Un gráfico de una barra no agrega nada |
 
-La elección de forma la hace el código, por regla, a partir de la cantidad de categorías y del tipo de dato: el modelo no decide «hagamos una torta». *Experiencia propia medida (conducta):* el patrón torta top N + «Otras» con nota de métrica debajo se observó en otro software de notificaciones y funcionó en las rondas de crítica del caso ([c14](#c14)).
+La elección de forma la hace el código, por regla, a partir de la cantidad de categorías y del tipo de dato: el modelo no decide «hagamos una torta». *Experiencia propia medida (conducta):* el patrón torta top N + «Otras» con nota de métrica debajo se observó en otro software de notificaciones y funcionó en las rondas de crítica del caso ilustrativo ([c14](#c14)). En Geometría, la misma regla daría barras para «ejercicios resueltos por semana» y texto para «¿cuántas figuras guardé?».
 
 <a id="c6-3-nota"></a>
 **Nota de métrica siempre.** Debajo de toda cifra o gráfico: qué se contó, período, filtro y, si aplica, la hora de corte («datos hasta las 14:00»). Si la herramienta no puede dar la nota, la cifra no se muestra.
@@ -1184,7 +1207,7 @@ Tabla 6.3. Lo que cambia entre un sistema existente y uno por desarrollar.
 <a id="c6-ejemplos"></a>
 ### 6.6 Ejemplo
 
-Un turno completo, en el estilo de la batería ([A.5](#anexo-a-5)), con datos ficticios:
+Un turno completo del caso PushDispatch, en el estilo de la batería ([A.5](#anexo-a-5)), con datos ficticios. El mismo esquema (desambiguar, total, nota, desglose ofrecido, destino) se traslada a «¿cuánto gasté en viajes este mes?» en Movilidad Urbana:
 
 > **Usuario:** ¿cuánto mandé este mes con la app de la tienda?
 > **Asistente:** Encontré dos aplicaciones con ese nombre: *Tienda* (2.100 envíos en 30 días) y *Tienda pruebas* (40). ¿Cuál?
@@ -1198,13 +1221,13 @@ Qué hizo el código: buscó por nombre aproximado entre las aplicaciones visibl
 <a id="c6-snippets"></a>
 ### 6.7 Snippets representativos
 
-Los snippets usan las abstracciones de *Microsoft.Extensions.AI* que la guía 16 explica y fecha ([guía 16, §9](./Dot-Net-Integration-AI-Layer-Guide.md#c9)); acá sólo se muestra la parte que encarna la regla del capítulo. Son representativos, no un proyecto compilable.
+Los snippets usan las abstracciones de *Microsoft.Extensions.AI* que la guía 16 explica y fecha ([guía 16, §9](./Dot-Net-Integration-AI-Layer-Guide.md#c9)); acá sólo se muestra la parte que encarna la regla del capítulo. Son representativos, no un proyecto compilable: los nombres de clases, rutas y permisos son ilustrativos y cada sistema los adapta a su dominio.
 
 <a id="c6-s-1"></a>
 **S-1 · Catálogo de destinos cerrado.** El modelo nunca arma una URL: a lo sumo propone un Id que el código busca en un diccionario versionado.
 
 ```csharp
-// Asistente/Destinos/CatalogoDeDestinos.cs
+// Ejemplo ilustrativo: catálogo de destinos
 public sealed record Destino(string Id, string Plantilla, string Permiso, string Etiqueta);
 
 public static class CatalogoDeDestinos
@@ -1222,7 +1245,7 @@ public static class CatalogoDeDestinos
 **S-2 · Herramienta de datos: el código calcula.** Parámetros acotados, búsqueda sólo entre lo visible para el usuario, ambigüedad devuelta como candidatas con cifra, total con desglose y nota.
 
 ```csharp
-// Asistente/Herramientas/HerramientasDeMensajes.cs
+// Ejemplo ilustrativo: herramienta de lectura
 [Description("Totales de envíos de una aplicación en un período. Devuelve agregados calculados; no estimes cifras.")]
 public async Task<ResumenEnvios> ResumirEnvios(
     [Description("Nombre aproximado de la aplicación")] string aplicacion,
@@ -1246,7 +1269,7 @@ var opciones = new ChatOptions { Tools = [AIFunctionFactory.Create(herramientas.
 **S-3 · Destino resuelto y revalidado por permiso.** El chip es comodidad, no permiso: la pantalla destino vuelve a autorizar.
 
 ```csharp
-// Asistente/Destinos/ResolvedorDeDestinos.cs
+// Ejemplo ilustrativo: resolución de destino
 public EnlaceProfundo? Resolver(string destinoId, Guid appId, ClaimsPrincipal usuario)
 {
     if (!CatalogoDeDestinos.Todos.TryGetValue(destinoId, out var d)) return null; // fuera de catálogo
@@ -1259,7 +1282,7 @@ public EnlaceProfundo? Resolver(string destinoId, Guid appId, ClaimsPrincipal us
 **S-4 · Anclaje de la redacción, verificado en código.** La instrucción pide usar sólo cifras de herramientas; después, el código comprueba que toda cifra del texto esté en el resultado. Si no, se descarta la redacción y se muestra el resultado crudo con su nota.
 
 ```csharp
-// Asistente/Anclaje/VerificadorDeCifras.cs
+// Ejemplo ilustrativo: verificación de anclaje
 public string Asegurar(string redaccion, ResultadoDeHerramienta resultado)
 {
     var permitidas = resultado.CifrasFormateadas();               // "2.100", "62 %", …
@@ -1274,7 +1297,7 @@ public string Asegurar(string redaccion, ResultadoDeHerramienta resultado)
 **S-5 · Medición sin guardar el texto.** Se registra intención, anillo, resultado y motivo cerrado; nunca la pregunta ni la respuesta ([P-9](#p-9), [c15](#c15)).
 
 ```csharp
-// Asistente/Medicion/EventoConsola.cs
+// Ejemplo ilustrativo: evento de medición
 public sealed record EventoConsola(
     string Intencion, string Anillo,
     string Resultado,          // respondida | no_encontrado | fuera_de_alcance | ambigua
@@ -1284,9 +1307,9 @@ public sealed record EventoConsola(
 <a id="c6-decision"></a>
 ### 6.8 Decisión
 
-Tabla 6.4. Decisiones del capítulo y quién las firma.
+Tabla 6.4. Decisiones del capítulo y qué perfil suele tomarlas.
 
-| Decisión | Opción por defecto | Alternativa aceptable | Firma |
+| Decisión | Opción por defecto | Alternativa aceptable | Perfil que decide |
 |---|---|---|---|
 | Fuente de cada intención | Una sola: herramienta, RAG o destino | Mixta (herramienta + RAG) con dos citas | Diseño + desarrollo |
 | Forma del dato | Total + desglose ofrecido + nota | Tabla directa para roles técnicos que la pidan | Diseño |
@@ -1296,15 +1319,15 @@ Tabla 6.4. Decisiones del capítulo y quién las firma.
 <a id="c6-preguntas"></a>
 ### 6.9 Preguntas guía
 
-**¿Puede el modelo calcular un porcentaje con cifras que ya tiene en el turno? (OA-DEV-1)** No. Aunque tenga las dos cifras, la división la hace la herramienta y la devuelve formateada. La razón no es sólo que el modelo pueda equivocarse: es que la verificación de anclaje ([S-4](#c6-s-4)) sólo puede comprobar cifras que existen en el resultado. Aplica a todo total, conteo, porcentaje o promedio; si una pregunta nueva necesita una cuenta que la herramienta no hace, se agrega a la herramienta, no a la instrucción.
+**¿Puede el modelo calcular un porcentaje con cifras que ya tiene en el turno?** No. Aunque tenga las dos cifras, la división la hace la herramienta y la devuelve formateada. La razón no es sólo que el modelo pueda equivocarse: es que la verificación de anclaje ([S-4](#c6-s-4)) sólo puede comprobar cifras que existen en el resultado. Aplica a todo total, conteo, porcentaje o promedio; si una pregunta nueva necesita una cuenta que la herramienta no hace, se agrega a la herramienta, no a la instrucción.
 
-**¿Cómo sé si una intención va por herramienta o por RAG? (OA-DEV-2)** Preguntate si la respuesta cambia según quién pregunta. Si cambia, es herramienta; si es igual para todos, es ayuda recuperada con cita. Aplica al llenar la columna de fuente del catálogo ([A.4](#anexo-a-4), [c12](#c12)); si una intención no entra en ninguna, probablemente sea de anillo 3 o de afuera ([c10](#c10)).
+**¿Cómo sé si una intención va por herramienta o por RAG?** Preguntate si la respuesta cambia según quién pregunta. Si cambia, es herramienta; si es igual para todos, es ayuda recuperada con cita. Aplica al llenar la columna de fuente del catálogo ([A.4](#anexo-a-4), [c12](#c12)); si una intención no entra en ninguna, probablemente sea de anillo 3 o de afuera ([c10](#c10)).
 
-**¿Por qué ofrecer el desglose en vez de mostrarlo? (OA-DIS-2)** Porque la primera respuesta tiene que poder leerla el inexperto, y el total con su nota alcanza para la mayoría de las preguntas. El desglose de entrada convierte una respuesta en un informe. Aplica a toda consulta agregada; la excepción es cuando la pregunta ya pide la dimensión («por plataforma»), y entonces se responde directo con ella.
+**¿Por qué ofrecer el desglose en vez de mostrarlo?** Porque la primera respuesta tiene que poder leerla el inexperto, y el total con su nota alcanza para la mayoría de las preguntas. El desglose de entrada convierte una respuesta en un informe. Aplica a toda consulta agregada; la excepción es cuando la pregunta ya pide la dimensión («por plataforma»), y entonces se responde directo con ella.
 
-**¿Cuándo una torta y cuándo barras? (OA-DIS-2)** Torta sólo si son partes de un todo y entre 2 y 6 categorías, con «Otras» para el resto; en cualquier otro caso, barras ordenadas. La regla vive en el código ([S-2](#c6-s-2)) para que dos preguntas iguales den el mismo gráfico. Aplica a toda salida gráfica; si el equipo duda, que gane la barra, que nunca engaña sobre proporciones.
+**¿Cuándo una torta y cuándo barras?** Torta sólo si son partes de un todo y entre 2 y 6 categorías, con «Otras» para el resto; en cualquier otro caso, barras ordenadas. La regla vive en el código ([S-2](#c6-s-2)) para que dos preguntas iguales den el mismo gráfico. Aplica a toda salida gráfica; ante la duda, que gane la barra, que nunca engaña sobre proporciones.
 
-**¿Qué hago cuando el asistente no tiene con qué responder? (OA-QA-4)** Decir «No está en la ayuda», ofrecer un camino y registrar el no-encontrado. En la batería ([c13](#c13)) esto se prueba a propósito con preguntas sin fuente: pasa si el asistente no inventa, aunque el texto sea corto. Aplica siempre; el no-encontrado medido es justamente lo que permite mover la frontera ([c16](#c16)).
+**¿Qué hago cuando el asistente no tiene con qué responder?** Decir «No está en la ayuda», ofrecer un camino y registrar el no-encontrado. En la batería ([c13](#c13)) esto se prueba a propósito con preguntas sin fuente: pasa si el asistente no inventa, aunque el texto sea corto. Aplica siempre; el no-encontrado medido es justamente lo que permite mover la frontera ([c16](#c16)).
 
 <a id="c6-calidad"></a>
 ### 6.10 Criterios de calidad y antipatrones
@@ -1325,7 +1348,7 @@ Antipatrones:
 - **Gráfico por ocurrencia.** Que la forma la decida la redacción en cada turno.
 - **Cifra huérfana.** Un número sin período ni filtro.
 - **Descargo de rutina.** «Puede contener errores» al pie de todo, en lugar de señalar la duda donde está [REF-009].
-- **Demo como prueba.** Validar con datos de juguete y no con la cuenta real ([P-8](#p-8)).
+- **Demo como prueba.** Validar con datos de juguete y no con datos reales del sistema ([P-8](#p-8)).
 
 <a id="parte-iii"></a>
 # Parte III · Método por etapas
@@ -1333,9 +1356,9 @@ Antipatrones:
 <a id="c7"></a>
 ## Capítulo 7 · Por dónde empiezo y el flujo de diseño
 
-> **Qué vas a poder hacer al terminar.** Recorrer el flujo E0→E7, nombrar el entregable y la compuerta de cada etapa, decir quién la firma, elegir el camino según el sistema ya exista o esté por desarrollar, y organizar el día 0 de un equipo que nunca diseñó una conversación (OA-EQ4, OA-PO1, OA-EQ3).
+> **Qué vas a poder hacer al terminar.** Recorrer el flujo E0→E7, nombrar el entregable y la compuerta de cada etapa, decir quién la firma, elegir el camino según el sistema ya exista o esté por desarrollar, y organizar el día 0 de un proyecto conversacional, lo encare una persona sola, un grupo de estudiantes o un equipo de trabajo (OA-EQ4, OA-PO1, OA-EQ3).
 
-Las Partes I y II dieron el criterio: los principios ([c2](#c2)), los anillos ([c3](#c3)), el vocabulario ([c4](#c4)), los destinos ([c5](#c5)) y la regla de que el código elige y el modelo redacta ([c6](#c6)). Este capítulo convierte ese criterio en un orden de trabajo. Contesta cinco preguntas que todo equipo nuevo se hace: por dónde empiezo, cuál es el flujo, qué hace el que recién llega, qué cambia si el sistema ya existe y qué cambia si está por desarrollar. Cada etapa tiene después su propio capítulo ([c8](#c8)–[c15](#c15)); acá se ve el mapa entero.
+Las Partes I y II dieron el criterio: los principios ([c2](#c2)), los anillos ([c3](#c3)), el vocabulario ([c4](#c4)), los destinos ([c5](#c5)) y la regla de que el código elige y el modelo redacta ([c6](#c6)). Este capítulo convierte ese criterio en un orden de trabajo. Contesta cinco preguntas que se hace cualquiera que encara su primer diseño conversacional: por dónde empiezo, cuál es el flujo, qué hace el que recién llega, qué cambia si el sistema ya existe y qué cambia si está por desarrollar. Cada etapa tiene después su propio capítulo ([c8](#c8)–[c15](#c15)); acá se ve el mapa entero.
 
 <a id="c7-1"></a>
 ### 7.1 Definiciones
@@ -1350,7 +1373,7 @@ Las Partes I y II dieron el criterio: los principios ([c2](#c2)), los anillos ([
 **Ciclo de la frontera.** El regreso de E7 a E2. Lo que la medición muestra (preguntas sin respuesta, votos con motivo, pedidos fuera de alcance) vuelve al mapa de anillos y la frontera se corre. Es el principio P-9 ([p-9](#p-9)) puesto en el flujo.
 
 <a id="c7-1-4"></a>
-**Día 0.** La primera jornada del equipo con el método: se reparten los roles, se elige una tarea y un rol de usuario para la primera vuelta, y se decide quién firma cada compuerta. Es la respuesta concreta a «por dónde empiezo».
+**Día 0.** La primera jornada de trabajo con el método: se reparten los roles (o, si trabajás solo, se decide qué sombrero te ponés en cada compuerta), se elige una tarea y un rol de usuario para la primera vuelta, y se decide quién firma cada compuerta. Es la respuesta concreta a «por dónde empiezo».
 
 <a id="c7-1-5"></a>
 **Primera vuelta.** Un recorrido completo E0→E7 con una sola tarea del producto y un solo rol de usuario, con una fila por plantilla. Es chica a propósito: enseña el método entero antes de ensancharlo ([Anexo E](#anexo-e)).
@@ -1358,7 +1381,7 @@ Las Partes I y II dieron el criterio: los principios ([c2](#c2)), los anillos ([
 <a id="c7-2"></a>
 ### 7.2 El flujo E0→E7
 
-La idea de diseñar una conversación por etapas, desde quién usa el sistema y para qué hasta probar con usuarios, está en la guía de diseño conversacional de Google, que sigue publicada como método aunque la plataforma de acciones para la que se escribió se discontinuó en 2023 [REF-001]. Google propone además, antes de nada, preguntarse si la conversación es la herramienta adecuada [REF-003]. Las ocho etapas de esta guía y sus compuertas son criterio de la guía, armado sobre ese método y sobre la experiencia propia del caso ([c18](#c18)).
+La idea de diseñar una conversación por etapas, desde quién usa el sistema y para qué hasta probar con usuarios, está en la guía de diseño conversacional de Google, que sigue publicada como método aunque la plataforma de acciones para la que se escribió se discontinuó en 2023 [REF-001]. Google propone además, antes de nada, preguntarse si la conversación es la herramienta adecuada [REF-003]. Las ocho etapas de esta guía y sus compuertas son criterio de la guía, armado sobre ese método y sobre la experiencia propia medida en los casos que acompañan la guía ([c18](#c18)).
 
 <a id="c7-figura-1"></a>
 ```mermaid
@@ -1403,13 +1426,13 @@ La Tabla 7.1 es el resumen que conviene tener impreso. La columna *Compuerta* es
 <a id="c7-3"></a>
 ### 7.3 Por dónde empiezo: el día 0
 
-El día 0 no se diseña nada todavía. Se arma el equipo y la primera vuelta. Este es el orden, con quién lo hace.
+El día 0 no se diseña nada todavía. Se arma el trabajo y la primera vuelta. Este es el orden, con el rol que lo hace; en un trabajo práctico o un proyecto individual los roles se concentran en pocas personas, pero la regla de que QA no firma lo que diseñó se mantiene (otra persona, el docente o un par revisa).
 
 <a id="c7-tabla-2"></a>
 
 | Paso | Qué se hace | Quién | Sale con |
 |---|---|---|---|
-| 1 | Leer juntos el tronco común: [c0](#c0), Parte I, este capítulo | Todo el equipo | Vocabulario común (anillo, frontera, compuerta) |
+| 1 | Leer juntos el tronco común: [c0](#c0), Parte I, este capítulo | Todos los que participan | Vocabulario común (anillo, frontera, compuerta) |
 | 2 | Asignar los cinco roles; una persona puede tener dos, pero QA no firma lo que diseñó | PO | Tabla de roles con nombres |
 | 3 | Decidir quién firma cada compuerta (Tabla 7.1) | PO | Firmas asignadas |
 | 4 | Juntar diez preguntas reales de usuarios (soporte, correos, búsquedas) | SOP | Lista cruda, sin editar |
@@ -1434,7 +1457,7 @@ Para quien nunca diseñó una conversación, el método entero puede parecer muc
 6. **Probá con tres usuarios** y anotá qué preguntaron que no estaba en tu lista.
 7. **Llená una fila de cada plantilla A.1–A.7** con lo que salió. Recién ahí ensanchá a la segunda tarea.
 
-El [Anexo E](#anexo-e) tiene este recorrido con un ejemplo completo. La primera vuelta no se publica: es un ensayo para que el equipo vea las ocho etapas juntas.
+El [Anexo E](#anexo-e) tiene este recorrido con un ejemplo completo. La primera vuelta no se publica: es un ensayo para ver las ocho etapas juntas antes de ensanchar.
 
 <a id="c7-escenarios"></a>
 ### 7.5 Aplicación por escenario
@@ -1467,14 +1490,20 @@ La diferencia de fondo: en un sistema existente el riesgo es prometer de menos l
 <a id="c7-ejemplo-2"></a>
 **Ejemplo 2: por desarrollar, una agenda de aulas.** Una facultad diseña desde cero un sistema para reservar aulas. No hay usuarios ni tickets. E0 se hace con entrevistas a cinco docentes y la decisión queda como hipótesis. Como las pantallas todavía son bocetos, en E4 el equipo define el catálogo de destinos al mismo tiempo que la navegación, y descubre que «ver mis reservas de la semana» necesita una pantalla que nadie había dibujado. Ganan algo que el sistema existente no podía: la pantalla nace enlazable.
 
+<a id="c7-ejemplo-pd"></a>
+**Ejemplo 3: por desarrollar, la consola de un servicio de notificaciones.** PushDispatch, un servicio de notificaciones push diseñado desde cero, suma una consola de asistente a su panel de administración. Como el panel nace junto con el asistente, E0 se decide con hipótesis sobre las tareas de quien administra aplicaciones, suscripciones y mensajes. La primera vuelta toma una sola tarea («¿cuántos suscriptores tiene mi aplicación?») y un solo rol. En E4 aparece la decisión que ordena todo lo demás: la cifra sale de una herramienta que consulta el sistema y el modelo sólo la redacta ([c6](#c6)), y el enlace a la pantalla lo elige el código y se revalida contra los permisos del rol. En E6 la crítica con capturas lado a lado sobre el sitio real muestra fallos que la maqueta no mostraba (P-8). Es experiencia propia medida, contada en detalle en [c18](#c18).
+
+<a id="c7-ejemplo-mu"></a>
+**Ejemplo 4: el mismo flujo en los otros casos de la guía.** En Movilidad Urbana, un sistema con uso, el E1 sale de las consultas que ya llegan y E2 pesa por la lista de lo que no se promete. En Geometría, una herramienta didáctica, el anillo 2 domina: el alumno vive en el vocabulario del dominio y E3 (glosario, explicar el término la primera vez) es la etapa más larga.
+
 <a id="c7-ejemplo-3"></a>
-**Ejemplo 3: el atajo que no conviene.** Un equipo con apuro escribe el prompt el primer día y lo prueba con diez preguntas inventadas. Las respuestas suenan bien. Cuando llega a usuarios reales, preguntan con otras palabras, el asistente contesta cifras que no salen del sistema y nadie sabe si eso estaba dentro de la frontera, porque la frontera nunca se escribió. Tienen que volver a E1. Es la regla de [c7-2-regla](#c7-2-regla) vista desde el costo.
+**Ejemplo 5: el atajo que no conviene.** Un grupo con apuro escribe el prompt el primer día y lo prueba con diez preguntas inventadas. Las respuestas suenan bien. Cuando llega a usuarios reales, preguntan con otras palabras, el asistente contesta cifras que no salen del sistema y nadie sabe si eso estaba dentro de la frontera, porque la frontera nunca se escribió. Tienen que volver a E1. Es la regla de [c7-2-regla](#c7-2-regla) vista desde el costo.
 
 <a id="c7-decision"></a>
 ### 7.7 Decisión y alternativas
 
-- **Flujo lineal con compuertas (el de esta guía).** Elegilo cuando el equipo es nuevo en el tema. Las compuertas obligan a decidir en el momento justo y dejan registro de quién decidió.
-- **Etapas en paralelo.** Un equipo con experiencia puede hacer E3 y E4 a la vez, porque glosario y catálogo se alimentan entre sí. No conviene antes de la primera vuelta: sin haber visto el flujo entero, el paralelo esconde las dependencias.
+- **Flujo lineal con compuertas (el de esta guía).** Elegilo cuando es el primer diseño conversacional de quien lo encara. Las compuertas obligan a decidir en el momento justo y dejan registro de quién decidió.
+- **Etapas en paralelo.** Con experiencia se puede hacer E3 y E4 a la vez, porque glosario y catálogo se alimentan entre sí. No conviene antes de la primera vuelta: sin haber visto el flujo entero, el paralelo esconde las dependencias.
 - **Empezar por la maqueta.** Sirve sólo para conseguir apoyo interno (mostrar la idea a quien decide el presupuesto). No reemplaza E0–E5; la maqueta de ese momento se descarta.
 - **Iteración por tarea, no por etapa.** Es la forma de ensanchar después de la primera vuelta: cada nueva tarea recorre E1→E5 y se suma a las plantillas existentes. E0 no se repite salvo que cambie el producto.
 
@@ -1483,7 +1512,7 @@ Que una conversación no siempre sea la respuesta, y que un asistente mal plante
 <a id="c7-preguntas"></a>
 ### 7.8 Preguntas guía
 
-**¿Por dónde empiezo si nunca hice esto? (OA-EQ4)** Por el día 0 ([c7-3](#c7-3)), no por el modelo. Primero roles y firmas, después diez preguntas reales, después E0 y una primera vuelta con una tarea y un rol. Aplica siempre que el equipo sea nuevo; un equipo que ya hizo una vuelta puede saltar el día 0 y empezar por E1 de la tarea siguiente.
+**¿Por dónde empiezo si nunca hice esto? (OA-EQ4)** Por el día 0 ([c7-3](#c7-3)), no por el modelo. Primero roles y firmas, después diez preguntas reales, después E0 y una primera vuelta con una tarea y un rol. Aplica siempre que sea tu primer diseño conversacional; quien ya hizo una vuelta puede saltar el día 0 y empezar por E1 de la tarea siguiente.
 
 **¿Cuál es el flujo y por qué tiene compuertas? (OA-EQ4)** E0→E7 con regreso de E7 a E2 ([Figura 7.1](#c7-figura-1)). Las compuertas existen porque cada entregable es insumo del siguiente y un error temprano se multiplica: el glosario alimenta el catálogo, el catálogo alimenta la batería. Si una compuerta no se puede firmar, la etapa no terminó, aunque se haya acabado el tiempo previsto.
 
@@ -1513,7 +1542,7 @@ Que una conversación no siempre sea la respuesta, y que un asistente mal plante
 <a id="c8"></a>
 ## Capítulo 8 · E0 Compuerta de ajuste y cuándo NO
 
-Antes de dibujar anillos, escribir un glosario o pensar en un modelo de lenguaje, el equipo tiene que responder una pregunta incómoda: **¿conversar le gana a la pantalla en las tareas que la gente hace de verdad?** Esta etapa, E0, es la primera compuerta del flujo ([c7](#c7)). Si no se pasa, el método no sigue: se arregla primero la pantalla. Aplica el principio [P-2](#p-2) (primero, por qué no una pantalla) y prepara [P-4](#p-4) (no prometer lo que el software no hace). El objetivo de aprendizaje que se enseña acá es [OA-PO1](#oa-po1).
+Antes de dibujar anillos, escribir un glosario o pensar en un modelo de lenguaje, quien diseña tiene que responder una pregunta incómoda: **¿conversar le gana a la pantalla en las tareas que la gente hace de verdad?** Esta etapa, E0, es la primera compuerta del flujo ([c7](#c7)). Si no se pasa, el método no sigue: se arregla primero la pantalla. El capítulo sirve igual para un trabajo práctico de curso, un producto en marcha o uno que recién se especifica. Aplica el principio [P-2](#p-2) (primero, por qué no una pantalla) y prepara [P-4](#p-4) (no prometer lo que el software no hace). El objetivo de aprendizaje que se enseña acá es [OA-PO1](#oa-po1).
 
 <a id="c8-1"></a>
 ### 8.1 Definiciones
@@ -1522,7 +1551,7 @@ Antes de dibujar anillos, escribir un glosario o pensar en un modelo de lenguaje
 - **Tarea frecuente.** Algo que un usuario quiere lograr en el producto, dicho con sus palabras y con un resultado observable («saber cuántos avisos se abrieron ayer», «dar de alta una aplicación»). No es una pantalla ni una función: una tarea puede recorrer varias pantallas y una pantalla puede servir a varias tareas.
 - **Las diez tareas.** La muestra de trabajo de E0: las diez tareas más frecuentes según la evidencia disponible, ordenadas por frecuencia. Diez es un número de *criterio de la guía*: alcanza para ver un patrón y se puede analizar en una tarde.
 - **Gana la conversación.** Para una tarea, la conversación gana cuando, frente al mejor camino actual en la pantalla, ahorra pasos o tiempo de manera clara, o evita que el usuario tenga que saber dónde está la función o cómo se llama. Si la pantalla ya lo resuelve en uno o dos clics visibles, la conversación no gana, aunque sea simpática.
-- **Umbral de un tercio.** Si menos de un tercio de las diez tareas (es decir, menos de 4) gana con la conversación, la compuerta no se pasa. Es *criterio de la guía, umbral a calibrar*: no viene de una fuente de la industria y cada equipo puede moverlo si deja escrito por qué.
+- **Umbral de un tercio.** Si menos de un tercio de las diez tareas (es decir, menos de 4) gana con la conversación, la compuerta no se pasa. Es *criterio de la guía, umbral a calibrar*: no viene de una fuente de la industria y se puede mover si se deja escrito por qué.
 - **Alternativa no conversacional.** Toda mejora de la pantalla que podría resolver la misma fricción sin conversación: búsqueda de comandos (paleta tipo Ctrl+K), ayuda contextual en la pantalla, asistentes paso a paso, estados vacíos que enseñan, preguntas frecuentes buscables, mejores nombres en el menú.
 
 <a id="c8-2"></a>
@@ -1530,7 +1559,7 @@ Antes de dibujar anillos, escribir un glosario o pensar en un modelo de lenguaje
 
 La guía de Google para diseño conversacional dedica una página entera a preguntarse si la conversación es la opción correcta, y propone una lista de verificación: que la tarea sea algo que la gente ya resuelve hablando con otra persona, que se haga en pocos turnos, que la pantalla imponga fricción, que la función sea difícil de encontrar, que el usuario esté haciendo otra cosa a la vez y que el tema no sea sensible [REF-003]. Nielsen Norman Group, a partir de estudios con usuarios, documenta que los asistentes conversacionales fallan apenas el usuario se sale del guion previsto, y que muchas veces lo que conviene es mejorar el sitio o la aplicación [REF-007].
 
-Las dos fuentes coinciden en algo que un equipo nuevo suele pasar por alto: un asistente no arregla una navegación mala, la tapa. Si la tarea más frecuente cuesta siete clics porque el menú está mal organizado, el asistente la vuelve más rápida para quien lo usa y deja el problema intacto para todos los demás. Además, cada tarea que se le asigna al asistente después hay que diseñarla, probarla tres veces y medirla ([c13](#c13), [c15](#c15)). La compuerta evita pagar ese costo donde no rinde.
+Las dos fuentes coinciden en algo que quien empieza suele pasar por alto: un asistente no arregla una navegación mala, la tapa. Si la tarea más frecuente cuesta siete clics porque el menú está mal organizado, el asistente la vuelve más rápida para quien lo usa y deja el problema intacto para todos los demás. Además, cada tarea que se le asigna al asistente después hay que diseñarla, probarla tres veces y medirla ([c13](#c13), [c15](#c15)). La compuerta evita pagar ese costo donde no rinde.
 
 Cita de [REF-003] (en inglés, sin traducir el título): *«Is conversation the right fit?»*. Glosa: antes de diseñar el diálogo, comprobá que el diálogo le sirva al usuario mejor que otra interfaz.
 
@@ -1552,12 +1581,12 @@ flowchart TD
 
 Figura 8.1. La compuerta E0. La salida «pasa acotado» es la más común en productos con un panel ya ordenado.
 
-1. **Juntar evidencia.** Se usa lo que haya, en este orden de preferencia: analítica del producto (pantallas más visitadas, búsquedas internas sin resultado), consultas al soporte, entrevistas cortas con usuarios reales y, en último lugar, la opinión del equipo. Lo que salga de la opinión se rotula *supuesto*.
+1. **Juntar evidencia.** Se usa lo que haya, en este orden de preferencia: analítica del producto (pantallas más visitadas, búsquedas internas sin resultado), consultas al soporte, entrevistas cortas con usuarios reales y, en último lugar, la opinión de quienes diseñan. Lo que salga de la opinión se rotula *supuesto*.
 2. **Elegir las diez tareas.** Se escriben en lenguaje de usuario y con resultado observable. Si dos tareas son la misma con distinto objeto, se juntan.
 3. **Medir el mejor camino en la pantalla.** Pasos (clics, pantallas, campos) y, si se puede, tiempo con un usuario real. «Mejor camino» es el que sigue alguien que sabe usar el producto; se anota aparte si el inexperto no lo encuentra.
 4. **Esbozar la conversación.** Una o dos frases del usuario y la respuesta esperada. No hace falta modelo: alcanza con escribirlo, como en una maqueta ([c14](#c14)).
 5. **Marcar y anotar.** Cada tarea queda en *gana*, *empata* o *pierde*, con una línea de motivo y la alternativa no conversacional que podría resolverla.
-6. **Decidir y firmar.** El PO firma la decisión, con la hoja de compuerta (tabla 8.2) adjunta. Las tareas que ganan son la semilla del inventario de E1 ([c9](#c9)).
+6. **Decidir y firmar.** La persona responsable del producto firma la decisión, con la hoja de compuerta (tabla 8.2) adjunta. Las tareas que ganan son la semilla del inventario de E1 ([c9](#c9)).
 
 Tabla 8.1. Señales para marcar una tarea (criterio de la guía, a partir de [REF-003] y [REF-007]).
 
@@ -1574,7 +1603,7 @@ Tabla 8.1. Señales para marcar una tarea (criterio de la guía, a partir de [RE
 <a id="c8-cuando-no"></a>
 ### 8.4 Cuándo NO construir un asistente
 
-Un equipo sale de E0 con un «no» más seguido de lo que espera, y ese «no» es un buen resultado: ahorró meses. Los casos típicos (criterio de la guía):
+Un análisis de E0 termina en «no» más seguido de lo que se espera, y ese «no» es un buen resultado: ahorró meses. Los casos típicos (criterio de la guía):
 
 - **Menos de un tercio de las tareas gana y ninguna es crítica.** El problema es de navegación o de nombres. Se arreglan la búsqueda, el menú y la ayuda contextual, y se repite E0 cuando haya datos nuevos.
 - **No hay evidencia de uso ni usuarios a quienes preguntar.** Sin evidencia, la lista de tareas es una opinión y el umbral no significa nada. Primero se instrumenta el producto o se hacen entrevistas.
@@ -1603,7 +1632,7 @@ En el escenario *por desarrollar* conviene diseñar la pantalla y la conversaci�
 <a id="c8-ejemplos"></a>
 ### 8.6 Ejemplos
 
-**Ejemplo neutro: un sistema de turnos de un consultorio.** El equipo junta las consultas al soporte y la analítica del panel de recepción y arma la tabla:
+**Ejemplo neutro: un sistema de turnos de un consultorio.** Se juntan las consultas al soporte y la analítica del panel de recepción y se arma la tabla:
 
 Tabla 8.2. Hoja de compuerta del ejemplo (los pasos son ilustrativos).
 
@@ -1622,7 +1651,13 @@ Tabla 8.2. Hoja de compuerta del ejemplo (los pasos son ilustrativos).
 
 Ganan 4 de 10 (3, 5, 6 y 8): la compuerta pasa por poco. Dos de esas tareas (5 y 8) también se podrían resolver mejorando el menú y agregando ayuda contextual. Una decisión razonable es *pasar acotado*: asistente para el diagnóstico (3) y las cifras (6), y mejorar el menú y la ayuda en paralelo. Las tareas 5 y 8 quedan para el asistente sólo si la medición muestra que la pantalla mejorada no alcanzó.
 
-**El caso guía, PushDispatch.** En el panel de un servicio de notificaciones push, «¿cuántos suscriptores tengo?» pierde: ya lo resuelve una tarjeta del tablero. «¿Por qué no llegó este mensaje?» gana: hay que cruzar el mensaje, la aplicación, sus credenciales y las suscripciones. El recorrido completo está en [c18](#c18).
+Los tres casos ilustrativos de la guía muestran la misma compuerta con resultados distintos:
+
+- **Movilidad Urbana.** «¿Cuánto me queda de estacionamiento?» pierde: la pantalla principal ya lo muestra. «¿Por qué me llegó esta multa si pagué?» gana: cruza el pago, la zona, el horario y la infracción.
+- **Geometría.** «Dibujá un triángulo» empata o pierde: la herramienta de construcción es más directa. «¿Por qué mi figura no se valida?» gana: el alumno no sabe cómo se llama lo que le falta (anillo 2, [c4](#c4)).
+- **PushDispatch** (un servicio de notificaciones push, tomado como producto diseñado desde cero). «¿Cuántos suscriptores tengo?» pierde: ya lo resuelve una tarjeta del tablero. «¿Por qué no llegó este mensaje?» gana: hay que cruzar el mensaje, la aplicación, sus credenciales y las suscripciones. El recorrido completo está en [c18](#c18).
+
+En los tres, la decisión razonable fue *pasar acotado*.
 
 <a id="c8-decision"></a>
 ### 8.7 Decisión
@@ -1645,13 +1680,13 @@ La guía recomienda combinar las dos primeras: la lista de [REF-003] ayuda a mar
 Porque los anillos dicen *qué* cubre el asistente, y E0 dice *si* conviene que exista. Dibujar anillos para un asistente que no gana en ninguna tarea es diseñar con cuidado algo que nadie necesita. Aplica siempre; en un sistema por desarrollar, E0 es más rápida, pero no se saltea. El flujo completo está en [c7](#c7).
 
 **2. ¿Un tercio no es un número arbitrario? (OA-PO1)**
-Sí, y la guía lo dice: es criterio de la guía, no de la industria. Lo que importa es que haya un umbral escrito *antes* de mirar los resultados, para que la decisión no se acomode a las ganas del equipo. Muévanlo si el producto lo justifica (por ejemplo, si una sola tarea crítica explica la mitad de las consultas al soporte) y dejen el motivo en la hoja de compuerta.
+Sí, y la guía lo dice: es criterio de la guía, no de la industria. Lo que importa es que haya un umbral escrito *antes* de mirar los resultados, para que la decisión no se acomode a las ganas de quien decide. Se puede mover si el producto lo justifica (por ejemplo, si una sola tarea crítica explica la mitad de las consultas al soporte) y el motivo queda en la hoja de compuerta.
 
 **3. Si una tarea gana con la conversación pero también se resolvería mejorando el menú, ¿qué hago? (OA-PO1, OA-DIS3)**
 Primero la mejora de la pantalla, porque sirve a todos los usuarios y no sólo a quienes abren el asistente. La tarea entra al asistente si, después de la mejora, la medición sigue mostrando fricción ([c15](#c15)). Aplica sobre todo a tareas del tipo «¿dónde está…?», que en un sistema existente suelen ser síntomas de navegación.
 
-**4. ¿Puedo decidir E0 con la opinión del equipo si no tengo datos? (OA-PO1, OA-SOP1)**
-Pueden empezar, pero no firmar. Lo que sale de la opinión se rotula *supuesto* y la compuerta queda abierta hasta tener evidencia: consultas al soporte, analítica o una maqueta probada con tres usuarios ([Anexo E](#anexo-e)). Es el caso típico de un sistema por desarrollar; ahí E0 se repite al primer uso real.
+**4. ¿Puedo decidir E0 con opiniones si no tengo datos? (OA-PO1, OA-SOP1)**
+Se puede empezar, pero no firmar. Lo que sale de la opinión se rotula *supuesto* y la compuerta queda abierta hasta tener evidencia: consultas al soporte, analítica o una maqueta probada con tres usuarios ([Anexo E](#anexo-e)). Es el caso típico de un sistema por desarrollar; ahí E0 se repite al primer uso real.
 
 **5. ¿Qué pasa si E0 dice que no y la dirección igual quiere el asistente? (OA-PO1)**
 La hoja de compuerta es el argumento: muestra qué tareas pierden y qué alternativa las resuelve. Si igual se decide construir, que sea *acotado* a las tareas que ganan, con plan de medición desde el día uno y con la condición de abandono escrita ([c16](#c16)). Lo que no se negocia es [P-4](#p-4): el asistente no promete lo que el software no hace.
@@ -1665,7 +1700,7 @@ Criterios de terminado de E0:
 - Cada tarea indica su fuente de evidencia o el rótulo *supuesto*.
 - Cada tarea tiene el mejor camino en pantalla medido (pasos, y tiempo si se pudo) y la alternativa no conversacional anotada.
 - El umbral se escribió antes de marcar las tareas.
-- La decisión es una de las tres salidas, está firmada por el PO y nombra las tareas que pasan a E1.
+- La decisión es una de las tres salidas, está firmada por la persona responsable del producto y nombra las tareas que pasan a E1.
 
 Antipatrones:
 
@@ -1731,11 +1766,11 @@ flowchart LR
 ### 9.3 Cómo se arma, paso a paso
 
 1. **Fijar el alcance.** Partir de las diez tareas más frecuentes que dejó E0 ([§8](#c8)). No se inventaría el producto entero en la primera vuelta: se inventaría lo que el asistente va a cubrir, y se agranda en cada ciclo de medición ([§15](#c15)).
-2. **Recorrer como un usuario nuevo.** Una persona del equipo que no conozca el producto lo recorre con cada rol y anota cada pantalla, cada acción y **cada palabra que no entiende**. Esas palabras van a una columna aparte, porque son el anillo 2 ([§4](#c4)).
-3. **Pegar las preguntas reales.** Soporte aporta de tres a cinco preguntas por tarea, textuales y sin datos personales. Si una tarea no tiene ninguna pregunta real, se anota «sin evidencia». No se rellena con preguntas imaginadas.
+2. **Recorrer como un usuario nuevo.** Alguien que no conozca el producto lo recorre con cada rol y anota cada pantalla, cada acción y **cada palabra que no entiende**. Esas palabras van a una columna aparte, porque son el anillo 2 ([§4](#c4)).
+3. **Pegar las preguntas reales.** Se juntan de tres a cinco preguntas por tarea (de soporte, de la búsqueda interna o de entrevistas), textuales y sin datos personales. Si una tarea no tiene ninguna pregunta real, se anota «sin evidencia». No se rellena con preguntas imaginadas.
 4. **Marcar riesgo y rol.** Por cada acción: leer, actuar o irreversible, y qué roles la pueden hacer. Si dos roles ven cifras distintas para la misma pregunta, se anota, porque ahí va a hacer falta desambiguar ([§5](#c5-4)).
 5. **Marcar el estado.** *Existe* se verifica en el sitio real, no en la demo ([P-8](#p-8)). *Planificada* lleva la historia y la fecha. *No se hace* lleva quién lo pidió y cuántas veces.
-6. **Revisar y firmar.** Diseño llena la tabla y soporte la revisa. La firma el PO, porque el estado *no se hace* es una decisión de producto ([§0](#c0)).
+6. **Revisar y validar.** Quien diseña llena la tabla; quien atiende a los usuarios la revisa; y la valida quien decide sobre el producto, porque el estado *no se hace* es una decisión de producto ([§0](#c0)).
 
 <a id="c9-escenarios"></a>
 ### 9.4 Aplicación por escenario
@@ -1770,9 +1805,33 @@ Tabla 9.3. Tres filas de un inventario de turnos.
 
 La tercera fila es la que más vale. Sin ella, ante «¿le avisa al paciente?», un modelo tiende a contestar que sí, porque es lo que hacen muchos sistemas parecidos ([REF-009]). Con ella, el asistente responde que el sistema no lo hace y el PO tiene un dato de demanda.
 
-Ejemplo del caso guía, PushDispatch (las filas completas están en [§18](#c18)):
+Los tres casos ilustrativos de la guía muestran filas de distinto tipo (ilustrativo, NO EJECUTADO).
 
-Tabla 9.4. Dos filas de un inventario de PushDispatch.
+Movilidad Urbana, una encuesta de uso del transporte sobre un alta, baja y modificación (ABM) de localidades:
+
+Tabla 9.4. Dos filas de un inventario de Movilidad Urbana.
+
+| Tarea | Pantallas | Acción · riesgo | Roles | Pregunta real | Estado |
+|---|---|---|---|---|---|
+| Dar de alta una localidad | Localidades | crear · actuar | operador | «¿cómo agrego Resistencia si ya está Corrientes?» | existe |
+| Ver qué medios se usan más | — (no hay pantalla de resultados) | leer · leer | analista | «¿cuántos van en bondi?» | no se hace hoy en pantalla |
+
+La segunda fila es una tarea sin pantalla: el analista no tiene dónde mirarla. Es el hueco que un asistente puede llenar con cifras calculadas por código, y la pregunta trae una palabra (bondi) que va al glosario.
+
+Geometría, un laboratorio donde el alumno arma a mano la descripción de sus figuras y un validador la contrasta:
+
+Tabla 9.5. Dos filas de un inventario de Geometría.
+
+| Tarea | Pantallas | Acción · riesgo | Roles | Pregunta real | Estado |
+|---|---|---|---|---|---|
+| Cargar una versión nueva de la entrega | Entrega › Editar | modificar · actuar | alumno | «¿dónde pego el JSON otra vez?» | existe |
+| Que me corrijan el JSON | — | — | — | «¿me lo arreglás?» | no se hace (por decisión didáctica) |
+
+La segunda fila muestra que *no se hace* no siempre es una carencia: a veces es una regla del dominio. El asistente tiene que conocerla para no romperla.
+
+PushDispatch, un servicio de notificaciones push con panel de administración (las filas completas están en [§18](#c18)):
+
+Tabla 9.6. Dos filas de un inventario de PushDispatch.
 
 | Tarea | Pantallas | Acción · riesgo | Roles | Pregunta real | Estado |
 |---|---|---|---|---|---|
@@ -1792,15 +1851,15 @@ La segunda fila cruza dos pantallas. Es el tipo de tarea en que la conversación
 <a id="c9-preguntas"></a>
 ### 9.7 Preguntas guía
 
-**¿Por qué no arrancar directamente escribiendo el prompt del asistente? (OA-EQ4)** Porque el prompt describe una frontera que todavía no se conoce. Sin inventario, el prompt dice «ayudás con notificaciones», que es un tema, y el modelo completa el tema con lo que sabe de otros productos ([P-1](#p-1), [REF-009]). Con inventario, la frontera es una lista verificable. La regla de la guía es que ningún prompt se escribe antes de E3 ([§7](#c7)). Aplica siempre que el asistente vive dentro de un producto.
+**¿Por qué no arrancar directamente escribiendo el prompt del asistente?** Porque el prompt describe una frontera que todavía no se conoce. Sin inventario, el prompt dice «ayudás con notificaciones», que es un tema, y el modelo completa el tema con lo que sabe de otros productos ([P-1](#p-1), [REF-009]). Con inventario, la frontera es una lista verificable. La regla de la guía es que ningún prompt se escribe antes de E3 ([§7](#c7)). Aplica siempre que el asistente vive dentro de un producto.
 
-**¿Para qué anotar lo que el producto no hace, si el asistente no lo va a responder? (OA-SOP1)** Porque sí lo va a responder: le van a preguntar. Si la fila no existe, la pregunta cae en el vacío y el modelo improvisa. Si existe, el asistente dice que no se hace y, si corresponde, deriva ([§3](#c3), anillo 3). Además, el conteo de pedidos es evidencia para el PO cuando decida mover la frontera ([§16](#c16)). Aplica sobre todo en productos con competidores conocidos, donde el usuario trae expectativas de afuera.
+**¿Para qué anotar lo que el producto no hace, si el asistente no lo va a responder?** Porque sí lo va a responder: le van a preguntar. Si la fila no existe, la pregunta cae en el vacío y el modelo improvisa. Si existe, el asistente dice que no se hace y, si corresponde, deriva ([§3](#c3), anillo 3). Además, el conteo de pedidos es evidencia para el PO cuando decida mover la frontera ([§16](#c16)). Aplica sobre todo en productos con competidores conocidos, donde el usuario trae expectativas de afuera.
 
-**Soporte no tiene registro de preguntas. ¿Invento unas razonables? (OA-SOP1)** No. Se marca «sin evidencia» y se consiguen en la primera vuelta: cinco entrevistas cortas o una semana de anotar consultas alcanzan para arrancar. Una pregunta inventada por el equipo usa el vocabulario del equipo, no el del inexperto. Ese es justamente el vocabulario que el glosario tiene que capturar ([P-6](#p-6), [§4](#c4)). Aplica a los dos escenarios; en el *por desarrollar* las preguntas salen de las pruebas con la maqueta.
+**Soporte no tiene registro de preguntas. ¿Invento unas razonables?** No. Se marca «sin evidencia» y se consiguen en la primera vuelta: cinco entrevistas cortas o una semana de anotar consultas alcanzan para arrancar. Una pregunta inventada por quien diseña usa el vocabulario de quien diseña, no el del inexperto. Ese es justamente el vocabulario que el glosario tiene que capturar ([P-6](#p-6), [§4](#c4)). Aplica a los dos escenarios; en el *por desarrollar* las preguntas salen de las pruebas con la maqueta.
 
-**¿Hace falta el rol en el inventario, si después está en el catálogo de destinos? (OA-EQ4)** Sí. El rol cambia la respuesta antes que el destino: un desarrollador y un titular que preguntan «¿cuántos suscriptores tengo?» pueden ver cifras distintas, o una de ellas no corresponder. Si el rol aparece recién en E4, la batería ya se escribió sin él y no prueba permisos ([§13](#c13)). Aplica cuando el producto tiene más de un rol con permisos distintos.
+**¿Hace falta el rol en el inventario, si después está en el catálogo de destinos?** Sí. El rol cambia la respuesta antes que el destino: un desarrollador y un titular que preguntan «¿cuántos suscriptores tengo?» pueden ver cifras distintas, o una de ellas no corresponder. Si el rol aparece recién en E4, la batería ya se escribió sin él y no prueba permisos ([§13](#c13)). Aplica cuando el producto tiene más de un rol con permisos distintos.
 
-**¿Cómo sé que una tarea marcada *existe* existe de verdad? (OA-EQ5)** Porque alguien la hizo en el sitio real, con ese rol, y dejó la captura o la ruta. Que funcione en la demo es una conducta en otro entorno, no una verificación ([P-8](#p-8)). Si nadie la ejecutó, la fila va **NO EJECUTADO** hasta que alguien la ejecute. Aplica sobre todo al sistema existente, donde «se supone que anda» es la fuente más común de promesas falsas.
+**¿Cómo sé que una tarea marcada *existe* existe de verdad?** Porque alguien la hizo en el sitio real, con ese rol, y dejó la captura o la ruta. Que funcione en la demo es una conducta en otro entorno, no una verificación ([P-8](#p-8)). Si nadie la ejecutó, la fila va **NO EJECUTADO** hasta que alguien la ejecute. Aplica sobre todo al sistema existente, donde «se supone que anda» es la fuente más común de promesas falsas.
 
 <a id="c9-calidad"></a>
 ### 9.8 Criterios de calidad y antipatrones
@@ -1817,14 +1876,14 @@ Antipatrones:
 
 - **Inventario de endpoints.** Lista lo que expone la API, no lo que quiere lograr el usuario. Sirve para [A.4](#anexo-a-4), no acá.
 - **Inventario aspiracional.** Incluye funciones «que vamos a tener» sin historia ni fecha. Es la puerta directa a romper [P-4](#p-4).
-- **Preguntas del equipo.** Todas suenan bien y ninguna usa una palabra mal. Señal de que no las hizo un usuario.
+- **Preguntas de quien diseña.** Todas suenan bien y ninguna usa una palabra mal. Señal de que no las hizo un usuario.
 - **Un solo rol.** El recorrido se hizo con la cuenta de administración y todas las filas dicen «todos».
 - **Inventario congelado.** Se llenó una vez y no se toca en los ciclos de medición; la frontera deja de moverse ([P-9](#p-9), [§15](#c15)).
 
 <a id="c10"></a>
 ## Capítulo 10 · E2 Mapa de anillos
 
-El inventario de E1 ([c9](#c9)) dice **qué hace la gente** con el producto y en qué pantallas. Esta etapa convierte esa lista en una decisión: **qué responde el asistente, cómo lo responde y qué no responde**. El entregable es el mapa de anillos, que se llena con la plantilla [A.2](#anexo-a-2) y lo firma el PO. El capítulo no vuelve a explicar los anillos: eso está en [c3](#c3). Acá se enseña a *construir* el mapa, fila por fila, y a dejarlo listo para que E3 ([c11](#c11)), E4 ([c12](#c12)) y E5 ([c13](#c13)) trabajen sobre él. Los principios que se aplican son [P-1](#p-1) (competencia, no temas), [P-4](#p-4) (no prometer lo que el software no hace) y [P-6](#p-6) (el vocabulario del usuario marca su frontera).
+El inventario de E1 ([c9](#c9)) dice **qué hace la gente** con el producto y en qué pantallas. Esta etapa convierte esa lista en una decisión: **qué responde el asistente, cómo lo responde y qué no responde**. El entregable es el mapa de anillos, que se llena con la plantilla [A.2](#anexo-a-2) y lo firma el responsable de producto (PO). El capítulo no vuelve a explicar los anillos: eso está en [c3](#c3). Acá se enseña a *construir* el mapa, fila por fila, y a dejarlo listo para que E3 ([c11](#c11)), E4 ([c12](#c12)) y E5 ([c13](#c13)) trabajen sobre él. Los principios que se aplican son [P-1](#p-1) (competencia, no temas), [P-4](#p-4) (no prometer lo que el software no hace) y [P-6](#p-6) (el vocabulario del usuario marca su frontera).
 
 <a id="c10-1"></a>
 ### 10.1 Definiciones de la etapa
@@ -1838,7 +1897,7 @@ El inventario de E1 ([c9](#c9)) dice **qué hace la gente** con el producto y en
 <a id="c10-2"></a>
 ### 10.2 Cómo se construye, paso a paso
 
-Entrada: el inventario [A.1](#anexo-a-1) con tareas, pantallas y las preguntas reales que aportó soporte. Salida: [A.2](#anexo-a-2) firmada. Tiempo de referencia para un producto mediano: una o dos sesiones de trabajo del equipo (criterio de la guía, no medido).
+Entrada: el inventario [A.1](#anexo-a-1) con tareas, pantallas y las preguntas reales que aportó soporte, si las hay. Salida: [A.2](#anexo-a-2) firmada. Tiempo de referencia para un producto mediano: una o dos sesiones de trabajo del equipo (criterio de la guía, no medido).
 
 1. **Reescribir cada tarea como intenciones.** Por cada tarea del inventario, escribir las preguntas que hace alguien que la quiere hacer, que quiere un dato de ella o que no entiende un término de ella. Cada una es una candidata a fila.
 2. **Asignar el anillo con una sola pregunta:** *¿qué logra el usuario con la respuesta?* Hacer o saber un dato suyo → 1. Entender un concepto para poder operar → 2. Saber a dónde ir con algo vecino → 3. Nada de eso dentro del producto → afuera ([Tabla 3.1](#c3-1)).
@@ -1878,7 +1937,7 @@ Sólo cambian estas celdas; el resto del procedimiento es igual.
 | De dónde salen las intenciones | Preguntas reales de soporte, búsquedas internas, tickets; el vocabulario ya existe y hay que copiarlo | Del diseño de tareas y de entrevistas; el vocabulario se está inventando: anotar las palabras que usan los usuarios, no las del equipo |
 | Lista de no promesas | Se llena con lo que los usuarios ya piden y el producto no hace: es la parte más rica | Se llena con lo que quedó fuera del alcance de la versión: cuidado con prometer lo que «va a venir» |
 | Huérfanas | Destinos que existen pero no tienen identificador estable: se resuelve en E4 sin tocar pantallas | La fila puede pedir una pantalla o una consulta nueva: se anota como requisito del producto, no del asistente |
-| Riesgo de error principal | Copiar el menú del panel como mapa (temas, no competencias) | Mapear funciones planificadas que después no se construyen |
+| Riesgo de error principal | Copiar el menú de la aplicación como mapa (temas, no competencias) | Mapear funciones planificadas que después no se construyen |
 
 *Tabla 10.1. E2 según el estado del sistema. Criterio de la guía.*
 
@@ -1899,7 +1958,13 @@ Ejemplo neutro, un sistema de turnos para consultorios:
 
 Lista de no promesas del mismo sistema: «mandar recordatorios por otro canal que el configurado», «reprogramar turnos automáticamente». Si alguien pregunta «¿podés reprogramarme los turnos del viernes?», la respuesta no es «sí» ni silencio: es qué hace el producto (cancelar con aviso) y dónde.
 
-En el caso guía, el asistente de la consola de PushDispatch, el mapa separó «¿cuántos mensajes envié la semana pasada?» (anillo 1, leer, cifra que sale del código) de «¿qué es una suscripción?» (anillo 2) y de preguntas sobre la tienda de aplicaciones del sistema operativo del teléfono (anillo 3, derivar). La fila completa está en [c18](#c18) y en la fila de ejemplo de [A.2](#anexo-a-2). Experiencia propia medida (conducta): las preguntas que en las rondas de crítica produjeron respuestas inventadas eran, en su mayoría, intenciones que no tenían fila; agregar la fila con su salida esperada o mandarla a la lista de no promesas fue lo que las corrigió.
+Los tres casos de la guía muestran el mismo corte con dominios distintos:
+
+- **Movilidad Urbana** (app de estacionamiento medido): «¿cuánto me queda de estacionamiento?» es anillo 1 (dato suyo, sale del sistema); «¿qué es una zona tarifada?» es anillo 2; «¿cómo pago una multa de tránsito?» es anillo 3 si existe el sitio oficial al que derivar.
+- **Geometría** (laboratorio para alumnos): «construí un triángulo con estos vértices» es anillo 1; «¿qué es una mediatriz?» es anillo 2, y es donde vive el alumno que recién empieza; «resolveme el práctico de física» queda afuera.
+- **PushDispatch** (servicio de notificaciones push con panel de administración, tomado como producto diseñado desde cero): «¿cuántos mensajes envié la semana pasada?» es anillo 1, con la cifra calculada por el código y no por el modelo; «¿qué es una suscripción?» es anillo 2; las preguntas sobre la tienda de aplicaciones del sistema operativo del teléfono son anillo 3, para derivar. La fila completa está en [c18](#c18) y en el ejemplo de [A.2](#anexo-a-2).
+
+Experiencia propia medida (conducta, caso PushDispatch): cuando las preguntas de prueba producían respuestas inventadas, la mayoría eran intenciones que no tenían fila. Lo que las corrigió fue agregar la fila con su salida esperada o pasarla a la lista de no promesas.
 
 <a id="c10-decision"></a>
 ### 10.5 Decisión
@@ -1912,7 +1977,7 @@ En el caso guía, el asistente de la consola de PushDispatch, el mapa separó «
 <a id="c10-preguntas"></a>
 ### 10.6 Preguntas guía
 
-**¿Por qué el mapa se arma por intenciones y no copiando el menú del panel? (OA-EQ3)** Porque el menú agrupa por tema y el anillo depende de lo que el usuario logra ([P-1](#p-1)). Una sola entrada del menú, «Suscripciones», contiene intenciones del anillo 1 (contar las activas), del 2 (qué es una) y hasta del 3. Copiar el menú da un mapa que parece completo y no le dice al desarrollador qué salida construir ni a QA qué esperar. Aplica siempre, y con más fuerza en un sistema existente, donde el menú está a mano y tienta.
+**¿Por qué el mapa se arma por intenciones y no copiando el menú de la aplicación? (OA-EQ3)** Porque el menú agrupa por tema y el anillo depende de lo que el usuario logra ([P-1](#p-1)). Una sola entrada del menú, «Suscripciones», contiene intenciones del anillo 1 (contar las activas), del 2 (qué es una) y hasta del 3. Copiar el menú da un mapa que parece completo y no le dice al desarrollador qué salida construir ni a QA qué esperar. Aplica siempre, y con más fuerza en un sistema existente, donde el menú está a mano y tienta.
 
 **¿Quién firma el mapa y por qué no lo firma quien lo llena? (OA-PO2)** Lo llenan diseño y desarrollo; lo firma el PO, porque cada fila es una promesa de producto: decir que algo está en el anillo 1 compromete datos reales y acciones ([P-4](#p-4)). La lista de no promesas también la firma el PO, porque decir «esto no lo hacemos» es una decisión comercial, no técnica. Aplica en cada versión del mapa, incluidas las que vuelven de E7 ([c16](#c16)).
 
@@ -1951,15 +2016,15 @@ Antipatrones:
 <a id="c11"></a>
 ## Capítulo 11 · E3 Glosario y sinónimos
 
-> **Qué vas a poder hacer al terminar.** Llenar la plantilla A.3 ([anexo-a-3](#anexo-a-3)) a partir del inventario y del mapa de anillos, clasificar cada sinónimo, decidir qué término se explica la primera vez y pasar la compuerta de E3 con la firma que corresponde (OA-DIS1, OA-EQ3, OA-EQ4).
+> **Qué vas a poder hacer al terminar.** Llenar la plantilla A.3 ([anexo-a-3](#anexo-a-3)) a partir del inventario y del mapa de anillos, clasificar cada sinónimo, decidir qué término se explica la primera vez y reconocer cuándo el glosario está listo para pasar a la etapa siguiente (OA-DIS1, OA-EQ3, OA-EQ4).
 
-El capítulo 4 ([c4](#c4)) explicó *por qué* el vocabulario del inexperto marca su frontera y *qué* son el glosario, los sinónimos, la explicación de primera vez y las preguntas sugeridas. Este capítulo es la etapa de trabajo que produce el entregable: entradas, pasos, plantilla, compuerta. No reenuncia los conceptos: los usa. El principio que gobierna la etapa es P-6 ([p-6](#p-6)); la regla del flujo que la vuelve obligatoria es que ningún prompt se escribe antes de E3 ([c7](#c7)).
+El capítulo 4 ([c4](#c4)) explicó *por qué* el vocabulario del inexperto marca su frontera y *qué* son el glosario, los sinónimos, la explicación de primera vez y las preguntas sugeridas. Este capítulo muestra cómo se produce ese entregable en cualquier sistema: entradas, pasos, plantilla y compuerta. No reenuncia los conceptos: los usa. El principio que gobierna la etapa es P-6 ([p-6](#p-6)); la regla del flujo que la vuelve obligatoria es que ningún prompt se escribe antes de E3 ([c7](#c7)).
 
 <a id="c11-1"></a>
 ### 11.1 Definición de la etapa
 
 <a id="c11-1-1"></a>
-**E3.** La tercera etapa del método. Toma el inventario de tareas y pantallas de E1 ([c9](#c9), A.1) y el mapa de anillos de E2 ([c10](#c10), A.2) y devuelve el glosario con sus sinónimos (A.3). Lo llena el rol de diseño (DIS), con el soporte (SOP) como fuente de vocabulario; lo firma el PO.
+**E3.** La tercera etapa del método. Toma el inventario de tareas y pantallas de E1 ([c9](#c9), A.1) y el mapa de anillos de E2 ([c10](#c10), A.2) y devuelve el glosario con sus sinónimos (A.3). Lo llena quien diseña la conversación (rol DIS), con quien atiende a los usuarios (rol SOP) como fuente de vocabulario, y lo aprueba quien decide sobre el producto (PO). En un proyecto chico, o en un trabajo práctico, una misma persona puede cubrir los tres roles; lo que no cambia es que alguien distinto del redactor revise las clases.
 
 <a id="c11-1-2"></a>
 **Entrada de glosario.** Una fila de A.3. Tiene un término del producto, una definición llana de una o dos oraciones, la pantalla donde aparece, el anillo al que pertenece, sus sinónimos clasificados (equivalente, cercano, falso amigo; ver [c4-1-4](#c4-1-4)), si se explica la primera vez y la fuente de la que salió cada sinónimo.
@@ -1983,7 +2048,7 @@ flowchart TD
     P4 --> P5["5. Resolver choques<br/>(un término, un sentido)"]
     P5 --> G{"Compuerta E3:<br/>¿todo concepto del<br/>anillo 2 tiene entrada<br/>y sinónimo con fuente?"}
     G -- "no" --> P2
-    G -- "sí" --> A3["A.3 firmado por el PO<br/>→ E4 (c12) y E5 (c13)"]
+    G -- "sí" --> A3["A.3 aprobado<br/>→ E4 (c12) y E5 (c13)"]
 ```
 
 *Figura 11.1. Flujo de E3. El regreso desde la compuerta va a juntar vocabulario, no a inventarlo.*
@@ -2006,11 +2071,13 @@ La plantilla completa, comentada, está en el Anexo A ([anexo-a-3](#anexo-a-3)).
 | Término | Definición llana | Pantalla | Anillo | Sinónimos (clase · fuente) | Primera vez | Aclaración si es ambiguo |
 |---|---|---|---|---|---|---|
 | Suscripción | Un dispositivo o navegador que aceptó recibir notificaciones de una aplicación. Una persona puede tener varias. | Suscripciones | 2 | «mis usuarios» (cercano · soporte); «dispositivos» (equivalente · recorrido); «contactos» (cercano · entrevista) | Sí | «¿Querés contar dispositivos o personas? El panel cuenta dispositivos.» |
+| Medio de transporte | Cómo viaja la persona encuestada; puede marcar más de uno. | Encuesta, paso 2 | 2 | «bondi» (equivalente de *colectivo* · recorrido); «a pata» (equivalente de *caminata* · recorrido); «subte» (sin término: fuera del catálogo) | Sí | — |
+| Valor derivado | El que el validador calcula a partir de las piezas, para compararlo con el que declaró el alumno. | Resultado de la validación | 2 | «el resultado correcto» (falso amigo · entrevista) | Sí | «¿Te referís a lo que calculó el validador o a lo que escribiste vos?» |
 | | | | | | | |
 
-*Tabla 11.1. Forma de la plantilla A.3, con una fila de ejemplo neutra y una vacía.*
+*Tabla 11.1. Forma de la plantilla A.3, con una fila de ejemplo de cada caso de la guía (PushDispatch, Movilidad Urbana, Geometría) y una vacía. Las filas son ilustrativas.*
 
-Tres columnas merecen un comentario. *Anillo* se copia de A.2 y no se decide acá: si la etapa descubre que un término está mal ubicado, se corrige A.2 y se vuelve a firmar. *Primera vez* es una decisión de redacción, no de contenido: el texto de la explicación es la misma definición llana. *Aclaración* sólo se llena para cercanos y falsos amigos, y se escribe como pregunta corta con las opciones a la vista (criterio de la guía).
+Tres columnas merecen un comentario. *Anillo* se copia de A.2 y no se decide acá: si la etapa descubre que un término está mal ubicado, se corrige A.2 y se vuelve a aprobar. *Primera vez* es una decisión de redacción, no de contenido: el texto de la explicación es la misma definición llana. *Aclaración* sólo se llena para cercanos y falsos amigos, y se escribe como pregunta corta con las opciones a la vista (criterio de la guía).
 
 Un snippet representativo de cómo el código puede consumir la tabla antes de llamar al modelo (la resolución de sinónimos equivalentes no necesita al modelo, P-3, [p-3](#p-3)):
 
@@ -2047,7 +2114,7 @@ Sólo cambian estas celdas:
 <a id="c11-ejemplos"></a>
 ### 11.5 Ejemplo trabajado
 
-Un equipo diseña el asistente de la consola de un servicio de notificaciones push. El mapa de anillos (A.2) ubica en el anillo 2 cuatro conceptos: *suscripción*, *segmento*, *mensaje programado* y *credencial*. Una persona del área comercial, que nunca usó el panel, lo recorre en voz alta durante veinte minutos; el soporte aporta las palabras de las últimas consultas.
+El ejemplo central es PushDispatch, el servicio de notificaciones push que la guía usa como caso, y su asistente de consola. El mapa de anillos (A.2) ubica en el anillo 2 cuatro conceptos: *suscripción*, *segmento*, *mensaje programado* y *credencial*. Una persona del área comercial, que nunca usó el panel, lo recorre en voz alta durante veinte minutos; el soporte aporta las palabras de las últimas consultas.
 
 - **«Mis usuarios»** aparece en el recorrido y en soporte. Se asigna a *suscripción* como **cercano**, porque el panel cuenta dispositivos y una persona puede tener varios. Se escribe la aclaración y entra a la batería como pregunta: «¿cuántos usuarios tengo?».
 - **«Grupo»** y **«lista»** se asignan a *segmento* como **equivalentes**: se resuelven en silencio.
@@ -2055,14 +2122,18 @@ Un equipo diseña el asistente de la consola de un servicio de notificaciones pu
 - **«La clave»** aparece en soporte. Puede ser la contraseña personal o la *credencial* de la aplicación. Falso amigo; la aclaración nombra las dos opciones.
 - **«Campaña»** no cae en ningún término. El equipo no la asigna a *mensaje programado* por parecido: la devuelve a A.2, que decide si el producto tiene ese concepto o si es una pregunta del anillo 3 que se orienta sin inventar (P-4, [p-4](#p-4); P-5, [p-5](#p-5)).
 
-La compuerta pasa cuando los cuatro conceptos, más el agregado, tienen entrada y sinónimo con fuente. Este recorrido es un ejemplo construido para la guía, no una medición.
+La compuerta pasa cuando los cuatro conceptos, más el agregado, tienen entrada y sinónimo con fuente.
+
+Los otros dos casos muestran variantes del mismo paso. En **Movilidad Urbana** (una encuesta de uso del transporte), el vocabulario coloquial es casi todo **equivalente**: «bondi», «bici», «a pata», «laburo», «facu» se traducen en silencio al catálogo. Lo interesante son las palabras que no tienen término, como «subte», «taxi» o «avión»: no se fuerzan a «otro medio», vuelven a A.2 y terminan en una aclaración o en un rechazo amable. Y hay una ambigüedad del dominio que ningún sinónimo resuelve: *Corrientes* es una localidad y también una provincia, así que la entrada lleva su pregunta de aclaración. En **Geometría** (un laboratorio donde el alumno describe figuras y un validador las compara), el choque fuerte es «el resultado correcto», que el alumno usa tanto para lo que declaró como para lo que calculó el validador: un **falso amigo** entre *valor declarado* y *valor derivado*. Ahí la explicación de primera vez no es opcional, porque confundir los dos términos lleva al alumno a «corregir» lo que estaba bien.
+
+Los tres recorridos son ejemplos construidos para la guía, no mediciones.
 
 <a id="c11-decision"></a>
 ### 11.6 Qué se decide y quién
 
 | Decisión | Quién | Criterio |
 |---|---|---|
-| Qué términos entran | DIS propone, PO firma | Todo concepto del anillo 2; del anillo 1, sólo los que el usuario nombra distinto que la pantalla |
+| Qué términos entran | DIS propone, PO aprueba | Todo concepto del anillo 2; del anillo 1, sólo los que el usuario nombra distinto que la pantalla |
 | Clase de cada sinónimo | DIS, con SOP | Equivalente si nunca cambia la respuesta; si alguna vez la cambia, cercano o falso amigo |
 | Explicar la primera vez | DIS | Sí en el anillo 2; no cuando la pantalla ya muestra el contexto |
 | Un término con dos sentidos en el producto | PO | Se elige uno para el glosario y se abre el cambio de producto; el asistente no tapa una ambigüedad de la interfaz |
@@ -2073,13 +2144,13 @@ La compuerta pasa cuando los cuatro conceptos, más el agregado, tienen entrada 
 <a id="c11-preguntas"></a>
 ### 11.7 Preguntas guía
 
-**¿Por qué no puedo dejar que el modelo entienda los sinónimos solo, si los modelos de lenguaje ya los manejan? (OA-DIS1)** Porque los equivalentes los resuelve bien, pero los cercanos y los falsos amigos no son un problema de lenguaje sino de producto: «mis usuarios» es sinónimo de «suscripciones» sólo si se aclara que el panel cuenta dispositivos. Esa diferencia la sabe el equipo, no el modelo. Además, sin la tabla no hay forma de probarlo en la batería ([c13](#c13)) ni de medirlo después ([c15](#c15)). Aplica siempre que el sinónimo pueda cambiar una cifra o una acción.
+**¿Por qué no puedo dejar que el modelo entienda los sinónimos solo, si los modelos de lenguaje ya los manejan? (OA-DIS1)** Porque los equivalentes los resuelve bien, pero los cercanos y los falsos amigos no son un problema de lenguaje sino de producto: «mis usuarios» es sinónimo de «suscripciones» sólo si se aclara que el panel cuenta dispositivos. Esa diferencia la conoce quien diseña el producto, no el modelo. Además, sin la tabla no hay forma de probarlo en la batería ([c13](#c13)) ni de medirlo después ([c15](#c15)). Aplica siempre que el sinónimo pueda cambiar una cifra o una acción.
 
-**¿Cuántas entradas tiene que tener el glosario para pasar la compuerta? (OA-EQ4)** No hay número. La compuerta pregunta otra cosa: que ningún concepto del anillo 2 quede sin entrada y que cada entrada tenga al menos un sinónimo con fuente ([c11-1-3](#c11-1-3)). Un glosario de seis entradas bien cosechadas vale más que uno de cuarenta copiado del menú. Si el número crece mucho, revisen el mapa: puede que el asistente esté cubriendo demasiado ([c10](#c10)).
+**¿Cuántas entradas tiene que tener el glosario para pasar la compuerta? (OA-EQ4)** No hay número. La compuerta pregunta otra cosa: que ningún concepto del anillo 2 quede sin entrada y que cada entrada tenga al menos un sinónimo con fuente ([c11-1-3](#c11-1-3)). Un glosario de seis entradas bien cosechadas vale más que uno de cuarenta copiado del menú. Si el número crece mucho, conviene revisar el mapa: puede que el asistente esté cubriendo demasiado ([c10](#c10)).
 
 **Encontramos una palabra del usuario que no corresponde a ningún término. ¿La agrego como sinónimo del más parecido? (OA-EQ3)** No. Es la señal de que falta una entrada o de que la pregunta está en otro anillo. Vuelve a E2 y se ubica ([c10](#c10)). Forzarla al término más parecido es la forma silenciosa de prometer lo que el software no hace (P-4, [p-4](#p-4)). Aplica sobre todo en sistemas por desarrollar, donde el usuario nombra cosas que todavía no existen.
 
-**El producto usa una palabra que los usuarios no entienden. ¿Lo arregla el glosario? (OA-DIS1)** Lo mitiga: el sinónimo y la explicación de primera vez hacen que el asistente traduzca. Pero el arreglo de fondo es cambiar la etiqueta, y esa decisión es del PO (Tabla 11.3). En un sistema por desarrollar, cámbienla ahora; en uno existente, anoten el pedido y mantengan el glosario fiel a la pantalla hasta que cambie, porque el asistente tiene que hablar de lo que el usuario ve ([c11-escenarios](#c11-escenarios)).
+**El producto usa una palabra que los usuarios no entienden. ¿Lo arregla el glosario? (OA-DIS1)** Lo mitiga: el sinónimo y la explicación de primera vez hacen que el asistente traduzca. Pero el arreglo de fondo es cambiar la etiqueta, y esa decisión es del PO (Tabla 11.3). En un sistema por desarrollar, conviene cambiarla ahora; en uno existente, se anota el pedido y el glosario se mantiene fiel a la pantalla hasta que cambie, porque el asistente tiene que hablar de lo que el usuario ve ([c11-escenarios](#c11-escenarios)).
 
 **¿Puedo escribir el prompt del asistente mientras termino el glosario? (OA-EQ4)** No conviene. El prompt y las descripciones de herramientas usan los términos; si el glosario cambia después, quedan dos vocabularios y la batería mide uno distinto del que el asistente usa. Por eso la regla del flujo es que ningún prompt se escribe antes de E3 ([c7](#c7)). Lo que sí se puede adelantar en paralelo es juntar preguntas para la batería.
 
@@ -2093,11 +2164,11 @@ Criterios de terminado:
 - Cada cercano y cada falso amigo tiene su aclaración escrita y está en la lista de preguntas para E5 ([c13](#c13)).
 - Ninguna palabra del usuario apunta a dos términos sin aclaración, y ningún término tiene dos sentidos (Anexo C, [anexo-c](#anexo-c)).
 - Los sinónimos sin fuente están rotulados **NO VERIFICADO**.
-- El PO firmó.
+- Quien decide sobre el producto lo aprobó.
 
 Antipatrones:
 
-- Glosario escrito por el equipo en una reunión, sin un solo usuario nuevo de por medio: reproduce la jerga interna.
+- Glosario escrito en una reunión de quienes ya conocen el producto, sin un solo usuario nuevo de por medio: reproduce la jerga interna.
 - Copiar el menú del producto como glosario: tiene todos los términos y ningún sinónimo.
 - Guardar consultas de soporte enteras como «fuente»: se extraen palabras, no textos (P-9, [p-9](#p-9)).
 - Marcar todo como equivalente para no escribir aclaraciones.
@@ -2106,7 +2177,7 @@ Antipatrones:
 <a id="c12"></a>
 ## Capítulo 12 · E4 Catálogo de destinos y herramientas
 
-El mapa de anillos de E2 ([c10](#c10)) dice, fila por fila, qué salida espera cada intención y de qué fuente sale. El glosario de E3 ([c11](#c11)) asegura que el asistente entienda cómo pregunta el usuario. Esta etapa construye **las únicas dos cosas del anillo 1 que el modelo no puede inventar**: los destinos a los que el asistente puede llevar y las herramientas que le entregan datos de la cuenta. El entregable es el catálogo, que se llena con la plantilla [A.4](#anexo-a-4); lo arma desarrollo con diseño y lo revisa el PO. El capítulo no vuelve a explicar qué es un destino ni por qué el catálogo es cerrado ([c5](#c5)), ni cuándo responde una herramienta y cuándo la ayuda con cita ([c6](#c6)): acá se enseña a *producir* el catálogo y a dejarlo listo para la batería de E5 ([c13](#c13)). Se aplican [P-3](#p-3) (el código elige, el modelo redacta), [P-4](#p-4) (no prometer lo que el software no hace) y [P-5](#p-5) («No está en la ayuda» antes que inventar).
+El mapa de anillos de E2 ([c10](#c10)) dice, fila por fila, qué salida espera cada intención y de qué fuente sale. El glosario de E3 ([c11](#c11)) asegura que el asistente entienda cómo pregunta el usuario. Esta etapa construye **las únicas dos cosas del anillo 1 que el modelo no puede inventar**: los destinos a los que el asistente puede llevar y las herramientas que le entregan datos de la cuenta. El entregable es el catálogo, que se llena con la plantilla [A.4](#anexo-a-4); lo arman, en cualquier proyecto, quienes desarrollan junto con quienes diseñan, y lo revisa quien responde por el producto (el PO). El capítulo no vuelve a explicar qué es un destino ni por qué el catálogo es cerrado ([c5](#c5)), ni cuándo responde una herramienta y cuándo la ayuda con cita ([c6](#c6)): acá se enseña a *producir* el catálogo y a dejarlo listo para la batería de E5 ([c13](#c13)). Se aplican [P-3](#p-3) (el código elige, el modelo redacta), [P-4](#p-4) (no prometer lo que el software no hace) y [P-5](#p-5) («No está en la ayuda» antes que inventar).
 
 <a id="c12-1"></a>
 ### 12.1 Definiciones de la etapa
@@ -2120,7 +2191,7 @@ El mapa de anillos de E2 ([c10](#c10)) dice, fila por fila, qué salida espera c
 <a id="c12-2"></a>
 ### 12.2 Cómo se construye, paso a paso
 
-Entrada: el mapa firmado [A.2](#anexo-a-2), el glosario [A.3](#anexo-a-3) y el inventario de pantallas [A.1](#anexo-a-1). Salida: [A.4](#anexo-a-4) revisada. Tiempo de referencia para un producto mediano: una sesión de diseño más el trabajo de desarrollo de las herramientas (criterio de la guía, no medido).
+Entrada: el mapa firmado [A.2](#anexo-a-2), el glosario [A.3](#anexo-a-3) y el inventario de pantallas [A.1](#anexo-a-1). Salida: [A.4](#anexo-a-4) revisada. Como orden de magnitud para un producto mediano: una sesión de diseño más el desarrollo de las herramientas (criterio de la guía, no medido).
 
 1. **Listar las fuentes que pide el mapa.** Recorrer el anillo 1 de A.2 y anotar, por fila, si su salida esperada necesita un destino («enlace a la vista»), un dato («cifra filtrada») o los dos. Las filas del anillo 2 no piden herramienta: su fuente es la ayuda con cita; a lo sumo piden un destino («pantalla donde aparece el término»).
 2. **Agrupar destinos por pantalla + acción.** Varias intenciones suelen terminar en la misma pantalla («crear un mensaje», «mandar una prueba»). Un destino por par pantalla-acción, no por intención: el catálogo chico es más fácil de revalidar y de probar.
@@ -2128,7 +2199,7 @@ Entrada: el mapa firmado [A.2](#anexo-a-2), el glosario [A.3](#anexo-a-3) y el i
 4. **Agrupar datos en pocas herramientas.** Una herramienta por familia de consultas (conteos de suscripciones, actividad de mensajes), con parámetros acotados, no una por pregunta. Cada herramienta devuelve el total, el desglose ofrecido y la nota de métrica ([c6](#c6-def-nota-metrica)), y devuelve **candidatas con cifra** cuando el nombre es ambiguo, ya filtradas por permiso ([c5-4](#c5-4)).
 5. **Escribir el contrato que ve el modelo.** Una frase por herramienta que diga qué responde y qué no («Cuenta suscripciones de una aplicación; no informa entregas»), y parámetros con rango. La frase de exclusión es la que evita que el modelo use la herramienta para una pregunta vecina y redacte una cifra que no corresponde.
 6. **Marcar pendientes y cerrar la cobertura.** Toda fila del anillo 1 sin fuente vuelve a E2: baja de anillo, va a la lista de no promesas o queda como requisito de producto con su destino *pendiente*.
-7. **Versionar y revisar.** A.4 lleva número de versión y fecha. El PO revisa que ninguna entrada prometa una acción que la lista de no promesas excluye; desarrollo confirma que cada permiso coincide con el de la pantalla.
+7. **Versionar y revisar.** A.4 lleva número de versión y fecha. Quien responde por el producto revisa que ninguna entrada prometa una acción que la lista de no promesas excluye; desarrollo confirma que cada permiso coincide con el de la pantalla.
 
 ```mermaid
 flowchart LR
@@ -2181,16 +2252,22 @@ Ejemplo neutro, el mismo sistema de turnos para consultorios de [c10-ejemplos](#
 
 Notar dos cosas. La acción irreversible (cancelar en lote) tiene destino pero no herramienta: el asistente lleva a la pantalla y explica las consecuencias, y **confirma la interfaz**, no la conversación. Y la reprogramación figura como pendiente para que nadie la catalogue por error en la próxima versión.
 
-En el caso guía, el asistente de la consola de PushDispatch, el catálogo reunió en pocos destinos las pantallas de aplicaciones, suscripciones, mensajes y credenciales, cada uno con el permiso del rol que la pantalla ya exigía (titular, owner, member, desarrollador), y en pocas herramientas las consultas de conteo y actividad. El detalle está en [c18](#c18) y en la fila de ejemplo de [A.4](#anexo-a-4). Experiencia propia medida (conducta): en una ronda temprana el modelo proponía rutas plausibles que no existían; con el catálogo cerrado el peor caso pasó a ser «no hay chip». También se observó que un destino revalidado sólo al dibujar el chip no alcanza: el permiso tiene que coincidir con el de la pantalla, o el usuario termina en un acceso denegado.
+Los tres casos ilustrativos de la guía muestran el mismo método con catálogos de forma distinta:
 
-Un producto de referencia del mercado, otro software de notificaciones, muestra el mismo patrón visible: una cifra agregada, un chip que lleva a la vista correspondiente y, ante un nombre aproximado, las coincidencias con su cifra. Se toma la forma; el catálogo y los permisos son propios ([c14](#c14)).
+- **Movilidad Urbana** (consulta ciudadana): pocos destinos públicos («ver el estado de mi trámite», «ir a pagar») y una herramienta de consulta acotada al propio usuario. El permiso es casi siempre «el titular del trámite»; el cuidado está en que la herramienta nunca devuelva candidatas de otra persona.
+- **Geometría** (ejercicios para alumnos): casi no hay datos de cuenta; el catálogo es sobre todo de destinos («abrir el ejercicio», «ver la construcción paso a paso») y la herramienta, cuando existe, valida o describe lo que el alumno armó, sin resolverlo por él.
+- **PushDispatch** (panel de administración de notificaciones push, presentado como producto diseñado desde cero): pocos destinos por pantalla y acción (aplicaciones, suscripciones, mensajes, credenciales), cada uno con el permiso que la pantalla ya exige según el rol, y pocas herramientas de conteo y actividad que devuelven total, desglose ofrecido y nota de métrica.
+
+Experiencia propia medida (conducta, caso PushDispatch): en una ronda temprana el modelo proponía rutas plausibles que no existían; con el catálogo cerrado el peor caso pasó a ser «no hay chip». También se observó que revalidar el destino sólo al dibujar el chip no alcanza: el permiso tiene que coincidir con el de la pantalla, o el usuario termina en un acceso denegado.
+
+Los asistentes de productos comerciales muestran el mismo patrón visible: una cifra agregada, un chip que lleva a la vista correspondiente y, ante un nombre aproximado, las coincidencias con su cifra. Se toma la forma como práctica observable; el catálogo y los permisos son de cada sistema ([c14](#c14)).
 
 <a id="c12-decision"></a>
 ### 12.5 Decisión
 
 - **¿Destino, herramienta o los dos?** Si la salida esperada lleva a hacer algo, destino. Si da un dato de la cuenta, herramienta. Si da un dato que invita a actuar («tenés 3 credenciales por vencer»), los dos, y el destino se elige por código a partir del resultado de la herramienta.
 - **¿Una herramienta nueva o un parámetro más?** Parámetro, si la consulta es la misma familia y el permiso es el mismo; herramienta nueva, si cambia el permiso o la nota de métrica.
-- **¿Acción por herramienta?** No en esta guía: las herramientas son de lectura. Las acciones se hacen en la pantalla, con su confirmación. Si el producto decide algún día que el asistente actúe, es una decisión de riesgo del PO y vuelve a E2 ([c3-2](#c3-2)).
+- **¿Acción por herramienta?** No en esta guía: las herramientas son de lectura. Las acciones se hacen en la pantalla, con su confirmación. Si el producto decide algún día que el asistente actúe, es una decisión de riesgo del responsable del producto y vuelve a E2 ([c3-2](#c3-2)).
 - **¿Ruta frágil?** Si la pantalla no admite parámetros estables, el destino lleva a la pantalla padre con etiqueta honesta («Ir a mensajes») o queda pendiente; nunca se arma la ruta con datos que el modelo trae.
 
 <a id="c12-preguntas"></a>
@@ -2216,7 +2293,7 @@ Criterio de terminado de E4 (se repite en [A.4](#anexo-a-4)):
 - Toda herramienta es de lectura, tiene parámetros con rango, frase de exclusión, nota de métrica y comportamiento ante vacío y ambigüedad.
 - Los destinos pendientes están marcados y no se publican.
 - Ninguna entrada contradice la lista de no promesas.
-- Versión, fecha y revisión del PO.
+- Versión, fecha y revisión de quien responde por el producto.
 
 | Antipatrón | Por qué falla | Corrección |
 |---|---|---|
@@ -2232,7 +2309,7 @@ Criterio de terminado de E4 (se repite en [A.4](#anexo-a-4)):
 <a id="c13"></a>
 ## Capítulo 13 · E5 Batería y criterios de aceptación
 
-Hasta acá el equipo produjo promesas: el mapa de anillos ([c10](#c10)) dice qué responde el asistente, el glosario ([c11](#c11)) con qué palabras lo van a preguntar y el catálogo ([c12](#c12)) a dónde lleva cada respuesta y de qué herramienta sale cada dato. Esta etapa convierte esas promesas en **pruebas que se pueden fallar**. Tiene dos entregables: la batería de preguntas con su respuesta esperada, que se llena con la plantilla [A.5](#anexo-a-5), y los criterios de aceptación, que se llenan con [A.6](#anexo-a-6) y firma el PO. Los principios que se aplican son [P-5](#p-5) («No está en la ayuda» antes que inventar), [P-7](#p-7) (se acepta por tasa, no por conducta) y [P-8](#p-8) (se acepta en el sitio real). Lo que se mide después en producción no es de esta etapa: es de E7 ([c15](#c15)).
+Hasta acá el diseño produjo promesas: el mapa de anillos ([c10](#c10)) dice qué responde el asistente, el glosario ([c11](#c11)) con qué palabras lo van a preguntar y el catálogo ([c12](#c12)) a dónde lleva cada respuesta y de qué herramienta sale cada dato. Esta etapa convierte esas promesas en **pruebas que se pueden fallar**. Tiene dos entregables: la batería de preguntas con su respuesta esperada, que se llena con la plantilla [A.5](#anexo-a-5), y los criterios de aceptación, que se llenan con [A.6](#anexo-a-6) y firma el responsable de producto (PO). Los principios que se aplican son [P-5](#p-5) («No está en la ayuda» antes que inventar), [P-7](#p-7) (se acepta por tasa, no por conducta) y [P-8](#p-8) (se acepta en el sitio real). Lo que se mide después en producción no es de esta etapa: es de E7 ([c15](#c15)).
 
 <a id="c13-1"></a>
 ### 13.1 Definiciones de la etapa
@@ -2253,7 +2330,7 @@ Hasta acá el equipo produjo promesas: el mapa de anillos ([c10](#c10)) dice qu�
 
 Entrada: el mapa [A.2](#anexo-a-2) firmado, el glosario [A.3](#anexo-a-3) y el catálogo [A.4](#anexo-a-4). Salida: [A.5](#anexo-a-5) con la corrida ×3 registrada y [A.6](#anexo-a-6) firmada.
 
-1. **Una pregunta por fila, como mínimo.** Recorrer el mapa y escribir para cada fila la pregunta como la diría un usuario real. Las del inventario ([A.1](#anexo-a-1)) que aportó soporte valen más que las inventadas por el equipo.
+1. **Una pregunta por fila, como mínimo.** Recorrer el mapa y escribir para cada fila la pregunta como la diría un usuario real. Las del inventario ([A.1](#anexo-a-1)) que aportó soporte valen más que las que imagina quien diseña.
 2. **Variantes de vocabulario.** Para las filas de los anillos 1 y 2, sumar una variante con un sinónimo del glosario y otra con la palabra «equivocada» que usa el inexperto ([P-6](#p-6)). Si la variante falla y la original pasa, el problema está en el glosario, no en el modelo.
 3. **Respuesta esperada por pregunta.** Completar las columnas de [A.5](#anexo-a-5): fila del mapa, anillo, herramienta o fuente esperada, hechos que debe contener, destino esperado, y qué no debe aparecer. Para las cifras, la respuesta esperada no es el número sino **de dónde sale** («conteo de la herramienta X para la cuenta y el rango pedidos»): el número cambia con los datos, la fuente no.
 4. **Sumar los bloques especiales** (ver 13.3): no invención, permisos, aclaración entre cuentas o entidades ambiguas, afuera.
@@ -2358,7 +2435,9 @@ Registro de una corrida ×3 para esas preguntas (las dos medidas por separado):
 
 La lectura de la tabla es el punto: B-02 y B-03 fallan por razones distintas y se arreglan en etapas distintas. Si se hubiera medido una sola cosa («¿la respuesta está bien?»), las dos caían en el mismo cajón y el arreglo más probable hubiera sido tocar el prompt, que no corrige ninguna de las dos.
 
-En el caso guía, el asistente de la consola de PushDispatch, la batería se corrió tres veces contra el entorno de prueba y después en el sitio real. Experiencia propia medida (conducta): en el sitio real aparecieron fallos que la demo no había mostrado, en particular preguntas sobre una aplicación cuyo nombre se parecía al de otra, donde la respuesta correcta era la aclaración con los dos candidatos y sus cifras; y un enlace profundo que el código elegía bien pero que un rol sin permiso no podía abrir, que se corrigió revalidando el destino por permiso. También fue experiencia medida que preguntas sin respuesta en el corpus pasaron a responder «No está en la ayuda» en lugar de completar con una explicación plausible cuando ese texto quedó como salida prevista y se sumó al bloque de no invención. El recorrido completo está en [c18](#c18).
+Los otros dos casos de la guía muestran que el bloque que más enseña depende del sistema. En Movilidad Urbana, la variante de vocabulario es la que más se cae: el ciudadano pregunta por «la multa» cuando el sistema habla de «acta», y la batería tiene que contener las dos palabras. En Geometría, el bloque crítico es el de no invención: ante una construcción que el corpus no cubre, la respuesta correcta es decirlo y no improvisar un procedimiento que el alumno va a copiar (criterio de la guía).
+
+En el caso de PushDispatch, un servicio de notificaciones push con un asistente en su consola de administración, la batería se corrió tres veces contra el entorno de prueba y después en el sitio real. Experiencia propia medida (conducta): en el sitio real aparecieron fallos que la demo no había mostrado, en particular preguntas sobre una aplicación cuyo nombre se parecía al de otra, donde la respuesta correcta era la aclaración con los dos candidatos y sus cifras; y un enlace profundo que el código elegía bien pero que un rol sin permiso no podía abrir, que se corrigió revalidando el destino por permiso. También fue experiencia medida que las preguntas sin respuesta en el corpus pasaron a responder «No está en la ayuda», en lugar de completar con una explicación plausible, cuando ese texto quedó como salida prevista y se sumó al bloque de no invención. El caso se retoma en [c18](#c18).
 
 <a id="c13-decision"></a>
 ### 13.6 Decisión
@@ -2374,7 +2453,7 @@ En el caso guía, el asistente de la consola de PushDispatch, la batería se cor
 
 **¿Por qué correr la batería tres veces si la primera salió bien? (OA-QA1)** Porque el modelo no responde igual dos veces: una corrida buena es una conducta que pasó una vez, y lo que se acepta es una tasa ([P-7](#p-7)). Con tres pasadas aparece la pregunta que sale bien dos de tres, que en producción va a fallar con una de cada tres personas. Tres es el mínimo que permite ver esa variación con un costo razonable (criterio de la guía); si una pregunta da resultados mezclados, se corre más esa pregunta, no la batería entera. Aplica a toda la batería y en cada nueva corrida de regresión.
 
-**¿Por qué separar «herramienta correcta» de «redacción fiel»? (OA-QA1)** Porque fallan por causas distintas y se arreglan en lugares distintos. La herramienta equivocada es un problema del mapa, del glosario o del catálogo ([c10](#c10), [c11](#c11), [c12](#c12)); la redacción infiel con la herramienta correcta es un problema de anclaje ([c6](#c6)). Mezcladas, el equipo ve «falló» y toca el prompt, que suele no ser la causa. La primera se verifica en el registro técnico sin leer, así que es barata; la segunda exige leer, así que se concentra donde importa. Aplica siempre que el asistente use herramientas ([P-3](#p-3)).
+**¿Por qué separar «herramienta correcta» de «redacción fiel»? (OA-QA1)** Porque fallan por causas distintas y se arreglan en lugares distintos. La herramienta equivocada es un problema del mapa, del glosario o del catálogo ([c10](#c10), [c11](#c11), [c12](#c12)); la redacción infiel con la herramienta correcta es un problema de anclaje ([c6](#c6)). Mezcladas, quien diseña ve «falló» y toca el prompt, que suele no ser la causa. La primera se verifica en el registro técnico sin leer, así que es barata; la segunda exige leer, así que se concentra donde importa. Aplica siempre que el asistente use herramientas ([P-3](#p-3)).
 
 **¿Qué hace que una prueba de no invención esté bien escrita? (OA-QA2)** Que la respuesta correcta sea inequívocamente «no sé» o «el producto no hace eso», y que la pregunta suene plausible: lo que falla no es la pregunta absurda (esa va a «afuera») sino la cercana, la que el modelo puede completar con algo que se parece a la verdad [REF-009]. Se toman de la lista de no promesas de [c10](#c10) y de las preguntas del soporte que no tienen respuesta en la ayuda. El umbral es cero porque una invención creíble se copia y se usa ([P-5](#p-5)). Aplica en todo sistema; en uno por desarrollar, la lista de no promesas es la fuente principal.
 
@@ -2407,21 +2486,21 @@ Antipatrones:
 | Probar sólo con un usuario con todos los permisos | Fugas de datos y enlaces que no abren | Bloque de permisos por rol |
 | Aceptar en la demo | Los fallos de nombres parecidos y volumen quedan para el usuario | Subconjunto obligatorio en sitio real |
 | Umbral fijado después de correr | La aceptación se acomoda al resultado | Firma de [A.6](#anexo-a-6) antes de la corrida |
-| Batería escrita sólo por el equipo que construyó | Usa el vocabulario del equipo, no el del usuario | Preguntas reales del soporte y variantes del glosario |
+| Batería escrita sólo por quien construyó el asistente | Usa el vocabulario de quien construye, no el del usuario | Preguntas reales del soporte y variantes del glosario |
 
 *Tabla 13.5. Antipatrones de E5.*
 
 <a id="c14"></a>
 ## Capítulo 14 · E6 Maqueta y rondas de crítica
 
-Hasta E5 ([c13](#c13)) el equipo trabajó con tablas: mapa, glosario, destinos, batería y criterios. Esta etapa es la primera en la que se **mira la conversación**. Se arma una maqueta de las respuestas, se la pone al lado de lo que el usuario ve en la pantalla y se la critica en rondas cortas hasta que la forma de cada salida quede fija. El entregable no es una plantilla: es **una ronda de capturas comentadas y una decisión escrita por cada observación** ([c0-5](#c0-5)). La guía de diseño conversacional de Google pone el mismo orden: diálogos de ejemplo escritos, leídos y probados antes de construir [REF-001]. Los principios que se aplican son [P-3](#p-3) (el código elige, el modelo redacta), [P-4](#p-4) (no prometer lo que el software no hace) y [P-8](#p-8) (se acepta en el sitio real).
+Hasta E5 ([c13](#c13)) el diseño se trabajó con tablas: mapa, glosario, destinos, batería y criterios. Esta etapa es la primera en la que se **mira la conversación**. Se arma una maqueta de las respuestas, se la pone al lado de lo que el usuario ve en la pantalla y se la critica en rondas cortas hasta que la forma de cada salida quede fija. El entregable no es una plantilla: es **una ronda de capturas comentadas y una decisión escrita por cada observación** ([c0-5](#c0-5)). La guía de diseño conversacional de Google pone el mismo orden: diálogos de ejemplo escritos, leídos y probados antes de construir [REF-001]. Los principios que se aplican son [P-3](#p-3) (el código elige, el modelo redacta), [P-4](#p-4) (no prometer lo que el software no hace) y [P-8](#p-8) (se acepta en el sitio real).
 
 <a id="c14-1"></a>
 ### 14.1 Definiciones de la etapa
 
 - **Maqueta de conversación.** Una respuesta del asistente escrita o compuesta a mano para una pregunta de la batería, con la forma definitiva: texto, cifra, gráfico, enlace y aviso. No necesita modelo ni código. En un sistema por desarrollar es, además, el **modelo de diseño** de la pantalla: dice qué dato y qué destino tiene que existir.
 - **Captura lado a lado.** Una imagen que pone juntas la respuesta del asistente y la pantalla del producto que contiene el mismo dato o la misma acción. Sirve para un control que la tabla no permite: **¿lo que dice la consola coincide con lo que muestra el panel?**
-- **Ronda de crítica.** Una sesión con un conjunto fijo de capturas (entre cinco y diez, criterio de la guía), revisada por diseño, desarrollo, QA y PO, que termina con una decisión por observación: se cambia la forma, se cambia la fila del mapa, se cambia el destino, o se acepta.
+- **Ronda de crítica.** Una sesión con un conjunto fijo de capturas (entre cinco y diez, criterio de la guía), revisada por quienes diseñan, construyen, prueban y deciden sobre el producto (en un curso, el grupo y el docente), que termina con una decisión por observación: se cambia la forma, se cambia la fila del mapa, se cambia el destino, o se acepta.
 - **Producto de referencia.** Otro software, del mismo rubro o de uno vecino, que ya tiene asistente y del que se estudian capturas. Se lo cita como «un producto de referencia del mercado», sin nombre ni marca.
 - **Forma y promesa.** La **forma** es cómo se presenta una salida: total con desglose ofrecido, chip con enlace, torta con «Otras», nota de métrica. La **promesa** es lo que esa salida da a entender que el producto sabe o hace. De un producto de referencia se toma la forma; la promesa se vuelve a decidir contra el mapa propio y su lista de no promesas ([c10-1](#c10-1)).
 
@@ -2471,7 +2550,7 @@ Mirar cómo resolvió otro producto una consulta parecida ahorra rondas. El ries
 
 *Tabla 14.1. Formas tomadas de un producto de referencia del mercado y la decisión propia que exige cada una. Experiencia propia: conducta observada en capturas, no tasa.*
 
-Tres reglas acompañan la tabla. **Primera:** lo observado en capturas es conducta vista una vez, no una regla; antes de adoptarla, la forma se prueba con la batería propia y se acepta por tasa ([P-7](#p-7), [c13](#c13)). **Segunda:** del producto de referencia no entra nada a la documentación ni a la guía de estilo que lo identifique: ni nombre, ni logo, ni capturas, ni frases literales. Se describe la forma con palabras propias. **Tercera:** si una forma sólo tiene sentido con una función que el producto propio no tiene, la forma se descarta o la función va al PO como pedido de producto; nunca se maqueta «por si acaso» ([P-4](#p-4)).
+Tres reglas acompañan la tabla. **Primera:** lo observado en capturas es conducta vista una vez, no una regla; antes de adoptarla, la forma se prueba con la batería propia y se acepta por tasa ([P-7](#p-7), [c13](#c13)). **Segunda:** del producto de referencia no entra nada a la documentación ni a la guía de estilo que lo identifique: ni nombre, ni logo, ni capturas, ni frases literales. Se describe la forma con palabras propias. **Tercera:** si una forma sólo tiene sentido con una función que el producto propio no tiene, la forma se descarta o la función se registra como pedido de producto para quien decide el alcance; nunca se maqueta «por si acaso» ([P-4](#p-4)).
 
 <a id="c14-escenarios"></a>
 ### 14.4 Aplicación por escenario
@@ -2493,11 +2572,11 @@ Sólo cambian estas celdas; el procedimiento de [14.2](#c14-2) es igual.
 
 **Ejemplo 1, observación de dato (PushDispatch).** Pregunta de la batería: «¿cuántas suscripciones activas tiene mi aplicación?». La maqueta respondía con una cifra y la captura de la derecha mostraba otra en la lista de suscripciones. Causa: la lista filtraba por la aplicación seleccionada y la consola sumaba todas las aplicaciones de la cuenta. Decisión: la herramienta recibe la aplicación del contexto de la pantalla; si no hay contexto y la cuenta tiene más de una, la respuesta pregunta cuál, con la cifra de cada una. Vuelve a E4. Experiencia propia: conducta vista en una ronda.
 
-**Ejemplo 2, observación de promesa.** Pregunta: «¿a qué hora conviene enviar?». La maqueta, inspirada en un producto de referencia, sugería un horario. El producto propio no calcula horarios óptimos. Decisión: la pregunta va a la lista de no promesas; la respuesta dice que el producto no lo calcula y ofrece ver los envíos anteriores con su resultado, que sí existe. Vuelve a E2.
+**Ejemplo 2, observación de promesa (Movilidad Urbana).** Pregunta: «¿a qué hora hay menos demora en el recorrido?». La maqueta, inspirada en un producto de referencia, sugería un horario. El sistema no calcula horarios óptimos. Decisión: la pregunta va a la lista de no promesas; la respuesta dice que el sistema no lo calcula y ofrece ver los horarios publicados del recorrido, que sí existen. Vuelve a E2. Ejemplo ilustrativo.
 
-**Ejemplo 3, observación de destino.** Pregunta de un usuario con rol de solo lectura: «¿cómo creo un mensaje?». La maqueta traía el chip a la pantalla de creación, que ese rol no puede abrir. Decisión: el código revalida el destino por permiso y, si no pasa, la respuesta explica quién puede hacerlo, sin chip ([c5](#c5)). Vuelve a E4.
+**Ejemplo 3, observación de destino (Geometría).** Pregunta de un alumno: «¿cómo publico un ejercicio para el curso?». La maqueta traía el chip a la pantalla de publicación, reservada al docente, que ese rol no puede abrir. Decisión: el código revalida el destino por permiso y, si no pasa, la respuesta explica quién puede hacerlo, sin chip ([c5](#c5)). Vuelve a E4. Ejemplo ilustrativo.
 
-**Ejemplo 4, lo que sólo mostró el sitio real.** En la demo todo coincidía. En el sitio real, la captura de un usuario con dos cuentas mostró el dato de la otra cuenta. Decisión: aclaración entre cuentas antes de responder cualquier cifra. Experiencia propia: fallo visto en el sitio real que la demo no mostró (conducta, no tasa).
+**Ejemplo 4, lo que sólo mostró el sitio real (PushDispatch).** En la demo todo coincidía. En el sitio real, la captura de un usuario con dos cuentas mostró el dato de la otra cuenta. Decisión: cuando el usuario tiene acceso a más de un espacio de datos, aclarar cuál antes de responder cualquier cifra. Experiencia propia: fallo visto en el sitio real que la demo no mostró (conducta, no tasa).
 
 <a id="c14-decision"></a>
 ### 14.6 Decisión de la etapa
@@ -2506,7 +2585,7 @@ E6 termina con un registro breve, una fila por observación: número, captura, c
 
 - la última ronda, en el sitio real, no dejó observaciones de *dato* ni de *promesa*;
 - toda forma tomada de un producto de referencia tiene su decisión propia escrita (Tabla 14.1) y pasó por la batería;
-- el PO firma el registro.
+- quien decide sobre el producto aprueba el registro con fecha.
 
 Desde ese momento las formas de salida quedan fijas y E7 ([c15](#c15)) mide sobre ellas. Si una forma cambia en producción, vuelve una ronda corta de E6 con las preguntas afectadas.
 
@@ -2515,7 +2594,7 @@ Desde ese momento las formas de salida quedan fijas y E7 ([c15](#c15)) mide sobr
 
 **¿Por qué capturas lado a lado y no sólo la batería automática? (OA-DIS3)** Porque la batería dice si la herramienta fue la correcta y si la redacción fue fiel ([c13](#c13)); la captura dice si lo que ve el usuario en la consola coincide con lo que ve en el panel. Una respuesta puede pasar la batería y contradecir a la pantalla por un filtro, un período o un rol distinto. Aplica en toda ronda y es imprescindible en un sistema existente, donde el panel ya tiene la verdad del dato.
 
-**¿Qué tomo de un producto de referencia y qué no? (OA-DIS3)** Se toma la forma: cómo se ordena la salida, qué se ofrece después, cómo se muestra una cifra. No se toma la promesa: lo que la respuesta da a entender que el producto hace. Cada forma pasa por la Tabla 14.1 y se decide contra el mapa propio y su lista de no promesas ([c10](#c10), [P-4](#p-4)). Aplica cada vez que el equipo diga «el otro lo hace así».
+**¿Qué tomo de un producto de referencia y qué no? (OA-DIS3)** Se toma la forma: cómo se ordena la salida, qué se ofrece después, cómo se muestra una cifra. No se toma la promesa: lo que la respuesta da a entender que el producto hace. Cada forma pasa por la Tabla 14.1 y se decide contra el mapa propio y su lista de no promesas ([c10](#c10), [P-4](#p-4)). Aplica cada vez que en el diseño aparezca «el otro lo hace así».
 
 **¿Puedo maquetar respuestas para funciones que todavía no existen? (OA-PO2)** Sólo como requisito de pantalla, marcado así, nunca como respuesta del asistente. Si la maqueta responde sobre algo que no está construido, la ronda la clasifica como *promesa* y vuelve a E2. Aplica sobre todo en sistemas por desarrollar, donde lo planificado y lo construido se confunden con facilidad ([c14-escenarios](#c14-escenarios)).
 
@@ -2533,7 +2612,7 @@ Criterio de terminado de E6:
 - Toda observación tiene categoría, decisión, dueño y etapa de vuelta.
 - La última ronda se hizo en el sitio real, por rol.
 - Ninguna captura, logo, nombre ni frase literal de un producto de referencia quedó en la documentación.
-- Firma del PO con fecha.
+- Aprobación del registro con fecha por quien decide sobre el producto.
 
 | Antipatrón | Por qué falla | Corrección |
 |---|---|---|
@@ -2552,7 +2631,7 @@ Criterio de terminado de E6:
 <a id="c15"></a>
 ## Capítulo 15 · E7 Plan de medición
 
-Hasta E6 el equipo diseñó la frontera con preguntas que *imaginó* o que juntó soporte. En producción llegan las preguntas que la gente hace de verdad, y el mapa de anillos ([c10](#c10)) deja de ser una hipótesis firmada para convertirse en algo que se puede contrastar. Esta etapa decide **qué se cuenta, cómo se cuenta sin guardar lo que el usuario escribió y qué umbral obliga a revisar la frontera**. El entregable es el plan de medición, que se llena con la plantilla [A.7](#anexo-a-7); lo arman desarrollo y soporte y lo firma el PO. Qué se hace con los números cuando un umbral salta se enseña en [c16](#c16). Los principios que se aplican son [P-7](#p-7) (se acepta por tasa, no por conducta), [P-8](#p-8) (se acepta en el sitio real) y [P-9](#p-9) (se mide sin guardar el texto y la frontera se mueve midiendo).
+Hasta E6 la frontera se diseñó con preguntas imaginadas o reunidas de antemano. En producción llegan las preguntas que la gente hace de verdad, y el mapa de anillos ([c10](#c10)) deja de ser una hipótesis firmada para convertirse en algo que se puede contrastar. Esta etapa decide **qué se cuenta, cómo se cuenta sin guardar lo que el usuario escribió y qué umbral obliga a revisar la frontera**. El entregable es el plan de medición, que se llena con la plantilla [A.7](#anexo-a-7); en la práctica lo arman quienes desarrollan y quienes atienden a los usuarios, y lo aprueba quien decide sobre el producto (en esta guía, el PO). Qué se hace con los números cuando un umbral salta se enseña en [c16](#c16). Los principios que se aplican son [P-7](#p-7) (se acepta por tasa, no por conducta), [P-8](#p-8) (se acepta en el sitio real) y [P-9](#p-9) (se mide sin guardar el texto y la frontera se mueve midiendo).
 
 <a id="c15-1"></a>
 ### 15.1 Definiciones de la etapa
@@ -2581,7 +2660,7 @@ Los cuatro indicadores responden cuatro preguntas distintas y ninguno reemplaza 
 
 Tres decisiones de diseño sostienen la tabla:
 
-1. **Sin guardar el texto.** Lo que el usuario escribe en un panel de administración puede traer nombres de clientes, identificadores, a veces claves pegadas por error. Guardarlo para «analizarlo después» crea un depósito de datos personales que nadie pidió y que obliga a protegerlo, retenerlo y borrarlo. Los campos cerrados alcanzan para decidir *qué fila revisar*; el *porqué* fino se recupera reproduciendo la intención con la batería ([c13](#c13)), no leyendo conversaciones ajenas ([P-9](#p-9)).
+1. **Sin guardar el texto.** Lo que el usuario escribe en un asistente (y más en un panel de administración) puede traer nombres de clientes, identificadores, a veces claves pegadas por error. Guardarlo para «analizarlo después» crea un depósito de datos personales que nadie pidió y que obliga a protegerlo, retenerlo y borrarlo. Los campos cerrados alcanzan para decidir *qué fila revisar*; el *porqué* fino se recupera reproduciendo la intención con la batería ([c13](#c13)), no leyendo conversaciones ajenas ([P-9](#p-9)).
 2. **Motivos cerrados, no comentario libre.** Un comentario libre es texto del usuario (vuelve el punto anterior) y además no se puede sumar. Cinco motivos fijos se suman, se comparan entre versiones y cada uno apunta a una etapa.
 3. **Por intención, no global.** Un asistente con 8 % de no encontrado puede tener cuarenta filas impecables y dos rotas. El promedio esconde las dos; el corte por intención las muestra.
 
@@ -2608,19 +2687,19 @@ flowchart LR
 <a id="c15-3"></a>
 ### 15.3 Cómo se arma, paso a paso
 
-Entrada: el mapa de anillos firmado ([A.2](#anexo-a-2)), la batería con sus criterios ([A.5](#anexo-a-5), [A.6](#anexo-a-6)) y la lista de motivos que propone soporte. Salida: [A.7](#anexo-a-7) firmada y el evento instrumentado antes de publicar.
+Entrada: el mapa de anillos firmado ([A.2](#anexo-a-2)), la batería con sus criterios ([A.5](#anexo-a-5), [A.6](#anexo-a-6)) y una lista inicial de motivos. Salida: [A.7](#anexo-a-7) firmada y el evento instrumentado antes de publicar.
 
 1. **Fijar la lista de identificadores de intención** a partir del mapa. Cada fila tiene un identificador estable; si la fila cambia de redacción, el identificador no cambia. Sin esto no hay serie histórica.
-2. **Fijar los motivos del voto negativo**, entre cuatro y seis, cada uno atado a una etapa. Soporte los elige mirando qué se queja hoy la gente; el PO los aprueba.
+2. **Fijar los motivos del voto negativo**, entre cuatro y seis, cada uno atado a una etapa. Conviene elegirlos mirando de qué se queja hoy la gente y que los apruebe el PO.
 3. **Definir el evento** con campos cerrados (snippet abajo) y escribir explícitamente qué *no* se guarda: texto de la pregunta, texto de la respuesta, identificador de la persona. El día alcanza; la hora y el usuario no hacen falta para mover la frontera.
 4. **Fijar ventana y umbrales** antes de publicar, uno por indicador, con un mínimo de turnos por intención para que la tasa se lea (debajo del mínimo, la fila se mira como conducta, no como tasa, [P-7](#p-7)).
-5. **Nombrar quién lee y cada cuánto.** Soporte mira semanalmente; el PO decide en cada revisión de ventana si una fila se abre ([c16](#c16)). Quien mueve la frontera es el PO, con la medición como evidencia; nadie la mueve por una anécdota.
+5. **Nombrar quién lee y cada cuánto.** Por ejemplo, una lectura semanal a cargo de quien atiende a los usuarios; el PO decide en cada revisión de ventana si una fila se abre ([c16](#c16)). Quien mueve la frontera es el PO, con la medición como evidencia; nadie la mueve por una anécdota.
 6. **Probarlo antes de publicar**: correr la batería en el sitio real ([P-8](#p-8)) y comprobar que cada pregunta produjo un evento con la intención y el resultado esperados, y que en ningún registro aparece texto del usuario.
 
 Snippet representativo del evento:
 
 ```csharp
-// Consola/Medicion/EventoConsola.cs
+// Medicion/EventoConsola.cs (ilustrativo)
 public sealed record EventoConsola(
     string Intencion,        // identificador de fila del mapa, o "sin-fila"
     string Anillo,           // "1" | "2" | "3" | "afuera"
@@ -2639,7 +2718,7 @@ public sealed record EventoConsola(
 | Línea de base | Hay preguntas de soporte y búsquedas fallidas: se usan para fijar umbrales iniciales realistas | No hay base: los umbrales iniciales son criterio y se revisan en la primera ventana |
 | Volumen | Llega rápido; la ventana puede ser corta | Puede tardar; con pocos turnos por intención se lee conducta, no tasa |
 | Riesgo de privacidad | Ya hay logs del producto que quizás guardan texto: revisarlos, no sumar otro | Se diseña sin texto desde el primer día, que es lo más barato |
-| Motivos | Salen de las quejas reales que ya conoce soporte | Salen de los criterios de aceptación de E5 y se ajustan tras la primera ventana |
+| Motivos | Salen de las quejas reales que ya se conocen | Salen de los criterios de aceptación de E5 y se ajustan tras la primera ventana |
 
 *Tabla 15.2. E7 según el estado del sistema. Criterio de la guía.*
 
@@ -2652,7 +2731,7 @@ Ejemplo neutro, el sistema de turnos para consultorios de [c10-ejemplos](#c10-ej
 |---|---|---|---|---|
 | contar-turnos-dia | 210 | 1 % | 3 de 40 (*dato equivocado*) | Bien; revisar los 3 con la batería |
 | que-es-sobreturno | 45 | 2 % | 1 de 8 | Bien |
-| sin-fila | 70 | 100 % | — | Ver qué intenciones faltan: reproducir con soporte |
+| sin-fila | 70 | 100 % | — | Ver qué intenciones faltan: reproducir con la batería |
 | facturar-obra-social (anillo 3) | 30 | 0 % | 9 de 12 (*me mandó a otro lado*) | La derivación es correcta pero la gente la espera adentro: dato para el PO, no para el asistente |
 | fuera de alcance | 25 | — | — | 4 % del total: dentro del umbral |
 
@@ -2660,7 +2739,11 @@ Ejemplo neutro, el sistema de turnos para consultorios de [c10-ejemplos](#c10-ej
 
 El caso de `facturar-obra-social` muestra por qué los motivos importan: la tasa de votos negativos sola diría «la fila anda mal»; el motivo dice que la fila hace lo que se firmó y que lo que se discute es la frontera. Eso se lleva a [c16](#c16) y lo decide el PO, sin prometer lo que el software no hace ([P-4](#p-4)).
 
-En el caso guía, la consola del asistente de PushDispatch ([c18](#c18)), el plan registra intenciones como «contar mensajes enviados en un período» o «qué es una suscripción», con los votos y motivos cerrados al pie de cada respuesta y sin guardar la pregunta. Experiencia propia medida (conducta): una respuesta con voto negativo sobre una cifra se reprodujo con la batería a partir de la intención y el día, sin necesidad del texto original, y alcanzó para encontrar el fallo.
+Los tres casos de la guía muestran el mismo plan con intenciones distintas:
+
+- **Movilidad Urbana** ([c18](#c18)): intenciones como «saldo de mi tarjeta» (anillo 1) o «qué es un trasbordo» (anillo 2). Un pico de *no encontrado* en «tarifa social» suele señalar un término del glosario que falta, no un dato.
+- **Geometría** ([c18](#c18)): en un asistente didáctico, *no entendí la respuesta* pesa más que *dato equivocado*: señala redacción o nivel de explicación (E5), no una fuente rota.
+- **PushDispatch** ([c18](#c18)), presentado como un servicio de notificaciones diseñado desde cero: intenciones como «contar mensajes enviados en un período» o «qué es una suscripción», con voto y motivo cerrado al pie de cada respuesta y sin guardar la pregunta. Experiencia propia medida (conducta): una respuesta con voto negativo sobre una cifra se reprodujo con la batería a partir de la intención y el día, sin el texto original, y alcanzó para encontrar el fallo.
 
 <a id="c15-decision"></a>
 ### 15.6 Decisión
@@ -2679,7 +2762,7 @@ En el caso guía, la consola del asistente de PushDispatch ([c18](#c18)), el pla
 
 **¿Un voto negativo quiere decir que el asistente se equivocó? (OA-PO3)** No necesariamente: el motivo lo dice. *Dato equivocado* apunta al código o al anclaje ([c6](#c6)); *me mandó a otro lado* puede ser una derivación correcta que la gente no quería, y eso es una discusión de frontera para [c16](#c16), no un bug. Aplica cada vez que se lee la tabla por intención.
 
-**¿Quién decide mover la frontera cuando salta un umbral? (OA-PO3)** El PO, con la medición como evidencia y la lista de no promesas a la vista ([c10-1](#c10-1)). Soporte y desarrollo proponen; un caso suelto no alcanza ([P-7](#p-7)). Aplica en cada cierre de ventana.
+**¿Quién decide mover la frontera cuando salta un umbral? (OA-PO3)** El PO, con la medición como evidencia y la lista de no promesas a la vista ([c10-1](#c10-1)). Quienes atienden a los usuarios y quienes desarrollan proponen; un caso suelto no alcanza ([P-7](#p-7)). Aplica en cada cierre de ventana.
 
 **¿Cómo sé que el plan funciona antes de tener usuarios? (OA-QA2)** Corriendo la batería en el sitio real y verificando que cada pregunta dejó un evento con la intención y el resultado esperados y sin texto ([P-8](#p-8)). Si la batería no se ve reflejada en la medición, la medición tampoco va a ver a los usuarios. Aplica antes de publicar y tras cada cambio del mapa.
 
@@ -2710,7 +2793,7 @@ Criterio de terminado de E7 (se repite en [A.7](#anexo-a-7)):
 <a id="c16"></a>
 ## Capítulo 16 · Mover la frontera y cuándo abandonar
 
-> **Qué vas a poder hacer al terminar.** Leer la medición de E7 contra umbrales escritos de antemano, decidir en una reunión corta si un anillo se amplía, se achica o queda igual, saber quién firma cada decisión y reconocer a tiempo la señal de abandono (OA-PO3, OA-EQ4).
+> **Qué vas a poder hacer al terminar.** Leer la medición de E7 contra umbrales escritos de antemano, razonar si un anillo se amplía, se achica o queda igual, entender qué rol suele firmar cada decisión y reconocer a tiempo la señal de abandono (OA-PO3, OA-EQ4). Vale para cualquier sistema; los ejemplos de los tres casos son ilustrativos.
 
 El capítulo 15 ([c15](#c15)) armó el plan de medición (A.7, [anexo-a-7](#anexo-a-7)): qué se cuenta, por intención y por rol, sin guardar el texto. Este capítulo es lo que se hace con esos números. Lo gobiernan tres principios: P-9, la frontera se mueve midiendo ([p-9](#p-9)); P-4, no se promete lo que el software no hace ([p-4](#p-4)); y P-7, se decide por tasa y no por conducta ([p-7](#p-7)). Un caso que pasó una vez es una anécdota; diez de cien en un ciclo es un dato.
 
@@ -2730,7 +2813,7 @@ El capítulo 15 ([c15](#c15)) armó el plan de medición (A.7, [anexo-a-7](#anex
 **Pedido de función.** Una intención fuera de alcance que en realidad pide algo que el producto no hace. No se resuelve moviendo la frontera del asistente sino en el plan del producto: hasta que la función exista, el asistente explica lo que hoy se puede ([P-4](#p-4), [c2](#c2)).
 
 <a id="c16-1-5"></a>
-**Criterio de abandono.** La condición, escrita en A.7 desde el día uno, bajo la cual el equipo deja de invertir en el asistente y lo retira o lo reduce a una función mínima (por ejemplo, preguntas sugeridas que llevan a la pantalla). En esta guía: **dos ciclos consecutivos sin mejora** en las señales principales, o uso marginal sostenido, con las correcciones del ciclo efectivamente aplicadas (criterio de la guía).
+**Criterio de abandono.** La condición, escrita en A.7 desde el día uno, bajo la cual quien lleva el proyecto deja de invertir en el asistente y lo retira o lo reduce a una función mínima (por ejemplo, preguntas sugeridas que llevan a la pantalla). En esta guía: **dos ciclos consecutivos sin mejora** en las señales principales, o uso marginal sostenido, con las correcciones del ciclo efectivamente aplicadas (criterio de la guía).
 
 <a id="c16-2"></a>
 ### 16.2 El ciclo de decisión
@@ -2762,34 +2845,34 @@ El ciclo tiene un orden que no conviene saltear. Primero se mira **por intenció
 <a id="c16-3"></a>
 ### 16.3 Umbrales y quién decide
 
-La tabla siguiente es un punto de partida. Los números son **criterio de la guía**, no estándares de la industria: ni Google ni Microsoft publican cortes universales, y lo que sí recomiendan es revisar lo que el usuario pidió y no se pudo atender. Microsoft, por ejemplo, documenta el tema de respaldo (*fallback*) que se dispara cuando no se reconoce la intención, como un lugar desde donde derivar o escalar ([REF-012](#ref-012)), y su guía de Copilot Studio trata la mejora continua a partir de lo que se mide ([REF-005](#ref-005)). Cada equipo ajusta los cortes en el primer ciclo y los deja escritos en A.7.
+La tabla siguiente es un punto de partida. Los números son **criterio de la guía**, no estándares de la industria: ni Google ni Microsoft publican cortes universales, y lo que sí recomiendan es revisar lo que el usuario pidió y no se pudo atender. Microsoft, por ejemplo, documenta el tema de respaldo (*fallback*) que se dispara cuando no se reconoce la intención, como un lugar desde donde derivar o escalar ([REF-012](#ref-012)), y su guía de Copilot Studio trata la mejora continua a partir de lo que se mide ([REF-005](#ref-005)). Cada proyecto ajusta los cortes en el primer ciclo y los deja escritos en A.7.
 
 | Señal (A.7) | Umbral de partida | Movimiento que se discute | Quién decide | Quién ejecuta |
 |---|---|---|---|---|
 | No-encontrado en una intención del anillo 1 o 2 | Más de 1 de cada 10 consultas de esa intención en el ciclo | Reforzar (glosario, corpus, herramienta) | DIS y DEV; el PO se entera | DIS (A.3), DEV (A.4) |
 | Voto negativo con motivo «incorrecto» | Cualquier caso en una intención que actúa o muestra cifras; más de 1 de cada 20 en el resto | Reforzar o achicar | PO | DEV, QA |
 | Fuera de alcance repetido con la misma intención | Aparece en los primeros puestos dos ciclos seguidos | Ampliar si el producto lo hace; si no, pedido de función | PO | DIS, DEV |
-| Respuesta que promete algo que el producto no hace | Un solo caso | Corregir de inmediato; no espera el ciclo | PO, aviso a todo el equipo | DEV, QA |
+| Respuesta que promete algo que el producto no hace | Un solo caso | Corregir de inmediato; no espera el ciclo | PO, aviso a quienes mantienen el asistente | DEV, QA |
 | Uso del asistente por rol | Sin crecimiento o por debajo de lo previsto en A.7 dos ciclos | Revisión de encuadre ([c8](#c8)) | PO | Todo el equipo |
 
 *Tabla 16.1. Umbrales de partida por señal, con quién decide y quién ejecuta. Criterio de la guía.*
 
 Dos filas no esperan el cierre del ciclo: la promesa falsa y el error en una intención que actúa o muestra cifras. Ahí el riesgo es para el usuario y para el producto, y vale P-4 ([p-4](#p-4)). Todo lo demás se trata en la revisión, con el número del ciclo completo delante.
 
-**Quién decide.** El PO decide todo movimiento que cambia el mapa (ampliar, achicar), porque cada fila del mapa es una promesa de producto ([c10](#c10)). Diseño y desarrollo deciden los refuerzos, que no cambian qué responde el asistente sino cómo lo encuentra y lo dice. QA no decide la frontera, pero tiene veto sobre la salida: ningún cambio sale sin pasar la batería ([c13](#c13)). Soporte aporta el vocabulario nuevo y los casos que la medición no ve, porque P-9 impide guardar el texto ([p-9](#p-9)).
+**Quién decide.** En un reparto de roles habitual (no es el único posible), el responsable del producto (PO) decide todo movimiento que cambia el mapa (ampliar, achicar), porque cada fila del mapa es una promesa de producto ([c10](#c10)). Diseño y desarrollo deciden los refuerzos, que no cambian qué responde el asistente sino cómo lo encuentra y lo dice. QA no decide la frontera, pero tiene veto sobre la salida: ningún cambio sale sin pasar la batería ([c13](#c13)). Soporte aporta el vocabulario nuevo y los casos que la medición no ve, porque P-9 impide guardar el texto ([p-9](#p-9)).
 
 <a id="c16-4"></a>
 ### 16.4 Criterio de abandono
 
-Abandonar no es un fracaso del equipo: es una de las salidas previstas del método. La guía de Google pregunta explícitamente si la conversación es la forma correcta para la tarea antes de construir ([REF-003](#ref-003)), y Nielsen Norman Group documentó que los asistentes conversacionales rinden mal cuando reemplazan una interfaz que ya resolvía bien la tarea ([REF-007](#ref-007)). Este capítulo retoma esa pregunta después de construir, ahora con datos.
+Abandonar no es un fracaso: es una de las salidas previstas del método. La guía de Google pregunta explícitamente si la conversación es la forma correcta para la tarea antes de construir ([REF-003](#ref-003)), y Nielsen Norman Group documentó que los asistentes conversacionales rinden mal cuando reemplazan una interfaz que ya resolvía bien la tarea ([REF-007](#ref-007)). Este capítulo retoma esa pregunta después de construir, ahora con datos.
 
 Se abre la revisión de abandono cuando se cumple alguna de estas condiciones (criterio de la guía):
 
-1. **Dos ciclos consecutivos sin mejora** en las señales principales (no-encontrado y voto negativo por intención), habiendo aplicado de verdad los refuerzos que el ciclo anterior decidió. Si los refuerzos no se aplicaron, el problema es del equipo, no del asistente, y el contador no corre.
+1. **Dos ciclos consecutivos sin mejora** en las señales principales (no-encontrado y voto negativo por intención), habiendo aplicado de verdad los refuerzos que el ciclo anterior decidió. Si los refuerzos no se aplicaron, el problema es de proceso, no del asistente, y el contador no corre.
 2. **Uso marginal sostenido:** el asistente se abre poco y, cuando se abre, el usuario sale a la pantalla sin terminar la conversación.
 3. **Costo de mantener la frontera mayor que lo que ahorra:** cada cambio del producto obliga a rehacer glosario, corpus y batería, y el soporte no baja.
 
-La revisión de abandono tiene tres salidas posibles, que firma el PO:
+La revisión de abandono tiene tres salidas posibles; en el reparto habitual las firma el PO:
 
 | Salida | Cuándo | Qué queda |
 |---|---|---|
@@ -2811,20 +2894,24 @@ Sólo cambian estas celdas:
 | Primer ciclo | Se compara contra una línea de base previa (consultas de soporte, búsquedas fallidas) | No hay línea de base: el primer ciclo *es* la línea de base, rotulado NO VERIFICADO hasta el segundo |
 | Pedidos de función | Muchos y conocidos: el usuario trae expectativas de cómo funciona hoy | Pocos al principio; aparecen cuando el producto madura |
 | Criterio de abandono | El contador corre desde el primer ciclo | El contador corre desde el segundo ciclo, cuando hay con qué comparar |
-| Quién aporta casos | Soporte, con historia de consultas | El equipo de producto y los primeros usuarios piloto |
+| Quién aporta casos | Soporte, con historia de consultas | Quienes construyen el producto y los primeros usuarios piloto |
 
 *Tabla 16.3. Diferencias por escenario al mover la frontera.*
 
 <a id="c16-ejemplos"></a>
 ### 16.6 Ejemplos
 
-**Reforzar, no ampliar.** En un panel de notificaciones, la intención «cuántos dispositivos recibieron el último mensaje» está en el anillo 1 y cierra el ciclo con 14 no-encontrados de 90 consultas, por encima del umbral. El diagnóstico muestra que los usuarios escriben «cuántos lo vieron», que el glosario no tenía como sinónimo cercano de *entregados* (y que no es lo mismo que *abiertos*). El movimiento es reforzar: entrada nueva en A.3 con la aclaración «¿Querés saber cuántos se entregaron o cuántos se abrieron?», una pregunta nueva en la batería y salida tras pasar ×3. La frontera no se tocó.
+**Reforzar, no ampliar (PushDispatch, panel de notificaciones push).** En el panel de administración, la intención «cuántos dispositivos recibieron el último mensaje» está en el anillo 1 y cierra el ciclo con 14 no-encontrados de 90 consultas, por encima del umbral. El diagnóstico muestra que los usuarios escriben «cuántos lo vieron», que el glosario no tenía como sinónimo cercano de *entregados* (y que no es lo mismo que *abiertos*). El movimiento es reforzar: entrada nueva en A.3 con la aclaración «¿Querés saber cuántos se entregaron o cuántos se abrieron?», una pregunta nueva en la batería y salida tras pasar ×3. La frontera no se tocó.
 
-**Pedido de función.** La intención «programar un mensaje que se repita todos los lunes» aparece entre las tres primeras fuera de alcance dos ciclos seguidos. El producto no tiene envíos recurrentes. No se amplía el anillo: el asistente sigue explicando cómo se programa un envío único, y el PO lleva el número al plan del producto. Si la función se construye, la intención entra al anillo 1 en el ciclo siguiente, con su destino y su batería.
+**Pedido de función (PushDispatch).** La intención «programar un mensaje que se repita todos los lunes» aparece entre las tres primeras fuera de alcance dos ciclos seguidos. El producto no tiene envíos recurrentes. No se amplía el anillo: el asistente sigue explicando cómo se programa un envío único, y el número va al plan del producto. Si la función se construye, la intención entra al anillo 1 en el ciclo siguiente, con su destino y su batería.
 
-**Achicar.** Una intención que explica cómo rotar credenciales recibe dos votos «incorrecto» en un ciclo. Es una acción riesgosa: no espera el cierre. El PO la pasa al anillo 3 (orientar y derivar a la documentación técnica) hasta que el corpus tenga una fuente revisada.
+**Achicar (PushDispatch).** Una intención que explica cómo rotar credenciales recibe dos votos «incorrecto» en un ciclo. Es una acción riesgosa: no espera el cierre. El PO la pasa al anillo 3 (orientar y derivar a la documentación técnica) hasta que el corpus tenga una fuente revisada.
 
-**Abandono parcial.** Después de dos ciclos, las consultas de datos del panel rinden, pero las de configuración avanzada siguen con no-encontrados altos pese a los refuerzos. Salida: achicar a lo que funciona; configuración avanzada queda como rechazo amable con enlace a la pantalla.
+**Reforzar en un dominio didáctico (Geometría).** En un laboratorio donde el alumno arma a mano la descripción de sus figuras y un validador marca la diferencia entre lo declarado y lo derivado, la intención «por qué me da mal el área» acumula no-encontrados: los alumnos escriben «superficie» o «lo de afuera» y el glosario sólo tenía *área total* y *área de una cara*. Se refuerza con sinónimos y con la aclaración del término la primera vez; la frontera (el asistente señala, no corrige la tarea) no se mueve, porque ampliarla resolvería el ejercicio por el alumno.
+
+**Ampliar con demanda medida (Movilidad Urbana).** En una encuesta de uso del transporte, el analista no tiene pantalla de resultados y pregunta «qué medio usan más en Corrientes» fuera de alcance dos ciclos seguidos. El producto ya calcula esos agregados por código: se amplía al anillo 1 con una herramienta que devuelve la cifra agregada (barras, porque la pregunta es multirrespuesta y no suma 100 %) y su batería.
+
+**Abandono parcial.** Después de dos ciclos, en cualquiera de estos sistemas, las consultas de datos del panel rinden, pero las de configuración avanzada siguen con no-encontrados altos pese a los refuerzos. Salida: achicar a lo que funciona; configuración avanzada queda como rechazo amable con enlace a la pantalla.
 
 <a id="c16-decision"></a>
 ### 16.7 Decisión
@@ -2846,7 +2933,7 @@ Sólo cambian estas celdas:
 
 **Si hay muchos no-encontrados, ¿no es señal de que el asistente sabe poco y hay que ampliarlo? (OA-PO3)** Casi nunca. Primero hay que preguntar *en qué intención* y *por qué*. Si la intención ya está adentro, el asistente no la encuentra por vocabulario, fuente o herramienta, y se refuerza ([c11](#c11), [c12](#c12)). Ampliar sólo tiene sentido cuando la intención está afuera, el producto la resuelve y la demanda se sostiene más de un ciclo. Aplica sobre todo en el primer ciclo de un sistema existente, cuando el glosario todavía tiene huecos.
 
-**¿Quién decide abandonar, y por qué se escribe el criterio antes de salir? (OA-PO3, OA-EQ4)** Decide el PO, en la revisión de abandono, con la medición de dos ciclos delante. Se escribe antes porque después de meses de trabajo el equipo tiende a seguir invirtiendo para no perder lo hecho; un criterio escrito de antemano saca esa discusión del terreno de la opinión. Aplica en todo proyecto, incluso en los que el encuadre de E0 pasó con holgura ([c8](#c8)).
+**¿Quién decide abandonar, y por qué se escribe el criterio antes de salir? (OA-PO3, OA-EQ4)** Decide el PO, en la revisión de abandono, con la medición de dos ciclos delante. Se escribe antes porque después de meses de trabajo cualquier grupo tiende a seguir invirtiendo para no perder lo hecho; un criterio escrito de antemano saca esa discusión del terreno de la opinión. Aplica en todo proyecto, incluso en los que el encuadre de E0 pasó con holgura ([c8](#c8)).
 
 **¿Qué hago con un pedido que el producto no hace pero el asistente podría «resolver» redactando? (OA-PO3)** No dejarlo redactar. El asistente explica lo que hoy se puede, registra la intención como fuera de alcance y el PO la evalúa como pedido de función. Si el modelo arma una respuesta plausible sobre algo que no existe, el usuario actúa sobre una promesa falsa ([P-4](#p-4), [REF-009](#ref-009)). Aplica a toda intención del anillo «afuera» que en realidad es una función faltante ([c3](#c3)).
 
@@ -2867,7 +2954,7 @@ Un ciclo de decisión está bien hecho cuando:
 |---|---|---|
 | Mover por anécdota | El mapa cambia con cada queja y la batería pierde valor | Decidir por tasa en la revisión ([P-7](#p-7)) |
 | Ampliar para tapar no-encontrados | La frontera crece y los huecos siguen | Diagnosticar y reforzar primero |
-| Umbrales después de mirar los números | El equipo elige el corte que le conviene | Fijarlos en A.7 antes de salir |
+| Umbrales después de mirar los números | Se elige el corte que le conviene | Fijarlos en A.7 antes de salir |
 | Prompt que crece en cada ciclo | Cada falla se tapa con una regla más y nadie sabe qué hace el asistente | Corregir el entregable de la etapa (A.3, A.4, corpus) |
 | Abandono sin criterio | Se sigue invirtiendo por inercia o se retira por una mala semana | Criterio escrito: dos ciclos sin mejora, con refuerzos aplicados |
 | Pedido de función dentro del mapa | El asistente termina insinuando que el producto hace algo que no hace | Sacarlo del mapa y llevarlo al plan ([P-4](#p-4)) |
@@ -2882,13 +2969,13 @@ Un ciclo de decisión está bien hecho cuando:
 
 > **Qué vas a poder hacer al terminar.** Tomar cada entregable del método (A.1 a A.7) y saber en qué capítulo de la guía de integración de la capa de IA en .NET se convierte en código, prueba, control o decisión registrada; y reconocer cuándo una pieza técnica está trabajando sin el entregable de diseño que la justifica (OA-DEV3, OA-DEV2).
 
-Este libro termina donde empieza el código. Las etapas E0 a E7 ([c7](#c7)) producen documentos que un equipo firma: inventario, mapa de anillos, glosario, catálogo de destinos, batería, criterios de aceptación y plan de medición. La guía de integración de la capa de IA en .NET (en adelante, *la guía de capa de IA*, [./Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)) explica cómo se construye la pieza que los consume. Este capítulo es el puente entre las dos: no repite nada de la otra guía, sólo dice qué entregable entra en qué capítulo y qué se pierde si llega vacío. Las anclas de destino se verificaron en la guía de capa de IA el 2026-11-11 y son estables entre versiones de ese documento.
+Este libro termina donde empieza el código. Las etapas E0 a E7 ([c7](#c7)) producen documentos de diseño: inventario, mapa de anillos, glosario, catálogo de destinos, batería, criterios de aceptación y plan de medición. La guía de integración de la capa de IA en .NET (en adelante, *la guía de capa de IA*, [./Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)) explica cómo se construye la pieza que los consume. Este capítulo es el puente entre las dos: no repite nada de la otra guía, sólo dice qué entregable entra en qué capítulo y qué se pierde si llega vacío. Las anclas de destino se verificaron en la guía de capa de IA el 2026-11-11 y son estables entre versiones de ese documento.
 
 <a id="c17-1"></a>
 ### 17.1 Definiciones
 
 <a id="c17-1-1"></a>
-**Puente.** Un par «entregable de diseño → pieza técnica» con tres datos: qué entrega el diseño, qué capítulo de la guía de capa de IA lo consume y qué controla el desarrollo para saber que lo recibió completo. Un puente no es una dependencia de lectura: es un contrato de traspaso entre roles (DIS o PO entrega, DEV recibe, QA verifica).
+**Puente.** Un par «entregable de diseño → pieza técnica» con tres datos: qué entrega el diseño, qué capítulo de la guía de capa de IA lo consume y qué controla el desarrollo para saber que lo recibió completo. Un puente no es una dependencia de lectura: es un contrato de traspaso entre quien diseña, quien construye y quien verifica, cualquiera sea el tamaño o la organización del equipo.
 
 <a id="c17-1-2"></a>
 **Pieza huérfana.** Una pieza técnica (un índice de recuperación, una herramienta, un filtro de permisos, un tablero de telemetría) que existe sin el entregable de diseño que dice para qué sirve. Es el antipatrón que este capítulo previene: el equipo construye bien algo que nadie decidió (criterio de la guía).
@@ -2932,10 +3019,10 @@ flowchart LR
 *Figura 17.1. Cada entregable entra en uno o dos capítulos de la guía de capa de IA. La flecha punteada es el ciclo E7 → E2 de [c7](#c7): lo que la operación mide vuelve al mapa de anillos.*
 
 <a id="c17-tabla"></a>
-| Entregable (este libro) | Capítulo que lo consume | Qué recibe la pieza | Control de recepción (DEV/QA) |
+| Entregable (este libro) | Capítulo que lo consume | Qué recibe la pieza | Control de recepción |
 |---|---|---|---|
 | A.1 inventario y A.2 mapa de anillos ([c9](#c9), [c10](#c10)) | [§5 Arquitectura](./Dot-Net-Integration-AI-Layer-Guide.md#c5) | Qué tareas atiende el asistente, en qué anillo y con qué riesgo; de ahí sale qué parte es herramienta, qué parte es ayuda y qué se rechaza | Cada fila del anillo 1 tiene una pieza asignada; ninguna pieza atiende algo que no esté en el mapa |
-| A.3 glosario y sinónimos, más las pantallas de A.1 ([c11](#c11)) | [§7 Estrategias de conocimiento](./Dot-Net-Integration-AI-Layer-Guide.md#c7) y [§8 RAG en .NET](./Dot-Net-Integration-AI-Layer-Guide.md#c8) | El corpus (el panel recorrido y su ayuda) y el vocabulario del usuario que la recuperación tiene que encontrar | Cada término del anillo 2 recupera su entrada por el término y por al menos un sinónimo con fuente |
+| A.3 glosario y sinónimos, más las pantallas de A.1 ([c11](#c11)) | [§7 Estrategias de conocimiento](./Dot-Net-Integration-AI-Layer-Guide.md#c7) y [§8 RAG en .NET](./Dot-Net-Integration-AI-Layer-Guide.md#c8) | El corpus (las pantallas del sistema y su ayuda) y el vocabulario del usuario que la recuperación tiene que encontrar | Cada término del anillo 2 recupera su entrada por el término y por al menos un sinónimo con fuente |
 | A.4 catálogo de destinos y herramientas ([c12](#c12), snippets [S-1](#c6-s-1) y [S-2](#c6-s-2)) | [§9 Herramientas, agentes y orquestación](./Dot-Net-Integration-AI-Layer-Guide.md#c9) | La lista cerrada de herramientas y destinos, con sus parámetros y qué dato devuelve cada una | El modelo no puede llamar nada que no esté en A.4; cada herramienta devuelve la cifra calculada, no un texto para que el modelo la deduzca |
 | A.5 batería y A.6 criterios de aceptación ([c13](#c13)) | [§11 Probar y evaluar](./Dot-Net-Integration-AI-Layer-Guide.md#c11) | Preguntas reales con respuesta esperada; criterios separados para herramienta correcta y redacción fiel | La batería corre ×3 contra la pieza; se informa tasa (k de M), no conducta |
 | Columna de permiso de A.4 y revalidación ([c5](#c5), [S-3](#c6-s-3)) | [§12 Asegurar la capa de IA](./Dot-Net-Integration-AI-Layer-Guide.md#c12) | Qué rol puede ver cada destino y cada cifra, y el punto donde se revalida antes de mostrar | Una prueba por rol en la batería; un destino sin permiso no aparece ni como sugerencia |
@@ -2960,13 +3047,13 @@ flowchart LR
 **Batería → pruebas.** La batería ×3 y los criterios de aceptación ([c13](#c13)) son el insumo de evaluación de [§11](./Dot-Net-Integration-AI-Layer-Guide.md#c11). Lo que este libro agrega es *qué* se pregunta y *qué* se espera; §11 dice *cómo* se corre y se juzga. Se miden por separado dos cosas: si se eligió la herramienta correcta (verificable por código) y si la redacción es fiel a la cifra (anclaje, [S-4](#c6-s-4)). Se acepta por tasa ([P-7](#p-7)) y en el sitio real ([P-8](#p-8)), no en la demo.
 
 <a id="c17-3-5"></a>
-**Permisos → seguridad.** La columna de permiso del catálogo y la regla de revalidar dos veces ([c5](#c5)) llegan a [§12](./Dot-Net-Integration-AI-Layer-Guide.md#c12): el permiso se resuelve en el servidor, al elegir el destino y otra vez antes de mostrarlo, y las cifras de una desambiguación entre cuentas se filtran por lo que el rol puede ver. El diseño decide *qué ve cada rol*; la seguridad decide *dónde se impone*. Ningún permiso vive en el prompt.
+**Permisos → seguridad.** La columna de permiso del catálogo y la regla de revalidar dos veces ([c5](#c5)) llegan a [§12](./Dot-Net-Integration-AI-Layer-Guide.md#c12): el permiso se resuelve en el servidor, al elegir el destino y otra vez antes de mostrarlo, y las cifras que se ofrecen para desambiguar entre opciones parecidas se filtran por lo que el rol puede ver. El diseño decide *qué ve cada rol*; la seguridad decide *dónde se impone*. Ningún permiso vive en el prompt.
 
 <a id="c17-3-6"></a>
 **Medición → operación.** El plan de medición ([c15](#c15)) se implementa como telemetría en [§13](./Dot-Net-Integration-AI-Layer-Guide.md#c13): eventos por intención con motivo cerrado y sin texto ([P-9](#p-9)). Es el único puente de ida y vuelta: lo que se mide en operación vuelve al mapa de anillos y mueve la frontera ([c16](#c16)).
 
 <a id="c17-3-7"></a>
-**Decisiones → registro.** Las decisiones de diseño que condicionan piezas (poner la consola en primer plano, abandonar una intención, no ofrecer una acción irreversible) se registran con el formato de [§14](./Dot-Net-Integration-AI-Layer-Guide.md#c14): contexto, alternativas descartadas, consecuencias y cuándo dejan de valer. Así una decisión de diseño no se pierde cuando cambia el equipo.
+**Decisiones → registro.** Las decisiones de diseño que condicionan piezas (dar al asistente un lugar central en la interfaz, abandonar una intención, no ofrecer una acción irreversible) se registran con el formato de [§14](./Dot-Net-Integration-AI-Layer-Guide.md#c14): contexto, alternativas descartadas, consecuencias y cuándo dejan de valer. Así una decisión de diseño no se pierde cuando cambia el equipo.
 
 <a id="c17-escenarios"></a>
 ### 17.4 Aplicación por escenario
@@ -2976,16 +3063,25 @@ Sólo las celdas que cambian entre los dos escenarios de [c7](#c7).
 | Puente | Sistema existente | Sistema por desarrollar |
 |---|---|---|
 | Mapa → §5 | Se exponen servicios que ya existen; el mapa marca cuáles faltan y no se prometen | El mapa entra al diseño de la arquitectura desde el inicio; las tareas del anillo 1 piden su servicio |
-| Glosario → §7/§8 | El corpus es el panel y la ayuda que ya están; el vocabulario sale de soporte y de consultas reales | No hay vocabulario medido: sinónimos de entrevistas y recorridos, rotulados **NO VERIFICADO** hasta producción |
+| Glosario → §7/§8 | El corpus son las pantallas y la ayuda que ya existen; el vocabulario sale de soporte y de consultas reales | No hay vocabulario medido: sinónimos de entrevistas y recorridos, rotulados **NO VERIFICADO** hasta producción |
 | Catálogo → §9 | Las herramientas envuelven consultas existentes; se verifica que la cifra coincida con la pantalla | Herramienta y pantalla se diseñan con la misma definición de métrica |
 | Batería → §11 | Preguntas de soporte reales; se prueba contra el sitio con datos reales | Preguntas de recorridos sobre la maqueta; la prueba en sitio real queda como compuerta antes de abrir |
 
 *Tabla 17.2. Diferencias por escenario en los puentes; permisos, medición y decisiones no cambian.*
 
 <a id="c17-ejemplos"></a>
-### 17.5 Ejemplo neutro
+### 17.5 Ejemplos ilustrativos
 
-Un panel de reservas de salas incorpora un asistente. El mapa de anillos pone «¿cuántas reservas canceladas hubo este mes?» en el anillo 1. El traspaso queda así: A.4 define la herramienta `contar_reservas(estado, periodo)` con su destino «listado de reservas filtrado» y el permiso «sólo salas de tu sede» (→ §9 y §12); A.3 agrega «anuladas» y «dadas de baja» como sinónimos de *canceladas* (→ §8); A.5 trae la pregunta con su respuesta esperada y una variante con el sinónimo (→ §11); A.7 registra la intención `contar_reservas` con resultado y motivo cerrado (→ §13). Si DEV recibe sólo la herramienta y no el sinónimo, la batería lo detecta: la variante con «anuladas» falla en la recuperación aunque la herramienta funcione.
+Los tres casos que acompañan este libro ([c1](#c1)) muestran el mismo traspaso en dominios distintos; se presentan como ilustración del marco, no como receta de un producto.
+
+- *Movilidad Urbana.* «¿Cuánto me queda de estacionamiento?» es anillo 1: herramienta que devuelve el saldo calculado (§9), con permiso limitado a la cuenta del usuario (§12). «¿Qué es una zona tarifada?» es anillo 2: entrada de glosario con sinónimos como «zona paga» (§7, §8).
+- *Geometría.* «¿Cuál es el área de este triángulo?» pide una cifra que calcula el código, no el modelo (§9); «¿qué es la altura?» es explicación recuperada y citada (§8). La batería separa ambas (§11).
+- *PushDispatch, presentado como un servicio de notificaciones push diseñado desde cero.* «¿Cuántos suscriptores tiene esta aplicación?» es una herramienta con total agregado y destino elegido por código (§9), revalidado según el rol de quien pregunta (§12); «¿qué es un segmento?» es anillo 2; la medición de preguntas sin respuesta (§13) es lo que mueve la frontera.
+
+El ejemplo siguiente desarrolla una fila completa con un dominio neutro.
+
+
+Un panel de reservas de salas incorpora un asistente. El mapa de anillos pone «¿cuántas reservas canceladas hubo este mes?» en el anillo 1. El traspaso queda así: A.4 define la herramienta `contar_reservas(estado, periodo)` con su destino «listado de reservas filtrado» y el permiso «sólo salas de tu sede» (→ §9 y §12); A.3 agrega «anuladas» y «dadas de baja» como sinónimos de *canceladas* (→ §8); A.5 trae la pregunta con su respuesta esperada y una variante con el sinónimo (→ §11); A.7 registra la intención `contar_reservas` con resultado y motivo cerrado (→ §13). Si quien construye recibe sólo la herramienta y no el sinónimo, la batería lo detecta: la variante con «anuladas» falla en la recuperación aunque la herramienta funcione.
 
 ```text
 // Traspaso de una fila (representativo; columnas de A.4)
@@ -2999,16 +3095,16 @@ permiso:     sede del usuario, revalidado        → guía de capa de IA §12
 <a id="c17-decision"></a>
 ### 17.6 Decisión
 
-Antes de abrir un capítulo de la guía de capa de IA, el equipo se hace una pregunta: *¿está firmado el entregable que esta pieza consume?* Si no lo está, se vuelve a la etapa que lo produce ([c7](#c7)) en lugar de construir con un supuesto. La excepción es la exploración técnica descartable (probar una librería, medir un tiempo de respuesta): vale, siempre que no se use como base del producto (criterio de la guía).
+Antes de abrir un capítulo de la guía de capa de IA conviene hacerse una pregunta: *¿está completo el entregable que esta pieza consume?* Si no lo está, se vuelve a la etapa que lo produce ([c7](#c7)) en lugar de construir con un supuesto. La excepción es la exploración técnica descartable (probar una librería, medir un tiempo de respuesta): vale, siempre que no se use como base del producto (criterio de la guía).
 
 <a id="c17-preguntas"></a>
 ### 17.7 Preguntas guía
 
-**¿Por qué no puedo empezar por la guía de capa de IA si el equipo es de desarrollo? (OA-DEV3)** Porque esa guía responde *cómo* construir, y sin los entregables no sabés *qué*: qué herramientas, qué corpus, qué permisos. Empezar por ahí produce piezas huérfanas ([c17-1-2](#c17-1-2)). Aplica cuando el objetivo es un asistente de producto; para una prueba técnica descartable, sí podés ([c17-decision](#c17-decision)).
+**¿Por qué no conviene empezar por la guía de capa de IA si quien lee viene del desarrollo? (OA-DEV3)** Porque esa guía responde *cómo* construir, y sin los entregables no sabés *qué*: qué herramientas, qué corpus, qué permisos. Empezar por ahí produce piezas huérfanas ([c17-1-2](#c17-1-2)). Aplica cuando el objetivo es un asistente de producto; para una prueba técnica descartable, sí podés ([c17-decision](#c17-decision)).
 
 **¿Una pregunta del dominio va a RAG o a una herramienta? (OA-DEV2)** Si la respuesta es un dato del sistema (una cifra, un estado, una lista), herramienta, §9; si es una explicación que está en la ayuda, recuperación con cita, §7 y §8. El criterio de detalle está en [c6](#c6). El anillo no alcanza para decidir: una pregunta del anillo 2 puede necesitar un dato para ejemplificar.
 
-**¿Quién verifica que el puente se cruzó completo? (OA-DEV3)** QA, con la batería: cada columna de la Tabla 17.1 tiene un control que se convierte en una o más preguntas de A.5. Si un control no tiene pregunta, el puente no se verifica; se agrega la pregunta en [c13](#c13).
+**¿Cómo se verifica que el puente se cruzó completo? (OA-DEV3)** Con la batería: cada columna de la Tabla 17.1 tiene un control que se convierte en una o más preguntas de A.5. Si un control no tiene pregunta, el puente no se verifica; se agrega la pregunta en [c13](#c13).
 
 **¿Qué pasa si la guía de capa de IA cambia un capítulo? (OA-DEV3)** Las anclas (#c5 … #c14) son estables, así que el puente no se rompe; lo que se revisa es si cambió lo que el capítulo espera recibir. Se vuelve a correr la batería y se anota la versión consultada en el Anexo F ([anexo-f](#anexo-f)).
 
@@ -3018,7 +3114,7 @@ Antes de abrir un capítulo de la guía de capa de IA, el equipo se hace una pre
 ### 17.8 Criterios de calidad y antipatrones
 
 **Criterios.**
-- Cada fila de la Tabla 17.1 tiene un entregable firmado y un control de recepción con su pregunta en A.5.
+- Cada fila de la Tabla 17.1 tiene un entregable completo y un control de recepción con su pregunta en A.5.
 - Ninguna herramienta, destino o fuente del corpus existe fuera de A.3 y A.4.
 - La telemetría registra exactamente los eventos de A.7, sin texto de usuario.
 - Cada decisión de diseño que cambia una pieza tiene su registro con alternativas descartadas.
@@ -3032,9 +3128,9 @@ Antes de abrir un capítulo de la guía de capa de IA, el equipo se hace una pre
 <a id="c18"></a>
 ## Capítulo 18 · Caso aplicado: PushDispatch diseñado desde cero
 
-Este capítulo junta todo el método en un solo producto. **PushDispatch** es un servicio de notificaciones push con panel de administración. Acá lo contamos como un producto diseñado desde cero, al que el equipo le suma un asistente de consola. El recorrido pasa por las ocho etapas de [c7](#c7), de E0 a E7, y deja **una fila llena de cada plantilla** ([A.1](#anexo-a-1) a [A.7](#anexo-a-7)), para que el lector vea cómo se encadenan. Al final van las lecciones que el equipo midió construyendo el asistente. Están rotuladas como *experiencia propia medida* y separan conducta de tasa ([P-7](#p-7), [c0-4](#c0-4)).
+Este capítulo junta todo el método en un solo ejemplo, para que el lector vea el marco funcionando de punta a punta en un sistema cualquiera. El ejemplo es **PushDispatch**, un servicio de notificaciones push con panel de administración, presentado como un producto diseñado desde cero al que se le suma un asistente de consola. No es un manual de ese producto: es un caso ilustrativo, y en cada etapa se indica cómo cambiaría la decisión en los otros dos casos de la guía, Movilidad Urbana y Geometría. El recorrido pasa por las ocho etapas de [c7](#c7), de E0 a E7, y deja **una fila llena de cada plantilla** ([A.1](#anexo-a-1) a [A.7](#anexo-a-7)), para que el lector vea cómo se encadenan. Al final van las lecciones medidas al construir el asistente. Están rotuladas como *experiencia propia medida* y separan conducta de tasa ([P-7](#p-7), [c0-4](#c0-4)).
 
-El caso no repite la teoría. Cada paso remite al capítulo que lo enseña, y lo que se ve acá es **qué decisión se tomó y por qué**. Las piezas internas del sistema real (código, pantallas exactas, historial de cambios) no forman parte de esta guía. Para eso está el documento compañero privado ([c0-6](#c0-6)).
+El caso no repite la teoría. Cada paso remite al capítulo que lo enseña, y lo que se ve acá es **qué decisión se tomó y por qué**. Los detalles de implementación de un sistema concreto (código, pantallas exactas, historial de cambios) no forman parte de esta guía: lo que interesa es el razonamiento, que se transfiere a cualquier producto.
 
 <a id="c18-1"></a>
 ### 18.1 El producto, en una página
@@ -3056,10 +3152,10 @@ El caso no repite la teoría. Cada paso remite al capítulo que lo enseña, y lo
 *Tabla 18.1. Roles del panel y la pregunta típica de cada uno. Criterio de la guía, a partir del caso.*
 
 <a id="c18-1-3"></a>
-**Consola del asistente.** El asistente vive en una consola del panel. La apuesta de diseño fue ponerla **en primer plano**: la consola es lo primero que se ve al entrar, con preguntas sugeridas según el rol, y el panel tradicional queda a un clic. La apuesta se declaró **reversible** desde el principio. Si la medición de E7 ([c15](#c15)) muestra que la gente la saltea, la consola vuelve a un costado sin tocar el resto. Así se respeta [P-2](#p-2): primero se demuestra que la conversación gana, y recién entonces se le da la pantalla.
+**Consola del asistente.** El asistente vive en una consola del panel. Una apuesta de diseño posible, y la que se tomó en el caso, es ponerla **en primer plano**: la consola es lo primero que se ve al entrar, con preguntas sugeridas según el rol, y el panel tradicional queda a un clic. La apuesta se declaró **reversible** desde el principio. Si la medición de E7 ([c15](#c15)) muestra que la gente la saltea, la consola vuelve a un costado sin tocar el resto. Así se respeta [P-2](#p-2): primero se demuestra que la conversación gana, y recién entonces se le da la pantalla.
 
 <a id="c18-1-4"></a>
-**Por qué es un buen caso.** El dominio tiene términos que el inexperto no conoce: suscripción frente a persona, credencial, segmento, entrega frente a apertura. Por eso el anillo 2 trabaja mucho ([c4](#c4)). Además, casi toda pregunta de operación termina en una cifra o en una pantalla, así que [P-3](#p-3) (el código elige, el modelo redacta) se pone a prueba en cada respuesta.
+**Por qué es un buen caso para estudiar.** El dominio tiene términos que el inexperto no conoce: suscripción frente a persona, credencial, segmento, entrega frente a apertura. Por eso el anillo 2 trabaja mucho ([c4](#c4)). Además, casi toda pregunta de operación termina en una cifra o en una pantalla, así que [P-3](#p-3) (el código elige, el modelo redacta) se pone a prueba en cada respuesta.
 
 <a id="c18-2"></a>
 ### 18.2 El recorrido E0→E7
@@ -3078,14 +3174,14 @@ flowchart LR
 
 *Figura 18.1. El recorrido del caso. La flecha punteada es el ciclo de [c16](#c16). Criterio de la guía.*
 
-En cada etapa se muestra la pregunta que el equipo se hizo, la decisión y **la fila de plantilla que quedó**. Para que se lea como una sola historia, todas las filas siguen la misma intención: *cuántas suscripciones activas tiene una aplicación*. Es la intención más frecuente del titular.
+En cada etapa se muestra la pregunta que hay que hacerse, la decisión y **la fila de plantilla que quedó**. Para que se lea como una sola historia, todas las filas siguen la misma intención: *cuántas suscripciones activas tiene una aplicación*. Es la intención más frecuente del titular.
 
 <a id="c18-e0"></a>
 #### 18.2.1 E0 · Encuadre ([c8](#c8))
 
-**Pregunta.** ¿Una conversación le gana a mejorar el panel? El equipo juntó las diez tareas más frecuentes de los cinco roles y las pasó por las señales de la tabla de [c8](#c8). Siete tareas inclinaban a *gana*, porque pedían cruzar pantallas («qué aplicación tiene más suscripciones y le falta una credencial») o porque el usuario no sabía cómo se llamaba lo que buscaba («los usuarios que me dieron permiso»). Tres inclinaban a *pierde*: la cifra ya estaba en la tarjeta principal del tablero.
+**Pregunta.** ¿Una conversación le gana a mejorar el panel? Se juntaron las diez tareas más frecuentes de los cinco roles y se pasaron por las señales de la tabla de [c8](#c8). Siete tareas inclinaban a *gana*, porque pedían cruzar pantallas («qué aplicación tiene más suscripciones y le falta una credencial») o porque el usuario no sabía cómo se llamaba lo que buscaba («los usuarios que me dieron permiso»). Tres inclinaban a *pierde*: la cifra ya estaba en la tarjeta principal del tablero.
 
-**Decisión.** Siete de diez superan el umbral de un tercio (criterio de la guía), así que se sigue. Las tres tareas que pierden **no se tapan con el asistente**: quedan anotadas como mejoras del panel. Sin esa disciplina, el asistente se vuelve un parche de pantallas mal hechas.
+**Decisión.** Siete de diez superan el umbral de un tercio (criterio de la guía), así que se sigue (criterio de la guía, no una regla de la industria). Las tres tareas que pierden **no se tapan con el asistente**: quedan anotadas como mejoras del panel. Sin esa disciplina, el asistente se vuelve un parche de pantallas mal hechas.
 
 <a id="c18-e1"></a>
 #### 18.2.2 E1 · Inventario de tareas y pantallas ([c9](#c9), [A.1](#anexo-a-1))
@@ -3098,7 +3194,7 @@ En cada etapa se muestra la pregunta que el equipo se hizo, la decisión y **la 
 
 *Tabla 18.2. Fila de A.1 del caso.*
 
-Fíjense en dos cosas. La tarea está en palabras del usuario («gente anotada»), no en las del sistema. Y el estado es *existe*: el asistente no puede prometer tareas que todavía no tienen pantalla ([P-4](#p-4)).
+Conviene notar dos cosas. La tarea está en palabras del usuario («gente anotada»), no en las del sistema. Y el estado es *existe*: el asistente no puede prometer tareas que todavía no tienen pantalla ([P-4](#p-4)).
 
 <a id="c18-e2"></a>
 #### 18.2.3 E2 · Mapa de anillos ([c10](#c10), [A.2](#anexo-a-2))
@@ -3109,11 +3205,13 @@ Fíjense en dos cosas. La tarea está en palabras del usuario («gente anotada»
 |---|---|---|---|---|
 | `contar-suscripciones-activas` | 1 · operar | Total de la aplicación, desglose por plataforma **ofrecido**, nota de métrica y enlace a la pantalla | Herramienta + destino | Contar *personas*: una persona puede tener varias suscripciones |
 
-*Tabla 18.3. Fila de A.2 del caso, firmada por el PO.*
+*Tabla 18.3. Fila de A.2 del caso, firmada por quien decide el producto.*
+
+En Movilidad Urbana la misma columna diría, por ejemplo, «no promete horarios en tiempo real si el sistema sólo tiene horarios programados»; en Geometría, «no resuelve el ejercicio por el alumno».
 
 En la misma sesión quedaron, sin fila propia acá, otras dos intenciones que salen de la misma tarea. «¿Qué es una suscripción?» va al anillo 2 y se responde con la ayuda con cita. «¿Cómo hago para que más gente acepte las notificaciones?» va al anillo 3: el asistente orienta hacia la documentación de buenas prácticas y no inventa tácticas. Una pregunta como «escribime el texto de la campaña de Navidad» quedó **afuera**: se rechaza con amabilidad y se dan ejemplos de lo que sí se puede preguntar.
 
-La columna *No promete* es la que más se discutió. La tentación era sumar suscripciones y llamarlas «usuarios». El PO firmó que no ([P-4](#p-4)).
+La columna *No promete* es la que más se discutió. La tentación era sumar suscripciones y llamarlas «usuarios». Quien decide el producto firmó que no ([P-4](#p-4)).
 
 <a id="c18-e3"></a>
 #### 18.2.4 E3 · Glosario y sinónimos ([c11](#c11), [A.3](#anexo-a-3))
@@ -3146,7 +3244,7 @@ El contrato que ve el modelo es una frase con exclusión: «Cuenta suscripciones
 Un recorte representativo de cómo queda armada la respuesta. Las cifras y el destino los arma el código, y el modelo sólo recibe esto para redactar:
 
 ```csharp
-// Consola/RespuestaDeDatos.cs (representativo)
+// Representativo: armado de una respuesta de datos
 var datos = await suscripciones.ContarAsync(appId, rol, ct);   // herramienta, con el permiso del rol
 var destino = catalogo.Resolver("aplicacion.suscripciones", appId);
 if (!await permisos.PuedeAbrirAsync(usuario, destino, ct))      // revalidación por permiso
@@ -3171,7 +3269,7 @@ return new Respuesta(
 
 | Criterio | Cómo se prueba | Umbral | Firma |
 |---|---|---|---|
-| No inventa cifras | Toda cifra del texto existe en `Cifras` (anclaje automático) | 3 de 3 corridas en cada pregunta de datos | PO |
+| No inventa cifras | Toda cifra del texto existe en `Cifras` (anclaje automático) | 3 de 3 corridas en cada pregunta de datos | Responsable del producto |
 
 *Tabla 18.7. Fila de A.6 del caso.*
 
@@ -3180,7 +3278,7 @@ Herramienta correcta y redacción fiel **se miden por separado**. La herramienta
 <a id="c18-e6"></a>
 #### 18.2.7 E6 · Maqueta y rondas de crítica ([c14](#c14))
 
-**Pregunta.** ¿Cómo se ve y se lee la respuesta, comparada con otras? El equipo armó la maqueta de la consola y la criticó en rondas, **con capturas lado a lado**: la maqueta propia, el panel real y un producto de referencia del mercado, otro software de notificaciones con asistente. De ese producto se tomó la **forma**: el total agregado primero con el desglose ofrecido, la desambiguación por nombre aproximado mostrando la cifra de cada candidata, el chip que lleva a la pantalla, la torta de las N mayores más «Otras» y la nota que dice qué mide la cifra. La **promesa** no se tomó: cada forma entró sólo si las herramientas propias podían sostenerla ([c14-2](#c14-2)). La regla de presentación quedó así ([c6](#c6)): torta sólo con 2 a 6 partes; con más, barras.
+**Pregunta.** ¿Cómo se ve y se lee la respuesta, comparada con otras? Se arma la maqueta de la consola y se la critica en rondas, **con capturas lado a lado**: la maqueta propia, el panel real y productos de referencia del mercado con asistente. De ellos conviene tomar la **forma**: el total agregado primero con el desglose ofrecido, la desambiguación por nombre aproximado mostrando la cifra de cada candidata, el chip que lleva a la pantalla, la torta de las N mayores más «Otras» y la nota que dice qué mide la cifra. La **promesa** no se toma: cada forma entra sólo si las herramientas propias podían sostenerla ([c14-2](#c14-2)). La regla de presentación del caso quedó así ([c6](#c6)): torta sólo con 2 a 6 partes; con más, barras.
 
 <a id="c18-e7"></a>
 #### 18.2.8 E7 · Plan de medición ([c15](#c15), [A.7](#anexo-a-7))
@@ -3191,7 +3289,7 @@ Herramienta correcta y redacción fiel **se miden por separado**. La herramienta
 
 *Tabla 18.8. Fila de A.7 del caso.*
 
-El evento guarda intención, anillo, resultado, voto, motivo cerrado y día. **No guarda el texto** ([P-9](#p-9)). En un panel de notificaciones, lo que el usuario escribe puede traer nombres de clientes o claves pegadas por error.
+El evento guarda intención, anillo, resultado, voto, motivo cerrado y día. **No guarda el texto** ([P-9](#p-9)). En un panel de administración, lo que el usuario escribe puede traer datos personales o claves pegadas por error; en Geometría, el texto de un alumno menor de edad. La regla vale para cualquier sistema.
 
 <a id="c18-escenarios"></a>
 ### 18.3 Si PushDispatch ya hubiera existido
@@ -3208,7 +3306,7 @@ El caso se contó *por desarrollar*. Estas son las celdas que cambiarían con un
 *Tabla 18.9. Celdas que cambian con el escenario.*
 
 <a id="c18-lecciones"></a>
-### 18.4 Lo que el equipo midió
+### 18.4 Lecciones medidas en el caso
 
 Estas lecciones son **experiencia propia medida**. Salvo que se diga otra cosa, son *conducta*: pasó, se vio y se corrigió. No son una tasa ([c0-4](#c0-4)). Valen como «esto puede pasar y conviene prevenirlo», no como frecuencia.
 
@@ -3221,19 +3319,19 @@ Estas lecciones son **experiencia propia medida**. Salvo que se diga otra cosa, 
 <a id="c18-l4"></a>
 4. **«No está en la ayuda» antes que inventar.** Ante preguntas sobre límites o precios que no están documentados, la respuesta acordada es decir que no está en la ayuda y derivar ([P-5](#p-5)) [REF-009]. La batería lo prueba con preguntas armadas a propósito fuera del corpus.
 <a id="c18-l5"></a>
-5. **El sitio real mostró fallos que la demo no mostró.** La consola pasaba la batería en el entorno de demostración y, en el sitio real, apareció lo que la demo no tenía: un volumen de aplicaciones que hacía lenta la consulta repetida por plataforma, lecturas que fallaban en parte (y que tuvieron que rotularse como «k de N aplicaciones leídas» en lugar de dar un total falso), y ajustes de diseño visibles sólo a cierto ancho de pantalla. Por eso [P-8](#p-8) es un principio y no una recomendación.
+5. **El sitio real mostró fallos que la demo no mostró.** La consola pasaba la batería en el entorno de demostración y, en el sitio real, apareció lo que la demo no tenía: un volumen de datos que hacía lenta una consulta repetida, lecturas que fallaban en parte (y que tuvieron que rotularse como «k de N aplicaciones leídas» en lugar de dar un total falso), y ajustes de diseño visibles sólo a cierto ancho de pantalla. Por eso [P-8](#p-8) es un principio y no una recomendación.
 <a id="c18-l6"></a>
-6. **Rondas de crítica con capturas lado a lado, y batería ×3.** Cada ronda puso la captura propia junto a la de referencia y la del panel real, y cada cambio se volvió a correr tres veces en la batería. Las diferencias de una sola corrida no se tomaron como mejora ([P-7](#p-7)).
+6. **Rondas de crítica con capturas lado a lado, y batería ×3.** Cada ronda puso la captura propia junto a las de referencia y la del panel real, y cada cambio se volvió a correr tres veces en la batería. Las diferencias de una sola corrida no se tomaron como mejora ([P-7](#p-7)).
 
 <a id="c18-decision"></a>
-### 18.5 Decisión: qué llevarse del caso a un producto nuevo
+### 18.5 Decisión: qué llevarse del caso a otro sistema
 
-Si su producto se parece a PushDispatch (panel con roles, cifras en casi cada pregunta, vocabulario técnico), copien la **secuencia** y las **reglas**: la intención más frecuente primero, la columna *No promete* firmada, el glosario antes que las etiquetas, el catálogo cerrado con revalidación y el anclaje de cifras desde la primera versión. No copien la **apuesta de la consola en primer plano** sin antes medirla: fue una decisión reversible de este producto y no es parte del método. Si en su producto las preguntas son sobre todo de procedimiento y no de datos, el peso pasa de las herramientas a la ayuda con cita ([c6](#c6), [c17](#c17)).
+Si el sistema que se diseña se parece a PushDispatch (panel con roles, cifras en casi cada pregunta, vocabulario técnico), lo que se transfiere es la **secuencia** y las **reglas**: la intención más frecuente primero, la columna *No promete* firmada, el glosario antes que las etiquetas, el catálogo cerrado con revalidación y el anclaje de cifras desde la primera versión. No se transfiere la **apuesta de la consola en primer plano** sin antes medirla: fue una decisión reversible de este caso y no es parte del método. Si las preguntas son sobre todo de procedimiento y no de datos, como en Movilidad Urbana, el peso pasa de las herramientas a la ayuda con cita; si son de aprendizaje, como en Geometría, pasa al anillo 2 y a la explicación del término ([c6](#c6), [c17](#c17)).
 
 <a id="c18-preguntas"></a>
 ### 18.6 Preguntas guía
 
-**¿Por qué el caso sigue una sola intención en todas las plantillas? (OA-EQ4)** Porque así se ve cómo una decisión de una etapa limita a la siguiente. La palabra «gente» de A.1 obliga al sinónimo de A.3. El «no cuenta personas» de A.2 se convierte en la nota de A.4 y en el criterio de A.6. En el trabajo real cada plantilla tiene decenas de filas, pero conviene hacer la primera vuelta con una sola intención, como pide el [Anexo E](#anexo-e). Esto sirve siempre que el equipo sea nuevo en el método.
+**¿Por qué el caso sigue una sola intención en todas las plantillas? (OA-EQ4)** Porque así se ve cómo una decisión de una etapa limita a la siguiente. La palabra «gente» de A.1 obliga al sinónimo de A.3. El «no cuenta personas» de A.2 se convierte en la nota de A.4 y en el criterio de A.6. En el trabajo real cada plantilla tiene decenas de filas, pero conviene hacer la primera vuelta con una sola intención, como pide el [Anexo E](#anexo-e). Esto sirve siempre que quien aplica el método lo hace por primera vez.
 
 **Si el usuario dice «usuarios», ¿no sería más amable contestar en usuarios? (OA-DIS1)** No, porque sería contestar con una cifra falsa. El asistente acepta la palabra del usuario (para eso está el sinónimo) y responde con el término correcto, aclarando la diferencia la primera vez ([c4](#c4)). La amabilidad está en entender la pregunta, no en cambiar lo que se mide. Esto aplica siempre que la palabra del usuario y el término del producto cuenten cosas distintas.
 
@@ -3256,7 +3354,7 @@ Si su producto se parece a PushDispatch (panel con roles, cifras en casi cada pr
 <a id="c19"></a>
 ## Capítulo 19 · Autoevaluación
 
-> **Qué vas a poder hacer al terminar.** Comprobar, por rol y sin ayuda del texto, si alcanzaste cada objetivo de aprendizaje de la tabla [§0.1](#c0-1). Si no lo alcanzaste, vas a saber qué capítulo releer y qué plantilla practicar (todos los OA).
+> **Qué vas a poder hacer al terminar.** Comprobar, por perfil y sin ayuda del texto, si alcanzaste cada objetivo de aprendizaje de la tabla [§0.1](#c0-1). Si no lo alcanzaste, vas a saber qué capítulo releer y qué plantilla practicar (todos los OA).
 
 Este capítulo no enseña nada nuevo. Cada pregunta está atada a un OA y su respuesta remite al capítulo donde se enseña. Conviene responder por escrito antes de leer la respuesta, porque la autoevaluación sirve si comparás lo que pensabas con lo que la guía dice, no si sólo reconocés la respuesta.
 
@@ -3267,29 +3365,29 @@ Este capítulo no enseña nada nuevo. Cada pregunta está atada a un OA y su res
 
 **Cómo se usa.**
 
-1. Hacé primero el tronco común (OA-EQ1 a OA-EQ5). Lo necesitan todos los roles ([§0.2](#c0-2)).
-2. Después hacé las preguntas de tu rol: PO, DIS, DEV, QA o SOP.
+1. Hacé primero el tronco común (OA-EQ1 a OA-EQ5). Lo necesita cualquier lector ([§0.2](#c0-2)).
+2. Después hacé las preguntas del perfil que te interese: producto, diseño, desarrollo, calidad o soporte. Si estudiás el tema sin un rol fijo, conviene hacerlas todas.
 3. Marcá cada OA como **logrado** (respondiste la decisión, la razón y la excepción), **parcial** (te faltó la razón o la excepción) o **no logrado**.
 4. Para cada OA parcial o no logrado, releé el capítulo indicado y hacé una fila de la plantilla que corresponde ([Anexo A](#anexo-a)).
-5. En equipo, intercambien las respuestas entre roles. El PO corrige las de DEV y QA corrige las del PO. Así se ve si el criterio es compartido o si cada rol entendió la frontera a su manera.
+5. Si trabajás en grupo (un curso, un taller, un equipo), intercambien las respuestas y corrijan las de otro perfil. Así se ve si el criterio es compartido o si cada uno entendió la frontera a su manera.
 
 ```mermaid
 flowchart LR
-  T["Tronco común<br/>OA-EQ1..5"] --> R["Preguntas de tu rol"]
+  T["Tronco común<br/>OA-EQ1..5"] --> R["Preguntas por perfil"]
   R --> M{"¿Logrado?"}
-  M -- "sí" --> F["Firmás tu lista del Anexo B"]
+  M -- "sí" --> F["Marcás el OA en la lista del Anexo B"]
   M -- "parcial / no" --> L["Releer el capítulo<br/>+ una fila de plantilla"]
   L --> R
 ```
 
 *Figura 19.1. Recorrido de la autoevaluación.*
 
-Una advertencia: aprobar la autoevaluación es una *conducta*, es decir, pasó una vez. No reemplaza la primera vuelta real con una tarea y un rol ([Anexo E](#anexo-e)), que es donde el criterio se pone a prueba ([P-7](#p-7)).
+Una advertencia: aprobar la autoevaluación es una *conducta*, es decir, pasó una vez. No reemplaza aplicar el método a un sistema concreto, aunque sea con una sola tarea y un solo rol ([Anexo E](#anexo-e)), que es donde el criterio se pone a prueba ([P-7](#p-7)).
 
 <a id="c19-escenarios"></a>
 ### 19.2 Por escenario
 
-Para un sistema **existente**, respondé usando tus pantallas y tus preguntas de soporte reales. Para un sistema **por desarrollar**, usá las tareas del plan de producto. Las preguntas son las mismas y lo que cambia es el material con el que las respondés. Si no podés poner un ejemplo de tu producto, el OA queda **parcial** aunque la respuesta conceptual sea correcta (criterio de la guía).
+Elegí un sistema de referencia: uno que conozcas, uno de los casos ilustrativos de la guía (Movilidad Urbana, Geometría o PushDispatch) o un trabajo práctico. Si el sistema **existe**, respondé con sus pantallas y con las preguntas que hacen sus usuarios. Si está **por desarrollar**, usá las tareas previstas en su plan. Las preguntas son las mismas y lo que cambia es el material con el que las respondés. Si no podés poner un ejemplo del sistema que elegiste, el OA queda **parcial** aunque la respuesta conceptual sea correcta (criterio de la guía).
 
 <a id="c19-2"></a>
 ### 19.3 Tronco común
@@ -3297,68 +3395,68 @@ Para un sistema **existente**, respondé usando tus pantallas y tus preguntas de
 **1. Un colega dice: «el asistente es un buscador con mejor redacción». ¿Qué le contestás? ([OA-EQ1](#oa-eq1))**
 Que un buscador devuelve documentos y que un asistente de producto resuelve una tarea dentro del producto: usa los datos de la cuenta, respeta el rol y lleva a la acción con un enlace profundo. Tampoco es un chat general, porque tiene una frontera de competencia. Si tu respuesta no menciona la tarea ni la frontera, releé [§1](#c1).
 
-**2. El equipo discute si el asistente debe «hablar de notificaciones push en general». ¿Qué principio lo zanja? ([OA-EQ2](#oa-eq2))**
+**2. En un servicio de notificaciones push, alguien propone que el asistente pueda «hablar de notificaciones push en general». ¿Qué principio lo zanja? ([OA-EQ2](#oa-eq2))**
 P-1, competencia y no temas ([p-1](#p-1)). Lo que importa no es de qué tema trata la pregunta, sino si el asistente es competente para resolverla en este producto. Una explicación general del dominio entra si hace falta para operar (anillo 2). Una opinión sobre la industria queda en el anillo 3 o afuera. Si respondiste «sí o no» sin nombrar el anillo, releé [§2](#c2) y [§3](#c3).
 
-**3. Ubicá en un anillo estas cuatro preguntas y decí qué respuesta les toca: «¿cuántos mensajes envié ayer?», «¿qué es una suscripción?», «¿cómo configuro el certificado en la consola del fabricante del teléfono?» y «¿me recomendás una película?». ([OA-EQ3](#oa-eq3))**
+**3. Tomando como ejemplo un panel de notificaciones push, ubicá en un anillo estas cuatro preguntas y decí qué respuesta les toca: «¿cuántos mensajes envié ayer?», «¿qué es una suscripción?», «¿cómo configuro el certificado en la consola del fabricante del teléfono?» y «¿me recomendás una película?». ([OA-EQ3](#oa-eq3))**
 La primera va al anillo 1: la cifra sale de una herramienta, con enlace a la pantalla ([P-3](#p-3)). La segunda va al anillo 2: se explica el término la primera vez y se sugiere la siguiente pregunta ([§4](#c4)). La tercera va al anillo 3: se orienta y se deriva a la documentación de ese tercero, sin inventar los pasos. La cuarta queda afuera y lleva un rechazo amable con ejemplos de lo que sí se puede preguntar. Si dudaste entre dos anillos para la misma pregunta, anotalo: más de un 20 % de dudas en una batería indica que el mapa no sirve como contrato ([§3](#c3)).
 
-**4. Te toca empezar mañana. ¿Cuál es el primer entregable y quién lo firma? ¿Cuándo se escribe el primer prompt? ([OA-EQ4](#oa-eq4))**
-El primero es la compuerta E0 de ajuste y encuadre ([§8](#c8)), con las diez tareas más frecuentes, y la firma el PO. Después siguen E1 a E7 con sus plantillas A.1 a A.7 ([§7](#c7)). Ningún prompt se escribe antes de cerrar E3, el glosario, porque antes no está fijado el vocabulario con el que el modelo tiene que redactar. Si pusiste la maqueta o el prompt primero, releé [§7](#c7).
+**4. Vas a empezar a diseñar un asistente. ¿Cuál es el primer entregable y quién lo aprueba? ¿Cuándo se escribe el primer prompt? ([OA-EQ4](#oa-eq4))**
+El primero es la compuerta E0 de ajuste y encuadre ([§8](#c8)), con las diez tareas más frecuentes, y lo aprueba quien decide sobre el producto. Después siguen E1 a E7 con sus plantillas A.1 a A.7 ([§7](#c7)). Ningún prompt se escribe antes de cerrar E3, el glosario, porque antes no está fijado el vocabulario con el que el modelo tiene que redactar. Si pusiste la maqueta o el prompt primero, releé [§7](#c7).
 
 **5. «Lo probamos y respondió bien la cifra de entregas.» ¿Cómo se rotula esa afirmación y alcanza para aceptar? ([OA-EQ5](#oa-eq5))**
 Se rotula como conducta: pasó una vez. No alcanza, porque la aceptación pide una tasa k de M en la batería corrida tres veces y la prueba en el sitio real ([P-7](#p-7), [P-8](#p-8), [§13](#c13)). Si nadie la corrió, va **NO EJECUTADO** ([§0.4](#c0-4)).
 
 <a id="c19-3"></a>
-### 19.4 Producto (PO)
+### 19.4 Perfil de producto
 
 **6. El 40 % de las tareas frecuentes se resuelven en una pantalla de un solo paso. ¿Conviene el asistente? ([OA-PO1](#oa-po1))**
 Probablemente no para esas tareas. El umbral de la guía es un tercio de tareas que ganan con la conversación ([§8](#c8), criterio de la guía), y la fuente pide preguntarse primero si la conversación es la forma adecuada [REF-003]. Si la pantalla confunde, conviene arreglarla antes ([P-2](#p-2)). El asistente se justifica cuando el usuario no sabe *dónde* está la tarea o *cómo se llama*.
 
-**7. Ventas pide que el asistente diga «podemos programar envíos por zona horaria» y el producto todavía no lo hace. ¿Qué firmás? ([OA-PO2](#oa-po2))**
+**7. Alguien del área comercial pide que el asistente diga «podemos programar envíos por zona horaria» y el producto todavía no lo hace. ¿Qué decidís? ([OA-PO2](#oa-po2))**
 Una línea en la lista de lo que el asistente no promete, dentro del mapa A.2 ([§10](#c10), [Anexo A](#anexo-a)). El asistente explica lo que hoy se puede hacer ([P-4](#p-4)). Cuando la función exista, se mueve la frontera.
 
 **8. En dos ciclos seguidos el no-encontrado de una intención no bajó, aunque se reforzó el glosario. ¿Qué decidís? ([OA-PO3](#oa-po3))**
 Primero comprobá que las correcciones se aplicaron de verdad. Si se aplicaron, se cumple el criterio de abandono para esa intención: se achica a orientación o se retira ([§16](#c16), criterio de la guía). Si es un pedido de función, va al plan del producto y no a la frontera.
 
 <a id="c19-4"></a>
-### 19.5 Diseño (DIS)
+### 19.5 Perfil de diseño
 
-**9. Los usuarios escriben «avisos» y el producto dice «mensajes». ¿Qué hacés y cuándo explicás el término? ([OA-DIS1](#oa-dis1))**
+**9. En el caso de notificaciones, los usuarios escriben «avisos» y el producto dice «mensajes». ¿Qué hacés y cuándo explicás el término? ([OA-DIS1](#oa-dis1))**
 Cargás «avisos» como sinónimo de «mensaje» en el glosario A.3 ([§11](#c11)) y el asistente responde con el término del producto, explicándolo la primera vez que aparece ([§4](#c4), [P-6](#p-6)). Si el glosario sale de los documentos internos y no de las preguntas reales, el OA queda parcial.
 
 **10. Hay que mostrar entregas por plataforma: nueve plataformas, dos de ellas con el 85 %. ¿Cómo lo presentás? ([OA-DIS2](#oa-dis2))**
 Mostrás el total con el desglose ofrecido ([§6](#c6)). La torta va con las dos o tres principales más «Otras» si quedan entre dos y seis partes. Si el usuario pide las nueve, van en barras. Siempre se agrega la nota de métrica que dice qué se cuenta y en qué período.
 
-**11. En la ronda de crítica, un producto de referencia del mercado muestra un chip de enlace muy claro y además promete «optimización automática». ¿Qué tomás? ([OA-DIS3](#oa-dis3))**
+**11. En la ronda de crítica, otro producto del mercado muestra un chip de enlace muy claro y además promete «optimización automática». ¿Qué tomás? ([OA-DIS3](#oa-dis3))**
 Tomás la forma, es decir, el chip, y no la promesa ([§14](#c14), [REF-001]). La comparación se hace con capturas lado a lado de la misma pregunta.
 
 <a id="c19-5"></a>
-### 19.6 Desarrollo (DEV)
+### 19.6 Perfil de desarrollo
 
-**12. El modelo propone un enlace a «Credenciales» para un usuario con rol member. ¿Qué está mal en el diseño? ([OA-DEV1](#oa-dev1))**
+**12. En un panel con roles, el modelo propone un enlace a una pantalla de administración (por ejemplo, «Credenciales») para un usuario cuyo rol no puede verla. ¿Qué está mal en el diseño? ([OA-DEV1](#oa-dev1))**
 Que el destino lo propuso el modelo. El destino lo elige el código desde un catálogo cerrado y se revalida por permiso dos veces: al elegirlo y al abrirlo ([§5](#c5), [§12](#c12), [P-3](#p-3)).
 
-**13. «¿Cuántos suscriptores activos tengo?» y «¿cómo se crea un segmento?». ¿Herramienta o recuperación con cita? ([OA-DEV2](#oa-dev2))**
+**13. «¿Cuántos suscriptores activos tengo?» y «¿cómo se crea un segmento?» (caso de notificaciones). ¿Herramienta o recuperación con cita? ([OA-DEV2](#oa-dev2))**
 La primera es un dato y sale de una herramienta, porque la cifra viene del código [REF-011]. La segunda es ayuda y se responde con recuperación y cita [REF-010]. Si la ayuda no lo cubre, la respuesta es «No está en la ayuda» ([P-5](#p-5), [§6](#c6)).
 
-**14. ¿A qué pieza de la capa de IA va el catálogo A.4? ([OA-DEV3](#oa-dev3))**
-A la definición de herramientas y destinos de la guía de capa de IA, según el mapa de [§17](#c17). Si no podés nombrar la pieza, releé ese capítulo.
+**14. ¿A qué pieza de una capa de IA va el catálogo A.4? ([OA-DEV3](#oa-dev3))**
+A la definición de herramientas y destinos, según el mapa de [§17](#c17), que relaciona cada entregable con la pieza de la guía de capa de IA. Si no podés nombrar la pieza, releé ese capítulo.
 
 <a id="c19-6"></a>
-### 19.7 Calidad (QA)
+### 19.7 Perfil de calidad
 
 **15. La herramienta correcta se eligió 30 de 30 veces, pero en 4 casos la redacción cambió la cifra. ¿Pasa? ([OA-QA1](#oa-qa1))**
 No pasa. Las dos cosas se miden por separado: la elección es 30 de 30 y la redacción fiel es 26 de 30. La falla está en el anclaje de la redacción ([§13](#c13)).
 
 **16. Escribí un criterio de aceptación que la demo no pueda pasar por casualidad. ([OA-QA2](#oa-qa2))**
-Por ejemplo: «En el sitio real, con un usuario member, la pregunta sobre las credenciales no ofrece un enlace a Credenciales en 3 de 3 corridas, y una pregunta sin cobertura responde "No está en la ayuda" en 3 de 3». El criterio cubre no invención, permisos y sitio real ([§13](#c13), [P-8](#p-8)).
+Por ejemplo: «En el sitio real, con un usuario sin permiso de administración, la pregunta sobre una pantalla restringida no ofrece el enlace a esa pantalla en 3 de 3 corridas, y una pregunta sin cobertura responde "No está en la ayuda" en 3 de 3». El criterio cubre no invención, permisos y sitio real ([§13](#c13), [P-8](#p-8)).
 
 <a id="c19-7"></a>
-### 19.8 Soporte (SOP)
+### 19.8 Perfil de soporte
 
 **17. ¿Qué aportás en E1 y qué mirás en E7? ([OA-SOP1](#oa-sop1))**
-En E1 aportás las preguntas reales del soporte, con su frecuencia, para el inventario A.1 ([§9](#c9)) y la batería. En E7 lees el no-encontrado, los votos con su motivo y el fuera de alcance por intención, sin el texto de las conversaciones ([§15](#c15), [P-9](#p-9)).
+En E1 se aportan las preguntas reales que recibe el soporte, con su frecuencia, para el inventario A.1 ([§9](#c9)) y la batería. En E7 se lee el no-encontrado, los votos con su motivo y el fuera de alcance por intención, sin el texto de las conversaciones ([§15](#c15), [P-9](#p-9)).
 
 <a id="c19-calidad"></a>
 ### 19.9 Criterios de calidad y antipatrones
@@ -3366,9 +3464,9 @@ En E1 aportás las preguntas reales del soporte, con su frecuencia, para el inve
 | Criterio | Antipatrón |
 |---|---|
 | Cada respuesta nombra la decisión, el principio y la excepción. | Recitar la definición. |
-| Hay un ejemplo de tu producto. | Responder sólo con el caso de la guía. |
+| Hay un ejemplo del sistema elegido. | Responder sólo repitiendo el caso de la guía. |
 | Los OA no logrados terminan en una fila de plantilla. | Releer sin practicar. |
-| Las respuestas se cruzan entre roles. | Que cada rol se evalúe solo. |
+| En grupo, las respuestas se cruzan entre perfiles. | Que cada uno se evalúe solo. |
 | Se rotula como conducta. | Tomar la autoevaluación aprobada como aceptación del asistente. |
 
 *Tabla 19.1. Calidad de la autoevaluación (criterio de la guía).*
@@ -3376,7 +3474,7 @@ En E1 aportás las preguntas reales del soporte, con su frecuencia, para el inve
 <a id="anexos"></a>
 # Anexos
 
-Los anexos son las herramientas de trabajo del libro. Los capítulos enseñan; acá está lo que se llena, se tilda, se consulta y se verifica. Ningún anexo introduce un concepto nuevo: si una palabra no se entiende, su definición está en el Anexo C ([anexo-c](#anexo-c)) y su explicación en el capítulo que se indica.
+Los anexos son las herramientas de trabajo del libro, pensadas para cualquier sistema: un producto en marcha, uno por desarrollar o un trabajo práctico. Los capítulos enseñan; acá está lo que se llena, se tilda, se consulta y se verifica. Ningún anexo introduce un concepto nuevo: si una palabra no se entiende, su definición está en el Anexo C ([anexo-c](#anexo-c)) y su explicación en el capítulo que se indica.
 
 | Anexo | Qué es | Se usa en |
 |---|---|---|
@@ -3384,7 +3482,7 @@ Los anexos son las herramientas de trabajo del libro. Los capítulos enseñan; a
 | [B](#anexo-b) | Listas de verificación por rol | Al cerrar cada etapa |
 | [C](#anexo-c) | Glosario unívoco | Siempre |
 | [D](#anexo-d) | Referencias REF-001 a REF-013 | Para verificar una afirmación |
-| [E](#anexo-e) | Recorrido guiado del novato | Primera vuelta del equipo |
+| [E](#anexo-e) | Recorrido guiado del novato | Primera vuelta, en clase o en un proyecto |
 | [F](#anexo-f) | Versiones, fechas y señales de obsolescencia | En cada revisión del libro |
 | [G](#anexo-g) | Lecturas para seguir | Después del libro |
 | [H](#anexo-h) | Procedencia y rótulos | Para auditar el libro |
@@ -3396,7 +3494,9 @@ Los anexos son las herramientas de trabajo del libro. Los capítulos enseñan; a
 <a id="anexo-a"></a>
 ## Anexo A · Plantillas
 
-Cada plantilla tiene la misma forma: **para qué sirve**, **columnas** (con qué va en cada una), **una fila de ejemplo del caso PushDispatch** ([c18](#c18)), **una fila vacía** para copiar y el **criterio de terminado**: la condición que tiene que cumplir para que quien firma la acepte. Las plantillas son tablas de Markdown a propósito: se versionan junto al producto, se revisan como cualquier cambio y no dependen de una herramienta (criterio de la guía).
+Cada plantilla tiene la misma forma: **para qué sirve**, **columnas** (con qué va en cada una), **una o más filas de ejemplo tomadas de los casos ilustrativos** (PushDispatch, Movilidad Urbana y Geometría, [c18](#c18)); son ejemplos para entender la plantilla, no un modelo a copiar, **una fila vacía** para copiar y el **criterio de terminado**: la condición que tiene que cumplir para que quien firma la acepte. Las plantillas son tablas de Markdown a propósito: se versionan junto al producto, se revisan como cualquier cambio y no dependen de una herramienta (criterio de la guía).
+
+Los roles que aparecen como *Llena* y *Aprueba* (PO, DIS, DEV, QA, SOP) son funciones, no puestos: en un proyecto chico o en un trabajo práctico una misma persona puede cubrir varias; lo que conviene sostener es que quien aprueba no sea quien redactó.
 
 Regla común a las siete: **una fila es una unidad de decisión**. Si en una celda hay que escribir «depende», la fila son dos.
 
@@ -3417,7 +3517,7 @@ flowchart LR
 <a id="anexo-a-1"></a>
 ### A.1 Inventario de tareas y pantallas (E1, [c9](#c9))
 
-**Para qué.** Listar lo que el usuario hace con el producto, en sus palabras, y dónde lo hace. Es la materia prima del mapa de anillos. **Llena:** DIS + SOP. **Firma:** PO.
+**Para qué.** Listar lo que el usuario hace con el producto, en sus palabras, y dónde lo hace. Es la materia prima del mapa de anillos. **Llena:** DIS + SOP. **Aprueba:** PO.
 
 | Columna | Qué va |
 |---|---|
@@ -3432,6 +3532,7 @@ flowchart LR
 | Id | Tarea | Rol | Pantalla | Frecuencia | Fuente | Estado |
 |---|---|---|---|---|---|---|
 | T-03 | «Ver cuántos dispositivos tengo suscritos a mi app» | owner, member | Suscripciones | Alta | recorrido del panel | Hoy |
+| T-07 | «Saber qué medio de transporte usa más la gente encuestada» | analista | *pendiente* (no hay pantalla) | Media | diseño | Con fecha |
 | T-__ | | | | | | |
 
 **Terminado cuando:** están las diez tareas más frecuentes de E0 ([c8](#c8)), cada fila tiene fuente, ninguna tarea está redactada con vocabulario interno y las que el producto no hace están marcadas *no se hará* (alimentan la lista de no promesas de A.2).
@@ -3439,7 +3540,7 @@ flowchart LR
 <a id="anexo-a-2"></a>
 ### A.2 Mapa de anillos (E2, [c3](#c3), [c10](#c10))
 
-**Para qué.** Decidir, intención por intención, qué le toca al asistente: operar, explicar, orientar o rechazar. Es el contrato del asistente. **Llena:** DIS. **Firma:** PO.
+**Para qué.** Decidir, intención por intención, qué le toca al asistente: operar, explicar, orientar o rechazar. Es el contrato del asistente. **Llena:** DIS. **Aprueba:** PO.
 
 | Columna | Qué va |
 |---|---|
@@ -3463,21 +3564,22 @@ flowchart LR
 <a id="anexo-a-3"></a>
 ### A.3 Glosario y sinónimos (E3, [c4](#c4), [c11](#c11))
 
-**Para qué.** Que el asistente entienda las palabras del inexperto y le enseñe las del producto. **Llena:** DIS + SOP. **Firma:** PO.
+**Para qué.** Que el asistente entienda las palabras del inexperto y le enseñe las del producto. **Llena:** DIS + SOP. **Aprueba:** PO.
 
 | Término | Definición llana | Pantalla | Anillo | Sinónimos (clase · fuente) | Primera vez | Aclaración si es ambiguo |
 |---|---|---|---|---|---|---|
 | Suscripción | Un dispositivo o navegador que aceptó recibir notificaciones de una aplicación | Suscripciones | 2 | «dispositivos» (equivalente · recorrido); «mis usuarios» (cercano · soporte) | Sí | «¿Querés contar dispositivos o personas? El panel cuenta dispositivos.» |
+| Arista | Cada segmento donde se juntan dos caras de una figura | Validador | 2 | «borde» (equivalente · consultas de alumnos); «lado» (engañoso · consultas de alumnos) | Sí | «¿Hablás del lado de una cara o de la arista del cuerpo?» |
 | | | | | | | |
 
 *Clase del sinónimo:* **equivalente** (se trata igual), **cercano** (se acepta pero se aclara), **engañoso** (se corrige siempre). *Primera vez:* si el asistente explica el término la primera vez que lo usa con ese usuario.
 
-**Terminado cuando:** cada término de las respuestas de A.2 está acá; cada sinónimo tiene clase y fuente real (no inventada por el equipo); los términos con dos sentidos tienen su pregunta de aclaración ([P-6](#p-6)).
+**Terminado cuando:** cada término de las respuestas de A.2 está acá; cada sinónimo tiene clase y fuente real (no inventada por quien diseña); los términos con dos sentidos tienen su pregunta de aclaración ([P-6](#p-6)).
 
 <a id="anexo-a-4"></a>
 ### A.4 Catálogo de destinos y herramientas (E4, [c5](#c5), [c6](#c6), [c12](#c12))
 
-**Para qué.** El catálogo cerrado de lugares a los que el asistente puede llevar y de datos que puede traer. El modelo no inventa rutas ni cifras: elige de esta lista el código ([P-3](#p-3)). **Llena:** DEV. **Firma:** PO.
+**Para qué.** El catálogo cerrado de lugares a los que el asistente puede llevar y de datos que puede traer. El modelo no inventa rutas ni cifras: elige de esta lista el código ([P-3](#p-3)). **Llena:** DEV. **Aprueba:** PO.
 
 | Columna | Qué va |
 |---|---|
@@ -3500,7 +3602,7 @@ flowchart LR
 <a id="anexo-a-5"></a>
 ### A.5 Batería de preguntas (E5, [c13](#c13))
 
-**Para qué.** El examen del asistente, escrito antes de construirlo. **Llena:** QA + SOP. **Firma:** QA.
+**Para qué.** El examen del asistente, escrito antes de construirlo. **Llena:** QA + SOP. **Aprueba:** QA.
 
 | Id | Pregunta (literal, como la escribe el usuario) | Rol | Clase | Anillo | Respuesta esperada | Herramienta o destino esperado | Corrida 1 / 2 / 3 |
 |---|---|---|---|---|---|---|---|
@@ -3514,11 +3616,11 @@ flowchart LR
 <a id="anexo-a-6"></a>
 ### A.6 Criterios de aceptación (E5, [c13](#c13))
 
-**Para qué.** Decir con números cuándo el asistente sale. **Llena:** QA. **Firma:** PO.
+**Para qué.** Decir con números cuándo el asistente sale. **Llena:** QA. **Aprueba:** PO.
 
 | Criterio | Cómo se mide | Umbral | Dónde |
 |---|---|---|---|
-| Herramienta correcta | k de M preguntas de anillo 1 con la herramienta esperada, en las tres corridas | (lo fija el equipo, por escrito, antes de correr) | demo y sitio real |
+| Herramienta correcta | k de M preguntas de anillo 1 con la herramienta esperada, en las tres corridas | (lo fija quien aprueba, por escrito, antes de correr) | demo y sitio real |
 | Redacción fiel | La cifra dicha coincide con la que devolvió la herramienta | sin excepciones | demo y sitio real |
 | No invención | Preguntas fuera del corpus responden «No está en la ayuda» | sin excepciones | sitio real |
 | Permisos | Ninguna cifra ni enlace de otra cuenta o rol | sin excepciones | sitio real, con cada rol |
@@ -3529,7 +3631,7 @@ flowchart LR
 <a id="anexo-a-7"></a>
 ### A.7 Plan de medición (E7, [c15](#c15), [c16](#c16))
 
-**Para qué.** Saber, después de salir, si la frontera está bien puesta, sin guardar lo que la gente escribe ([P-9](#p-9)). **Llena:** DEV + SOP. **Firma:** PO.
+**Para qué.** Saber, después de salir, si la frontera está bien puesta, sin guardar lo que la gente escribe ([P-9](#p-9)). **Llena:** DEV + SOP. **Aprueba:** PO.
 
 | Indicador | Qué se cuenta | Por | Umbral | Si salta, vuelve a |
 |---|---|---|---|---|
@@ -3547,7 +3649,7 @@ Campos fijos del plan: **ciclo** (duración), **mínimo de conversaciones** para
 <a id="anexo-b"></a>
 ## Anexo B · Listas de verificación por rol
 
-Se tildan al cerrar cada etapa. Una casilla sin tildar no frena sola la etapa, pero tiene que estar explicada en el acta (criterio de la guía).
+Se tildan al cerrar cada etapa. Una casilla sin tildar no frena sola la etapa, pero tiene que quedar explicada por escrito junto al entregable (criterio de la guía). En un trabajo práctico, quien hace varios roles tilda varias listas.
 
 <a id="anexo-b-po"></a>
 **PO (dueño del producto)**
@@ -3648,7 +3750,7 @@ Todas fueron consultadas el **2026-11-11**. Se citan en el texto como [REF-nnn].
 <a id="anexo-e"></a>
 ## Anexo E · Recorrido guiado del novato
 
-**Para qué.** Que un equipo que nunca hizo esto dé una vuelta completa, chica, en una o dos jornadas, antes de encarar el producto entero. Se elige **una tarea, un rol, cinco preguntas y tres usuarios**. El objetivo no es un asistente: es haber llenado una fila de cada plantilla y entender por qué cada una existe (OA-EQ4, [oa-eq4](#oa-eq4)).
+**Para qué.** Que alguien que nunca hizo esto (un grupo de alumnos, un equipo que recién empieza) dé una vuelta completa, chica, en una o dos jornadas, antes de encarar el producto entero. Se elige **una tarea, un rol, cinco preguntas y tres usuarios**. El objetivo no es un asistente: es haber llenado una fila de cada plantilla y entender por qué cada una existe (OA-EQ4, [oa-eq4](#oa-eq4)).
 
 ```mermaid
 flowchart TD
@@ -3663,14 +3765,14 @@ flowchart TD
 
 *Figura 20.2. La vuelta del novato.*
 
-1. **Elegir.** Una tarea de las diez de E0 y un rol. En el caso: «ver cuántos dispositivos tengo suscritos», rol member.
+1. **Elegir.** Una tarea de las diez de E0 y un rol. En PushDispatch, por ejemplo: «ver cuántos dispositivos tengo suscritos», rol member; en Movilidad Urbana serviría «qué medio usa más la gente», rol analista.
 2. **Cinco preguntas.** Una de cada tipo: la directa («¿cuántas suscripciones tiene mi app?»), la del inexperto («cuántos usuarios tengo»), la de otra cuenta («¿y la app de Ventas?», sin permiso), la de no promesa («¿me avisás cuando pase los mil?») y la de afuera («¿qué tiempo hace?»).
-3. **Anillos.** Ubicar cada una y escribir qué respuesta le toca ([c3](#c3)). Si dos personas del equipo ubican la misma pregunta en anillos distintos, esa discusión es la parte más valiosa de la vuelta.
+3. **Anillos.** Ubicar cada una y escribir qué respuesta le toca ([c3](#c3)). Si dos personas ubican la misma pregunta en anillos distintos, esa discusión es la parte más valiosa de la vuelta.
 4. **Glosario.** «Suscripción» y «usuario» salen solos; decidir la aclaración ([c4](#c4)).
 5. **Catálogo.** Un destino y una herramienta, con su permiso ([c5](#c5)).
 6. **Respuesta esperada.** Escrita antes de probar.
-7. **Tres usuarios, a mano.** Una persona del equipo hace de asistente siguiendo sólo las plantillas, sin improvisar; tres usuarios preguntan. Se trata de un ensayo «de mago detrás de la cortina»: no hace falta un modelo para descubrir que falta un sinónimo (criterio de la guía).
-8. **Anotar.** Cada falla se asigna a una plantilla. Si no cabe en ninguna, es una pregunta para el PO.
+7. **Tres usuarios, a mano.** Una persona hace de asistente siguiendo sólo las plantillas, sin improvisar; tres usuarios preguntan. Se trata de un ensayo «de mago detrás de la cortina»: no hace falta un modelo para descubrir que falta un sinónimo (criterio de la guía).
+8. **Anotar.** Cada falla se asigna a una plantilla. Si no cabe en ninguna, es una pregunta para quien decide sobre el producto (PO; en clase, el docente).
 
 **Terminado cuando:** hay una fila de A.1 a A.5, cinco respuestas esperadas, tres sesiones anotadas y una lista de arreglos asignados a plantillas. Recién ahí se sigue con [c8](#c8) para el producto entero.
 
@@ -3704,7 +3806,7 @@ Para profundizar, en este orden:
 1. **El método completo de Google** (REF-001, REF-002, REF-003): el origen del vocabulario de diseño conversacional y la pregunta de si conviene conversar. Leer como método: la plataforma ya no existe.
 2. **Microsoft, Bot Framework y Copilot Studio** (REF-004, REF-005, REF-012): cómo un fabricante piensa los temas, el respaldo cuando no se entiende y la medición.
 3. **NN/g** (REF-007, REF-008, REF-009, REF-006): la mirada de usabilidad: qué esperan los usuarios de un chatbot, cómo sugerir preguntas, cómo diseñar alrededor de las alucinaciones.
-4. **Los dos artículos técnicos** (REF-010, REF-011): para el equipo de desarrollo, el fundamento de la recuperación con cita y del uso de herramientas.
+4. **Los dos artículos técnicos** (REF-010, REF-011): para quien desarrolla, el fundamento de la recuperación con cita y del uso de herramientas.
 5. **HAX** (REF-013): un conjunto de pautas para la interacción entre personas e IA, útil como lista de control complementaria.
 6. **La guía de capa de IA** ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)): cómo se construye en .NET lo que este libro diseña ([c17](#c17)).
 
@@ -3725,7 +3827,7 @@ Para profundizar, en este orden:
 
 *Tabla 20.5. Rótulos de procedencia.*
 
-**El caso.** PushDispatch se presenta como un producto de notificaciones push diseñado desde cero. Las observaciones del caso son experiencia propia de construir su asistente de consola: rondas de crítica con capturas lado a lado, batería corrida tres veces, anclaje de cifras, destino elegido por código y revalidado por permiso, aclaración entre cuentas, «No está en la ayuda» antes que inventar, y fallas vistas en el sitio real que la demo no mostraba. Son **conductas**, salvo donde se indica k de M. Cuando el libro menciona «un producto de referencia del mercado», es un software de notificaciones observado como estudio de forma; no se lo nombra ni se reproducen sus textos ni sus imágenes.
+**Los casos.** Los tres casos son ilustrativos. Movilidad Urbana y Geometría son laboratorios públicos. PushDispatch se presenta como un producto de notificaciones push diseñado desde cero, y sus observaciones son experiencia propia de construir su asistente de consola: rondas de crítica con capturas lado a lado, batería corrida tres veces, anclaje de cifras, destino elegido por código y revalidado por permiso, aclaración entre cuentas, «No está en la ayuda» antes que inventar, y fallas vistas en el sitio real que la demo no mostraba. Son **conductas**, salvo donde se indica k de M. Cuando el libro menciona «un producto de referencia del mercado», es un software de notificaciones observado como estudio de forma; no se lo nombra ni se reproducen sus textos ni sus imágenes.
 
 **Lo excluido.** Se descartaron tres fuentes que no pudieron verificarse el 2026-11-11 (una guía de práctica de un producto con asistente, un artículo de NN/g que devolvía 404 y una guía en PDF sin acceso estable). Las referencias de API de .NET se remiten a la guía de capa de IA, que las verificó con su propia fecha.
 
@@ -3740,7 +3842,7 @@ Para profundizar, en este orden:
 
 **¿Qué hago si una pregunta de la batería no tiene fila en A.2? (OA-QA1)** Es la señal más útil de E5: el mapa tiene un hueco. No la saques de la batería; llevala al DIS y al PO para ubicarla. Si la discusión no cierra, la pregunta es ambigua y su respuesta esperada es una aclaración ([c10](#c10), [c13](#c13)).
 
-**¿Una casilla sin tildar en el Anexo B frena la salida? (OA-PO2)** No automáticamente; obliga a escribir por qué. Las que sí frenan son las de A.6 con umbral «sin excepciones»: invención, permisos y redacción fiel. Ahí no hay acta que alcance ([P-4](#p-4), [P-8](#p-8)).
+**¿Una casilla sin tildar en el Anexo B frena la salida? (OA-PO2)** No automáticamente; obliga a escribir por qué. Las que sí frenan son las de A.6 con umbral «sin excepciones»: invención, permisos y redacción fiel. Ahí no hay explicación que alcance ([P-4](#p-4), [P-8](#p-8)).
 
 **¿Para qué sirve el recorrido del Anexo E si igual vamos a hacer todo? (OA-EQ4)** Para equivocarse barato. En una vuelta de cinco preguntas aparecen los desacuerdos de anillo, los sinónimos que nadie anotó y los permisos que nadie pensó, con una fracción del costo. Aplica sobre todo cuando el sistema está por desarrollar: no hay soporte que traiga preguntas reales y los tres usuarios son la primera fuente de vocabulario.
 
@@ -3754,5 +3856,4 @@ Para profundizar, en este orden:
 - Cada referencia tiene URL y fecha o versión; ninguna sin verificar.
 - **Antipatrón: la plantilla como trámite.** Filas llenadas para tildar, sin fuente. Se detecta porque los sinónimos «suenan bien» pero nadie sabe de dónde salieron.
 - **Antipatrón: la batería escrita después.** Respuestas esperadas copiadas de lo que el asistente contestó. Se detecta porque la primera corrida da todo verde.
-- **Antipatrón: glosario de la casa.** Definiciones con el vocabulario del equipo en lugar del del usuario.
-
+- **Antipatrón: glosario de la casa.** Definiciones con el vocabulario de quien construye en lugar del del usuario.

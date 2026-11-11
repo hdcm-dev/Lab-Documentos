@@ -7,7 +7,7 @@ Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Chang
 
 ### Guides/IA/Dot-Net-Integration-AI-Layer-Guide/Conversational-Design-Framework-Guide.md
 
-- **Nueva guía de estudio (`GUIA-DISENO-CONVERSACIONAL` 1.0.0):** manual de trabajo para diseñar la conversación de un asistente de producto por anillos de competencia (operar, dominio, lo de al lado, afuera). Capítulos 0–19 en cinco partes (fundamentos, marco, método por etapas E0–E7, producción y medición, integración), plantillas A.1–A.7, listas por rol, glosario, 13 referencias verificadas (Google Conversation Design, Microsoft Learn, NN/g, arXiv), recorrido guiado y procedencia. Caso guía: PushDispatch, presentado como producto diseñado desde cero. Enlaza con la guía de capa de IA (`Dot-Net-Integration-AI-Layer-Guide.md`) para la construcción.
+- **Nueva guía de estudio (`GUIA-DISENO-CONVERSACIONAL` 1.0.0):** guía académica y general, para estudiantes, docentes y profesionales, sobre cómo diseñar la conversación de un asistente de producto por anillos de competencia (operar, dominio, lo de al lado, afuera). Capítulos 0–19 en cinco partes (fundamentos, marco, método por etapas E0–E7, producción y medición, integración), plantillas A.1–A.7, listas por perfil, glosario, 13 referencias verificadas (Google Conversation Design, Microsoft Learn, NN/g, arXiv), recorrido guiado y procedencia. Tres casos ilustrativos: Movilidad Urbana, Geometría y PushDispatch, este último presentado como producto diseñado desde cero. Enlaza con la guía de capa de IA (`Dot-Net-Integration-AI-Layer-Guide.md`) para la construcción.
 
 
 ## 2026-11-10 (Guía 18: cierre de deudas PD-01 y PD-02)

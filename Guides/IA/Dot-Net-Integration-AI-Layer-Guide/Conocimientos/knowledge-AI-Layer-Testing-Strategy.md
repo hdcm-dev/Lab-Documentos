@@ -8,7 +8,7 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.3
+**Versión:** 1.4
 **Estado:** Vigente
 **Fecha:** 2026-11-11
 
@@ -269,6 +269,32 @@ el destino sale del catálogo. *Prueba:* negativa en la capa de redacción ([K3 
 **R6.6 — Datos personales minimizados antes del modelo.** *Prueba:*
 `RedaccionConAnclajeTests.Minimizar_quita_correo_ids_claves_y_tokens`.
 
+<a id="k7-6-7"></a>
+**R6.7 — Toda regla que clasifica texto libre se prueba en los dos sentidos.** Un enrutador que decide «esto
+pide X» (resolver el ejercicio, abrir una acción, salir del alcance) tiene dos errores: dejar pasar el pedido y
+rechazar la pregunta legítima. Cada ajuste que achica uno suele agrandar el otro. *Porqué:* en Geometría, la
+lista de palabras ampliada para atrapar «la arista es tres» rechazó preguntas de concepto («las dos bases»); al
+corregir eso se escapó «siete de lado». La regla que convergió no mira palabras sueltas sino la **función** del
+elemento (el número como valor de una medida frente al cardinal que cuenta un sustantivo). *Prueba:* la tabla
+del enrutador tiene casos de ambos lados y todo PR que la toca corre los dos; si sólo crece un lado, el revisor lo
+rechaza.
+
+<a id="k7-6-8"></a>
+**R6.8 — Sonda adversarial por rondas, hasta secar.** En cada ronda, dos agentes distintos del que escribió la
+regla redactan frases nuevas por lado (≈30 «legítimas» y ≈30 «a rechazar»), sin ver la regla. Las fallas se
+arreglan y la ronda se repite; se para cuando una ronda trae 0 o 1 falla y una ronda de **control** con frases de
+otro registro (problemas cotidianos, sin vocabulario del dominio) se corrió y se informó. *Porqué:* en Geometría
+las fallas por ronda fueron 8, 4, 1, 3, 1: no bajan en línea recta, y la ronda de control (54 frases) encontró 16,
+casi todas cotidianas (baldosas, cercos, pileta). Sin control, la sonda mide sólo el vocabulario que ya conocía.
+*Prueba:* el registro de la sonda trae, por ronda, frases, fallas y autor; existe la ronda de control.
+
+<a id="k7-6-9"></a>
+**R6.9 — Las fallas pasan a una sonda permanente; las no resueltas, a casos conocidos con motivo.** Cada frase
+que falló en una ronda entra como caso de prueba de la suite (no se pierde con la conversación). Lo que no se
+arregla queda en la misma tabla marcado como caso conocido (`Skip` con motivo y condición de reapertura), no
+borrado. *Prueba:* `dotnet test` lista los casos conocidos como saltados con motivo; su cantidad figura en el
+informe de la fase como límite declarado ([K3 R2.9](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-9)).
+
 ---
 
 <a id="k7-7"></a>
@@ -410,6 +436,14 @@ variantes en voseo, tuteo, inglés y con mayúsculas o acentos cambiados. *Prueb
 
 **R9.10 — Todo control de texto fija también sus falsos positivos.** El control de registro (K5 §7.1) y el de
 entidades (K6 §12.8) tienen casos que **no** deben marcarse. *Prueba:* tabla de frases legítimas → sin marca.
+
+<a id="k7-9-11"></a>
+**R9.11 — Los falsos positivos de un filtro de salida se miden con un corpus de respuestas buenas.** Además de la
+tabla de R9.10, se arma un corpus de respuestas que **deben** pasar (las fichas, sus paráfrasis, las respuestas ya
+aceptadas) y se reporta «marcadas / total» junto con las verdaderas detecciones. *Porqué:* en Geometría el filtro
+que detecta la respuesta que dicta la operación marcaba 13 de 56 respuestas buenas; medido contra ese corpus
+bajó a 0/56 sin perder ninguna de las 14 que dictan. *Prueba:* prueba con el corpus bueno → 0 marcadas, y con el
+corpus malo → todas marcadas.
 
 ---
 
@@ -577,6 +611,9 @@ Cuando el error es el mismo que uno de K3, la fuente es K3 y acá sólo se remit
 | <a id="k7-ap-10"></a>K7-AP-10 | Compuerta a ciegas que nunca consulta al juez | R9.8 |
 | <a id="k7-ap-11"></a>K7-AP-11 | Eco detectado por una lista corta en un idioma | R9.9 |
 | <a id="k7-ap-12"></a>K7-AP-12 | Control de texto sin prueba de falsos positivos | R9.10 |
+| <a id="k7-ap-13"></a>K7-AP-13 | Ampliar una lista de palabras para atrapar un caso sin correr el otro lado | R6.7 |
+| <a id="k7-ap-14"></a>K7-AP-14 | Sonda de una sola ronda, o sin ronda de control cotidiana | R6.8 |
+| <a id="k7-ap-15"></a>K7-AP-15 | Fallas de la sonda arregladas y no fijadas como prueba, o borradas si no se resolvieron | R6.9 |
 | — | Un 90 % sin repetir | ver [K3-AP-6](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-6) |
 | — | Medir con el modelo cargado | ver [K3-AP-7](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-7) |
 | — | Ajustar la batería para que pase | ver [K3-AP-10](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-10) |
@@ -608,7 +645,9 @@ exigen un sistema con pantalla y sesiones.
 **Geometría (laboratorio didáctico, [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)).** Sirve para ensayar §3, §7 y §9 a escala chica: el valor esperado se
 calcula sin modelo y la mutación se escribe en código, pero el oráculo **no** es entero en código: la batería lleva
 la columna de lectura docente de K3 R2.2a. Si la plantilla de despliegue vive en otro repo, R5.4 compara contra un
-manifiesto de claves exportado y el repo del despliegue lo verifica en su CI.
+manifiesto de claves exportado y el repo del despliegue lo verifica en su CI. El enrutador que decide «pide
+resolver» se ensayó con la sonda de R6.8 (cinco rondas más una de control) y quedó con una sonda permanente y casos
+conocidos con `Skip` (R6.9); el filtro de salida, con el corpus de R9.11 (expediente `SDD/Expedientes/0004-Asistente-De-Conceptos`, actuación 003 §6–§7; PR #266 y #267).
 
 ---
 
@@ -632,6 +671,8 @@ manifiesto de claves exportado y el repo del despliegue lo verifica en su CI.
 - **Adversa:** prueba que simula a quien quiere que el sistema haga lo que no debe.
 - **Mutación:** revertir el arreglo para comprobar que la prueba falla sin él.
 - **Inestable:** caso de la batería que falla en una o dos de tres corridas.
+- **Sonda adversarial:** rondas de frases nuevas escritas por agentes ajenos a la regla, por los dos lados, hasta que dejan de encontrar fallas.
+- **Sonda permanente:** las frases que fallaron alguna vez, fijadas como casos de la suite; las no resueltas, como casos conocidos con motivo.
 - **Humo del sitio real:** recorrido mínimo por rol sobre la app desplegada.
 
 ---
@@ -642,6 +683,7 @@ manifiesto de claves exportado y el repo del despliegue lo verifica en su CI.
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.4 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (enrutador del asistente de conceptos): R6.7 clasificador probado en los dos sentidos; R6.8 sonda adversarial por rondas con control cotidiano; R6.9 sonda permanente y casos conocidos; R9.11 falsos positivos contra corpus de respuestas buenas; K7-AP-13 a K7-AP-15. |
 | 1.3 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): R9.7 semilla y temperatura variadas; R9.8 compuerta a ciegas ejercida; R9.9 eco sin lista corta; R9.10 falsos positivos; K7-AP-9 a K7-AP-12. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría corregido (lectura docente en el oráculo; manifiesto de claves con despliegue en otro repo). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: `status: borrador` (no `estado:`), igual que K6; R5.2 con una sola política (ver) y el hacer por el criterio de K6 §16; fila y compuerta de recuperación (R12.5); embeddings en proceso permitidos en la CI; criterio de la capa de integración; página destino con parámetro en bUnit y recorrido chip → acción en E2E; caso de batería de ejemplo y R9.6 (reloj inyectado y base sembrada); contrato del motivo de habilitación; mutación contra `origin/main...HEAD` en una carpeta del worktree. |

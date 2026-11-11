@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.5
+**Versión:** 1.6
 **Estado:** Vigente
 **Fecha:** 2026-11-11
+
+**Cambios en 1.6** (lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria), enrutador del asistente de conceptos): R2.9 límite declarado del componente heurístico, casos conocidos en el informe y garantía en la configuración por omisión; K3-AP-14.
 
 **Cambios en 1.5** (rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor)): R2.8 los controles de anclaje no miden calidad; compuerta «no peor que la fija» a ciegas, ejercida, y tasa de rechazo del validador en el informe; K3-AP-12 y K3-AP-13.
 
@@ -186,6 +188,18 @@ aceptar una forma redactada se exige, además, la compuerta «la redactada no es
 (K5 CD-8), con pares efectivamente juzgados (K7 R9.8), y el informe declara la tasa de rechazo del validador
 (K6 §12.10). Sin pares juzgados, la compuerta queda **NO EJECUTADO** y la fase no se entrega. *Prueba:* el
 informe MEDIDO tiene «pares juzgados», «peores a ciegas» y «rechazos del validador» por forma.
+
+<a id="k3-2-9"></a>
+**R2.9 — El límite de un componente heurístico se declara, y la garantía descansa en la configuración por
+omisión.** Si un componente decide con reglas que no cubren el lenguaje abierto (un enrutador, un filtro), el
+informe dice que es heurístico, cuántos casos conocidos quedan sin resolver ([K7 R6.9](knowledge-AI-Layer-Testing-Strategy.md#k7-6-9))
+y de qué tipo, y la fase se acepta **sólo** con la configuración por omisión que no depende de él (respuesta
+fija desde la ficha, sin modelo). Encender el camino que sí depende de él (redacción con modelo) exige una
+condición escrita de reapertura: que la sonda acumulada deje de encontrar fallas en el registro que hoy falla, o
+un clasificador nuevo entrenado con esa sonda. *Porqué:* en Geometría la sonda secó el vocabulario del dominio,
+pero la ronda de control encontró 16 fallas en 54 planteos cotidianos; declararlo evitó dar por garantizado lo que
+sólo estaba probado en un registro. *Prueba:* el informe tiene «límite declarado» con el conteo de casos
+conocidos, la configuración aceptada y la condición de reapertura.
 
 <a id="k3-3-condiciones"></a>
 ## 3. Condiciones de medición: en frío y pagando el cambio de modelo
@@ -497,6 +511,7 @@ Cada ítem se tacha sólo con un artefacto que existe.
 | <a id="k3-ap-11"></a>K3-AP-11 | Confiar en la demo | La demo no mostraba la IA apagada ni la plantilla equivocada | R7.1 |
 | <a id="k3-ap-12"></a>K3-AP-12 | Tomar el anclaje como calidad | Movilidad Urbana: 6 de 13 pares peores con 0 cifras inventadas | R2.8 |
 | <a id="k3-ap-13"></a>K3-AP-13 | «Peores 0» sin que el juez actúe | ronda 3 no aprobada: la compuerta nunca se ejerció | R2.8; K7 R9.8 |
+| <a id="k3-ap-14"></a>K3-AP-14 | Aceptar un enrutador heurístico como garantía | Geometría: 16 de 54 planteos cotidianos fallaban tras una sonda que ya había secado | R2.9; K7 R6.8 |
 
 La tabla índice de todos los antipatrones del conjunto está en AI-Layer-Integration-Working-Method; acá viven
 los que esta fase previene.
@@ -557,7 +572,9 @@ No tiene panel ni roles: aplicar §6 y §7 exige un sistema con pantalla y sesio
 **Geometría (laboratorio didáctico, [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)).** Sirve para ensayar §2, §5 y §8 a escala chica. La cifra se calcula
 sin modelo, pero lo que hace fallar a Geometría (dictar la operación) **no** es decidible por código: el veredicto
 lleva lectura docente (R2.2a) y la aceptación es del juez dueño (R4.6). El despliegue es manual del dueño, así que
-la fase cierra en una instancia propia y el sitio real queda como INFORME hasta el encendido (§7).
+la fase cierra en una instancia propia y el sitio real queda como INFORME hasta el encendido (§7). El enrutador
+del asistente de conceptos se aceptó con su límite declarado y la respuesta desde la ficha por omisión; la
+redacción con modelo queda apagada hasta cubrir los planteos cotidianos (R2.9; expediente `SDD/Expedientes/0004-Asistente-De-Conceptos`, actuación 003 §6–§7; PR #266 y #267).
 
 ---
 

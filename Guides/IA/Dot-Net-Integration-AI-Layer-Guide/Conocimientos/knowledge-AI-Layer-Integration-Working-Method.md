@@ -8,7 +8,7 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** [K1](knowledge-AI-Layer-Integration-Designing-Specification.md), [K2](knowledge-AI-Layer-Console-Assistant-Building.md), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); `Dot-Net-Integration-AI-Layer-Guide.md` edición 1.2.0 (las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §14 y basta para aplicarlo): Knowledge-Razonamiento-Del-Gestor, Knowledge-Mesa-De-Expertos-A-Pedido, Knowledge-Logica-De-Decision, Knowledge-Conformacion-Pull-Request-Automatico, Knowledge-Turnos-De-Recursos-Compartidos-En-Un-Host
-**Versión:** 1.1
+**Versión:** 1.2
 **Estado:** Vigente
 **Fecha:** 2026-11-11
 
@@ -187,6 +187,10 @@ acá se fija qué especialistas hacen falta para IA, quién los encarna y qué u
 3. **Con un solo agente al mando**, «quien verifica no es quien ajustó» se cumple así: el gestor no ajusta ni
    verifica; lanza el ajuste a un subagente, la verificación a otro (sólo con el SHA y la batería) y la crítica a un
    tercero (sólo con la evidencia). *Prueba:* los tres archivos de la ronda existen y sus autores difieren.
+4. **La carta de cada subagente lleva una cláusula fija sobre mensajes a mitad de turno:** si llega un mensaje
+   del dueño del producto reenviado, lo atiende el gestor y el subagente termina su consigna. *Por qué:* en
+   [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria), mensajes del dueño que llegaron a mitad de turno desviaron agentes de un flujo automatizado de su
+   tarea. *Prueba:* la cláusula figura en la plantilla de la carta.
 
 ---
 
@@ -481,5 +485,6 @@ Se resumen para que un agente nuevo trabaje igual sin cargarlos.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.2 | 2026-11-11 | §2.2 punto 4: cláusula fija en la carta de los subagentes ante mensajes a mitad de turno (lección de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §14 resume las reglas tomadas de conocimientos externos, que dejan de ser herencia obligatoria; fases tipo con salida (§1.1); quién encarna cada rol (§2.2); brecha optativa con motivo (§3); tabla índice única de antipatrones con ids prefijados (§8); capturas en claro y oscuro; K5 enlazado. |
 | 1.0 | 2026-11-11 | Creación: secuencia K1→K2→K3 con K5 transversal, mesa con refutador, brecha sin marca, PRs por choque, registro de frentes, coordinación entre sesiones, tabla E1–E9, casos y límites. |

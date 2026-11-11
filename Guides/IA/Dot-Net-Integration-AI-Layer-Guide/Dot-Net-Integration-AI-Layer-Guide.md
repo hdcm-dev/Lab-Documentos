@@ -2,13 +2,13 @@
 doc_id: GUIA-NET-IA
 doc_type: guia-de-estudio
 title: Integración de una capa de IA en aplicaciones .NET — guía de estudio y de criterios
-version: 1.1.0
+version: 1.2.0
 status: vigente
 origin: ia-assisted
 confidence: media
 confidence_nota: alta en lo ejecutado y registrado; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
-last_review: 2026-11-03
+last_review: 2026-11-11
 tope_palabras: 60000
 audience: [desarrollo, analista, devops, qa]
 audience_nota: desarrolladores .NET que no trabajaron con modelos, arquitectos o líderes técnicos, operadores, responsables de datos y seguridad
@@ -21,7 +21,7 @@ related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md, Conoci
 
 # Integración de una capa de IA en aplicaciones .NET
 
-> **Versión** 1.1.0 · **Fecha** 2026-11-03 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
+> **Versión** 1.2.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
 
 Libro de estudio para sumar una capa de IA a una aplicación .NET que ya existe: dónde vive la llamada al modelo, qué sabe el modelo y qué puede hacer, cómo se prueba, se asegura y se opera, y qué decisiones de arquitectura quedan escritas. Índice general: [0.0](#c0-0).
 
@@ -57,7 +57,7 @@ Figura 0.1. Orden de lectura.
 
 - [Prólogo](#prologo): [0 · Cómo usar este libro](#c0)
 - [Parte I · Fundamentos](#parte-1): [1 · Fundamentos del framework](#c1)
-- [Parte II · Marco](#parte-2): [2 · «IA ya es parte del stack»](#c2) · [3 · Escenarios, contextos y actores](#c3) · [4 · Mapa conceptual](#c4)
+- [Parte II · Marco](#parte-2): [2 · «IA ya es parte del stack»](#c2) · [3 · Escenarios, contextos y actores](#c3) (con [3.7 · La frontera de lo que se le puede preguntar al asistente](#c3-7)) · [4 · Mapa conceptual](#c4)
 - [Parte III · Arquitectura y SDK](#parte-3): [5 · La capa de IA en la arquitectura](#c5) · [6 · Hablar con un modelo desde .NET](#c6)
 - [Parte IV · Conocimiento](#parte-4): [7 · Estrategias de conocimiento](#c7) · [8 · RAG en .NET](#c8)
 - [Parte V · Agencia](#parte-5): [9 · Herramientas, agentes y orquestación](#c9) · [10 · Métodos y marcos comparados](#c10)
@@ -93,6 +93,7 @@ Esta tabla es la única fuente de los objetivos de aprendizaje (OA): de ella sal
 | <a id="oa-a4"></a>OA-A4 | Elegir marco (M.E.AI, MAF, SK sólo como migración) y explicar por qué LangGraph y Microsoft Graph no son opciones .NET para esto | [§10](#c10) | — |
 | <a id="oa-a5"></a>OA-A5 | Decidir, para una capacidad, si el contrato es un puerto propio de Application o `IChatClient`, y justificarlo con quién define el prompt y qué cambia al cambiar de proveedor | [§5.4](#c5-4) | demo: `IExtractorDeLocalidad` frente al chat, [§15.2](#c15-2) |
 | <a id="oa-a6"></a>OA-A6 | Dado un cambio de la capa de IA sobre una aplicación existente de Movilidad Urbana (CTX-EXISTENTE), clasificar cada pieza tocada en agregado, modificado a causa de la IA o modificado por otro motivo, y decir qué regla del caso base conserva | [§3.2](#c3-2), [§15.1](#c15-1), [§15.4](#c15-4) | demo: tabla de delta, [§15.1](#c15-1) |
+| <a id="oa-a7"></a>OA-A7 | Para un asistente de producto, clasificar pedidos en los cuatro anillos de la frontera de competencia, armar el glosario y los sinónimos del dominio y decidir qué se mide para mover la frontera | [§3.7](#c3-7) | — |
 | <a id="oa-o1"></a>OA-O1 | Configurar `UseOpenTelemetry` y comprobar con un exportador en memoria qué contenido sale con `EnableSensitiveData` apagado y encendido | [§13.1](#c13-1)–[§13.2](#c13-2) | 17 |
 | <a id="oa-o2"></a>OA-O2 | Configurar endpoint, modelo y `num_ctx` por variable, sin ningún valor en el repositorio, y fijar de forma explícita la espera y la política de reintentos del cliente del modelo, sin el manejador estándar de resiliencia | [§6.5](#c6-5), [§6.7](#c6-7), [§12.6](#c12-6), [§13.5](#c13-5)–[§13.6](#c13-6), [§13.7](#c13-7), [§15.5](#c15-5) | [§15.5](#c15-5) |
 | <a id="oa-o3"></a>OA-O3 | Leer un puntaje de LLM juez: decir si está calibrado y qué sesgo declara | [§11.5](#c11-5)–[§11.6](#c11-6) | 15 |
@@ -357,7 +358,7 @@ El caso de uso conoce el puerto, no el prompt ni el modelo (`Demos/MovilidadUrba
 <a id="c3"></a><a id="s2"></a>
 ## Capítulo 3 · Escenarios, contextos y actores
 
-> Estás en: transversal · marco de referencia · [OA-0.1](#oa-0-1), [OA-A2](#oa-a2), [OA-A6](#oa-a6)
+> Estás en: transversal · marco de referencia · [OA-0.1](#oa-0-1), [OA-A2](#oa-a2), [OA-A6](#oa-a6), [OA-A7](#oa-a7)
 
 Una pregunta de diseño cambia de respuesta según para qué se usa el modelo, en qué condiciones y quién decide. Esta sección define una sola vez cinco escenarios (ESC-), ocho contextos de uso (CTX-) y cinco actores (ACT-), y la pregunta previa a todos: si vale la pena.
 
@@ -469,6 +470,8 @@ De las 18 pautas de Amershi y otros, cinco tratan el momento en que el sistema s
 
 Tabla 3.5. Pautas de Amershi y otros que tocan a la capa de IA.
 
+G1 y G10 se hacen cumplir con la frontera de competencia del asistente: qué pedidos atiende, cómo y quién lo decide, en [§3.7](#c3-7).
+
 Las citas salen de `Demos/MovilidadUrbana.Asistente/src/MovilidadUrbana.Asistente/Components/Pages/Chat.razor`.
 
 El modelo no siempre degrada bien: ver las tasas en [ejemplos del capítulo 8](#c8-ejemplos). Por eso G10 no se deja sólo al prompt: el código rechaza toda cita a un fragmento no recuperado. Esa garantía no detecta la duda: en 07, una pregunta sin respuesta en los requisitos citó un fragmento real y se mostró ([ejemplos del capítulo 8](#c8-ejemplos)).
@@ -489,6 +492,266 @@ Suponiendo que va a estar mal: la pantalla dice qué hace el asistente, muestra 
 Criterio de la guía: el tronco común de [§0.2](#c0-2); después OA-D1, OA-D2, OA-D9 y OA-A2, en ese orden, y la fila ACT-DEV de [§3.3](#c3-3). La respuesta cambia si el equipo ya opera servicios con SLA: entonces conviene sumar antes la ruta ACT-OPS.
 
 «¿Qué cambia si el modelo es local o en la nube?» se responde en [§13.4](#c13-4).
+
+<a id="c3-7"></a>
+### 3.7 La frontera de lo que se le puede preguntar al asistente
+
+> Estás en: transversal · marco de referencia · ACT-USR, ACT-ARQ · [OA-A7](#oa-a7), [OA-A2](#oa-a2)
+
+Un asistente de producto, como el chat de la demo de Movilidad Urbana o la consola de ayuda de un servicio de notificaciones push, recibe texto libre: la persona puede escribir cualquier cosa. La pregunta de diseño no es qué temas cubre, sino **qué hace con cada pedido**. Y quien más necesita la ayuda es la persona que todavía no sabe cómo se llama lo que busca. Esta sección fija un marco para trazar esa frontera, decir quién la decide (el código, no el modelo), cómo se mueve con el uso y qué parte no se mueve nunca. Continúa [§3.5](#c3-5): si allí la pantalla se diseña para una respuesta que puede estar mal, acá se diseña para una pregunta que puede estar fuera de lugar o mal nombrada.
+
+<a id="c3-7-1"></a>
+#### 3.7.1 Competencia, no temas
+
+**Definición.** La *frontera de competencia* de un asistente es el conjunto de pedidos que atiende con una conducta definida y comprobable: dar pasos, explicar, derivar o rechazar. Se define por **lo que el asistente hace con el pedido**, no por el tema del que trata (criterio de la guía). Es la forma operativa de las pautas G1 y G2 de Amershi y otros: dejar claro qué puede hacer el sistema y qué tan bien lo hace [REF-01].
+
+**Por qué no alcanza una lista de temas.** Un tema cruza conductas distintas. En un servicio de notificaciones push, «notificaciones» incluye «¿cómo programo un envío para mañana?» (pasos en una pantalla), «¿qué es un segmento?» (explicar un concepto), «¿cómo genero la credencial en la consola de Apple?» (algo que pasa fuera del producto) y «¿cómo funciona el protocolo por dentro?» (curiosidad que no cambia ninguna acción). Una lista de temas no le dice al código qué armar en cada caso. Una frontera por competencia sí, y por eso se puede probar.
+
+**Qué no es.** No es una propiedad del modelo ni una frase del prompt de sistema («respondé sólo sobre el producto»). Una instrucción así es una conducta que se mide como k de M ([P-10](#p-10)). La frontera es una decisión del código, que clasifica el pedido y elige qué viaja al modelo ([§3.7.4](#c3-7-4)).
+
+<a id="c3-7-2"></a>
+#### 3.7.2 Los cuatro anillos
+
+La frontera se ordena en anillos concéntricos. Cada uno tiene un criterio de pertenencia, una conducta y una pieza de la capa de IA que lo sostiene.
+
+| Anillo | Criterio de pertenencia | Qué responde el asistente | Pieza de la capa | Ejemplo en Movilidad Urbana | Ejemplo en un servicio push |
+|---|---|---|---|---|---|
+| 1 · Operar el producto | la tarea se hace en una pantalla del producto | los pasos, los datos reales y un enlace profundo a la acción | herramientas de lectura sobre casos de uso ([§9.4](#c9-4)); el dato exacto por el carril aparte ([§7.1](#c7-1)); escritura sólo con aprobación ([§9.5](#c9-5)) | «¿cuántas localidades hay cargadas en Corrientes?» | «¿cómo doy de alta un titular?» |
+| 2 · Entender el dominio | un concepto sin el cual no se puede completar una tarea del anillo 1; la prueba es si aparece como término en alguna pantalla | una explicación corta en lenguaje llano y, después, el paso del anillo 1 que lo usa | glosario del dominio en el corpus: contexto fijo o prefijo estable ([§7.2](#c7-2), [§7.3](#c7-3)), RAG con cita si crece ([§8.4](#c8-4)); sin herramientas | «¿qué es el código postal en el formato nuevo?» | «¿qué significa *alcanzable*?» |
+| 3 · Lo de al lado | la persona lo necesita para su objetivo, pero no se hace en el producto | orientar y derivar: qué conseguir, dónde se consigue y cómo se vuelve al producto con eso, sin inventar pasos de un sistema ajeno ni código | fragmentos de derivación del corpus, con cita ([§8.4](#c8-4)); el «No sé» cuando no hay fragmento | «¿cómo paso esto a una planilla?», si el producto no exporta | «¿dónde saco la credencial del proveedor de push?» |
+| Afuera | cualquier otra cosa | un rechazo amable que recuerda qué sabe hacer, con dos o tres preguntas de ejemplo de los anillos 1 y 2 | texto fijo del código, sin llamada al modelo | «¿qué tiempo va a hacer?» | «¿quién gana el partido?» |
+
+Tabla 3.6. Los cuatro anillos de la frontera de competencia.
+
+```mermaid
+flowchart TB
+  subgraph AF["Afuera · rechazo amable con ejemplos"]
+    subgraph A3["Anillo 3 · lo de al lado · orientar y derivar"]
+      subgraph A2["Anillo 2 · entender el dominio · explicar y llevar al paso"]
+        A1["Anillo 1 · operar el producto<br/>pasos, datos reales, enlace profundo"]
+      end
+    end
+  end
+  MED["Medición por intención<br/>(sin el texto)"] -. "corre los bordes<br/>con evidencia" .-> A3
+  LIM["Lo que no se mueve<br/>no prometer · cifras del código"] -. "fija" .-> A1
+```
+
+Figura 3.1. Los anillos de la frontera: la medición corre los bordes hacia afuera; dos límites no se mueven.
+
+**Anillo 1, operar.** Es lo que el producto hace. La respuesta trae los pasos en el vocabulario de las pantallas, los datos reales que salen de una herramienta ([P-4](#p-4): un dato exacto se consulta) y un enlace profundo, que lleva a la pantalla de la acción y no a la portada. «En *Mensajes › Nuevo*, elegí *Programar* y poné la fecha. [Abrir el editor]».
+
+**Anillo 2, entender.** Es lo que hay que saber para operar. La explicación es corta (una o dos oraciones, sin jerga nueva) y termina en un paso: «Es un dispositivo al que hoy le puede llegar un aviso: tiene la app instalada y el permiso dado. Lo ves en *Tablero › Alcanzables*.» No es una clase del dominio: explica lo justo para que la persona pueda actuar.
+
+**Anillo 3, lo de al lado.** Es lo que la persona necesita y el producto no hace: la consola de un proveedor, la configuración del teléfono, el código de su propia app. Derivar no es rechazar: reconoce que el pedido es parte del objetivo y le dice cómo vuelve al producto. «La credencial se genera en tu cuenta de desarrollador del proveedor; no te puedo guiar paso a paso ahí. Cuando tengas el archivo, cargalo en *Configuración › iOS*.» Inventar los pasos de un sistema ajeno es el error que este anillo existe para evitar (G10: acotar ante la duda [REF-01]).
+
+**Afuera.** El rechazo no reprocha ni se disculpa en abstracto («como modelo de lenguaje…»). Recuerda qué sí se puede preguntar, con ejemplos: «Eso no lo sé. Puedo ayudarte con tus envíos, por ejemplo: "¿cuántos dispositivos alcanzo?" o "¿cómo segmento por ciudad?"». Las guías de diseño conversacional de Google recomiendan exactamente eso ante una segunda falta de comprensión: «Examples are particularly effective, since they give the user an implicit model of what to say and how to say it» (los ejemplos son muy eficaces, porque le dan a la persona un modelo implícito de qué decir y cómo) [REF-232]. Copilot Studio, como práctica de asistente de producto, separa el tema de reserva («Fallback», que se dispara «On Unknown Intent») del resto de los temas [REF-233].
+
+**Cuando el pedido cae entre dos anillos o dos tareas.** Una sola pregunta cerrada, con las opciones a la vista, en lugar de adivinar: «¿Querés *ver* los envíos fallidos o *reenviarlos*?». Cuesta menos que equivocarse y no le pide vocabulario a quien no lo tiene. Si las opciones tienen efectos distintos (ver no escribe, reenviar sí), la duda es además una cuestión de privilegio ([§3.7.4](#c3-7-4)).
+
+<a id="c3-7-3"></a>
+#### 3.7.3 El usuario inexperto vive en el anillo 2
+
+**La idea.** Para pedir una tarea del anillo 1 hay que saber nombrarla. La persona inexperta (una ACT-USR que recién llega, [§3.3](#c3-3)) no puede preguntar «¿dónde cargo la credencial?» si no sabe que eso se llama credencial: pregunta «¿por qué no les llegan los avisos a los iPhone?». **Su frontera la marca su vocabulario, no el producto.** Un asistente que cubre sólo el anillo 1 responde bien al experto y deja afuera justo a quien más lo necesita. Nielsen lo dice como heurística de diseño: «The design should speak the users' language» (el diseño tiene que hablar el idioma de la persona) [REF-231].
+
+Tres patrones de quien no conoce los términos:
+
+| Patrón | Servicio de notificaciones push | Movilidad Urbana |
+|---|---|---|
+| Síntoma en lugar de concepto | «no les llega a los iPhone» → falta la credencial del proveedor | «no me deja guardar la localidad» → el código postal no cumple la regla del formato |
+| Sinónimo coloquial | «aviso», «mensaje», «alerta» → *notificación* | «pueblo», «ciudad» → *localidad* |
+| Término del producto mal usado | «¿borro el usuario?» cuando quiere *dar de baja el dispositivo* | «cambio la provincia» cuando quiere *corregir la localidad cargada* |
+
+Tabla 3.7. Cómo pregunta quien todavía no maneja el vocabulario del producto.
+
+```mermaid
+flowchart LR
+  P["Pregunta con<br/>palabras de la persona"] --> S["Tabla de sinónimos<br/>(código)"]
+  S --> G{"¿Usa o necesita<br/>un término del dominio<br/>que no explicamos todavía?"}
+  G -- sí --> E["Entrada del glosario<br/>(primera vez)"]
+  G -- no --> T["Tarea del anillo 1"]
+  E --> T
+  T --> L["Paso concreto<br/>+ enlace a la pantalla"]
+```
+
+Figura 3.2. Del síntoma al concepto y del concepto a la tarea.
+
+<a id="c3-7-4"></a>
+#### 3.7.4 Glosario del dominio, sinónimos y preguntas sugeridas
+
+El anillo 2 se sostiene en cuatro piezas de conocimiento. Las dos primeras son datos versionados del producto, como el catálogo de 04 ([§6.3](#c6-3)), y no frases del prompt.
+
+1. **Glosario del dominio.** Cada entrada lleva el término, una explicación de una o dos oraciones sin jerga, un ejemplo y la pantalla a la que lleva. La explicación sale de la entrada, no de lo que el modelo improvise: así es la misma para todos, se revisa en un solo lugar y la regla de citas vale igual que en 07 (la explicación cita su entrada o no se muestra, [§8.4](#c8-4)). Mientras es chico y cambia con el código va en el prefijo estable ([§7.3](#c7-3)); si crece, como fragmentos del RAG con su id como fuente ([§7.6](#c7-6)). No es el [Anexo C](#anexo-c): aquel es para el lector de esta guía; este es para la persona usuaria del producto.
+2. **Tabla de sinónimos.** Traduce del idioma de la persona al del producto: «aviso = mensaje = notificación = push»; «dar de alta = crear = agregar = registrar». Se aplica **en código, antes de clasificar y antes de buscar**, para que las variantes caigan en la misma intención y en la misma consulta de recuperación. Es la normalización contra catálogo de 04 aplicada a la pregunta: el texto libre se lleva a un valor conocido, y lo que no se reconoce no se inventa.
+3. **Preguntas sugeridas al empezar.** Tres o cuatro ejemplos escritos como hablaría alguien que recién llega («¿Qué es un segmento?», «¿Por qué un aviso no llega?»). Muestran el alcance real (G1 [REF-01]) y, de paso, prestan el vocabulario que falta.
+4. **El término técnico se explica la primera vez.** La sesión lleva el conjunto de términos ya explicados; cuando la respuesta usa uno que no está, el armado del contexto agrega su entrada. Después se usa sin glosa.
+
+**Sin condescendencia.** Explicar no es tratar a nadie de ignorante. La glosa va **después** del paso o junto a él, nunca como sermón previo («Andá a *Configuración › iOS* (es la clave que el proveedor exige para entregar avisos)»); va **una sola vez**; y **no corrige** a la persona: suma la palabra del producto al lado de la suya («tus avisos, que en el panel se llaman notificaciones»).
+
+**Una entrada del glosario y los sinónimos, como dato.** Bosquejo de formato, no sale de `Examples/`: NO VERIFICADO, ningún ejemplo de la guía lo compila ni lo carga.
+
+```json
+{
+  "version": "glosario.v1",
+  "terminos": [
+    {
+      "id": "glosario.alcanzable",
+      "termino": "alcanzable",
+      "explicacion": "Un dispositivo al que hoy le puede llegar un aviso: tiene la app instalada y el permiso dado.",
+      "ejemplo": "Si alguien desinstala la app, deja de ser alcanzable.",
+      "pantalla": "/tablero/alcanzables"
+    }
+  ],
+  "sinonimos": {
+    "notificacion": ["aviso", "mensaje", "alerta", "push"],
+    "dar-de-alta": ["crear", "agregar", "registrar"]
+  }
+}
+```
+
+**Quién elige el anillo: el código.** El anillo decide qué viaja al modelo, y eso es privilegio, no redacción. Bosquejo en el estilo de `Application/` de los ejemplos (NO VERIFICADO: no compila en el repositorio):
+
+```csharp
+public enum Anillo { Afuera, Operar, Entender, AlLado }
+
+public sealed record Intencion(string Clave, Anillo Anillo);
+
+public sealed class ClasificadorDeAnillo(
+    TablaDeSinonimos sinonimos,
+    IReadOnlyList<(string Patron, Intencion Intencion)> reglas)
+{
+    public Intencion Clasificar(string pregunta)
+    {
+        var normal = sinonimos.Normalizar(pregunta);      // «aviso» → «notificacion»
+        foreach (var (patron, intencion) in reglas)
+            if (normal.Contains(patron)) return intencion;
+        return new Intencion("desconocida", Anillo.Afuera); // ante la duda, no se monta nada
+    }
+}
+
+// En Infrastructure/AI: sólo el anillo 1 lleva herramientas, y sólo de lectura.
+ChatOptions OpcionesPara(Intencion i) => i.Anillo switch
+{
+    Anillo.Operar => new() { Tools = [contarDispositivos, listarEnvios] },
+    _             => new()
+};
+```
+
+Lo que el bosquejo fija se prueba sin modelo, como garantía del código ([§11.1](#c11-1), [§11.2](#c11-2)): una pregunta no reconocida termina en `Afuera` y no llama al modelo; ningún anillo distinto de `Operar` lleva herramientas; «aviso» y «mensaje» llevan a la misma intención que «notificación». Lo que no fija: que la explicación del anillo 2 sea clara. Eso es conducta, y se mide con el conjunto de oro ([§11.7](#c11-7)).
+
+El clasificador puede ser por reglas o por una llamada con salida estructurada ([§6.3](#c6-3)). En el segundo caso el modelo **propone** el anillo y el código lo valida contra el `enum` cerrado, como la provincia contra `Catalogos` en 08 ([§9.2](#c9-2)); ante un valor inválido o un `TryGetResult` en `false` se cae al anillo más seguro (2, sin herramientas) o a `Afuera`, nunca al 1. Empezar por reglas es lo que pide [P-7](#p-7): si una función resuelve, se escribe la función. Y no montar herramientas en los anillos 2 y 3 reduce la superficie de inyección ([§12.2](#c12-2), [§12.3](#c12-3)).
+
+<a id="c3-7-5"></a>
+#### 3.7.5 Cómo se mueve la frontera: se mide
+
+**Definición.** *Medir la frontera* es contar, por intención y por anillo, los pedidos que el asistente no resolvió, **sin guardar lo que escribió la persona**. *Moverla* es decidir con esos conteos qué entra al glosario, a la tabla de sinónimos, a una derivación del anillo 3 o, si el producto ya lo hace, a una herramienta del anillo 1. Es el ciclo de realimentación de [§13.9](#c13-9) (G15 [REF-01]) aplicado a la frontera.
+
+**Tres señales, un evento sin texto.** Se registran la respuesta «No está en la ayuda», el voto «No es lo que pregunté» y la clasificación `Afuera`. El evento tiene campos cerrados y ningún campo libre: si el tipo no tiene dónde guardar un texto, el texto no se guarda, como el agregado sin `Nombre` ni `Edad` de [§12.4](#c12-4). Bosquejo, NO VERIFICADO:
+
+```csharp
+public enum Resultado { Resuelta, NoEstaEnLaAyuda, Derivada, FueraDeAlcance }
+public enum MotivoDelVoto { Ninguno, NoEsLoQuePregunte, NoEntendiElTermino, PasosIncorrectos, DatoIncorrecto }
+
+// Por construcción no lleva el texto de la pregunta ni el de la respuesta.
+public sealed record EventoDeFrontera(
+    string IdDeLlamada,            // correlaciona con la traza, no con la persona
+    string Intencion,              // de un catálogo cerrado, o "desconocida"
+    Anillo Anillo,
+    Resultado Resultado,
+    MotivoDelVoto Voto,
+    string VersionDelConocimiento, // glosario + sinónimos + sugeridas
+    DateOnly Dia);
+```
+
+**Motivos cerrados, decisiones distintas.** «No es lo que pregunté» dice que falló la intención: se arregla en la clasificación o con un sinónimo. «No entendí el término» dice que acertó la intención pero la explicación no llega: se reescribe la entrada del glosario. «Los pasos no coinciden con la pantalla» dice que el conocimiento del anillo 1 quedó viejo. «El dato no es correcto» es un defecto, no una estadística: el número no salió de una herramienta ([§3.7.6](#c3-7-6)).
+
+| Señal que se repite | Qué indica | Qué se cambia |
+|---|---|---|
+| «No está en la ayuda» en una intención | falta conocimiento | entrada del glosario (anillo 2) o herramienta de lectura (anillo 1) |
+| `Afuera` en algo que el producto hace con otro nombre | falta un sinónimo | tabla de sinónimos |
+| `Afuera` en algo que el producto no hace pero la persona necesita | falta una derivación | fragmento del anillo 3, nunca una promesa |
+| «No entendí el término» | explicación difícil | reescribir la entrada |
+| intenciones `desconocida` | catálogo incompleto | nombrar la intención |
+
+Tabla 3.8. Qué decide cada señal.
+
+**Cómo entra un cambio.** Lo decide ACT-ARQ con un umbral de repetición declarado, pasando el cambio por las cuatro preguntas de [§3.4](#c3-4). Entra con casos nuevos en el conjunto de oro ([§11.7](#c11-7)), con el vocabulario de la persona inexperta y no sólo con el término técnico, y se libera como una versión nueva del conocimiento; las métricas se cortan por esa versión para ver si mejoró ([§13.3](#c13-3)). Las intenciones con muy pocos casos no se muestran: un conteo chico, cruzado con el día y el rol, puede identificar a una persona aunque no tenga su nombre.
+
+**Límite honesto.** Sin el texto no se sabe *cómo* lo preguntaron. Si hace falta, se revisa un caso por su identificador en un ambiente con contenido habilitado ([§13.2](#c13-2)), no en el registro general.
+
+<a id="c3-7-6"></a>
+#### 3.7.6 Lo que no se mueve
+
+Ninguna métrica autoriza a correr estos dos límites, y los dos se prueban como garantía del código, no leyendo la prosa del modelo.
+
+- **El asistente no promete lo que el software no hace.** «¿Me mandás vos el push?» es anillo 1, pero la respuesta es el enlace al editor con los datos que conviene tener listos. Si el producto expone la acción, va por un caso de uso con aprobación sobre argumentos que arma el código ([§9.5](#c9-5), [P-6](#p-6)); si no la expone, no hay herramienta que el modelo pueda invocar. La salida del modelo es una propuesta ([P-8](#p-8), [§14.9](#c14-9)). La prueba revisa la lista de herramientas registradas, no la respuesta.
+- **Las cifras salen del código.** Todo número de la respuesta viene del resultado de una herramienta de esa llamada; el modelo lo redacta, no lo calcula ([P-4](#p-4), [§7.1](#c7-1)). La validación de salida puede exigir que cada número mostrado aparezca en un resultado, igual que 07 exige que toda cita apunte a un fragmento recuperado ([§8.4](#c8-4)).
+
+**Antipatrón: ampliar la frontera con el prompt.** Agregar «también podés ayudar con X» al prompt de sistema no le da al producto la capacidad X: le da al modelo permiso para improvisarla. La frontera crece cuando el producto suma la capacidad o el conocimiento versionado, no cuando el prompt la anuncia.
+
+<a id="c3-7-7"></a>
+#### 3.7.7 Preguntas guía
+
+**¿Por qué definir la frontera por competencia y no por temas?** ([OA-A7](#oa-a7))
+
+Porque un tema mezcla pedidos que se resuelven con conductas distintas, y lo que el código necesita saber es qué armar. «Titular» aparece en «¿cómo doy de alta un titular?» (anillo 1, herramienta), en «¿qué es un titular?» (anillo 2, glosario) y en «¿cómo importo titulares desde mi otro sistema?» (anillo 3, derivar). La competencia se comprueba contra lo que existe: las herramientas de [§9.4](#c9-4) y el conocimiento cargado de [§7](#c7). La respuesta cambia si el asistente es un buscador de documentación pura: ahí los temas del corpus sí son la frontera, y todo es anillo 2 o 3.
+
+**¿Cómo decido si un concepto va en el anillo 2 o queda afuera?** ([OA-A7](#oa-a7))
+
+Con una prueba operativa: si el término aparece en una pantalla, o si sin entenderlo no se puede completar una tarea del anillo 1, es anillo 2. Si es curiosidad que no cambia ninguna acción («¿cómo funciona el protocolo por dentro?»), es anillo 3 si hay un lugar razonable adonde derivar, o afuera. Es la misma economía de [P-7](#p-7) aplicada al conocimiento: se carga lo que hace falta para operar, no todo lo que se podría saber.
+
+**¿Por qué el usuario inexperto vive en el anillo 2 y qué consecuencia tiene?** ([OA-A7](#oa-a7))
+
+Porque no puede formular la tarea sin el término: pregunta por el síntoma. La consecuencia es de arquitectura: el glosario y los sinónimos dejan de ser un extra y pasan a ser conocimiento de primera clase, versionado y probado como el corpus de [§7.3](#c7-3) o [§8.2](#c8-2). Si se los trata como texto del prompt, nadie puede decir qué sabía el asistente un día dado, y la persona que más necesita ayuda es la que peor la recibe.
+
+**Si ya hay glosario, ¿para qué una tabla de sinónimos? ¿No la resuelve el embedding?** ([OA-A7](#oa-a7))
+
+El glosario explica el término, pero sólo sirve si la persona llega a él; los sinónimos la llevan. El embedding acerca «aviso» y «notificación» por parecido ([§8.1](#c8-1)), pero no de forma garantizada: también puede acercar el «alta» de una entidad con el de otra, y no ayuda en nada a un clasificador por reglas. La tabla es determinista y se prueba en cada build; el embedding es una conducta que se mide con el oro ([§8.5](#c8-5)). Se usan las dos, y lo que se repite fuera de la tabla se mide y se agrega.
+
+**Si el modelo clasifica muy bien, ¿por qué el anillo lo decide el código?** ([OA-A7](#oa-a7), [OA-S2](#oa-s2))
+
+Porque el anillo decide qué herramientas se montan, y eso es privilegio. Si el modelo elige el anillo, una inyección o un error lo llevan al anillo 1 con herramientas a mano ([§12.2](#c12-2)). El modelo puede proponer el anillo por salida estructurada, pero el código lo valida contra un `enum` cerrado y, ante la duda, cae al anillo más seguro. Es el mismo criterio que validar la provincia dentro de la herramienta: el esquema no es un control ([§9.2](#c9-2)).
+
+**¿Por qué en los anillos 2 y 3 no se montan herramientas, ni siquiera de lectura?**
+
+Porque no las necesitan: explicar qué es «alcanzable» no consulta datos. Cada herramienta suma latencia, puntos de falla y superficie de agencia ([§12.3](#c12-3)). Si después la persona pregunta «¿cuántos tengo alcanzables?», es otro pedido, de anillo 1, que el clasificador manda al carril aparte de [§7.1](#c7-1). El escalón se sube cuando el de abajo no alcanza ([§9.1](#c9-1)).
+
+**¿Qué diferencia hay entre derivar y rechazar, y por qué el rechazo lleva ejemplos?** ([OA-A2](#oa-a2))
+
+Derivar reconoce que el pedido es parte del objetivo de la persona y le dice qué conseguir, dónde y cómo vuelve; rechazar reconoce que no tiene relación y la devuelve a lo que sí se puede hacer. En ninguno de los dos se inventan pasos ajenos (G10 [REF-01]). El rechazo lleva ejemplos porque un «no puedo» seco no enseña dónde está la frontera; dos o tres preguntas posibles sí, y además prestan vocabulario [REF-232]. Que lo emita el código y no el modelo lo vuelve una garantía que se prueba sin servidor ([P-10](#p-10)), en lugar de una tasa.
+
+**Llega «quiero mandar un aviso a los de Android»: ¿qué hace el asistente?** ([OA-A7](#oa-a7))
+
+La tabla lleva «aviso» a *notificación*; el clasificador reconoce una tarea del anillo 1 que usa un concepto que la persona no nombró (*segmento*). La respuesta da el paso (crear un envío con un segmento por plataforma), glosa «segmento» una sola vez, después del paso, y pone el enlace a la pantalla. No hace el envío: no hay herramienta de escritura sin aprobación ([§9.5](#c9-5)). Si hubiera dos lecturas con efectos distintos, una sola pregunta cerrada antes de responder.
+
+**¿Cómo se agranda la frontera sin guardar las preguntas de la gente?** ([OA-A7](#oa-a7), [OA-S2](#oa-s2))
+
+Con un evento de campos cerrados: intención, anillo, resultado, motivo del voto y versión del conocimiento, sin texto ([§12.4](#c12-4)). Lo que se repite indica dónde falta un término, un sinónimo, una derivación o una herramienta, y entra con casos al oro ([§11.7](#c11-7)). La privacidad no depende de que nadie escriba un dato personal: el tipo no tiene dónde guardarlo. Si hace falta ver cómo lo preguntaron, una revisión puntual en un ambiente con contenido habilitado ([§13.2](#c13-2)). Cambia si el producto tiene consentimiento explícito para conservar conversaciones; aun así, el registro de la frontera no las necesita.
+
+**Una intención aparece muchas veces fuera de alcance: ¿alcanza para ampliar la frontera?** ([OA-A7](#oa-a7))
+
+No. Primero hay que ver si el producto ya lo hace con otro nombre: entonces falta un sinónimo, no una capacidad. Si no lo hace, corresponde una derivación del anillo 3, nunca una respuesta que prometa lo que el software no hace ([§3.7.6](#c3-7-6)). En los dos casos el cambio pasa por las cuatro preguntas de [§3.4](#c3-4) y entra con casos nuevos en el oro.
+
+**¿Por qué «las cifras salen del código» se prueba distinto que «la explicación está en lenguaje llano»?** ([OA-A2](#oa-a2))
+
+La primera es una garantía: un validador compara cada número de la respuesta con los resultados de las herramientas de esa llamada y rechaza el que no tiene origen; se cumple en cada corrida y se prueba sin modelo ([§11.1](#c11-1)). La segunda es una conducta: se mide como k de M, con un juez calibrado ([§11.6](#c11-6)) o revisión humana, y no promete nada sobre la próxima respuesta. Mezclarlas lleva a tolerar como estadística lo que es un defecto: por eso un voto «el dato no es correcto» se trata como falla.
+
+**¿Cuándo explicar un término se vuelve condescendiente?**
+
+Cuando la explicación va antes de la respuesta, cuando se repite aunque la persona ya usa bien la palabra, o cuando corrige su forma de hablar. Responder primero, glosar una vez y sumar el término del producto al lado del suyo. Es una conducta del modelo guiada por el armado del contexto (la sesión sabe qué términos ya explicó, [§3.7.4](#c3-7-4)), así que se mide con casos del oro escritos con el vocabulario de quien recién llega.
+
+<a id="c3-7-8"></a>
+#### 3.7.8 Criterios de calidad
+
+- [ ] La frontera está escrita como anillos con su criterio de pertenencia, su conducta y la pieza que la sostiene, no como lista de temas.
+- [ ] El anillo lo decide el código; si el modelo lo propone, se valida contra un `enum` cerrado y la duda cae al anillo más seguro.
+- [ ] Sólo el anillo 1 lleva herramientas, y toda escritura pide aprobación ([§9.5](#c9-5)).
+- [ ] El glosario del dominio y la tabla de sinónimos son datos versionados, con pruebas; los sinónimos se aplican antes de clasificar y de buscar.
+- [ ] El rechazo de lo que queda afuera es texto fijo del código, con preguntas de ejemplo.
+- [ ] El evento de frontera no tiene campos de texto libre, y el tablero oculta las intenciones con pocos casos.
+- [ ] Toda cifra de una respuesta aparece en el resultado de una herramienta de esa llamada.
+- **Antipatrón: la frontera como lista de temas.** No le dice al código qué montar.
+- **Antipatrón: el glosario sólo en el prompt, sin versión.** No se puede probar ni saber qué explicaba el asistente un día dado.
+- **Antipatrón: ampliar la frontera con el prompt.** Anuncia una capacidad que el producto no tiene.
 
 <a id="c4"></a><a id="s3"></a>
 ## Capítulo 4 · Mapa conceptual: capas, escaleras y tablas de entrada
@@ -2617,7 +2880,7 @@ En el código de la demo, nada llama a `AddOpenTelemetry`; el límite de concurr
 
 **Definición.** La realimentación es que la persona valore una respuesta concreta durante el uso normal: «Enable the user to provide feedback indicating their preferences during regular interaction with the AI system» (que la persona pueda indicar sus preferencias mientras usa el sistema) [REF-01]. Resuelve saber dónde falla la capa con usuarios reales; el estándar de IA responsable de Microsoft pide procesos para que informen fallas [REF-04]. No es una evaluación: es una señal que la alimenta.
 
-El ciclo de realimentación (criterio de la guía, no implementado): la persona marca la respuesta; la marca se guarda con el identificador de la llamada, sin `Nombre` ni `Edad` ([§12.4](#c12-4)); lo marcado como malo se revisa y puede pasar al conjunto de oro ([§11.7](#c11-7)). Fue tarea de producto, y cada vez más la asumen quienes integran IA [REF-08].
+El ciclo de realimentación (criterio de la guía, no implementado): la persona marca la respuesta; la marca se guarda con el identificador de la llamada, sin `Nombre` ni `Edad` ([§12.4](#c12-4)); lo marcado como malo se revisa y puede pasar al conjunto de oro ([§11.7](#c11-7)). Aplicado a lo que la persona puede preguntar, el mismo ciclo cuenta por intención y sin el texto los pedidos que no se resolvieron, y decide qué entra al glosario, a los sinónimos o a una derivación ([§3.7.5](#c3-7-5)). Fue tarea de producto, y cada vez más la asumen quienes integran IA [REF-08].
 
 <a id="c13-escenarios"></a><a id="s12-practica"></a><a id="s12-escenarios"></a>
 ### 13.10 Aplicación por escenario
@@ -3371,7 +3634,7 @@ La comisión didáctica propone el recorrido que sigue. La mesa **no lo adoptó*
 <a id="c17"></a><a id="s15"></a>
 ## Capítulo 17 · Autoevaluación
 
-Hay un ítem por cada objetivo de [§0.1](#c0-1), en el mismo orden: 27. El tipo sigue al verbo del objetivo. Los de decidir (ubicar, elegir, decidir, fijar, leer, nombrar) traen un caso de Movilidad Urbana; los de hacer, una tarea sobre un ejemplo con un criterio que comprobás solo, sin servidor de modelos. La tabla es el índice por escenario y por actor ([§3.1](#c3-1), [§3.3](#c3-3)). Ningún ítem enseña algo nuevo: si no podés responder, volvé a la sección que indica.
+Hay un ítem por cada objetivo de [§0.1](#c0-1), en el mismo orden: 28 (el 28, de [OA-A7](#oa-a7), se sumó en la versión 1.2.0 y va al final para no renumerar anclas). El tipo sigue al verbo del objetivo. Los de decidir (ubicar, elegir, decidir, fijar, leer, nombrar) traen un caso de Movilidad Urbana; los de hacer, una tarea sobre un ejemplo con un criterio que comprobás solo, sin servidor de modelos. La tabla es el índice por escenario y por actor ([§3.1](#c3-1), [§3.3](#c3-3)). Ningún ítem enseña algo nuevo: si no podés responder, volvé a la sección que indica.
 
 Los comandos se corren desde la carpeta de la guía. `tools/verificar.sh build` compila todo `Examples/` y corre sus pruebas sin servidor; `tools/verificar.sh correr <carpeta>` corre un ejemplo con el cliente guionado ([§0.4](#c0-4)).
 
@@ -3404,6 +3667,7 @@ Los comandos se corren desde la carpeta de la guía. `tools/verificar.sh build` 
 | [25](#c17-i25) | [OA-S3](#oa-s3) | ESC-01, ESC-02 | ACT-SEC | caso | [§8.6](#c8-6), [§8.7](#c8-7) |
 | [26](#c17-i26) | [OA-S4](#oa-s4) | ESC-04 | ACT-SEC | tarea sobre la demo y 11 | [§9.5](#c9-5), [§15.3](#c15-3) |
 | [27](#c17-i27) | [OA-SK1](#oa-sk1) | ESC-04 | Si venís de SK | tarea sobre 14 | [§10.7](#c10-7) |
+| [28](#c17-i28) | [OA-A7](#oa-a7) | ESC-01 | ACT-ARQ | caso | [§3.7](#c3-7) |
 
 **Todos los lectores**
 
@@ -3605,6 +3869,15 @@ En `ResolutorDeAprobaciones.cs` ubicá de dónde sale cada parte de «Eliminar l
 Corré `tools/verificar.sh correr 14-Anotaciones-SK-vs-MEAI` y compará `PluginSk.cs` con `HerramientaMeai.cs`.
 
 *Criterio.* En las cuatro entradas, «firma igual: True · esquema del parámetro igual: True», y al final «invariantes de código: se cumplen». Entre los dos archivos, la `[Description]` y el cuerpo son los mismos: cambian `[KernelFunction]`, la fábrica y su `using`. Al migrar vigilás tres cosas: `FunctionCallContent` sin calificar con los dos `using` da `CS0104`; montada tal cual, la versión SK se llama `Localidades_contar_localidades`; su esquema completo trae `condition`. Repasá [§10.7](#c10-7).
+
+**Asistente de producto (ACT-ARQ)**
+
+<a id="c17-i28"></a>
+**Ítem 28** · [OA-A7](#oa-a7) · caso
+
+En el chat de la demo de Movilidad Urbana (ESC-01) llegan cinco pedidos: «¿cuántas localidades hay en Chaco?», «¿qué quiere decir que el código postal es del formato nuevo?», «no me deja guardar el pueblo», «¿cómo lo paso a una planilla?» (la demo no exporta) y «¿qué tiempo va a hacer?». Ubicá cada uno en un anillo, decí qué pieza de la capa lo responde y qué evento queda registrado.
+
+*Criterio.* El primero es anillo 1: la cifra sale de una herramienta de lectura, no del modelo. El segundo es anillo 2: una entrada del glosario y después el paso. El tercero también es anillo 2, aunque viene como síntoma: los sinónimos llevan «pueblo» a *localidad* y la explicación lleva a la regla del código postal. El cuarto es anillo 3: se orienta y se deriva sin inventar un botón. El quinto queda afuera: rechazo fijo del código con preguntas de ejemplo. Sólo el primero lleva herramientas. Los eventos tienen intención, anillo y resultado, y ninguno guarda el texto ([§3.7](#c3-7)).
 
 <a id="anexo-a"></a>
 ## Anexo A · Plantillas comentadas
@@ -3845,10 +4118,11 @@ Objetivos: [OA-D1](#oa-d1) a [OA-D9](#oa-d9).
 <a id="anexo-b-arq"></a>
 ### B.2 Arquitecto o líder técnico (ACT-ARQ)
 
-Objetivos: [OA-A1](#oa-a1) a [OA-A6](#oa-a6).
+Objetivos: [OA-A1](#oa-a1) a [OA-A7](#oa-a7).
 
 - [ ] Antes de construir un escenario están respondidas las cuatro preguntas de [§3.4](#c3-4), con su métrica, su error caro y el umbral para seguir.
 - [ ] Lo que ve la persona cuando la respuesta está mal lo decide el código, no el prompt: el formulario cuando `TryGetResult` da `false`, el «No sé.», el pedido de aprobación. [§3.5](#c3-5).
+- [ ] Si hay un asistente de producto, su frontera está escrita como anillos (operar, entender, lo de al lado, afuera), el anillo lo decide el código, el glosario y los sinónimos del dominio están versionados y lo que queda afuera se mide por intención sin el texto. [§3.7](#c3-7).
 - [ ] Cada capacidad tiene decidido su contrato, puerto propio o `IChatClient`, según quién define el prompt (ADR-01), y Domain no referencia M.E.AI. Se verifica: `Domain_SinDependenciasDeIa`, `Application_SinInfrastructureNiSdk` y `Presentation_EntraAInfrastructureAI_SoloPorChat` (`Cableado/ArquitecturaTests.cs`), con dos mutaciones que dan rojo (`Cableado/MutacionesTests.cs`), que reemplazan al compilador mientras las capas sean carpetas (ADR-11). [§5.3](#c5-3), [§5.4](#c5-4).
 - [ ] La estrategia de conocimiento es el escalón más bajo que alcanza: el dato exacto se consulta por herramienta, y el salto a RAG se justifica contra la ventana efectiva (ADR-04, ADR-05). [§7.1](#c7-1), [§7.6](#c7-6), [§8.10](#c8-decision).
 - [ ] Cada paso tiene fijado su escalón de agencia, y la cantidad de agentes se decide con métricas deterministas sobre los mismos pedidos (ADR-07). [§9.1](#c9-1), [§9.8](#c9-8).
@@ -4010,6 +4284,14 @@ Tabla C.2. Qué no es cada término.
 | IC95 | intervalo de confianza | [§0.4](#c0-4), [§11.4](#c11-4) |
 | servidor de chat / segundo servidor / servidor de varias aplicaciones | — | [E.3](#anexo-e-3), [§13.4](#c13-4) |
 | dificultad | nivel | [§0.4](#c0-4), [Anexo E](#anexo-e) |
+| frontera de competencia | alcance del asistente | [§3.7.1](#c3-7-1) |
+| anillo (operar, entender el dominio, lo de al lado, afuera) | — | [§3.7.2](#c3-7-2) |
+| enlace profundo | deep link | [§3.7.2](#c3-7-2) |
+| rechazo amable | respuesta fuera de alcance, fallback | [§3.7.2](#c3-7-2) |
+| glosario del dominio | — (no es este Anexo C: es conocimiento del producto) | [§3.7.4](#c3-7-4) |
+| sinónimo del usuario | — | [§3.7.4](#c3-7-4) |
+| pregunta sugerida | prompt sugerido | [§3.7.4](#c3-7-4) |
+| evento de frontera / medición por intención | — | [§3.7.5](#c3-7-5) |
 
 <a id="anexo-d"></a>
 ## Anexo D · Referencias
@@ -4279,6 +4561,15 @@ Referencias de [§16.8](#c16-8). Para un libro o una norma sin página pública 
 - [REF-228] Clopper, C. J. y Pearson, E. S., «The Use of Confidence or Fiducial Limits Illustrated in the Case of the Binomial», https://doi.org/10.1093/biomet/26.4.404, *Biometrika* 26(4), 404–413, diciembre de 1934, consultado 2026-11-03
 - [REF-229] Biggs, J., «Enhancing teaching through constructive alignment», https://doi.org/10.1007/BF00138871, *Higher Education* 32, 1996, consultado 2026-11-03
 - [REF-230] Sweller, J., «Cognitive load during problem solving: effects on learning», https://doi.org/10.1207/s15516709cog1202_4, *Cognitive Science* 12(2), 1988, consultado 2026-11-03
+
+<a id="anexo-d-15"></a>
+### D.15 Diseño conversacional y frontera del asistente
+
+Referencias de [§3.7](#c3-7). Se reusa [REF-01] ([D.1](#anexo-d-1)).
+
+- [REF-231] Nielsen, J., «10 Usability Heuristics for User Interface Design», https://www.nngroup.com/articles/ten-usability-heuristics/, Nielsen Norman Group, 1994-04-24, última revisión 2024-01-30, consultado 2026-11-11
+- [REF-232] Google, «Conversation Design» (sección «Errors»), https://developers.google.com/assistant/conversation-design/errors, act. 2024-09-18; la página avisa que las Conversational Actions se dieron de baja el 2023-06-13 y se cita sólo por su criterio de diseño, consultado 2026-11-11
+- [REF-233] Microsoft, «Configure the system fallback topic - Microsoft Copilot Studio», https://learn.microsoft.com/en-us/microsoft-copilot-studio/authoring-system-fallback-topic, ms.date 2024-10-11, consultado 2026-11-11
 
 <a id="anexo-e"></a>
 ## Anexo E · Laboratorio

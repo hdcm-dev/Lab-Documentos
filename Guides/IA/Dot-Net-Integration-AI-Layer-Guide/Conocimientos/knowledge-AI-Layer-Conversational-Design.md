@@ -8,7 +8,7 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` (libro hermano en redacción: cuando se publique, este conocimiento remite a sus secciones y, si algo choca, rige el libro)
-**Versión:** 0.9
+**Versión:** 0.10
 **Estado:** Borrador provisorio (las reglas están medidas en un sistema; pasa a 1.0 cuando se publique la guía de diseño conversacional y se agreguen sus remisiones)
 **Fecha:** 2026-11-11
 
@@ -190,6 +190,7 @@ columnas y cada forma F1–F8 tiene al menos un caso.
 | <a id="k5-ap-4"></a>K5-AP-4 | Cifra sin nota de métrica | dispositivos leídos como personas | CD-4 |
 | <a id="k5-ap-5"></a>K5-AP-5 | Destino que termina en 403 | «Ir a Credenciales» a quien no podía cargar | CD-3, §6.3 |
 | <a id="k5-ap-6"></a>K5-AP-6 | Sugerencia que el rol no puede hacer | el raíz recibía sugerencias ajenas | §7.4 |
+| <a id="k5-ap-7"></a>K5-AP-7 | Marcas de formato crudas en el panel (`**Encuesta**`) | en [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) se veían los asteriscos en respuestas fijas y redactadas | el panel renderiza un subconjunto cerrado (negrita, listas) o lo quita; captura sin `**` ni `#` |
 
 La tabla índice de todos los antipatrones de la integración está en
 [K4 §8](knowledge-AI-Layer-Integration-Working-Method.md#k4-8-antipatrones).
@@ -232,4 +233,5 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 0.10 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): K5-AP-7 marcas de formato crudas. |
 | 0.9 | 2026-11-11 | Creación como borrador provisorio, a pedido de la prueba a ciegas (K2 y K4 lo citaban sin que existiera). Reglas medidas en PushDispatch; en espera de la guía de diseño conversacional. |

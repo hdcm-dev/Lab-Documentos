@@ -8,7 +8,7 @@
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.2
+**Versión:** 1.3
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
 **Fecha:** 2026-11-11
 
@@ -519,6 +519,15 @@ Implementa [K2 R3](knowledge-AI-Layer-Console-Assistant-Building.md#k2-r3): nada
    agenda, una hora inventada hace tanto daño como una cifra inventada. *Límite:* PushDispatch valida cantidades,
    porcentajes e ids; la normalización de horas y fechas es una extensión no medida allí. *Prueba:* respuesta
    doble con una hora que ningún resultado trae → `cifra_ausente`.
+7. **Cada cifra va atada a su categoría y a su orden.** Que el número exista entre los resultados no alcanza:
+   el validador compara pares `(categoría, cifra)` y los ordinales («la más común», «la segunda») contra el orden
+   que calculó el código; si el texto atribuye una cifra a otra categoría, o cambia el orden, es `cifra_ausente`.
+   La alternativa equivalente es exigir que el texto conserve, palabra por palabra, los pares de la plantilla.
+   *Porqué:* en [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) el modelo escribió «Trabajo y Estudio, cada una con 4 respuestas» cuando Trabajo tenía 5;
+   el 4 existía (era Estudio) y el validador por número suelto lo dejó pasar bajo el rótulo «Redactado con IA».
+   Bajar el umbral no lo arregla. *Prueba:* doble que intercambia las cifras de dos categorías, y doble que
+   dice «la segunda» de la tercera → rechazados en los dos casos; la batería incluye un fixture con categorías de
+   cifras distintas pero cercanas.
 
 <a id="k6-13"></a>
 ## 13. Ejemplo real extractado
@@ -816,5 +825,6 @@ página (§3.6).
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |
+| 1.3 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) (Movilidad Urbana): §12.7 cifra atada a su categoría y a su orden. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría rotulado como del libro; ficha de concepto con `contexto` opcional y cobertura por términos. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas (sistema de reservas sintético, 24 huecos): gramática de `::: roles`; `delivery` como audiencia y qué pasa sin `roles` o sin `status`; frontmatter completo de ejemplo; ficha frente a página por tarea; cálculo de la raíz; calibración del umbral de coseno; §8.0 criterio de palabra común; qué se compara antes de pasar una intención al modelo; fechas y horas como argumento y como cifra con origen; una sola política (ver) y el hacer por el criterio de §16; `Alcance` del dominio; propuesta de id de instancia; criterios de frontera de la ayuda. |

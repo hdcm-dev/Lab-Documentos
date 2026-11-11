@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.3
+**Versión:** 1.4
 **Estado:** Vigente
 **Fecha:** 2026-11-11
+
+**Cambios en 1.4** (banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor)): R8.4 mismo redondeo en código y SQL, con medios exactos en el fixture.
 
 **Cambios en 1.3** (banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria); nada de 1.2 cambió de sentido): R2.2a lectura experta cuando el oráculo no es decidible por código; R2.6 batería antes de la firma del corpus; R4.6 juez dueño distinto del crítico; caso Geometría corregido contra el repo.
 
@@ -328,6 +330,13 @@ ejemplo, dispositivos, no personas). *Prueba:* una fila por agregación con la s
 **R8.3 — El validador de cifras del código es garantía; el contraste SQL es aceptación.** El libro pide que
 cada número tenga origen en una herramienta ([Guía §11.1](../Dot-Net-Integration-AI-Layer-Guide.md#c11-1));
 el contraste comprueba que la herramienta calcula bien. *Prueba:* las dos existen.
+
+**R8.4 — El código y la consulta redondean igual, y el fixture tiene medios exactos.** .NET `Math.Round(x, 1)`
+redondea al par (25,25 → 25,2); SQLite y la mayoría de los motores, alejándose del cero (25,3). Fijá
+`MidpointRounding.AwayFromZero` (o el modo que use la base) en cada redondeo que se muestre. *Por qué:* en
+[Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) los minutos de colectivo [10, 8, 36, 47] promedian 25,25: la pantalla decía 25,2 y la consulta 25,3, y
+la prueba de contraste no lo vio porque su fixture no tenía promedios en la mitad. *Prueba:* el fixture del
+contraste trae al menos un promedio y un porcentaje que caen exactamente en la mitad.
 
 ---
 

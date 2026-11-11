@@ -7,10 +7,12 @@
 **Condicion-de-carga:** antes de declarar cerrada cualquier fase de la capa de IA; al armar una batería, un criterio de aceptación o el informe de una fase; al revisar un informe ajeno; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.1
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
+**Versión:** 1.2
 **Estado:** Vigente
 **Fecha:** 2026-11-11
+
+**Cambios en 1.2** (nada de 1.1 cambió de sentido): remisiones mínimas a K7 para escribir la suite, los scripts de batería y de capturas y las compuertas de CI (mapa de carga, §2, §9), y a K6 para la medición del corpus.
 
 **Cambios en 1.1** (tras la prueba a ciegas; nada de 1.0 cambió de sentido): R2.1a tamaño mínimo M ≥ 20 y forma esperada por caso; R2.3 cuenta la secuencia real de la batería (95 % en una corrida → 64 % ×3 → 90 % ×3 → 36/36 ×3); R3.1 y R3.3a, recarga del modelo único y configuración del servidor junto a cada latencia; R4.1, roles como subagentes distintos; R9.4, datos personales en las evidencias; R10.2a, presupuesto de latencia derivado del uso; ids K3-AP-n con ancla; enlaces a K1, K2, K4 y K5.
 
@@ -70,6 +72,7 @@ secciones: las vuelve operativas y les suma la práctica que hizo funcionar la i
 | La respuesta muestra cifras | §8 |
 | Reviso un informe ajeno | §14, §15 |
 | Todo el ciclo de una fase | §12 (procedimiento) y luego §13 |
+| Tengo que escribir las pruebas o los scripts que producen la evidencia | [K7](knowledge-AI-Layer-Testing-Strategy.md#k7-0) |
 
 ---
 
@@ -158,6 +161,9 @@ reescribir la pregunta hasta que pase vacía la medición. *Prueba:* el diff de 
 agrega casos (con motivo) o crea una `v2` con fecha; no cambia oráculos de casos fallidos.
 
 ---
+
+**Implementación en K7.** El script de la batería ×3, el umbral, las inestables y el registro por corrida se
+arman según [K7 §9](knowledge-AI-Layer-Testing-Strategy.md#k7-9); la latencia, según [K7 §10](knowledge-AI-Layer-Testing-Strategy.md#k7-10).
 
 <a id="k3-3-condiciones"></a>
 ## 3. Condiciones de medición: en frío y pagando el cambio de modelo
@@ -335,6 +341,10 @@ claves y direcciones, no personas; las capturas del sitio real con sesión por r
 persona (o un subagente distinto del autor) revisa cada captura con la lista de §13.
 
 ---
+
+**Implementación en K7.** Cómo se escriben estas pruebas, las adversas, la mutación y las compuertas de CI está
+en [K7 §5–§7 y §12](knowledge-AI-Layer-Testing-Strategy.md#k7-5); la conformidad del catálogo, en
+[K6 §14](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-14).
 
 <a id="k3-10-latencia"></a>
 ## 10. Latencia

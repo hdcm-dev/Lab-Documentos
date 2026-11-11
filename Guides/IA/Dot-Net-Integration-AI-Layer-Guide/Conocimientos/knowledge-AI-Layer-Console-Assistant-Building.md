@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al implementar la consola o tocar su enrutado, corpus, destinos, votos o despliegue; después de tener la especificación de K1; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); guía de diseño conversacional (en redacción: sus remisiones se agregan al publicarse). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.1
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); guía de diseño conversacional (en redacción: sus remisiones se agregan al publicarse). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
+**Versión:** 1.2
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
 **Fecha:** 2026-11-11
 
@@ -63,8 +63,10 @@ No repite lo que ya está escrito en otro lado; lo cita:
 |---|---|
 | Arrancar la consola en un panel | §0–§3, §11, §12 |
 | Tocar el enrutado o el alcance | §2, §3 |
-| Sumar o revisar la ayuda (RAG) | §2, §4 |
-| Tocar un destino o un deeplink | §2, §5 |
+| Sumar o revisar la ayuda (RAG) | §2, §4 y [K6 Parte A](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-3) |
+| Tocar un destino o un deeplink | §2, §5 y [K6 Parte C](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-14) |
+| Agregar o cambiar una función del modelo | §2, §3 y [K6 Parte B](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-9) |
+| Escribir las pruebas de lo que tocaste | [K7](knowledge-AI-Layer-Testing-Strategy.md#k7-0) |
 | La consola no encuentra la entidad que nombran | §6 |
 | Agregar un gráfico | §7 |
 | Votos, señales, métricas de la frontera | §8 |
@@ -214,6 +216,11 @@ de las pantallas del anillo 1).
 **Medí la recuperación antes que la respuesta** [Guía §8.5](../Dot-Net-Integration-AI-Layer-Guide.md#c8-5): un
 conjunto de preguntas con su trozo esperado y su recall@k, por rol. La batería de respuestas es de K3.
 
+**Detalle en K6.** Cómo se redacta cada página para que se recupere (secciones por tarea, frontmatter, fichas,
+sinónimos), la ingesta completa, la medición de recall@3 y los errores de ranking que costaron están en
+[K6 §3–§8](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-3); esta sección queda como resumen y
+no cambia de sentido.
+
 **Docs as Code.** Si el producto genera la ayuda desde el repo, la cobertura es un chequeo de CI
 [Guía §16.8](../Dot-Net-Integration-AI-Layer-Guide.md#c16-8).
 
@@ -246,6 +253,11 @@ hacer`. Un *deeplink* es la ruta resuelta de un destino, con los parámetros que
    permiso por rol dice «puede cancelar», no «puede cancelar este»; ofrecer la acción sobre algo ajeno es un 403
    disfrazado (y revela que existe). *Prueba:* mismo rol, dos instancias (propia y ajena) → sólo la propia recibe
    el destino de la acción; abrir el deeplink de la ajena a mano → «no encontrado», no 403.
+
+**Detalle en K6.** El catálogo tipado, el destino por intención y por cuenta, la revalidación y el enlace a la
+acción exacta se desarrollan en [K6 §14–§18](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-14);
+las funciones que alimentan el paso de contexto, en [K6 §9–§13](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-9).
+Cada *Prueba:* de esta sección se escribe según [K7](knowledge-AI-Layer-Testing-Strategy.md#k7-5).
 
 <a id="k2-6"></a>
 ## 6. Elegir entre candidatas
@@ -485,5 +497,6 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.2 | 2026-11-11 | Remisiones mínimas a K6 (§4, §5, mapa de carga) y a K7 (pruebas); nada de 1.1 cambió de sentido. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §16 resume las reglas del panel tomadas de conocimientos externos (ya no son obligatorios); K5 existe y se enlaza; ids K2-AP-n; roles externos (§1); permiso de hacer por instancia (§5.6); total frente a aclaración (§3); cifras de batería y de recarga corregidas; capturas en claro y oscuro; anclas estables hacia K1. |
 | 1.0 | 2026-11-11 | Creación, destilada de la consola de PushDispatch (expediente de la capa de IA) y coordinada con la mesa de la guía de diseño conversacional. |

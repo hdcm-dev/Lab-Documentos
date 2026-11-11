@@ -8,7 +8,7 @@
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.1
+**Versión:** 1.2
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
 **Fecha:** 2026-11-11
 
@@ -772,7 +772,10 @@ argumento no la nombra); la localidad con instrucciones en el nombre
 [Guía §12.7](../Dot-Net-Integration-AI-Layer-Guide.md#c12-7) es el canario de §10.4. No tiene panel con roles ni
 catálogo de pantallas: la Parte C no aplica tal cual.
 
-**Geometría (caso aplicado del libro).** [Guía §16](../Dot-Net-Integration-AI-Layer-Guide.md#c16). La ayuda se
+**Geometría (caso aplicado del libro; el repo [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) no tiene todavía la ayuda Docs as Code ni variantes `::: roles`:
+lo que sigue describe el libro).** [Guía §16](../Dot-Net-Integration-AI-Layer-Guide.md#c16). Para conceptos del dominio
+la unidad es la **ficha de concepto**: `contexto` opcional y cobertura por términos del dominio en lugar de por `@page`;
+el validador de cifras de §12 vale para las pistas, y en las fichas la regla es ninguna cifra (K1 F-9). La ayuda se
 genera como Docs as Code [Guía §16.8](../Dot-Net-Integration-AI-Layer-Guide.md#c16-8): el esquema del
 frontmatter, los destinos válidos y el recall de §7 son chequeos de CI. La «función» que da la cifra es el
 validador de la figura: decide qué está mal y cuánto, y el modelo sólo redacta la pista; la Parte B se aplica con
@@ -813,4 +816,5 @@ página (§3.6).
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |
+| 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría rotulado como del libro; ficha de concepto con `contexto` opcional y cobertura por términos. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas (sistema de reservas sintético, 24 huecos): gramática de `::: roles`; `delivery` como audiencia y qué pasa sin `roles` o sin `status`; frontmatter completo de ejemplo; ficha frente a página por tarea; cálculo de la raíz; calibración del umbral de coseno; §8.0 criterio de palabra común; qué se compara antes de pasar una intención al modelo; fechas y horas como argumento y como cifra con origen; una sola política (ver) y el hacer por el criterio de §16; `Alcance` del dominio; propuesta de id de instancia; criterios de frontera de la ayuda. |

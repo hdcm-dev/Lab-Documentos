@@ -8,7 +8,7 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.1
+**Versión:** 1.2
 **Estado:** Vigente
 **Fecha:** 2026-11-11
 
@@ -583,8 +583,10 @@ encontró la IA apagada por un nombre de clave distinto y la plantilla de respal
 ([Guía §11.9](../Dot-Net-Integration-AI-Layer-Guide.md#c11-ejemplos)). No tiene panel ni roles: §4, §8 y §11
 exigen un sistema con pantalla y sesiones.
 
-**Geometría (laboratorio didáctico).** Sirve para ensayar §3, §7 y §9 a escala chica: el valor esperado se
-calcula sin modelo, así que el oráculo de la batería y la mutación se escriben enteros en código.
+**Geometría (laboratorio didáctico, [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)).** Sirve para ensayar §3, §7 y §9 a escala chica: el valor esperado se
+calcula sin modelo y la mutación se escribe en código, pero el oráculo **no** es entero en código: la batería lleva
+la columna de lectura docente de K3 R2.2a. Si la plantilla de despliegue vive en otro repo, R5.4 compara contra un
+manifiesto de claves exportado y el repo del despliegue lo verifica en su CI.
 
 ---
 
@@ -618,4 +620,5 @@ calcula sin modelo, así que el oráculo de la batería y la mutación se escrib
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría corregido (lectura docente en el oráculo; manifiesto de claves con despliegue en otro repo). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: `status: borrador` (no `estado:`), igual que K6; R5.2 con una sola política (ver) y el hacer por el criterio de K6 §16; fila y compuerta de recuperación (R12.5); embeddings en proceso permitidos en la CI; criterio de la capa de integración; página destino con parámetro en bUnit y recorrido chip → acción en E2E; caso de batería de ejemplo y R9.6 (reloj inyectado y base sembrada); contrato del motivo de habilitación; mutación contra `origin/main...HEAD` en una carpeta del worktree. |

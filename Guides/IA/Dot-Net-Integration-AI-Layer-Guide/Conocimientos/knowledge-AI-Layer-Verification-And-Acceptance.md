@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.2
+**Versión:** 1.3
 **Estado:** Vigente
 **Fecha:** 2026-11-11
+
+**Cambios en 1.3** (banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria); nada de 1.2 cambió de sentido): R2.2a lectura experta cuando el oráculo no es decidible por código; R2.6 batería antes de la firma del corpus; R4.6 juez dueño distinto del crítico; caso Geometría corregido contra el repo.
 
 **Cambios en 1.2** (nada de 1.1 cambió de sentido): remisiones mínimas a K7 para escribir la suite, los scripts de batería y de capturas y las compuertas de CI (mapa de carga, §2, §9), y a K6 para la medición del corpus.
 
@@ -127,6 +129,15 @@ un oráculo escrito después se acomoda al resultado. *Prueba:* el archivo de la
 anteriores a la primera corrida, y el veredicto se puede recalcular leyendo sólo el registro
 ([Guía §11.4](../Dot-Net-Integration-AI-Layer-Guide.md#c11-4)).
 
+**R2.2a — Si una condición no es decidible por código, agregá la lectura experta al veredicto.** «No dicta la
+operación» o «no hace el ejercicio por el alumno» no se decide con expresiones regulares. *Por qué:* en Geometría
+el oráculo por código daba verde y 24 de 30 respuestas dictaban la operación en palabras. *Prueba:* el archivo de
+datos de la batería tiene una columna de lectura experta y el veredicto la cuenta.
+
+**R2.6 — Batería antes de la firma del corpus.** Si el corpus sólo se sirve `vigente` y la firma es del dueño, la
+batería previa corre con una copia de ensayo declarada en el informe, fuera del repo; nunca se marca `vigente` en
+el repo para medir. *Prueba:* el informe nombra la copia de ensayo y el repo no tiene `vigente` sin firma.
+
 **R2.3 — Corré la batería completa tres veces y reportá las tres.** Cada corrida da k/M; el informe lleva
 las tres, el mínimo y el máximo. *Por qué:* una corrida sola no distingue la varianza del modelo de una mejora
 real. En PushDispatch la redacción anclada dio **19/20 (95 %) en una sola corrida**; la crítica exigió ×3 y, al
@@ -227,6 +238,10 @@ n aparece como resuelto, diferido con motivo o refutado en la ronda n+1.
 redacta como única validación** ([Guía §11.6](../Dot-Net-Integration-AI-Layer-Guide.md#c11-6)). *Prueba:* hay
 un registro de calibración o la crítica es de un agente distinto que razona sobre la evidencia y además pasa
 por la lectura humana del §5.
+
+**R4.6 — El crítico itera; acepta el juez dueño.** Donde el dueño del dominio fija su propio umbral (en Geometría,
+puntuación docente ≥ 4 y mayor que la plantilla), la nota del crítico o de la mesa no lo sustituye. *Prueba:* el
+informe separa la nota del crítico de la del juez dueño y el estado «aceptado» cita la del juez.
 
 **R4.5 — Diferí con nombre.** Lo que una ronda decide no arreglar entra en una lista de diferidos (`D-n`) con
 motivo y condición de reapertura. *Prueba:* el informe final lista los diferidos y ninguno está sin motivo.
@@ -519,9 +534,10 @@ registro y oráculo recalculable, conjunto de oro con no respondibles
 ([Guía §11.9](../Dot-Net-Integration-AI-Layer-Guide.md#c11-ejemplos), [Guía §15](../Dot-Net-Integration-AI-Layer-Guide.md#c15)).
 No tiene panel ni roles: aplicar §6 y §7 exige un sistema con pantalla y sesiones.
 
-**Geometría (laboratorio didáctico).** Sirve para ensayar §2, §5 y §8 a escala chica: preguntas cuyo valor
-esperado se calcula sin modelo, de modo que el oráculo y el contraste de cifras se escriben en código y la
-lectura humana se concentra en la forma de la respuesta.
+**Geometría (laboratorio didáctico, [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)).** Sirve para ensayar §2, §5 y §8 a escala chica. La cifra se calcula
+sin modelo, pero lo que hace fallar a Geometría (dictar la operación) **no** es decidible por código: el veredicto
+lleva lectura docente (R2.2a) y la aceptación es del juez dueño (R4.6). El despliegue es manual del dueño, así que
+la fase cierra en una instancia propia y el sitio real queda como INFORME hasta el encendido (§7).
 
 ---
 

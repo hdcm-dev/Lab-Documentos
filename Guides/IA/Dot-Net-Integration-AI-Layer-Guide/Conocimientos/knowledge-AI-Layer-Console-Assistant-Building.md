@@ -8,7 +8,7 @@
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); guía de diseño conversacional (en redacción: sus remisiones se agregan al publicarse). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.2
+**Versión:** 1.3
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
 **Fecha:** 2026-11-11
 
@@ -183,6 +183,11 @@ es el total con desglose ofrecido; si **nombró** una y coincide con varias, es 
 - **La ayuda es contexto, no respuesta.** No devuelvas el fragmento ni un puntero a la guía; pasalo al modelo
   para redactar. *Porqué:* la primera versión respondía con un enlace a la guía y emparejaba por palabras sueltas
   («alta»). *Prueba:* la respuesta nunca es igual a un fragmento ni consiste sólo en un enlace.
+  **Excepción: la ficha es la respuesta.** Si el corpus está escrito como respuesta para la persona (fichas cortas,
+  revisadas por el dueño) y la línea base de K1 §1 muestra que el modelo no la supera, devolvé la ficha y dejá al
+  modelo como redactor opcional medido. *Porqué:* en Geometría el modelo sólo parafraseaba la ficha (5/6, 4/6, 4/6) y
+  a veces cambiaba el término del producto. *Prueba:* la decisión está escrita en la especificación con la línea
+  base; en esta rama el canario de la ayuda se controla al escribir las fichas (sin imperativos), no en la salida.
 - La **plantilla del texto vive en el código** (voseo, sin primera persona del asistente, cita por oración); el
   criterio de esas formas es de [K5 §3](knowledge-AI-Layer-Conversational-Design.md#k5-3). *Prueba:* casos de
   conducta medidos por K3, cada uno con su forma esperada F1–F8.
@@ -334,6 +339,15 @@ acá lo propio de la consola.
    FaltaModeloDeEmbeddings | SinRespuesta…`, lo **registra una vez** (nombrando la clave, nunca el valor, R6) y lo
    **expone** en el health check y en la consola («La ayuda con IA está apagada: falta configurar X»).
    *Prueba:* arranque sin la variable → health con el motivo y la consola muestra el aviso.
+   **Clave parecida** es la de raíz `IA`/`AI` seguida de una clave conocida con otra grafía; una variable ajena del
+   entorno que sólo comparte la raíz (`AI_AGENT`, de los agentes) no lo es. *Prueba:* un caso con una variable
+   ajena de raíz `AI_` da `Habilitada`.
+   **El corte del servicio es menor que el del cliente** que lo llama. *Porqué:* en Geometría el servicio esperaba
+   al modelo 8 s y la Web cortaba a 10 s; con el modelo frío, 6/6 «No pudimos traer pistas». *Prueba:* una prueba
+   compara las dos constantes.
+   **Fusionar no es encender:** la capacidad nace apagada (K1 R-08) y la enciende el dueño del despliegue con la
+   evidencia de K3; si los catálogos y las páginas viven en procesos distintos, la conformidad catálogo ↔ página
+   se prueba por reflexión en cada build en lugar de cortar el arranque.
 3. **Sin modelo, la consola sigue útil:** plantilla de respaldo **por pertinencia** (el fragmento de ayuda y el
    destino que correspondan), no un texto de introducción genérico. *Prueba:* sin modelo, una pregunta del
    anillo 1 devuelve su cifra y su destino.
@@ -497,6 +511,7 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.3 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): excepción «la ficha es la respuesta» en §3; en §10, regla de clave parecida, corte del servicio < corte del cliente, fusionar ≠ encender y conformidad por reflexión con procesos separados. |
 | 1.2 | 2026-11-11 | Remisiones mínimas a K6 (§4, §5, mapa de carga) y a K7 (pruebas); nada de 1.1 cambió de sentido. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §16 resume las reglas del panel tomadas de conocimientos externos (ya no son obligatorios); K5 existe y se enlaza; ids K2-AP-n; roles externos (§1); permiso de hacer por instancia (§5.6); total frente a aclaración (§3); cifras de batería y de recarga corregidas; capturas en claro y oscuro; anclas estables hacia K1. |
 | 1.0 | 2026-11-11 | Creación, destilada de la consola de PushDispatch (expediente de la capa de IA) y coordinada con la mesa de la guía de diseño conversacional. |

@@ -8,9 +8,9 @@
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); guía de diseño conversacional (en redacción: sus remisiones se agregan al publicarse). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.3
+**Versión:** 1.4
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
 
 ---
 
@@ -251,13 +251,31 @@ hacer`. Un *deeplink* es la ruta resuelta de un destino, con los parámetros que
    parámetro → el modal está abierto. Los filtros de la URL siguen la convención de [§16 E-2](#k2-16).
 5. **Conformidad catálogo ↔ páginas por reflexión.** *Porqué:* que el catálogo nombre un parámetro que la página
    no lee pasa todas las pruebas de unidad. *Prueba:* para cada destino, sus parámetros existen como
-   `[SupplyParameterFromQuery]` en la página de su ruta.
+   `[SupplyParameterFromQuery]` en la página de su ruta. La conformidad de **permisos** por reflexión supone que la página declara
+   `[Authorize(Policy = …)]`; si el sistema decide el rol dentro de la página (una propiedad de la sesión), la
+   conformidad de permisos se hace por bUnit, un caso por rol y destino, y la de parámetros sigue por reflexión.
 6. **Si el permiso de hacer depende de la instancia** (sólo lo propio, sólo lo de su sede o cuenta), el catálogo
    declara el permiso por rol y **el caso de uso de la acción lo revalida para esa instancia** antes de ofrecer el
    destino; el deeplink lleva el id de la instancia y la página lo vuelve a comprobar al abrir. *Porqué:* el
    permiso por rol dice «puede cancelar», no «puede cancelar este»; ofrecer la acción sobre algo ajeno es un 403
    disfrazado (y revela que existe). *Prueba:* mismo rol, dos instancias (propia y ajena) → sólo la propia recibe
    el destino de la acción; abrir el deeplink de la ajena a mano → «no encontrado», no 403.
+7. **Además del permiso, la pertinencia por estado.** Que el rol pueda hacer algo sobre esa instancia no basta:
+   el destino se ofrece sólo si **en el estado actual de la instancia** hay algo que abrir. *Porqué:* en
+   [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (EXP-0004, act. 003, H2) la negativa sobre un trabajo
+   ya enviado ofrecía «Cargar un trabajo», y «Ver pistas» se ofrecía sobre trabajos sin advertencias: el chip
+   prometía una acción que la pantalla no tenía. *Prueba:* tabla `destino × estado de la instancia → se ofrece /
+   no se ofrece`, con al menos un caso «permiso sí, pertinencia no» por destino que dependa del estado.
+8. **El rótulo del chip puede depender del rol, y lo resuelve el catálogo.** El mismo destino dice «Volver a tu
+   trabajo» al alumno y «Volver al trabajo del alumno» al docente. *Porqué:* un rótulo único habla a una sola
+   persona y el posesivo miente a la otra (Lab-Geometria, act. 003, defecto 4). *Prueba:* por destino visible a
+   más de un rol, un caso por rol que compara el rótulo.
+9. **Cuando el chip abre la acción, el parámetro tiene valor fijo y la página sin nada que abrir queda igual.**
+   El catálogo declara el parámetro que el destino **siempre** emite (`?pistas=1`, `?ejemplo=1`); ningún valor sale
+   del texto de la persona. Si al abrir no hay qué abrir (sin advertencias, función apagada), la página se dibuja
+   igual que sin el parámetro, sin error. *Prueba:* bUnit «con parámetro y sin nada que abrir» comparado con el DOM
+   sin parámetro → igual; mutación «la página ignora el parámetro» → rojo en la prueba de la acción abierta
+   (Lab-Geometria, EXP-0005).
 
 **Detalle en K6.** El catálogo tipado, el destino por intención y por cuenta, la revalidación y el enlace a la
 acción exacta se desarrollan en [K6 §14–§18](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-14);
@@ -511,6 +529,7 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.4 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (aplicación a ciegas y rebanada EXP-0005): §5.7 pertinencia por estado además del permiso; §5.8 rótulo del chip por rol; §5.9 parámetro de valor fijo y página igual sin nada que abrir; §5.5 conformidad de permisos por bUnit cuando no hay `[Authorize(Policy)]`. |
 | 1.3 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): excepción «la ficha es la respuesta» en §3; en §10, regla de clave parecida, corte del servicio < corte del cliente, fusionar ≠ encender y conformidad por reflexión con procesos separados. |
 | 1.2 | 2026-11-11 | Remisiones mínimas a K6 (§4, §5, mapa de carga) y a K7 (pruebas); nada de 1.1 cambió de sentido. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §16 resume las reglas del panel tomadas de conocimientos externos (ya no son obligatorios); K5 existe y se enlaza; ids K2-AP-n; roles externos (§1); permiso de hacer por instancia (§5.6); total frente a aclaración (§3); cifras de batería y de recarga corregidas; capturas en claro y oscuro; anclas estables hacia K1. |

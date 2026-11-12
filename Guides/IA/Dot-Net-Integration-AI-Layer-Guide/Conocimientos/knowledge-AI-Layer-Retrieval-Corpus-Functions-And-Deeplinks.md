@@ -8,9 +8,9 @@
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.5
+**Versión:** 1.6
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
 
 ---
 
@@ -688,6 +688,14 @@ turno, el permiso de la acción y no el de la página, permiso por instancia). L
    *Prueba:* bUnit con y sin permiso; recargar después de cerrar no lo reabre.
 3. **Los filtros** que la consola pone (`?via=`, estado, rango) salen de la lista blanca `Filtros` del destino y
    siguen la convención de estado en la URL de [K2 §16 E-2](knowledge-AI-Layer-Console-Assistant-Building.md#k2-16).
+4. **Si la acción que el chip debe abrir no tiene parámetro, se agrega uno de valor fijo** (`?pistas=1`,
+   `?ejemplo=1`) que la página lee con `[SupplyParameterFromQuery]`; la conformidad de §14.3 lo contrasta al
+   arrancar. Un fragmento `#id` sólo lleva a la sección (no abre ni enfoca) y no lo ve la conformidad: si se usa
+   mientras tanto, va con prueba de presencia del `id` y se declara como deuda de la especificación. *Porqué:* en
+   [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) «Ver pistas» y «Ver un ejemplo» llevaban sólo a la
+   pantalla (deudas D-2 y D-3) hasta EXP-0005, que agregó los dos parámetros. *Prueba:* bUnit con el parámetro →
+   la acción abierta y con el foco en su control; sin nada que abrir → DOM igual al de sin parámetro
+   ([K2 §5.9](knowledge-AI-Layer-Console-Assistant-Building.md#k2-5)).
 
 <a id="k6-18"></a>
 ## 18. Nunca una ruta del texto
@@ -849,6 +857,7 @@ página (§3.6).
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |
+| 1.6 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §17.4 acción sin parámetro → parámetro de valor fijo; el fragmento `#id` como deuda declarada. |
 | 1.5 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §9 límite del ruteo por código, sonda y clasificador por embeddings como candidato. |
 | 1.4 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana: §12.8 afirmaciones sin números y entidades no cerradas; §12.9 formato de citas; §12.10 tasa de rechazo; K6-AP-11 y K6-AP-12. |
 | 1.3 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) (Movilidad Urbana): §12.7 cifra atada a su categoría y a su orden. |

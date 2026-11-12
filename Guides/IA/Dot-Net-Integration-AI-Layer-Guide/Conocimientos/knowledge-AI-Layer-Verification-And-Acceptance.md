@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.6
+**Versión:** 1.7
 **Estado:** Vigente
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
+
+**Cambios en 1.7** (banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)): el id repetido R2.6 se separa (la batería antes de la firma pasa a R2.2b; la caída del servidor sigue como R2.6); R2.6b límite de tasa = no medido; R10.2b p95 del redactor con modelo frente al corte.
 
 **Cambios en 1.6** (lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria), enrutador del asistente de conceptos): R2.9 límite declarado del componente heurístico, casos conocidos en el informe y garantía en la configuración por omisión; K3-AP-14.
 
@@ -140,7 +142,8 @@ operación» o «no hace el ejercicio por el alumno» no se decide con expresion
 el oráculo por código daba verde y 24 de 30 respuestas dictaban la operación en palabras. *Prueba:* el archivo de
 datos de la batería tiene una columna de lectura experta y el veredicto la cuenta.
 
-**R2.6 — Batería antes de la firma del corpus.** Si el corpus sólo se sirve `vigente` y la firma es del dueño, la
+<a id="k3-2-2b"></a>
+**R2.2b — Batería antes de la firma del corpus** (hasta 1.6 se citaba «R2.6», id repetido con la caída del servidor). Si el corpus sólo se sirve `vigente` y la firma es del dueño, la
 batería previa corre con una copia de ensayo declarada en el informe, fuera del repo; nunca se marca `vigente` en
 el repo para medir. *Prueba:* el informe nombra la copia de ensayo y el repo no tiene `vigente` sin firma.
 
@@ -168,10 +171,18 @@ caro y no se compensa con aciertos. *Prueba:* min(k₁, k₂, k₃)/M ≥ 0,90 y
 ninguna cifra sin origen. Con M chico, informá además el IC95 que pide el libro (con M ≤ 12 toda tasa es
 descriptiva): el 90 % es el umbral del proyecto para seguir, no una afirmación sobre la población.
 
+<a id="k3-2-6"></a>
 **R2.6 — Caída del servidor = no medido.** Si el servidor de modelos no es el esperado o deja de responder, lo
 que falta queda «no medido»; no se completa con otra estación ni cuenta como falla
 ([Guía §11.4](../Dot-Net-Integration-AI-Layer-Guide.md#c11-4)). *Prueba:* el registro trae la versión del
 servidor y del modelo verificadas antes del primer pedido.
+
+<a id="k3-2-6b"></a>
+**R2.6b — El límite de tasa del servidor tampoco es una falla.** Si la instancia limita pedidos por minuto, las
+corridas se espacian para no cobrarlo y todo rechazo por límite (429) cuenta como no medido; una corrida con
+rechazos no entra en el ×3. *Porqué:* en Lab-Geometria tres corridas seguidas contra una instancia limitada a 60
+pedidos por minuto mezclaron 429 con fallas reales; espaciadas 65 s, desaparecieron. *Prueba:* el registro trae
+pausa y conteo de 429 por corrida ([K7 R9.12](knowledge-AI-Layer-Testing-Strategy.md#k7-9-12)).
 
 **R2.7 — Una pregunta fallida se arregla en el código o en el corpus, nunca en la batería.** *Por qué:*
 reescribir la pregunta hasta que pase vacía la medición. *Prueba:* el diff de la batería entre rondas sólo
@@ -409,6 +420,13 @@ hora sale del tiempo de servicio, no del deseo. *Prueba:* el presupuesto figura 
 pantalla sin asistente (buscar en la ayuda, filtrar) es el techo del p95 caliente; si es atención con cola (un
 mostrador), el techo es menor que el tiempo entre llegadas. *Prueba:* el `REQ-IA-nn` de latencia cita de dónde
 salió la cifra.
+
+**R10.2b — El p95 con modelo se mide contra el corte, no sólo contra el presupuesto.** Si el servicio corta al
+redactor a los *t* segundos (y cae a la respuesta fija), el informe da el p95 del redactor **con** modelo frente a
+*t* y cuántas respuestas cayeron por tiempo. Medir sólo la configuración sin modelo (≤ 1 s) esconde que el
+redactor vive pegado al corte. *Porqué:* en Lab-Geometria el redactor dio p95 de 7–8 s contra un corte de 8 s con
+servidor compartido: 16 respuestas «fuera de tiempo». *Prueba:* la tabla del §10 tiene la fila «con modelo, p95
+frente al corte» y el conteo de cortes.
 
 **R10.3 — La latencia sale del registro de la batería en las condiciones del §3, no de una corrida aparte con
 el modelo caliente.** *Prueba:* las cifras del §10 enlazan a los mismos registros del §2.

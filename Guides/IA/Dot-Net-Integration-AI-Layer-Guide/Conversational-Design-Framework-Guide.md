@@ -2,13 +2,13 @@
 doc_id: GUIA-DISENO-CONVERSACIONAL
 doc_type: guia-de-estudio
 title: Diseño conversacional de un asistente de producto — un método por competencia
-version: 1.2.0
+version: 1.3.0
 status: vigente
 origin: ia-assisted
 confidence: media
 confidence_nota: alta en lo referenciado y en lo observado al construir los casos; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
-last_review: 2026-11-11
+last_review: 2026-11-12
 tope_palabras: 65000
 audience: [estudiante, docente, po, desarrollo, qa]
 audience_nota: guía académica y general para estudiantes, docentes y profesionales sin experiencia en diseño conversacional ni en IA que quieren aplicar el marco a cualquier sistema, existente o por desarrollar
@@ -19,7 +19,7 @@ related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
-> **Versión** 1.2.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+> **Versión** 1.3.0 · **Fecha** 2026-11-12 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
 
 <a id="prologo"></a>
 ## Prólogo
@@ -127,7 +127,7 @@ flowchart LR
 
 *Tabla 0.3. Lo que se da por sabido y lo que se explica.*
 
-Los casos se usan como ejemplos ilustrativos, no como objeto de estudio. Movilidad Urbana y Geometría vienen de la guía de capa de IA ([§17](#c17)). PushDispatch es un servicio de notificaciones push presentado como diseñado desde cero: un panel de administración con aplicaciones, suscripciones, mensajes, credenciales y roles, más una consola del asistente; [§18](#c18) lo recorre entero. No hace falta conocer ninguno de antes: el libro los presenta. Los ejemplos de los capítulos temáticos son neutros a propósito, para que el método no parezca atado a un dominio.
+Los casos se usan como ejemplos ilustrativos, no como objeto de estudio. Movilidad Urbana y Geometría vienen de la guía de capa de IA ([§17](#c17)). PushDispatch es un servicio de notificaciones push presentado como diseñado desde cero: un panel de administración con aplicaciones, suscripciones, mensajes, credenciales y roles, más una consola del asistente; [§18](#c18) lo recorre entero. No hace falta conocer ninguno de antes: el libro los presenta. Los ejemplos de los capítulos temáticos son neutros a propósito, para que el método no parezca atado a un dominio. Los de Geometría que aparecen en ellos (cargar un triángulo por sus vértices, la mediatriz, una pantalla «Lienzo», publicar un ejercicio, figuras guardadas, ejercicios resueltos por semana) son **hipotéticos**: el laboratorio real ([Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)) no tiene esas pantallas ni esas intenciones. Quien aplique el método a ese sistema saca el inventario del sistema y de su código, no de estos ejemplos (P-4); una aplicación a ciegas que los copiara inventaría intenciones y pantallas que no existen.
 
 <a id="c0-4"></a>
 ### 0.4 Patrón de capítulo y rótulos de evidencia
@@ -1005,6 +1005,8 @@ Tabla 5.2. Sólo cambian las celdas de origen del catálogo y de riesgo.
 **Ejemplo 5.1 — Destino único y permitido (servicio de notificaciones push).** En PushDispatch, una usuaria con rol de miembro pregunta «¿cómo mando un mensaje a todos los suscriptores de la tienda?». La intención es *crear mensaje*; el catálogo tiene ese destino; hay una sola aplicación visible con ese nombre; su rol permite enviar. Respuesta: dos o tres pasos en texto y el chip «Crear un mensaje», que abre la pantalla de esa aplicación.
 
 **Ejemplo 5.2 — Destino sin permiso (laboratorio de geometría).** Un alumno pregunta «¿cómo veo las entregas de toda la comisión?». El destino existe, pero pide el permiso de docente. La revalidación 1 falla: no hay chip. El asistente explica y deriva: «Esa vista es del docente. Vos podés ver y reeditar tus propias entregas», y ofrece, si corresponde, el chip a *sus* entregas. No promete «te llevo» ni ofrece un enlace que terminaría en acceso denegado.
+
+En un dominio didáctico la negativa tiene dos exigencias más (criterio de la guía, aprendido en el laboratorio real de Geometría). Si nombra un concepto, **trae la ficha** en la misma respuesta, plegada, en lugar de un botón «Abrir la ficha»: lo que sí se puede saber no cuesta otro clic. Y el chip que sí se ofrece depende del **estado** de la instancia, no sólo del permiso: sobre un trabajo ya enviado no se ofrece «cargar un trabajo», y «ver pistas» sólo aparece si hay advertencias. El rótulo del chip repite las palabras de la acción en la pantalla destino y su posesivo cambia con el rol («tu trabajo» al alumno, «el trabajo del alumno» al docente).
 
 **Ejemplo 5.3 — Ambigüedad (encuesta de movilidad y notificaciones push).** En una encuesta de movilidad, «¿cuántas encuestas hay de Corrientes?» admite dos lecturas: la localidad o la provincia. En un servicio de notificaciones, un usuario que pertenece a dos cuentas pregunta «¿cuántos mensajes mandó la app de prueba este mes?». En los dos casos la herramienta devuelve candidatas, no un total:
 
@@ -3760,10 +3762,10 @@ flowchart LR
 | Término | Definición llana | Pantalla | Anillo | Sinónimos (clase · fuente) | Primera vez | Aclaración si es ambiguo |
 |---|---|---|---|---|---|---|
 | Suscripción | Un dispositivo o navegador que aceptó recibir notificaciones de una aplicación | Suscripciones | 2 | «dispositivos» (equivalente · recorrido); «mis usuarios» (cercano · soporte) | Sí | «¿Querés contar dispositivos o personas? El panel cuenta dispositivos.» |
-| Arista | Cada segmento donde se juntan dos caras de una figura | Validador | 2 | «borde» (equivalente · consultas de alumnos); «lado» (engañoso · consultas de alumnos) | Sí | «¿Hablás del lado de una cara o de la arista del cuerpo?» |
+| Arista | Cada segmento donde se juntan dos caras de una figura | Validador | 2 | «borde» (equivalente · consultas de alumnos); «lado» (falso amigo · consultas de alumnos) | Sí | «¿Hablás del lado de una cara o de la arista del cuerpo?» |
 | | | | | | | |
 
-*Clase del sinónimo:* **equivalente** (se trata igual), **cercano** (se acepta pero se aclara), **engañoso** (se corrige siempre). *Primera vez:* si el asistente explica el término la primera vez que lo usa con ese usuario.
+*Clase del sinónimo:* **equivalente** (se trata igual), **cercano** (se acepta pero se aclara), **falso amigo** (se aclara antes de contestar, [§4.1.4](#c4-1-4); hasta 1.2.0 esta plantilla lo llamaba «engañoso, se corrige siempre», que no es lo mismo). *Primera vez:* si el asistente explica el término la primera vez que aparece **en la conversación**; no se recuerda por persona, porque guardar quién vio qué choca con no guardar identidad (P-9).
 
 **Terminado cuando:** cada término de las respuestas de A.2 está acá; cada sinónimo tiene clase y fuente real (no inventada por quien diseña); los términos con dos sentidos tienen su pregunta de aclaración ([P-6](#p-6)).
 
@@ -4028,6 +4030,7 @@ Este libro cita fuentes que cambian. La tabla dice qué se verificó, cuándo, y
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 1.3.0 | 2026-11-12 | Banco de diálogo sobre Lab-Geometria: los ejemplos de Geometría de los capítulos temáticos se declaran hipotéticos (§1); negativa con la ficha, chip por estado y rótulo por rol en un dominio didáctico (§5); A.3 unifica «falso amigo» (antes «engañoso») y la primera vez es por conversación |
 | 1.2.0 | 2026-11-11 | Ciclo de vida de una intención, contrato con respuesta por cercanía y mesa de diseño ([§7.2.1](#c7-2-1), [§7.2.2](#c7-2-2)); RAG por dentro y dónde viven los vectores ([§6.2.1](#c6-2-1), [§6.2.2](#c6-2-2)); pedido explícito de gráfico ([§6.3](#c6-3-pedido)); pastillas ranqueadas por éxito ([§15.2.1](#c15-2-1)); panel que no tapa el producto ([§14.3.1](#c14-3-1)); proveedores de IA detrás de una abstracción ([§17.3](#c17-3-8)); lecciones 7–9 del caso; REF-018 a REF-021; glosario, preguntas guía y antipatrones |
 | 1.1.0 | 2026-11-11 | Versión vigente anterior |
 

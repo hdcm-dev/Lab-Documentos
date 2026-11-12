@@ -8,9 +8,9 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` (libro hermano en redacción: cuando se publique, este conocimiento remite a sus secciones y, si algo choca, rige el libro)
-**Versión:** 0.12
+**Versión:** 0.13
 **Estado:** Borrador provisorio (las reglas están medidas en un sistema; pasa a 1.0 cuando se publique la guía de diseño conversacional y se agreguen sus remisiones)
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
 
 ---
 
@@ -95,7 +95,7 @@ cuando el modelo se abstiene con fragmentos («No lo encontré en la ayuda»). L
 | F3 | **Aclaración** | nombre dado con 2 o más coincidencias visibles | 2 a 4 candidatas con una cifra distintiva y «y k más» | revelar una candidata ajena al rol | resolutor por tabla (K2 §6) |
 | F4 | **Pasos desde la ayuda** | anillo 1 o 2 con fragmentos sobre el umbral | redacción anclada, cita por oración, destino del catálogo | devolver el fragmento crudo o sólo un enlace (K2 §3) | lectura humana + control de anclaje |
 | F5 | **Abstención** | sin fragmento sobre el umbral, o el modelo se abstiene | plantilla fija + salida (otras palabras, Ayuda) | un dato o un paso inventado | recuperación vacía |
-| F6 | **Negativa útil** | la intención existe pero el rol no puede | qué no, qué sí, a quién pedirlo o a dónde ir | un destino que termina en 403; revelar qué tiene otro rol | rol sin permiso de hacer |
+| F6 | **Negativa útil** | la intención existe pero el rol no puede | qué no, qué sí, a quién pedirlo o a dónde ir; si nombra un concepto, **la ficha viaja en la misma respuesta** (plegada) | un destino que termina en 403; revelar qué tiene otro rol; remitir a un botón «Abrir la ficha» en lugar de traerla | rol sin permiso de hacer |
 | F7 | **Afuera** | anillo «Afuera» de la frontera | texto fijo + 2 o 3 preguntas de ejemplo que sí contesta | una respuesta del modelo [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2) | pregunta afuera → sin llamada al modelo |
 | F8 | **IA apagada** | habilitación distinta de `Habilitada` (K2 §10) | aviso con el motivo («falta configurar X») + respaldo por pertinencia | un texto genérico de introducción | arranque sin la variable |
 
@@ -141,6 +141,18 @@ herramienta y se filtra por permiso como cualquier otra.
 3. Se ofrece **sólo si el permiso de hacer pasa** para esa sesión y, si depende de la instancia, para esa instancia
    (K2 §5.6). Si no pasa, la respuesta es F6.
 4. Un solo destino principal por respuesta; si hay más, el principal primero.
+5. Se ofrece **sólo si es pertinente para el estado de la instancia**, no sólo si el permiso pasa: sobre un
+   trabajo ya enviado no se ofrece «Cargar un trabajo»; «Ver pistas» sólo si hay advertencias. *Prueba:* K2 §5.7.
+6. **El rótulo del chip promete lo que la página muestra.** Usa las mismas palabras que la acción en la página
+   destino (si la página dice «Ver un ejemplo», el chip no dice «Ver el ejemplo de formato»), y el posesivo según
+   el rol («tu trabajo» al alumno, «el trabajo del alumno» al docente, K2 §5.8). *Porqué:* en la rebanada de
+   [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) EXP-0005 el chip abría la acción correcta pero con
+   otro nombre, y la persona no reconoce que llegó. *Prueba:* por destino que abre una acción, el rótulo del chip
+   contiene el rótulo visible del control que la página enfoca.
+7. **La negativa trae el contenido, no un botón hacia él.** Si la respuesta F6 nombra un concepto, la ficha va
+   plegada en la misma respuesta. *Porqué:* en Lab-Geometria (EXP-0004, H2) «[Abrir la ficha]» fue lo primero que
+   se corrigió: una negativa que obliga a otro clic para lo que sí se puede saber pierde su utilidad. *Prueba:*
+   caso de batería «pedir resolver» → la respuesta contiene el texto de la ficha.
 
 <a id="k5-7"></a>
 ## 7. Voz y sugerencias
@@ -156,7 +168,12 @@ herramienta y se filtra por permiso como cualquier otra.
 4. **Las sugerencias son por pantalla y rol, y sólo de cosas que ese rol puede hacer.** *Porqué:* al rol raíz de
    PushDispatch se le sugería «¿Cómo creo una aplicación?» y no podía. *Prueba:* cada sugerencia pasa la
    revalidación de destino (K2 §9).
-5. **Los motivos del voto son cerrados y dicen dónde arreglar** («No es lo que pregunté», «Falta información»,
+5. **Procedimiento en la voz = dictar.** En un producto didáctico, el imperativo de voseo con tilde («calculá»,
+   «sumá», «tomá») y los marcadores de secuencia («primero», «tenés que») convierten la explicación en receta; el
+   presente descriptivo («la suma de las áreas», «se toma la base») no. *Porqué:* en Lab-Geometria el filtro de
+   salida tuvo que distinguir «sumá» de «suma» (H1). *Prueba:* lista de formas de procedimiento con corpus bueno
+   que la contenga en forma descriptiva y cero marcas (K7 R9.11).
+6. **Los motivos del voto son cerrados y dicen dónde arreglar** («No es lo que pregunté», «Falta información»,
    «Dato incorrecto») (K2 §8).
 
 <a id="k5-8"></a>
@@ -243,6 +260,7 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 0.13 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): F6 trae la ficha (no un botón); §6.5 pertinencia por estado; §6.6 rótulo del chip igual al de la acción y según el rol; §6.7 negativa con contenido; §7.5 procedimiento en la voz. |
 | 0.12 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): K5-AP-12 enrutador por listas de palabras. |
 | 0.11 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): CD-8 redactar sólo donde aporta con compuerta «no peor que la fija» a ciegas; control de registro (§7.1); K5-AP-8 a K5-AP-11. |
 | 0.10 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): K5-AP-7 marcas de formato crudas. |

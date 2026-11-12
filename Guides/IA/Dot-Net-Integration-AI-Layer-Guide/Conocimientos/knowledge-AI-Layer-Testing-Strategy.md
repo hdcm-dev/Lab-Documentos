@@ -8,9 +8,9 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.4
+**Versión:** 1.5
 **Estado:** Vigente
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
 
 **Por qué nace Vigente:** destila prácticas ya medidas en un sistema (mismo criterio que K3); cada regla cita la prueba o la cifra que la respalda.
 
@@ -279,6 +279,30 @@ elemento (el número como valor de una medida frente al cardinal que cuenta un s
 del enrutador tiene casos de ambos lados y todo PR que la toca corre los dos; si sólo crece un lado, el revisor lo
 rechaza.
 
+Lo que la función exige, escrito porque una aplicación a ciegas de esta regla lo dejó afuera:
+- **El número hablado se parsea, no se lista.** Una lista de «uno… diez» se rompe en la primera decena: el
+  enrutador reconoce decenas y centenas compuestas («veintitrés», «doscientos cuarenta y uno», «dos mil
+  trescientos»), fracciones y decimales hablados («tres y medio», «dos coma cinco») y trata «un/una» como artículo
+  salvo que sean el valor de una medida. *Prueba:* casos con 13, 17, 23, 241, 2300, «y medio» y «coma», y casos con
+  «un cubo» que no se marcan (Lab-Geometria, EXP-0004 act. 003 §6, defecto 2).
+- **El dígito pasa por la misma función que la palabra.** «El volumen tiene 3 dimensiones» es un cardinal, igual
+  que «tres dimensiones»; tratar todo dígito como dato reintroduce el falso positivo que la función resolvió.
+  *Prueba:* cada caso del lado legítimo existe en cifras y en letras.
+- **Clase «número que cita la fórmula».** «¿Para qué está el tres en la fórmula del cono?» nombra un coeficiente,
+  no un dato del ejercicio: es pregunta de concepto. La tabla la trae como clase propia; si el enrutador no la
+  resuelve, entra como caso conocido (R6.9) con su motivo. *Porqué:* dos de los 16 casos que dejó la ronda de
+  control en Geometría son de esta clase.
+
+<a id="k7-6-10"></a>
+**R6.10 — Enrutador y control del corpus dicen qué criterio usan para el mismo número.** La función de R6.7 vale
+para **clasificar la pregunta**; el control docs-as-code de las fichas puede ser más estricto («ninguna cifra, en
+dígitos ni en letras, tampoco cardinales») y lo es en Geometría (`ficha-dicta`, con autoprueba roja sobre «seis
+caras»), porque una ficha es texto fijo que se lee junto a cualquier ejercicio y un cardinal puede ser la
+respuesta de uno. Si el sistema elige otro criterio para las fichas, lo escribe en la especificación junto a la
+regla del enrutador. *Porqué:* una aplicación a ciegas aplicó la regla del enrutador al corpus y permitió «el cubo
+tiene seis caras», que el control real marca en rojo. *Prueba:* la especificación nombra los dos criterios; el
+control del corpus tiene su autoprueba con un cardinal.
+
 <a id="k7-6-8"></a>
 **R6.8 — Sonda adversarial por rondas, hasta secar.** En cada ronda, dos agentes distintos del que escribió la
 regla redactan frases nuevas por lado (≈30 «legítimas» y ≈30 «a rechazar»), sin ver la regla. Las fallas se
@@ -403,7 +427,7 @@ la batería dos días distintos da el mismo veredicto; el registro trae la fecha
 
 **R9.2 — Un solo comando corre las tres corridas y escribe un registro por corrida con su composición**
 (SHA, versión del corpus, batería, modelo y servidor verificados antes del primer pedido, sin dirección).
-*Prueba:* tres archivos con la misma composición; si cambió, el script se niega a sumar (K3 R2.6).
+*Prueba:* tres archivos con la misma composición; si cambió, el script se niega a sumar (K3 R2.3).
 
 **R9.3 — Informá las inestables.** Un caso que falla en una o dos de las tres corridas es **inestable** y se
 lista aparte con sus respuestas. *Por qué:* el mínimo puede pasar el 90 % con inestables escondidas, que son
@@ -428,6 +452,9 @@ nada (pasó en la ronda 3: todas las redactadas cayeron en el atajo «idénticas
 casos en que el juez actúa (redacciones que difieren de la plantilla) e informa cuántos pares juzgó; con 0 pares
 juzgados el resultado es **NO EJECUTADO**. Si se puede, el juez es un modelo o una persona distinta del que
 redacta. *Prueba:* el informe tiene «pares juzgados» > 0 por forma redactada.
+Lo mismo vale para **todo control**: un control que pasa en verde sin haber leído nada (en Geometría, el control
+de fichas informaba `textos=0` en verde) no prueba nada. Cada control trae su caso rojo (una entrada que debe
+marcar) y falla si leyó cero elementos.
 
 **R9.9 — El eco de instrucción no se frena con una lista corta en un idioma.** Una lista de palabras clave no es
 frontera: faltaban «omití», «no hagas caso», «salteá», «override» y «system prompt». La lista es un control
@@ -444,6 +471,17 @@ aceptadas) y se reporta «marcadas / total» junto con las verdaderas deteccione
 que detecta la respuesta que dicta la operación marcaba 13 de 56 respuestas buenas; medido contra ese corpus
 bajó a 0/56 sin perder ninguna de las 14 que dictan. *Prueba:* prueba con el corpus bueno → 0 marcadas, y con el
 corpus malo → todas marcadas.
+En un producto didáctico el corpus malo incluye el **procedimiento en la voz**: imperativo de voseo con tilde
+(«calculá», «sumá», «tomá»), «primero…», «tenés que»; y el corpus bueno, las mismas raíces en forma descriptiva
+(«la suma de las áreas»). Sin esa distinción la lista marca la ficha que explica qué es una suma
+([K5 §7.5](knowledge-AI-Layer-Conversational-Design.md#k5-7)).
+
+<a id="k7-9-12"></a>
+**R9.12 — Las corridas respetan el límite de tasa de la instancia.** Si el servidor de modelos limita pedidos por
+minuto, tres corridas seguidas cobran errores de límite que no son del asistente. El script espacia las corridas
+(en Geometría, 65 s con límite de 60 por minuto) y registra todo 429 como **no medido**, nunca como falla de la
+respuesta. *Prueba:* el registro de cada corrida trae la pausa y el conteo de 429; con 429 > 0 la corrida no
+cuenta para el ×3 ([K3 R2.6b](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-6b)).
 
 ---
 
@@ -683,6 +721,7 @@ conocidos con `Skip` (R6.9); el filtro de salida, con el corpus de R9.11 (expedi
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.5 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): R6.7 número hablado parseado, dígito por la misma función, clase «número que cita la fórmula»; R6.10 criterio del enrutador frente al del corpus de fichas; R9.8 todo control trae su caso rojo; R9.11 procedimiento en la voz; R9.12 límite de tasa en las corridas. |
 | 1.4 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (enrutador del asistente de conceptos): R6.7 clasificador probado en los dos sentidos; R6.8 sonda adversarial por rondas con control cotidiano; R6.9 sonda permanente y casos conocidos; R9.11 falsos positivos contra corpus de respuestas buenas; K7-AP-13 a K7-AP-15. |
 | 1.3 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): R9.7 semilla y temperatura variadas; R9.8 compuerta a ciegas ejercida; R9.9 eco sin lista corta; R9.10 falsos positivos; K7-AP-9 a K7-AP-12. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría corregido (lectura docente en el oráculo; manifiesto de claves con despliegue en otro repo). |

@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al escribir o cambiar una página de ayuda, una función o un destino; después de K2 §0–§3; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); `Conversational-Design-Framework-Guide.md` 1.4.0, por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.7
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); `Conversational-Design-Framework-Guide.md` 1.5.0, por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m); [K7](knowledge-AI-Layer-Testing-Strategy.md)
+**Versión:** 1.8
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
 **Fecha:** 2026-11-12
 
@@ -437,6 +437,8 @@ intención al modelo sólo si la batería ×3 de K3 lo justifica con el mismo mo
   Si las fallas persisten en un registro (en Geometría, los planteos cotidianos), el candidato es un clasificador
   por embeddings entrenado con la sonda acumulada, medido con los mismos casos, no otra lista de palabras.
 
+**Catálogo de intenciones como artefacto.** Además del enrutador, el producto versiona un `catalogo-de-intenciones` con una fila por clase: tipo (F función, D destino, R ayuda con cita), fuente, alcance y negativa. La regla de tipo es fija: un hecho sobre los datos de quien pregunta (existe, cuántos, cuáles, estado) → F con el alcance cerrado por el código; dónde se hace algo → D; cómo funciona o qué significa → R; combinaciones F+D o R+D. Ejemplo de fila y de contrato en [Guía DC §7.2.1](../Conversational-Design-Framework-Guide.md#c7-2-1-ejemplo). *Porqué:* «¿tengo una organización llamada X?» caía a la ayuda porque la clase no existía; el dato ya estaba en la sesión. *Prueba:* compuerta que falla si una clase del enrutador no tiene su fila ([K7 R5.5](knowledge-AI-Layer-Testing-Strategy.md#k7-5-5)).
+
 Las mismas funciones sirven a los dos caminos: el enrutador las llama directo y la consulta con modelo las
 ofrece. Así una función se prueba una vez [Guía §9.4](../Dot-Net-Integration-AI-Layer-Guide.md#c9-4).
 
@@ -857,6 +859,7 @@ página (§3.6).
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.8 | 2026-11-12 | §9 catálogo de intenciones como artefacto con regla F/D/R fija, ejemplo de contrato y compuerta de CI. |
 | 1.7 | 2026-11-12 | §15.2 remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m): la cuenta del destino se pregunta sólo si cambia la respuesta; si sólo cambia el enlace, cuenta activa dicha. Estado aclarado: Borrador en cabecera, README e historial. |
 | 1.6 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §17.4 acción sin parámetro → parámetro de valor fijo; el fragmento `#id` como deuda declarada. |
 | 1.5 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §9 límite del ruteo por código, sonda y clasificador por embeddings como candidato. |

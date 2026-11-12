@@ -2,14 +2,14 @@
 doc_id: GUIA-DISENO-CONVERSACIONAL
 doc_type: guia-de-estudio
 title: Diseño conversacional de un asistente de producto — un método por competencia
-version: 1.4.0
+version: 1.5.0
 status: vigente
 origin: ia-assisted
 confidence: media
 confidence_nota: alta en lo referenciado y en lo observado al construir los casos; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
 last_review: 2026-11-12
-tope_palabras: 65000
+tope_palabras: 67000
 audience: [estudiante, docente, po, desarrollo, qa]
 audience_nota: guía académica y general para estudiantes, docentes y profesionales sin experiencia en diseño conversacional ni en IA que quieren aplicar el marco a cualquier sistema, existente o por desarrollar
 traces: []
@@ -19,7 +19,7 @@ related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
-> **Versión** 1.4.0 · **Fecha** 2026-11-12 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+> **Versión** 1.5.0 · **Fecha** 2026-11-12 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
 
 <a id="prologo"></a>
 ## Prólogo
@@ -293,7 +293,8 @@ Las cifras de encuesta de dos localidades no se suman ni se promedian sin una po
 | `NecesitaDatoDeAlcance` | Sí o no, y qué nivel: cuenta, organización, aplicación, localidad, período o ejercicio |
 | Parámetros | Por cada uno: si cambia la respuesta, de dónde se infiere (contexto, pantalla, única candidata) y su valor por omisión |
 | Mecanismo | Herramienta (dato exacto), recuperación con cita (concepto o paso), destino del catálogo, o texto fijo de rechazo o derivación. Se pueden combinar |
-| Forma | Cómo se presenta ([§6.3](#c6-3)) |
+| Forma | Cómo se presenta. Para una serie, la naturaleza la declara la herramienta y la forma pedida por el usuario entra como parámetro ([§6.3](#c6-3-pedido)) |
+| Negativa | Qué responde sin resultados: lo más cercano que el usuario puede ver ([cercanía](#cj-def-cercania)), nunca «no está en la ayuda» si la fuente es una función |
 | Destino | El del catálogo, con su rol mínimo |
 | Riesgo | Leer, actuar o irreversible |
 | Prueba | Los casos de la batería que la cubren |
@@ -1385,7 +1386,7 @@ Tabla 6.2. Regla de forma del gráfico.
 La forma la elige el código por regla, no el modelo ([T-6](#t-6)); el patrón torta top N + «Otras» con nota funcionó en las rondas de crítica del caso (conducta, [§14](#c14)). En Geometría, la misma regla daría barras para «ejercicios resueltos por semana» y texto para «¿cuántas figuras guardé?».
 
 <a id="c6-3-pedido"></a>
-**El pedido explícito del usuario se respeta o se explica.** La regla es el valor por defecto, no una prohibición: si la serie admite la torta pedida, se hace; si no, se explica y se ofrece una alternativa («Con 22 aplicaciones una torta no se lee; ¿las 5 primeras y "Otras", o todas en barras?»). Con gráfico, la **tabla con las cifras** queda a un toque, porque es la que se lee exacta y es accesible (*criterio de la guía*).
+**El pedido explícito del usuario se respeta o se explica.** La regla es el valor por defecto, no una prohibición: si la serie admite la torta pedida, se hace; si no, se explica y se ofrece una alternativa («Con 22 aplicaciones una torta no se lee; ¿las 5 primeras y "Otras", o todas en barras?»). Con gráfico, la **tabla con las cifras** queda a un toque, porque es la que se lee exacta y es accesible (*criterio de la guía*). Por eso la forma es un **parámetro del contrato**: la herramienta declara la naturaleza de la serie (parte de un todo, en el tiempo, ranking o comparación), el clasificador detecta el modificador («en torta», «en tabla», «sólo el número») y el código cruza los dos con una matriz probada. El modelo no elige ni descarta la forma; si la pedida no es compatible, una línea lo dice y se muestra la alternativa.
 
 <a id="c6-3-nota"></a>
 **Nota de métrica siempre.** Debajo de toda cifra o gráfico: qué se contó, período, filtro y, si aplica, la hora de corte («datos hasta las 14:00»). Si la herramienta no puede dar la nota, la cifra no se muestra.
@@ -1679,6 +1680,23 @@ flowchart LR
 4. **Batería y medición.** La intención entra a A.5 con su respuesta esperada y a A.7 con su evento. Lo que la medición muestre (no-encontrados, votos, reformulaciones) es el relevamiento de la vuelta siguiente.
 
 <a id="c7-2-1-caso"></a>**Caso: la intención que no estaba en el catálogo.** En el caso ilustrativo ([§18](#c18)), un administrador preguntó «¿tengo una organización llamada «Acme Norte»?». La pregunta es claramente un dato del sistema, pero la intención «buscar organización por nombre» no estaba en el catálogo: el asistente no tenía función para eso y la pregunta cayó a la ayuda, que respondió con un pasaje sobre cómo crear organizaciones. No hubo invención (el modelo no afirmó que existía ni que no existía), pero la respuesta no servía. La lección es de método, no de modelo: **una pregunta de dato que cae a la ayuda indica una intención faltante**, y se corrige agregando la función y su contrato (con respuesta por cercanía), no ajustando el prompt (*experiencia propia medida, conducta*).
+
+<a id="c7-2-1-ejemplo"></a>**Ejemplo de contrato.** La intención del caso, ya escrita (*experiencia propia medida, conducta*). La regla que la clasifica es fija: un hecho sobre los datos de quien pregunta va a función; dónde se hace algo, a destino; cómo funciona, a la ayuda con cita; y sólo esta última admite «no está en la ayuda».
+
+```yaml
+id: organizaciones-del-operador      # anillo 1
+ejemplos: ["¿tengo una organización llamada acme?", "mis organizaciones"]
+necesita_dato_de_alcance: no          # el alcance lo pone la sesión
+parametros: { nombre: opcional }      # sin nombre: lista
+mecanismo: funcion                    # fuente: pertenencia del operador
+forma: lista con rol y cantidad de aplicaciones; «Abrir» por cuenta
+negativa: cercania                    # «No hay "acme", pero tenés Acme Sur»
+destino: organizaciones (rol mínimo: miembro)
+riesgo: leer
+prueba: [B-31, B-32, cuenta ajena con el mismo prefijo no aparece]
+```
+
+Una compuerta de CI comprueba que cada clase del enrutador tenga su fila en el catálogo: una intención sin contrato no se publica.
 
 <a id="c7-2-2"></a>
 #### 7.2.2 Quién decide: la mesa de diseño
@@ -2947,10 +2965,20 @@ Las preguntas sugeridas ([§4](#c4)) suelen mostrarse como **pastillas**: botone
 
 *Tabla 15.2. Señales de éxito y de fracaso de una pastilla.*
 
-- **Ranking por contexto.** Cada pastilla acumula su tasa de éxito **por rol y por pantalla**, y se muestran primero las que mejor funcionan en ese contexto. La pastilla que sirve al administrador en la pantalla de envíos no es la que sirve al miembro en la de inicio.
+- **Ranking por contexto.** Cada pastilla acumula su tasa de éxito **por rol y por pantalla**, y se muestran primero las que mejor funcionan en ese contexto. Se ranquean **intenciones**, no textos, y el puntaje es la cota inferior del intervalo de Wilson de la tasa de éxito [REF-025]: con pocos eventos la cota es baja, así una intención con 3 de 3 no le gana a una con 90 de 100. Hace falta un mínimo de eventos (20 en el caso) para mover el orden, y una de cada cuatro pastillas rota por exploración para que una intención nueva pueda entrar. La pastilla que sirve al administrador en la pantalla de envíos no es la que sirve al miembro en la de inicio.
 - **Las que fallan no se muestran: se diseñan.** Una pregunta frecuente con tasa de fracaso alta sale de las pastillas y entra como intención al ciclo de [§7.2.1](#c7-2-1). Una pastilla que no funciona hace más daño que no tener pastilla: es una promesa del producto ([P-4](#p-4)).
 - **El modelo propone, el equipo aprueba.** Un modelo de lenguaje puede sugerir pastillas candidatas a partir de las preguntas relevadas, pero ninguna se muestra sin aprobación humana y sin pasar por la batería. Es [P-3](#p-3) aplicado a la interfaz.
 - **Votos sin texto.** Toda la medición funciona con votos y eventos, sin guardar lo que el usuario escribió ([P-9](#p-9)).
+
+<a id="c15-2-2"></a>
+#### 15.2.2 Consumo y monitoreo del modelo
+
+La medición de diseño cuenta intenciones; la de operación cuenta **llamadas al modelo**. Las dos comparten la regla de no guardar texto ([P-9](#p-9)). Por cada llamada se registra quién la pidió, para qué función (redacción o embeddings), qué proveedor y qué modelo, los tokens de entrada y de salida, la latencia, el resultado y si hubo respaldo. Ese registro es la fuente única de los **límites de consumo** y del tablero del administrador (*criterio de la guía*):
+
+- **Dos clases de límite:** de gasto (tokens o costo estimado por día y por mes, por usuario y por organización) y de tasa (pedidos por minuto y concurrencia). Lo local también cuenta tokens, aunque cueste cero: una GPU compartida también se agota.
+- **Aviso antes del corte** (80 % por omisión) y, al llegar, la política que eligió el administrador: corte con la hora de renovación («se renueva a las 00:00») o respaldo a un modelo local. El tope del proveedor no se confunde con la cuota del usuario: se muestra como error de servicio.
+- **Tablero:** volumen, costo contra cuota con proyección a fin de mes, latencia p50 y p95 con tiempo al primer token, errores por tipo, tasa de respaldo y usuarios cerca del corte.
+- **Convenciones abiertas.** Las convenciones semánticas de OpenTelemetry para IA generativa [REF-023] nombran tokens, proveedor y duración de cada operación; el usuario va sólo en las trazas, nunca como dimensión de una métrica.
 
 <a id="c15-3"></a>
 ### 15.3 Cómo se arma, paso a paso
@@ -3320,12 +3348,16 @@ flowchart LR
 **Decisiones → registro.** Las decisiones de diseño que condicionan piezas (dar al asistente un lugar central en la interfaz, abandonar una intención, no ofrecer una acción irreversible) se registran con el formato de [§14](./Dot-Net-Integration-AI-Layer-Guide.md#c14): contexto, alternativas descartadas, consecuencias y cuándo dejan de valer. Así una decisión de diseño no se pierde cuando cambia el equipo.
 
 <a id="c17-3-8"></a>
-**Proveedores de modelo → abstracción y configuración.** El diseño no depende de un proveedor de IA: Microsoft.Extensions.AI define `IChatClient` e `IEmbeddingGenerator`, que cada proveedor implementa como un **adaptador** intercambiable [REF-020]. Un servidor propio o un servicio externo son opciones de configuración. Lo que sí es de diseño se decide en la mesa ([§7.2.2](#c7-2-2)) (*criterio de la guía*):
+**Proveedores de modelo → abstracción y configuración.** El diseño no depende de un proveedor de IA: Microsoft.Extensions.AI define `IChatClient` e `IEmbeddingGenerator`, que cada proveedor implementa como un **adaptador** intercambiable [REF-020]; un servidor propio o un servicio externo son opciones de configuración. Lo que es de diseño lo decide la mesa ([§7.2.2](#c7-2-2)) (*criterio de la guía*):
 
-- **Dónde se configura.** En un panel del raíz, con las claves cifradas y nunca visibles después de cargadas.
-- **Aviso y consentimiento.** Con un proveedor externo, la pregunta y los pasajes salen del servidor; el panel lo dice y el raíz lo acepta antes de activarlo.
-- **Redacción y embeddings, por separado.** Cambiar el de embeddings obliga a revectorizar ([§6.2.2](#c6-2-2)).
-- **Elegir modelo.** Sólo se habilitan los modelos que pasaron la batería ×3 ([§13](#c13)).
+- **Un modelo por omisión por función,** redacción y embeddings por separado, elegido por el raíz en un panel con las claves cifradas. Cambiar el de embeddings obliga a revectorizar ([§6.2.2](#c6-2-2)); lo recomendable es dejarlo local.
+- **Habilitar exige batería.** Cargar un modelo y probar la conexión no lo habilitan; habilitarlo exige la batería ×3 aprobada ([§13](#c13)). Si el usuario puede elegir, elige sólo entre los que el raíz ofreció, y si uno se deshabilita vuelve al modelo por omisión.
+- **Respaldo dentro del mismo nivel.** De local a local o de externo a externo ya habilitado; nunca de local a externo sin que nadie lo decida.
+- **Qué sale.** Con un proveedor externo viajan la pregunta, los pasajes de ayuda y las cifras agregadas, nunca datos personales ni identificadores; el raíz lo confirma al habilitarlo y un filtro con su prueba lo impone.
+- **Mismos límites para todos los caminos** ([§15.2.2](#c15-2-2)): consola, servidor MCP y cliente MCP.
+
+<a id="c17-3-9"></a>
+**MCP en los dos sentidos → frontera hacia afuera.** El *Model Context Protocol* [REF-024] abre dos puertas que el diseño tiene que pensar como intenciones. **Como servidor** («traé tu propia IA»), el producto publica herramientas de lectura con su título y su marca de sólo lectura, para que el usuario las use desde su asistente; el alcance de datos lo pone el token OAuth del usuario, nunca un argumento, y la consola ofrece los enlaces de alta y la revocación. **Como cliente**, la consola invoca herramientas de otro sistema (por ejemplo, escribir un informe en un editor de documentos): toda escritura afuera pasa por una tarjeta de confirmación con destino y resumen, sale sólo lo agregado que el usuario ya ve, y el contenido que devuelve el tercero se trata como no confiable. Es [P-4](#p-4) cruzando la frontera del producto.
 
 <a id="c17-escenarios"></a>
 ### 17.4 Aplicación por escenario
@@ -3587,6 +3619,9 @@ Estas lecciones son **experiencia propia medida**. Salvo que se diga otra cosa, 
 8. **Recuperación que vencía por tiempo.** Con un servidor de modelos que admitía un solo modelo cargado, los embeddings esperaban detrás del modelo de redacción ([§6.2.2](#c6-2-2)). No era un problema de corpus ni de código sino de cupo.
 <a id="c18-l9"></a>
 9. **El panel tapaba la salida.** La consola abierta cubría el encabezado y, para cerrar sesión, había que cerrar el chat ([§14.3.1](#c14-3-1)).
+
+<a id="c18-l10"></a>
+10. **Proveedores, consumo y MCP, por rebanadas.** Tras una ronda del dueño del producto, la mesa separó el plan en rebanadas chicas: primero la fábrica de clientes con el servidor propio (sin cambio de conducta), después el registro de consumo por llamada con precios y trazas abiertas, y una medición previa que concluyó que el proveedor de identidad no emitía tokens y que hacía falta un servidor de autorización propio antes de publicar el servidor MCP. Las pantallas del raíz, las cuotas, el tablero y los dos sentidos de MCP vienen después, cada una con su criterio de aceptación (*experiencia propia medida, conducta*).
 
 <a id="c18-decision"></a>
 ### 18.5 Decisión: qué llevarse del caso a otro sistema
@@ -4041,6 +4076,9 @@ Todas fueron consultadas el **2026-11-11**; la última columna da además la fec
 | <a id="ref-020"></a>REF-020 | Microsoft Learn | Microsoft.Extensions.AI libraries | https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai | ms.date 2026-09-14; consultado 2026-11-11 |
 | <a id="ref-021"></a>REF-021 | Gordon V. Cormack, Charles L. A. Clarke, Stefan Büttcher | Reciprocal Rank Fusion outperforms Condorcet and individual rank learning methods | https://doi.org/10.1145/1571941.1572114 | SIGIR 2009, pp. 758–759; consultado 2026-11-11 |
 | <a id="ref-022"></a>REF-022 | Richard E. Grandy y Richard Warner | Paul Grice (Stanford Encyclopedia of Philosophy) | https://plato.stanford.edu/entries/grice/ | rev. 2026-06-19; consultado 2026-11-12; máximas de cantidad («as informative as is required») y relación («Be relevant») |
+| <a id="ref-023"></a>REF-023 | OpenTelemetry | Semantic conventions for generative AI systems | https://opentelemetry.io/docs/specs/semconv/gen-ai/ | Estado «Development»; consultado 2026-11-12 |
+| <a id="ref-024"></a>REF-024 | Model Context Protocol | Specification | https://modelcontextprotocol.io/specification/2025-11-25 | Revisión 2025-11-25; consultado 2026-11-12 |
+| <a id="ref-025"></a>REF-025 | Edwin B. Wilson | Probable Inference, the Law of Succession, and Statistical Inference | https://doi.org/10.1080/01621459.1927.10502953 | JASA 22(158), 1927; consultado 2026-11-12 |
 
 *Tabla 20.3. Referencias.*
 
@@ -4095,12 +4133,16 @@ Este libro cita fuentes que cambian. La tabla dice qué se verificó, cuándo, y
 | REF-020 (Microsoft.Extensions.AI) | ms.date 2026-09-14 | Cambian los nombres de las abstracciones | Releer [§17.3](#c17-3-8) |
 | REF-021 (RRF) | Artículo publicado | No envejece | Sumar trabajos nuevos en G |
 | REF-022 (Grice, SEP) | rev. 2026-06-19 | Revisión sustantiva nueva de la entrada | Releer la parte de las máximas ([B.1](#cj-1)) |
+| REF-023 (OpenTelemetry GenAI) | En desarrollo; los nombres pueden cambiar | La convención pasa a estable o renombra atributos | Releer [§15.2.2](#c15-2-2) y medir qué versión emite la biblioteca |
+| REF-024 (MCP) | Revisión 2025-11-25 | Revisión nueva de la especificación o de su autorización | Releer [§17.3](#c17-3-9) |
+| REF-025 (Wilson) | Artículo publicado | No envejece | — |
 
 <a id="anexo-f-historial"></a>
 **Historial de versiones.**
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 1.5.0 | 2026-11-12 | Mesas de proveedores y de la ronda del dueño del producto: contrato con negativa y forma como parámetro, con ejemplo (B.2, §7.2.1); pastillas por cota de Wilson (§15.2.1); consumo y monitoreo (§15.2.2); proveedores con modelo por omisión por función, habilitación por batería y respaldo por nivel (§17.3.8); MCP en los dos sentidos (§17.3.9); lección 10; REF-023 a REF-025; el control `tope_palabras` sube a 67.000 (la prosa medida por `tools/contar.sh` queda en 87 % de su tope) |
 | 1.4.0 | 2026-11-12 | Base «Criterio y juicio» ([B](#cj)): principios del turno T-1…T-8 con precedencia, prueba de anillo ordenada, alcance, contrato de la intención, árbol del turno, regla de aclaración de cuatro condiciones, preguntas compuestas, juicio sobre los tres casos; rúbrica R1–R14 como [Anexo I](#anexo-i); §5.4, §6.4.2, §1.2, §3, §6.2, §7.2.1 y §18.4 remiten a la base; REF-022; se condensan preguntas guía, ejemplos y §6.2.2 para sostener el tope |
 | 1.3.0 | 2026-11-12 | Banco de diálogo sobre Lab-Geometria: los ejemplos de Geometría de los capítulos temáticos se declaran hipotéticos (§1); negativa con la ficha, chip por estado y rótulo por rol en un dominio didáctico (§5); A.3 unifica «falso amigo» (antes «engañoso») y la primera vez es por conversación |
 | 1.2.0 | 2026-11-11 | Ciclo de vida de una intención y mesa de diseño (§7.2.1, §7.2.2); RAG por dentro y vectores (§6.2.1, §6.2.2); pedido de gráfico; pastillas; panel que no tapa el producto; abstracción de proveedores; lecciones 7–9; REF-018 a REF-021 |

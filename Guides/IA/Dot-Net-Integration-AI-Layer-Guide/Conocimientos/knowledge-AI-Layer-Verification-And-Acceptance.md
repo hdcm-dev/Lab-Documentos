@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.7
+**Versión:** 1.8
 **Estado:** Vigente
 **Fecha:** 2026-11-12
+
+**Cambios en 1.8** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): R2.11 la batería ×3 es la compuerta para habilitar un modelo; R2.12 aceptación de consumo, cuotas y servidor MCP con cifras contra la fuente.
 
 **Cambios en 1.7** (banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)): el id repetido R2.6 se separa (la batería antes de la firma pasa a R2.2b; la caída del servidor sigue como R2.6); R2.6b límite de tasa = no medido; R10.2b p95 del redactor con modelo frente al corte.
 
@@ -211,6 +213,11 @@ un clasificador nuevo entrenado con esa sonda. *Porqué:* en Geometría la sonda
 pero la ronda de control encontró 16 fallas en 54 planteos cotidianos; declararlo evitó dar por garantizado lo que
 sólo estaba probado en un registro. *Prueba:* el informe tiene «límite declarado» con el conteo de casos
 conocidos, la configuración aceptada y la condición de reapertura.
+
+<a id="k3-2-11"></a>
+**R2.11 La batería es la compuerta de habilitación de un modelo.** Un modelo nuevo de redacción, de cualquier proveedor, se carga y se prueba su conexión, pero no se habilita ni se ofrece al usuario sin la batería ×3 aprobada con ese modelo, registrada con fecha y versión de la batería. Habilitar sin aprobación devuelve un conflicto. Cambiar la versión de un SDK de proveedor también corre la batería. *Porqué:* la conducta medida está anclada al modelo con el que se midió; otro modelo es otro sistema [Guía DC §17.3.8](../Conversational-Design-Framework-Guide.md#c17-3-8). *Prueba:* habilitar sin aprobada → 409.
+
+**R2.12 Consumo y MCP se aceptan con cifras contra la fuente.** N consultas de la batería dejan N filas de consumo con tokens > 0 y costo coherente con la tabla de precios; el tablero da las mismas cifras que una consulta SQL directa (R8); las cuotas se aceptan al 80 % (aviso) y al 100 % (corte o respaldo según política). El servidor MCP se acepta conectado desde un asistente real con un usuario de prueba que ve sólo sus cuentas, y con los casos sin token (401 con metadatos), token vencido y sin alcance (403).
 
 <a id="k3-3-condiciones"></a>
 ## 3. Condiciones de medición: en frío y pagando el cambio de modelo

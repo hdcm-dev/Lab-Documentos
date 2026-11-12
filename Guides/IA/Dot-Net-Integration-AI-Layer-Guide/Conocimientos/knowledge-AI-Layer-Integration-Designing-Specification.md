@@ -7,10 +7,12 @@
 **Condicion-de-carga:** al decidir si un servicio necesita capa de IA; al escribir o revisar su especificación; al armar el checklist de completitud; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** la versión 1.0 de este mismo archivo (2026-11-01)
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan su numeración y sus anclas estables `cN-k` [Guía §0.7]: el capítulo 1 es «Fundamentos del framework», la frontera de competencia es §3.7 y la autoevaluación es el capítulo 17); `Conversational-Design-Framework-Guide.md` 1.4.0 (Guía DC: la norma del turno —prueba de anillo, regla de aclaración, rúbrica— se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m), que la destila); los conocimientos hermanos de esta carpeta: [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construir la consola), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (verificar y aceptar), [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa) y [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas de respuesta)
-**Versión:** 1.4
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan su numeración y sus anclas estables `cN-k` [Guía §0.7]: el capítulo 1 es «Fundamentos del framework», la frontera de competencia es §3.7 y la autoevaluación es el capítulo 17); `Conversational-Design-Framework-Guide.md` 1.5.0 (Guía DC: la norma del turno —prueba de anillo, regla de aclaración, rúbrica— se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m), que la destila); los conocimientos hermanos de esta carpeta: [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construir la consola), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (verificar y aceptar), [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa) y [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas de respuesta)
+**Versión:** 1.5
 **Estado:** Vigente (falta la revisión humana del checklist en los casos y en la prueba; las reglas nuevas de 1.1 están probadas en un caso, PushDispatch)
 **Fecha:** 2026-11-12
+
+**Cambios en 1.5** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): §6.1 proveedores como adaptadores con modelo por omisión por función y habilitación por batería, consumo y límites, MCP en los dos sentidos.
 
 **Cambios en 1.3** (banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)): regla provisoria F-10, el anillo 1 no repite el valor derivado con límite didáctico y la especificación declara el criterio de número del enrutador y el del corpus.
 
@@ -450,6 +452,21 @@ cruza entre ellos. Los mecanismos de cliente se citan del libro MAUI, no se rede
 | contenido web actualizable sin tienda | el contenido web, distribuido como paquete de actualización OTA firmado (*update bundle*), con rollback [MAUI cap. 3] | que un cambio de prompt del servicio no exige versión nueva del cliente |
 | una app que trabaja sin red | base local y outbox [MAUI cap. 5] | qué devuelve el puerto en *degradado* cuando el pedido llega diferido |
 | una aplicación web renderizada en el servidor | — | **no aplica** esta sección: la capa de IA y la página viven del mismo lado [Caso G] |
+
+<a id="k1-6-1"></a>
+### 6.1 Proveedores de modelo, consumo y MCP: las fronteras que la especificación fija
+
+Destilado de [Guía DC §17.3.8–§17.3.9](../Conversational-Design-Framework-Guide.md#c17-3-8) y [§15.2.2](../Conversational-Design-Framework-Guide.md#c15-2-2). Cada regla entra como `REQ-IA-nn` con su prueba (§9).
+
+1. **El proveedor es un adaptador.** Los consumidores reciben `IChatClient` / `IEmbeddingGenerator`; una fábrica arma el cliente según el tipo de proveedor y las opciones propias de uno (por ejemplo, el modo de razonamiento) quedan en su adaptador. Versiones de SDK fijas; cada actualización corre la batería. *Prueba:* ningún consumidor instancia un cliente concreto (búsqueda en el código).
+2. **Modelo por omisión por función** (redacción, embeddings), elegido por el raíz; embeddings sin respaldo (cambiar = revectorizar, con la búsqueda léxica mientras dura).
+3. **Habilitar exige batería ×3 aprobada** ([K3 R2.11](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-11)); cargar y probar la conexión, no. Si el usuario elige modelo, elige entre los ofrecidos; uno deshabilitado cae al de omisión.
+4. **Respaldo sólo dentro del nivel** (local→local, externo→externo habilitado); nunca local→externo automático. *Prueba:* el caso existe y falla.
+5. **Minimización hacia afuera:** viajan la pregunta, pasajes de ayuda y cifras agregadas; nunca datos personales, identificadores externos ni tokens. El raíz lo confirma al habilitar y queda en auditoría. *Prueba:* filtro con datos sembrados.
+6. **Registro de consumo por llamada** (usuario, organización, función, proveedor, modelo, tokens, costo estimado con precio local = 0, latencia, resultado, respaldo) como fuente única de cuotas y tablero; su falla no corta la consulta. Trazas con las convenciones OpenTelemetry GenAI; el usuario va en la traza, no como dimensión de métrica.
+7. **Límites obligatorios:** gasto (diario y mensual, por usuario y organización) y tasa (pedidos por minuto, concurrencia); aviso al umbral blando, corte o respaldo local por política al 100 %, excepción temporal auditada. El 429 del proveedor es error de servicio, no cuota del usuario. Valen igual para consola y MCP.
+8. **MCP como servidor:** recurso protegido OAuth 2.1 (metadatos RFC 9728, PKCE S256, `resource` RFC 8707); el alcance de datos lo pone el token, nunca un argumento; herramientas de lectura primero, escritura con *step-up* y decisión del dueño del producto. **Medí antes si el proveedor de identidad actual emite tokens**: en el caso no lo hacía y hubo que sumar un servidor de autorización.
+9. **MCP como cliente:** las herramientas remotas entran como `AIFunction`; toda escritura afuera pide confirmación con destino y resumen, sale sólo lo agregado que el usuario ya ve y el contenido del tercero desactiva las escrituras del turno.
 
 <a id="k1-7"></a>
 ## 7. Plantilla de especificación (arc42 reducido)

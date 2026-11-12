@@ -491,14 +491,15 @@
 <text x="346.20" y="167.35" font-size="1.9" text-anchor="start" fill="#2b2b2b" >28→todas inyección, fuga, exceso de agencia</text>
 <text x="270.00" y="171.90" font-size="3.0" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="leyenda">Leyenda</text>
 <text x="270.00" y="175.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Esquemática: cada caja es una responsabilidad, no un componente desplegado ni un servidor. No a escala.</text>
-<text x="270.00" y="178.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Sin cifras: la lámina no lleva medidas; los valores (umbrales, límites, métricas) viven en la especificación de cada aplicación.</text>
-<text x="270.00" y="182.10" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Línea continua: flujo del turno. Línea a trazos: control o gobierno transversal. Línea punteada: ciclo de diseño (fuera del turno).</text>
-<polyline points="270.00,184.70 282.00,184.70" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="L-continuo"/>
-<text x="284.00" y="185.40" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">continuo</text>
-<polyline points="270.00,187.50 282.00,187.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="L-trazos"/>
-<text x="284.00" y="188.20" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">trazos</text>
-<polyline points="270.00,190.30 282.00,190.30" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="L-punteado"/>
-<text x="284.00" y="191.00" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">punteado</text>
+<text x="270.00" y="178.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Apartamiento declarado (§4): sin la marca ≈ porque la lámina no lleva cifras; los valores (umbrales, límites, métricas) viven en la</text>
+<text x="270.00" y="181.30" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">especificación de cada aplicación.</text>
+<text x="270.00" y="184.60" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Línea continua: flujo del turno. Línea a trazos: control o gobierno transversal. Línea punteada: ciclo de diseño (fuera del turno).</text>
+<polyline points="270.00,187.20 282.00,187.20" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="L-continuo"/>
+<text x="284.00" y="187.90" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">continuo</text>
+<polyline points="270.00,190.00 282.00,190.00" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="L-trazos"/>
+<text x="284.00" y="190.70" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">trazos</text>
+<polyline points="270.00,192.80 282.00,192.80" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="L-punteado"/>
+<text x="284.00" y="193.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">punteado</text>
 <rect x="269.00" y="271.00" width="144.00" height="18.00" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.4" data-rol="rotulo"/>
 <text x="270.60" y="273.90" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Dispositivo</text>
 <text x="291.00" y="273.90" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Aplicación conversacional — arquitectura de referencia</text>

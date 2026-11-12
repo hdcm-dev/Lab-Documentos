@@ -15,7 +15,7 @@
   },
   "leyenda": [
     "Esquemática: cada caja es una responsabilidad, no un componente desplegado ni un servidor. No a escala.",
-    "Sin cifras: la lámina no lleva medidas; los valores (umbrales, límites, métricas) viven en la especificación de cada aplicación.",
+    "Apartamiento declarado (§4): sin la marca ≈ porque la lámina no lleva cifras; los valores (umbrales, límites, métricas) viven en la especificación de cada aplicación.",
     "Línea continua: flujo del turno. Línea a trazos: control o gobierno transversal. Línea punteada: ciclo de diseño (fuera del turno)."
   ],
   "zonas": [

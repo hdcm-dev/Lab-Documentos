@@ -24,11 +24,17 @@ Una sola hoja que da el panorama completo de una aplicación conversacional, des
 ## Cómo se genera
 
 1. Toda corrección se hace en el `.def.json`. El SVG nunca se edita a mano (paso 5 del conocimiento).
-2. Un compositor lee la definición y escribe el SVG maestro vectorial en A3 apaisado. Usa una sola tipografía sans-serif y un tono de gris por zona. Las conexiones se dibujan con tres trazos: continuo para el turno, a trazos para el gobierno y punteado para el ciclo de diseño. Ese compositor todavía no existe.
+2. Un compositor lee la definición y escribe el SVG maestro vectorial en A3 apaisado. Usa una sola tipografía sans-serif y un tono de gris por zona. Las conexiones se dibujan con tres trazos: continuo para el turno, a trazos para el gobierno y punteado para el ciclo de diseño. El compositor es `Generadores/ld01.py`.
 3. El SVG se exporta a JPG con calidad 95. Si falta un conversor (cairosvg, rsvg-convert), se usa un contenedor efímero; no se instala nada en el host.
 4. La verificación revisa cuatro cosas: la numeración es secuencial y coincide con las zonas, toda conexión y toda pregunta apunta a partes que existen, cada respuesta tiene 25 palabras o menos, y los textos no se solapan.
 
-Por ahora sólo están la definición y la comprobación de su consistencia. Falta el compositor y, con él, el SVG y el JPG.
+Regeneración (desde esta carpeta, en contenedor efímero):
+
+```bash
+docker run --rm -v "$PWD":/w -w /w python:3.12-slim sh -c \
+  "apt-get update -qq && apt-get install -y -qq fonts-dejavu-core libcairo2 >/dev/null && \
+   pip install -q cairosvg pillow && python3 Generadores/ld01.py --jpg && python3 Generadores/verificar_ld01.py"
+```
 
 ## Conocimiento aplicado
 
@@ -42,7 +48,7 @@ Por ahora sólo están la definición y la comprobación de su consistencia. Fal
 | A2 | §2: «sin cajas de texto; una tabla de juntas es la única excepción» | Las preguntas conceptuales van como **tabla** (#, pregunta, respuesta breve, partes), no como cajas. La excepción se extiende de «juntas» a «preguntas» | Lo pide el PO, y la tabla es la forma que el conocimiento ya admite |
 | A3 | §2: entre 3 y 8 cotas | No hay cotas | Un LD no tiene dimensiones |
 | A4 | §5, pasos 1, 3 y 7 (modelo único, render y cámara, revisión contra fotos) | No aplican. La fuente única son las guías, en un SHA fijo | Sin modelo 3D ni fotos. El conocimiento ya prevé que un LD sea vectorial |
-| A5 | §5: compositor en `Datasheets/_Comun/` | El compositor, cuando exista, va en esta carpeta o en `../tools/` | Este repo no tiene `Datasheets/` |
+| A5 | §5: compositor en `Datasheets/_Comun/` | El compositor va en `Generadores/` de esta carpeta o en `../tools/` | Este repo no tiene `Datasheets/` |
 | A6 | §3: un tono de gris por parte | Un tono de gris por zona | Con 29 partes, un gris por parte no se distingue. La zona es la unidad que se lee |
 | A7 | §2: «Parte N: nombre» con línea guía | Cada parte lleva su número dentro de la caja, sin líneas guía | No hay pieza a la que apuntar |
 | A8 | §6: el rótulo lleva el hash del modelo | El rótulo lleva el SHA de las guías fuente | El «modelo» de esta lámina es el texto de las guías |

@@ -7,10 +7,10 @@
 **Condicion-de-carga:** al iniciar una integración de IA en un sistema; al armar la mesa; al planificar fases y PRs; al declarar una fase cerrada; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** —
-**Compatible-con:** [K1](knowledge-AI-Layer-Integration-Designing-Specification.md), [K2](knowledge-AI-Layer-Console-Assistant-Building.md), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); `Dot-Net-Integration-AI-Layer-Guide.md` edición 1.2.0 (las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §14 y basta para aplicarlo): Knowledge-Razonamiento-Del-Gestor, Knowledge-Mesa-De-Expertos-A-Pedido, Knowledge-Logica-De-Decision, Knowledge-Conformacion-Pull-Request-Automatico, Knowledge-Turnos-De-Recursos-Compartidos-En-Un-Host
-**Versión:** 1.2
+**Compatible-con:** [K1](knowledge-AI-Layer-Integration-Designing-Specification.md), [K2](knowledge-AI-Layer-Console-Assistant-Building.md), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas, vigente); `Dot-Net-Integration-AI-Layer-Guide.md` edición 1.2.0 (las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §14 y basta para aplicarlo): Knowledge-Razonamiento-Del-Gestor, Knowledge-Mesa-De-Expertos-A-Pedido, Knowledge-Logica-De-Decision, Knowledge-Conformacion-Pull-Request-Automatico, Knowledge-Turnos-De-Recursos-Compartidos-En-Un-Host
+**Versión:** 1.3
 **Estado:** Vigente
-**Fecha:** 2026-11-11
+**Fecha:** 2026-11-12
 
 ---
 
@@ -45,8 +45,8 @@ qué orden, con quién, con qué evidencia y con qué controles. Lo que funcion�
 código: fue un método. Las piezas de código se copian; el método, si no se escribe, se pierde.
 
 **Fuente para personas.** Los libros mandan: la Guía 16 (`../Dot-Net-Integration-AI-Layer-Guide.md`) y la guía de
-diseño conversacional (`../Conversational-Design-Framework-Guide.md`, en redacción; sus secciones se citarán cuando
-se publique en `main`). Este conocimiento destila, remite por sección y **nunca los contradice**. Si un agente
+diseño conversacional (`../Conversational-Design-Framework-Guide.md` 1.4.0; su base «Criterio y juicio» se cita por
+[K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Este conocimiento destila, remite por sección y **nunca los contradice**. Si un agente
 encuentra una contradicción o un hueco del libro, lo anota para la mesa del libro y no lo resuelve acá (§13).
 
 **Alcance.** Sí: organizar la mesa, ordenar fases y PRs, medir el estado, coordinar sesiones, declarar cerrado.
@@ -437,8 +437,8 @@ construye desde el libro sin preguntar; las puertas de Docs as Code son controle
   anfitrión tiene normas propias para eso, rigen las del anfitrión.
 - Los umbrales (≥ 8, ≥ 90 %, ×3) son los que funcionaron en PushDispatch; un sistema puede endurecerlos, nunca
   relajarlos sin una decisión registrada.
-- La guía de diseño conversacional todavía no está en `main`: sus remisiones se agregan en la próxima versión, y
-  K5 queda como borrador provisorio hasta entonces.
+- Una fase que toca la conversación no se cierra como «mejoró» sin R13 y R14 de
+  [K5 §M.6](knowledge-AI-Layer-Conversational-Design.md#k5-m6): mejora percibida a ciegas y trazable a la captura.
 - **Contradicciones o huecos del libro:** se anotan para la mesa del libro (en la bitácora de coordinación de los
   conocimientos) y no se resuelven en este conocimiento. Hoy la Guía 16 no trata la batería ×3 con umbral, el crítico
   con nota, las capturas 1280/390 ni la verificación en el sitio real por rol; este conocimiento los usa como método
@@ -485,6 +485,7 @@ Se resumen para que un agente nuevo trabaje igual sin cargarlos.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.3 | 2026-11-12 | La guía de diseño conversacional está publicada: K5 vigente con el marco del turno; cierre de fase con R13/R14 (§13). |
 | 1.2 | 2026-11-11 | §2.2 punto 4: cláusula fija en la carta de los subagentes ante mensajes a mitad de turno (lección de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §14 resume las reglas tomadas de conocimientos externos, que dejan de ser herencia obligatoria; fases tipo con salida (§1.1); quién encarna cada rol (§2.2); brecha optativa con motivo (§3); tabla índice única de antipatrones con ids prefijados (§8); capturas en claro y oscuro; K5 enlazado. |
 | 1.0 | 2026-11-11 | Creación: secuencia K1→K2→K3 con K5 transversal, mesa con refutador, brecha sin marca, PRs por choque, registro de frentes, coordinación entre sesiones, tabla E1–E9, casos y límites. |

@@ -70,7 +70,7 @@ TRAZOS = {
 PW, PH = 420.0, 297.0
 FRANJA_X0, FRANJA_X1 = 8.0, 30.0
 COL_X0, COL_W, COL_G, NCOL = 35.0, 32.0, 7.0, 6
-BANDA_Y0, BANDA_H, CANAL_H = 16.0, 18.5, 15.5
+BANDA_Y0, BANDA_H, CANAL_H = 15.0, 18.5, 17.6
 DER_X0, DER_X1 = 270.0, 412.0
 LADO_SLOTS = [4.0 + 6.0 * i for i in range(5)]
 SPINE_X = 32.5  # canal reservado para la seguridad transversal
@@ -217,7 +217,7 @@ def generar():
 
     ycarril = {}
     for canal, ids in pedidos_carril.items():
-        y0, y1 = canal_y(canal) + 5.0, canal_y(canal) + CANAL_H - 5.0
+        y0, y1 = canal_y(canal) + 4.0, canal_y(canal) + CANAL_H - 4.0
         k = len(ids)
         for i, cid in enumerate(ids):
             ycarril[(canal, cid)] = y0 + (y1 - y0) * (i + 0.5) / k

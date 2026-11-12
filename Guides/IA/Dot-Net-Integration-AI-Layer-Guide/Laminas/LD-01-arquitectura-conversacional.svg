@@ -7,320 +7,320 @@
 <rect x="0" y="0" width="420" height="297" fill="#ffffff"/>
 <rect x="4" y="4" width="412" height="289" fill="none" stroke="#2b2b2b" stroke-width="0.5"/>
 <text x="8.00" y="11.00" font-size="4.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="titulo">LD-01 · Aplicación conversacional — arquitectura de referencia</text>
-<rect x="8.0" y="14.80" width="257.00" height="20.90" fill="#f6f6f4" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z1"/>
-<text x="9.50" y="26.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z1">Usuario</text>
-<rect x="8.0" y="48.80" width="257.00" height="20.90" fill="#efefec" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z2"/>
-<text x="9.50" y="58.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">Interfaz</text>
-<text x="9.50" y="61.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">conversacional</text>
-<rect x="8.0" y="82.80" width="257.00" height="20.90" fill="#e9e9e5" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z3"/>
-<text x="9.50" y="92.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">Orquestador</text>
-<text x="9.50" y="95.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">del turno</text>
-<rect x="8.0" y="116.80" width="257.00" height="20.90" fill="#f3f3f0" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z4"/>
-<text x="9.50" y="128.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z4">Mecanismos</text>
-<rect x="8.0" y="150.80" width="257.00" height="20.90" fill="#ebebe7" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z5"/>
-<text x="9.50" y="160.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">Datos y</text>
-<text x="9.50" y="163.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">conocimiento</text>
-<rect x="8.0" y="184.80" width="257.00" height="20.90" fill="#f1f1ee" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z6"/>
-<text x="9.50" y="196.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z6">Respuesta</text>
-<rect x="8.0" y="218.80" width="257.00" height="20.90" fill="#e6e6e2" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z7"/>
-<text x="9.50" y="228.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">Proveedores</text>
-<text x="9.50" y="231.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">de IA</text>
-<rect x="8.0" y="252.80" width="257.00" height="20.90" fill="#eeeeea" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z8"/>
-<text x="9.50" y="262.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">Gobierno</text>
-<text x="9.50" y="265.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">transversal</text>
-<rect x="35.00" y="16.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="1"/>
-<circle cx="38.10" cy="19.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="19.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="1" data-en="1">1</text>
-<text x="41.60" y="20.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="1">Usuario con rol</text>
-<text x="36.60" y="23.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">quien pregunta; sus permisos</text>
-<text x="36.60" y="25.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">viajan con cada turno</text>
-<rect x="35.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="2"/>
-<circle cx="38.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="2" data-en="2">2</text>
-<text x="41.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">Panel</text>
-<text x="36.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">conversacional</text>
-<rect x="74.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="3"/>
-<circle cx="77.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="3" data-en="3">3</text>
-<text x="80.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">Pastillas de</text>
-<text x="75.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">sugerencia</text>
-<text x="75.60" y="60.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="3">se ordenan por éxito medido</text>
-<rect x="113.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="4"/>
-<circle cx="116.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="4" data-en="4">4</text>
-<text x="119.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">Aclaración con</text>
-<text x="114.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">opciones</text>
-<text x="114.60" y="60.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">y rechazo con salida: nunca</text>
-<text x="114.60" y="62.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">un callejón</text>
-<rect x="152.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="5"/>
-<circle cx="155.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
-<text x="155.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="5" data-en="5">5</text>
-<text x="158.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="5">Voto sin texto</text>
-<text x="153.60" y="57.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">señal de calidad sin pedir</text>
-<text x="153.60" y="59.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">redacción</text>
-<rect x="35.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="6"/>
-<circle cx="38.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="6" data-en="6">6</text>
-<text x="41.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">Normalizador del</text>
-<text x="36.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">pedido</text>
-<rect x="74.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="7"/>
-<circle cx="77.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="7" data-en="7">7</text>
-<text x="80.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">Frontera de</text>
-<text x="75.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">competencia por</text>
-<text x="75.60" y="93.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">anillos</text>
-<text x="75.60" y="96.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="7">adentro / borde / afuera</text>
-<rect x="113.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="8"/>
-<circle cx="116.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="8" data-en="8">8</text>
-<text x="119.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">Catálogo de</text>
-<text x="114.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">intenciones y</text>
-<text x="114.60" y="93.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">contrato</text>
-<rect x="152.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="9"/>
-<circle cx="155.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
-<text x="155.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="9" data-en="9">9</text>
-<text x="158.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="9">Enrutador</text>
-<text x="153.60" y="91.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">elige un mecanismo por</text>
-<text x="153.60" y="93.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">intención</text>
-<rect x="35.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="10"/>
-<circle cx="38.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="10" data-en="10">10</text>
-<text x="41.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">Función (function</text>
-<text x="36.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">calling sobre casos</text>
-<text x="36.60" y="127.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">de uso)</text>
-<text x="36.60" y="130.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">con los permisos del que</text>
-<text x="36.60" y="133.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">pregunta</text>
-<rect x="74.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="11"/>
-<circle cx="77.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="11" data-en="11">11</text>
-<text x="80.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">Deeplink a</text>
-<text x="75.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">pantalla</text>
-<text x="75.60" y="128.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="11">revalida el permiso al abrir</text>
-<rect x="113.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="12"/>
-<circle cx="116.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="12" data-en="12">12</text>
-<text x="119.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">Recuperación</text>
-<text x="114.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">(RAG)</text>
-<rect x="152.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="13"/>
-<circle cx="155.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
-<text x="155.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="13" data-en="13">13</text>
-<text x="158.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">Rechazo con</text>
-<text x="153.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">salida</text>
-<rect x="35.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="14"/>
-<circle cx="38.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="14" data-en="14">14</text>
-<text x="41.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">Casos de uso de</text>
-<text x="36.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">la aplicación</text>
-<text x="36.60" y="162.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">el dato exacto se consulta,</text>
-<text x="36.60" y="164.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">no se recuerda</text>
-<rect x="74.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="15"/>
-<circle cx="77.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="15" data-en="15">15</text>
-<text x="80.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">Catálogo de</text>
-<text x="75.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">pantallas</text>
-<rect x="113.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="16"/>
-<circle cx="116.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="16" data-en="16">16</text>
-<text x="119.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">Corpus</text>
-<text x="114.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">DocsAsCode</text>
-<rect x="152.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="17"/>
-<circle cx="155.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
-<text x="155.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="17" data-en="17">17</text>
-<text x="158.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">Trozos y</text>
-<text x="153.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">embeddings</text>
-<rect x="191.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="18"/>
-<circle cx="194.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
-<text x="194.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="18" data-en="18">18</text>
-<text x="197.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">Índice vectorial</text>
-<text x="192.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">(en memoria o base</text>
-<text x="192.60" y="161.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">vectorial)</text>
-<text x="192.60" y="164.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">búsqueda híbrida léxica +</text>
-<text x="192.60" y="167.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">semántica fusionada por RRF</text>
-<rect x="35.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="19"/>
-<circle cx="38.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="19" data-en="19">19</text>
-<text x="41.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">Redacción</text>
-<text x="36.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">anclada con control</text>
-<text x="36.60" y="196.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">cifras con su categoría, citas,</text>
-<text x="36.60" y="198.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">registro, «no peor que la</text>
-<text x="36.60" y="200.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">plantilla»</text>
-<rect x="74.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="20"/>
-<circle cx="77.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="20" data-en="20">20</text>
-<text x="80.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">Plantilla de</text>
-<text x="75.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">respaldo</text>
-<rect x="113.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="21"/>
-<circle cx="116.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="21" data-en="21">21</text>
-<text x="119.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">Forma de la</text>
-<text x="114.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">respuesta</text>
-<text x="114.60" y="196.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">frase, tabla, barras o torta</text>
-<text x="114.60" y="198.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">según la serie</text>
-<rect x="35.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="22"/>
-<circle cx="38.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="22" data-en="22">22</text>
-<text x="41.60" y="224.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">Abstracción de</text>
-<text x="36.60" y="226.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">chat (IChatClient)</text>
-<rect x="74.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="23"/>
-<circle cx="77.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="23" data-en="23">23</text>
-<text x="80.60" y="224.10" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">Abstracción de</text>
-<text x="75.60" y="226.90" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">embeddings</text>
-<text x="75.60" y="229.70" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">(IEmbeddingGenerator)</text>
-<rect x="113.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="24"/>
-<circle cx="116.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="24" data-en="24">24</text>
-<text x="119.60" y="224.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">Adaptadores de</text>
-<text x="114.60" y="226.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">proveedor</text>
-<text x="114.60" y="230.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">un default por función;</text>
-<text x="114.60" y="232.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">habilitados sólo tras la</text>
-<text x="114.60" y="234.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">batería</text>
-<rect x="35.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="25"/>
-<circle cx="38.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
-<text x="38.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="25" data-en="25">25</text>
-<text x="41.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">Límites de</text>
-<text x="36.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">consumo</text>
-<rect x="74.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="26"/>
-<circle cx="77.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
-<text x="77.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="26" data-en="26">26</text>
-<text x="80.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">Monitoreo y</text>
-<text x="75.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">registro del turno</text>
-<rect x="113.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="27"/>
-<circle cx="116.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
-<text x="116.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="27" data-en="27">27</text>
-<text x="119.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="27">Servidor MCP</text>
-<text x="114.60" y="261.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">traé tu propia IA, con la</text>
-<text x="114.60" y="263.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">misma autorización</text>
-<rect x="152.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="28"/>
-<circle cx="155.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
-<text x="155.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="28" data-en="28">28</text>
-<text x="158.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">Seguridad OWASP</text>
-<text x="153.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">LLM</text>
-<text x="153.60" y="264.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="28">transversal a todas las zonas</text>
-<rect x="191.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="29"/>
-<circle cx="194.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
-<text x="194.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="29" data-en="29">29</text>
-<text x="197.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">Ciclo de diseño y</text>
-<text x="192.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">medición</text>
-<text x="192.60" y="264.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">relevar → catálogo →</text>
-<text x="192.60" y="266.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">contrato → batería → medir →</text>
-<text x="192.60" y="268.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">volver</text>
-<polyline points="51.00,34.50 51.00,42.25 51.00,42.25 51.00,50.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C1"/>
-<rect x="48.94" y="35.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="51.00" y="37.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C1">C1</text>
-<polyline points="51.00,68.50 51.00,74.05 51.00,74.05 51.00,84.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C2"/>
-<rect x="48.94" y="69.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="51.00" y="71.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C2">C2</text>
-<polyline points="63.00,102.50 63.00,107.81 78.00,107.81 78.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C3"/>
-<rect x="60.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="63.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C3">C3</text>
-<polyline points="102.00,102.50 102.00,108.42 117.00,108.42 117.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C4"/>
-<rect x="99.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="102.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C4">C4</text>
-<polyline points="96.00,102.50 96.00,109.03 156.00,109.03 156.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C5"/>
-<rect x="93.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="96.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C5">C5</text>
-<polyline points="141.00,102.50 141.00,109.64 156.00,109.64 156.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C6"/>
-<rect x="138.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="141.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C6">C6</text>
-<polyline points="129.00,84.00 129.00,75.15 129.00,75.15 129.00,68.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C7"/>
-<rect x="126.94" y="80.35" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="129.00" y="82.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C7">C7</text>
-<polyline points="162.00,102.50 162.00,110.25 63.00,110.25 63.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C8"/>
-<rect x="159.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="162.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C8">C8</text>
-<polyline points="168.00,102.50 168.00,110.86 102.00,110.86 102.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C9"/>
-<rect x="165.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="168.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C9">C9</text>
-<polyline points="174.00,102.50 174.00,111.47 141.00,111.47 141.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C10"/>
-<rect x="171.28" y="103.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="174.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C10">C10</text>
-<polyline points="51.00,136.50 51.00,141.84 51.00,141.84 51.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C11"/>
-<rect x="48.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="51.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C11">C11</text>
-<polyline points="90.00,136.50 90.00,142.53 90.00,142.53 90.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C12"/>
-<rect x="87.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="90.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C12">C12</text>
-<polyline points="141.00,170.50 141.00,175.84 156.00,175.84 156.00,170.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C13"/>
-<rect x="138.28" y="171.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="141.00" y="173.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C13">C13</text>
-<polyline points="180.00,170.50 180.00,176.53 195.00,176.53 195.00,170.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C14"/>
-<rect x="177.28" y="171.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="180.00" y="173.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C14">C14</text>
-<polyline points="141.00,136.50 141.00,143.22 195.00,143.22 195.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C15"/>
-<rect x="138.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="141.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C15">C15</text>
-<polyline points="102.00,220.00 102.00,210.05 146.75,210.05 146.75,177.22 162.00,177.22 162.00,170.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C16"/>
-<rect x="99.28" y="216.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="102.00" y="218.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C16">C16</text>
-<polyline points="45.00,136.50 45.00,143.91 68.75,143.91 68.75,177.91 51.00,177.91 51.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C17"/>
-<rect x="42.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="45.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C17">C17</text>
-<polyline points="117.00,136.50 117.00,144.59 72.25,144.59 72.25,178.59 63.00,178.59 63.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C18"/>
-<rect x="114.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="117.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C18">C18</text>
-<polyline points="51.00,220.00 51.00,211.15 51.00,211.15 51.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C19"/>
-<rect x="48.28" y="216.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="51.00" y="218.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C19">C19</text>
-<polyline points="63.00,204.50 63.00,212.25 78.00,212.25 78.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C20"/>
-<rect x="60.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="63.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C20">C20</text>
-<polyline points="57.00,204.50 57.00,213.35 117.00,213.35 117.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C21"/>
-<rect x="54.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="57.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C21">C21</text>
-<polyline points="102.00,204.50 102.00,214.45 123.00,214.45 123.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C22"/>
-<rect x="99.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="102.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C22">C22</text>
-<polyline points="156.00,136.50 156.00,145.28 148.50,145.28 148.50,179.28 141.00,179.28 141.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C23"/>
-<rect x="153.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="156.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C23">C23</text>
-<polyline points="102.00,136.50 102.00,145.97 109.50,145.97 109.50,179.97 117.00,179.97 117.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C24"/>
-<rect x="99.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="102.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C24">C24</text>
-<polyline points="123.00,186.00 123.00,180.66 107.75,180.66 107.75,76.25 63.00,76.25 63.00,68.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C25"/>
-<rect x="120.28" y="182.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="123.00" y="184.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C25">C25</text>
-<polyline points="63.00,238.50 63.00,243.75 117.00,243.75 117.00,238.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C26"/>
-<rect x="60.28" y="239.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="63.00" y="241.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C26">C26</text>
-<polyline points="102.00,238.50 102.00,244.25 123.00,244.25 123.00,238.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C27"/>
-<rect x="99.28" y="239.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
-<text x="102.00" y="241.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C27">C27</text>
-<polyline points="63.00,254.00 63.00,244.75 129.00,244.75 129.00,238.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C28"/>
-<rect x="60.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
-<text x="63.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C28">C28</text>
-<polyline points="102.00,254.00 102.00,245.25 150.25,245.25 150.25,112.08 180.00,112.08 180.00,102.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C29"/>
-<rect x="99.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
-<text x="102.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C29">C29</text>
-<polyline points="117.00,254.00 117.00,245.75 70.50,245.75 70.50,146.66 63.00,146.66 63.00,136.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C30"/>
-<rect x="114.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
-<text x="117.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C30">C30</text>
-<polyline points="156.00,68.50 156.00,77.35 111.25,77.35 111.25,246.25 96.00,246.25 96.00,254.00" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C31"/>
-<rect x="153.28" y="69.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
-<text x="156.00" y="71.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C31">C31</text>
-<polyline points="90.00,254.00 90.00,246.75 195.00,246.75 195.00,254.00" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C32"/>
-<rect x="87.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="90.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C32">C32</text>
-<polyline points="201.00,254.00 201.00,247.25 185.75,247.25 185.75,112.69 135.00,112.69 135.00,102.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C33"/>
-<rect x="198.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="201.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C33">C33</text>
-<polyline points="207.00,254.00 207.00,247.75 141.00,247.75 141.00,238.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C34"/>
-<rect x="204.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="207.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C34">C34</text>
-<polyline points="84.00,254.00 84.00,248.25 187.50,248.25 187.50,78.45 90.00,78.45 90.00,68.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C35"/>
-<rect x="81.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
-<text x="84.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C35">C35</text>
-<polyline points="156.00,254.00 156.00,248.75 32.50,248.75 32.50,25.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" data-con="C36"/>
-<polyline points="32.50,25.25 30.20,25.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,59.25 30.20,59.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,93.25 30.20,93.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,127.25 30.20,127.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,161.25 30.20,161.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,195.25 30.20,195.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,229.25 30.20,229.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<polyline points="32.50,263.25 30.20,263.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
-<rect x="153.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
-<text x="156.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C36">C36</text>
+<rect x="8.0" y="13.80" width="257.00" height="20.90" fill="#f6f6f4" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z1"/>
+<text x="9.50" y="25.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z1">Usuario</text>
+<rect x="8.0" y="49.90" width="257.00" height="20.90" fill="#efefec" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z2"/>
+<text x="9.50" y="59.65" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">Interfaz</text>
+<text x="9.50" y="62.85" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">conversacional</text>
+<rect x="8.0" y="86.00" width="257.00" height="20.90" fill="#e9e9e5" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z3"/>
+<text x="9.50" y="95.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">Orquestador</text>
+<text x="9.50" y="98.95" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">del turno</text>
+<rect x="8.0" y="122.10" width="257.00" height="20.90" fill="#f3f3f0" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z4"/>
+<text x="9.50" y="133.45" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z4">Mecanismos</text>
+<rect x="8.0" y="158.20" width="257.00" height="20.90" fill="#ebebe7" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z5"/>
+<text x="9.50" y="167.95" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">Datos y</text>
+<text x="9.50" y="171.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">conocimiento</text>
+<rect x="8.0" y="194.30" width="257.00" height="20.90" fill="#f1f1ee" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z6"/>
+<text x="9.50" y="205.65" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z6">Respuesta</text>
+<rect x="8.0" y="230.40" width="257.00" height="20.90" fill="#e6e6e2" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z7"/>
+<text x="9.50" y="240.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">Proveedores</text>
+<text x="9.50" y="243.35" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">de IA</text>
+<rect x="8.0" y="266.50" width="257.00" height="20.90" fill="#eeeeea" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z8"/>
+<text x="9.50" y="276.25" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">Gobierno</text>
+<text x="9.50" y="279.45" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">transversal</text>
+<rect x="35.00" y="15.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="1"/>
+<circle cx="38.10" cy="18.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="18.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="1" data-en="1">1</text>
+<text x="41.60" y="19.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="1">Usuario con rol</text>
+<text x="36.60" y="22.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">quien pregunta; sus permisos</text>
+<text x="36.60" y="24.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">viajan con cada turno</text>
+<rect x="35.00" y="51.10" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="2"/>
+<circle cx="38.10" cy="54.10" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="54.90" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="2" data-en="2">2</text>
+<text x="41.60" y="55.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">Panel</text>
+<text x="36.60" y="58.00" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">conversacional</text>
+<rect x="74.00" y="51.10" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="3"/>
+<circle cx="77.10" cy="54.10" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="54.90" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="3" data-en="3">3</text>
+<text x="80.60" y="55.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">Pastillas de</text>
+<text x="75.60" y="58.00" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">sugerencia</text>
+<text x="75.60" y="61.20" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="3">se ordenan por éxito medido</text>
+<rect x="113.00" y="51.10" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="4"/>
+<circle cx="116.10" cy="54.10" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="54.90" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="4" data-en="4">4</text>
+<text x="119.60" y="55.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">Aclaración con</text>
+<text x="114.60" y="58.00" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">opciones</text>
+<text x="114.60" y="61.20" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">y rechazo con salida: nunca</text>
+<text x="114.60" y="63.60" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">un callejón</text>
+<rect x="152.00" y="51.10" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="5"/>
+<circle cx="155.10" cy="54.10" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="54.90" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="5" data-en="5">5</text>
+<text x="158.60" y="55.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="5">Voto sin texto</text>
+<text x="153.60" y="58.40" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">señal de calidad sin pedir</text>
+<text x="153.60" y="60.80" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">redacción</text>
+<rect x="35.00" y="87.20" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="6"/>
+<circle cx="38.10" cy="90.20" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="91.00" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="6" data-en="6">6</text>
+<text x="41.60" y="91.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">Normalizador del</text>
+<text x="36.60" y="94.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">pedido</text>
+<rect x="74.00" y="87.20" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="7"/>
+<circle cx="77.10" cy="90.20" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="91.00" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="7" data-en="7">7</text>
+<text x="80.60" y="91.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">Frontera de</text>
+<text x="75.60" y="94.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">competencia por</text>
+<text x="75.60" y="96.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">anillos</text>
+<text x="75.60" y="100.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="7">adentro / borde / afuera</text>
+<rect x="113.00" y="87.20" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="8"/>
+<circle cx="116.10" cy="90.20" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="91.00" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="8" data-en="8">8</text>
+<text x="119.60" y="91.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">Catálogo de</text>
+<text x="114.60" y="94.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">intenciones y</text>
+<text x="114.60" y="96.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">contrato</text>
+<rect x="152.00" y="87.20" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="9"/>
+<circle cx="155.10" cy="90.20" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="91.00" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="9" data-en="9">9</text>
+<text x="158.60" y="91.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="9">Enrutador</text>
+<text x="153.60" y="94.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">elige un mecanismo por</text>
+<text x="153.60" y="96.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">intención</text>
+<rect x="35.00" y="123.30" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="10"/>
+<circle cx="38.10" cy="126.30" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="127.10" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="10" data-en="10">10</text>
+<text x="41.60" y="127.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">Función (function</text>
+<text x="36.60" y="130.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">calling sobre casos</text>
+<text x="36.60" y="133.00" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">de uso)</text>
+<text x="36.60" y="136.20" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">con los permisos del que</text>
+<text x="36.60" y="138.60" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">pregunta</text>
+<rect x="74.00" y="123.30" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="11"/>
+<circle cx="77.10" cy="126.30" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="127.10" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="11" data-en="11">11</text>
+<text x="80.60" y="127.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">Deeplink a</text>
+<text x="75.60" y="130.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">pantalla</text>
+<text x="75.60" y="133.40" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="11">revalida el permiso al abrir</text>
+<rect x="113.00" y="123.30" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="12"/>
+<circle cx="116.10" cy="126.30" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="127.10" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="12" data-en="12">12</text>
+<text x="119.60" y="127.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">Recuperación</text>
+<text x="114.60" y="130.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">(RAG)</text>
+<rect x="152.00" y="123.30" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="13"/>
+<circle cx="155.10" cy="126.30" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="127.10" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="13" data-en="13">13</text>
+<text x="158.60" y="127.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">Rechazo con</text>
+<text x="153.60" y="130.20" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">salida</text>
+<rect x="35.00" y="159.40" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="14"/>
+<circle cx="38.10" cy="162.40" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="163.20" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="14" data-en="14">14</text>
+<text x="41.60" y="163.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">Casos de uso de</text>
+<text x="36.60" y="166.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">la aplicación</text>
+<text x="36.60" y="169.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">el dato exacto se consulta,</text>
+<text x="36.60" y="171.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">no se recuerda</text>
+<rect x="74.00" y="159.40" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="15"/>
+<circle cx="77.10" cy="162.40" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="163.20" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="15" data-en="15">15</text>
+<text x="80.60" y="163.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">Catálogo de</text>
+<text x="75.60" y="166.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">pantallas</text>
+<rect x="113.00" y="159.40" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="16"/>
+<circle cx="116.10" cy="162.40" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="163.20" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="16" data-en="16">16</text>
+<text x="119.60" y="163.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">Corpus</text>
+<text x="114.60" y="166.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">DocsAsCode</text>
+<rect x="152.00" y="159.40" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="17"/>
+<circle cx="155.10" cy="162.40" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="163.20" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="17" data-en="17">17</text>
+<text x="158.60" y="163.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">Trozos y</text>
+<text x="153.60" y="166.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">embeddings</text>
+<rect x="191.00" y="159.40" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="18"/>
+<circle cx="194.10" cy="162.40" r="2.2" fill="#2b2b2b"/>
+<text x="194.10" y="163.20" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="18" data-en="18">18</text>
+<text x="197.60" y="163.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">Índice vectorial</text>
+<text x="192.60" y="166.30" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">(en memoria o base</text>
+<text x="192.60" y="169.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">vectorial)</text>
+<text x="192.60" y="172.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">búsqueda híbrida léxica +</text>
+<text x="192.60" y="174.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">semántica fusionada por RRF</text>
+<rect x="35.00" y="195.50" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="19"/>
+<circle cx="38.10" cy="198.50" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="199.30" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="19" data-en="19">19</text>
+<text x="41.60" y="199.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">Redacción</text>
+<text x="36.60" y="202.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">anclada con control</text>
+<text x="36.60" y="205.60" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">cifras con su categoría, citas,</text>
+<text x="36.60" y="208.00" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">registro, «no peor que la</text>
+<text x="36.60" y="210.40" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">plantilla»</text>
+<rect x="74.00" y="195.50" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="20"/>
+<circle cx="77.10" cy="198.50" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="199.30" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="20" data-en="20">20</text>
+<text x="80.60" y="199.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">Plantilla de</text>
+<text x="75.60" y="202.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">respaldo</text>
+<rect x="113.00" y="195.50" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="21"/>
+<circle cx="116.10" cy="198.50" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="199.30" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="21" data-en="21">21</text>
+<text x="119.60" y="199.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">Forma de la</text>
+<text x="114.60" y="202.40" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">respuesta</text>
+<text x="114.60" y="205.60" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">frase, tabla, barras o torta</text>
+<text x="114.60" y="208.00" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">según la serie</text>
+<rect x="35.00" y="231.60" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="22"/>
+<circle cx="38.10" cy="234.60" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="235.40" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="22" data-en="22">22</text>
+<text x="41.60" y="235.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">Abstracción de</text>
+<text x="36.60" y="238.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">chat (IChatClient)</text>
+<rect x="74.00" y="231.60" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="23"/>
+<circle cx="77.10" cy="234.60" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="235.40" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="23" data-en="23">23</text>
+<text x="80.60" y="235.70" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">Abstracción de</text>
+<text x="75.60" y="238.50" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">embeddings</text>
+<text x="75.60" y="241.30" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">(IEmbeddingGenerator)</text>
+<rect x="113.00" y="231.60" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="24"/>
+<circle cx="116.10" cy="234.60" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="235.40" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="24" data-en="24">24</text>
+<text x="119.60" y="235.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">Adaptadores de</text>
+<text x="114.60" y="238.50" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">proveedor</text>
+<text x="114.60" y="241.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">un default por función;</text>
+<text x="114.60" y="244.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">habilitados sólo tras la</text>
+<text x="114.60" y="246.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">batería</text>
+<rect x="35.00" y="267.70" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="25"/>
+<circle cx="38.10" cy="270.70" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="271.50" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="25" data-en="25">25</text>
+<text x="41.60" y="271.80" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">Límites de</text>
+<text x="36.60" y="274.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">consumo</text>
+<rect x="74.00" y="267.70" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="26"/>
+<circle cx="77.10" cy="270.70" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="271.50" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="26" data-en="26">26</text>
+<text x="80.60" y="271.80" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">Monitoreo y</text>
+<text x="75.60" y="274.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">registro del turno</text>
+<rect x="113.00" y="267.70" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="27"/>
+<circle cx="116.10" cy="270.70" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="271.50" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="27" data-en="27">27</text>
+<text x="119.60" y="271.80" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="27">Servidor MCP</text>
+<text x="114.60" y="275.00" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">traé tu propia IA, con la</text>
+<text x="114.60" y="277.40" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">misma autorización</text>
+<rect x="152.00" y="267.70" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="28"/>
+<circle cx="155.10" cy="270.70" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="271.50" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="28" data-en="28">28</text>
+<text x="158.60" y="271.80" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">Seguridad OWASP</text>
+<text x="153.60" y="274.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">LLM</text>
+<text x="153.60" y="277.80" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="28">transversal a todas las zonas</text>
+<rect x="191.00" y="267.70" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="29"/>
+<circle cx="194.10" cy="270.70" r="2.2" fill="#2b2b2b"/>
+<text x="194.10" y="271.50" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="29" data-en="29">29</text>
+<text x="197.60" y="271.80" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">Ciclo de diseño y</text>
+<text x="192.60" y="274.60" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">medición</text>
+<text x="192.60" y="277.80" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">relevar → catálogo →</text>
+<text x="192.60" y="280.20" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">contrato → batería → medir →</text>
+<text x="192.60" y="282.60" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">volver</text>
+<polyline points="51.00,33.50 51.00,42.30 51.00,42.30 51.00,51.10" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C1"/>
+<rect x="48.94" y="34.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="36.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C1">C1</text>
+<polyline points="51.00,69.60 51.00,74.56 51.00,74.56 51.00,87.20" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C2"/>
+<rect x="48.94" y="70.55" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="72.58" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C2">C2</text>
+<polyline points="63.00,105.70 63.00,110.23 78.00,110.23 78.00,105.70" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C3"/>
+<rect x="60.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C3">C3</text>
+<polyline points="102.00,105.70 102.00,111.30 117.00,111.30 117.00,105.70" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C4"/>
+<rect x="99.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C4">C4</text>
+<polyline points="96.00,105.70 96.00,112.37 156.00,112.37 156.00,123.30" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C5"/>
+<rect x="93.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="96.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C5">C5</text>
+<polyline points="141.00,105.70 141.00,113.43 156.00,113.43 156.00,105.70" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C6"/>
+<rect x="138.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="141.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C6">C6</text>
+<polyline points="129.00,87.20 129.00,76.48 129.00,76.48 129.00,69.60" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C7"/>
+<rect x="126.94" y="83.55" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="129.00" y="85.58" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C7">C7</text>
+<polyline points="162.00,105.70 162.00,114.50 63.00,114.50 63.00,123.30" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C8"/>
+<rect x="159.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="162.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C8">C8</text>
+<polyline points="168.00,105.70 168.00,115.57 102.00,115.57 102.00,123.30" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C9"/>
+<rect x="165.94" y="106.65" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="168.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C9">C9</text>
+<polyline points="174.00,105.70 174.00,116.63 141.00,116.63 141.00,123.30" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C10"/>
+<rect x="171.28" y="106.65" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="174.00" y="108.68" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C10">C10</text>
+<polyline points="51.00,141.80 51.00,146.40 51.00,146.40 51.00,159.40" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C11"/>
+<rect x="48.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C11">C11</text>
+<polyline points="90.00,141.80 90.00,147.60 90.00,147.60 90.00,159.40" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C12"/>
+<rect x="87.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="90.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C12">C12</text>
+<polyline points="141.00,177.90 141.00,182.50 156.00,182.50 156.00,177.90" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C13"/>
+<rect x="138.28" y="178.85" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="141.00" y="180.88" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C13">C13</text>
+<polyline points="180.00,177.90 180.00,183.70 195.00,183.70 195.00,177.90" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C14"/>
+<rect x="177.28" y="178.85" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="180.00" y="180.88" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C14">C14</text>
+<polyline points="141.00,141.80 141.00,148.80 195.00,148.80 195.00,159.40" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C15"/>
+<rect x="138.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="141.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C15">C15</text>
+<polyline points="102.00,231.60 102.00,218.96 146.75,218.96 146.75,184.90 162.00,184.90 162.00,177.90" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C16"/>
+<rect x="99.28" y="227.95" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="229.98" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C16">C16</text>
+<polyline points="45.00,141.80 45.00,150.00 68.75,150.00 68.75,186.10 51.00,186.10 51.00,195.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C17"/>
+<rect x="42.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="45.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C17">C17</text>
+<polyline points="117.00,141.80 117.00,151.20 72.25,151.20 72.25,187.30 63.00,187.30 63.00,195.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C18"/>
+<rect x="114.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="117.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C18">C18</text>
+<polyline points="51.00,231.60 51.00,220.88 51.00,220.88 51.00,214.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C19"/>
+<rect x="48.28" y="227.95" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="229.98" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C19">C19</text>
+<polyline points="63.00,214.00 63.00,222.80 78.00,222.80 78.00,214.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C20"/>
+<rect x="60.28" y="214.95" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="216.98" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C20">C20</text>
+<polyline points="57.00,214.00 57.00,224.72 117.00,224.72 117.00,214.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C21"/>
+<rect x="54.28" y="214.95" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="57.00" y="216.98" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C21">C21</text>
+<polyline points="102.00,214.00 102.00,226.64 123.00,226.64 123.00,214.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C22"/>
+<rect x="99.28" y="214.95" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="216.98" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C22">C22</text>
+<polyline points="156.00,141.80 156.00,152.40 148.50,152.40 148.50,188.50 141.00,188.50 141.00,195.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C23"/>
+<rect x="153.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="156.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C23">C23</text>
+<polyline points="102.00,141.80 102.00,153.60 109.50,153.60 109.50,189.70 117.00,189.70 117.00,195.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C24"/>
+<rect x="99.28" y="142.75" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="144.78" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C24">C24</text>
+<polyline points="123.00,195.50 123.00,190.90 107.75,190.90 107.75,78.40 63.00,78.40 63.00,69.60" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C25"/>
+<rect x="120.28" y="191.85" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="123.00" y="193.88" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C25">C25</text>
+<polyline points="63.00,250.10 63.00,254.54 117.00,254.54 117.00,250.10" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C26"/>
+<rect x="60.28" y="251.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="253.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C26">C26</text>
+<polyline points="102.00,250.10 102.00,255.41 123.00,255.41 123.00,250.10" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C27"/>
+<rect x="99.28" y="251.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="253.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C27">C27</text>
+<polyline points="63.00,267.70 63.00,256.28 129.00,256.28 129.00,250.10" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C28"/>
+<rect x="60.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="63.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C28">C28</text>
+<polyline points="102.00,267.70 102.00,257.15 150.25,257.15 150.25,117.70 180.00,117.70 180.00,105.70" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C29"/>
+<rect x="99.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="102.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C29">C29</text>
+<polyline points="117.00,267.70 117.00,258.03 70.50,258.03 70.50,154.80 63.00,154.80 63.00,141.80" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C30"/>
+<rect x="114.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="117.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C30">C30</text>
+<polyline points="156.00,69.60 156.00,80.32 111.25,80.32 111.25,258.90 96.00,258.90 96.00,267.70" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C31"/>
+<rect x="153.28" y="70.55" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="156.00" y="72.58" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C31">C31</text>
+<polyline points="90.00,267.70 90.00,259.77 195.00,259.77 195.00,267.70" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C32"/>
+<rect x="87.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="90.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C32">C32</text>
+<polyline points="201.00,267.70 201.00,260.65 185.75,260.65 185.75,118.77 135.00,118.77 135.00,105.70" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C33"/>
+<rect x="198.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="201.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C33">C33</text>
+<polyline points="207.00,267.70 207.00,261.52 141.00,261.52 141.00,250.10" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C34"/>
+<rect x="204.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="207.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C34">C34</text>
+<polyline points="84.00,267.70 84.00,262.39 187.50,262.39 187.50,82.24 90.00,82.24 90.00,69.60" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C35"/>
+<rect x="81.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="84.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C35">C35</text>
+<polyline points="156.00,267.70 156.00,263.26 32.50,263.26 32.50,24.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" data-con="C36"/>
+<polyline points="32.50,24.25 30.20,24.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,60.35 30.20,60.35" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,96.45 30.20,96.45" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,132.55 30.20,132.55" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,168.65 30.20,168.65" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,204.75 30.20,204.75" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,240.85 30.20,240.85" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,276.95 30.20,276.95" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<rect x="153.28" y="264.05" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="156.00" y="266.08" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C36">C36</text>
 <text x="270.00" y="16.00" font-size="3.4" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="tabla">Preguntas conceptuales</text>
 <text x="270.00" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >#</text>
 <text x="276.50" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >Pregunta</text>

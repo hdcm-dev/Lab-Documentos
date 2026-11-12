@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al escribir o cambiar una página de ayuda, una función o un destino; después de K2 §0–§3; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.6
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); `Conversational-Design-Framework-Guide.md` 1.4.0, por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m); [K7](knowledge-AI-Layer-Testing-Strategy.md)
+**Versión:** 1.7
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
 **Fecha:** 2026-11-12
 
@@ -655,8 +655,9 @@ La norma está en [K2 §5](knowledge-AI-Layer-Console-Assistant-Building.md#k2-5
    doy de alta una aplicación?» llevaba a la lista. *Prueba:* tabla `pregunta + destinos declarados → orden`.
 2. **La cuenta del destino la elige el código**, siempre entre las cuentas de la persona, en este orden: la
    elegida en la aclaración, la dueña de la app del chip, la única donde puede abrir la pantalla. Si quedan
-   varias, la respuesta es la aclaración «¿En qué cuenta?» ([K5 §5](knowledge-AI-Layer-Conversational-Design.md#k5-5)).
-   *Prueba:* con dos cuentas: con chip va a la de la app; sin chip, aclaración; elegida, esa; ajena, mal formada
+   varias y la cuenta cambia la respuesta ([K5 §M.4](knowledge-AI-Layer-Conversational-Design.md#k5-m4)), aclaración con el nombre humano de cada cuenta;
+   si sólo cambia el enlace, el chip usa la cuenta activa (o abre un selector en la pantalla) y lo dice.
+   *Prueba:* con dos cuentas: con chip va a la de la app; sin chip y con cifra que cambia, aclaración; pregunta conceptual, sin aclaración; elegida, esa; ajena, mal formada
    o con otras mayúsculas, ignorada; una sola posible, no se pregunta; la cuenta del chip sin permiso no deriva a
    otra cuenta.
 3. **La cuenta elegida viaja por el servidor**, no por la URL armada en el cliente: llega a la autorización
@@ -856,10 +857,11 @@ página (§3.6).
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |
+| 1.7 | 2026-11-12 | §15.2 remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m): la cuenta del destino se pregunta sólo si cambia la respuesta; si sólo cambia el enlace, cuenta activa dicha. Estado aclarado: Borrador en cabecera, README e historial. |
 | 1.6 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §17.4 acción sin parámetro → parámetro de valor fijo; el fragmento `#id` como deuda declarada. |
 | 1.5 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §9 límite del ruteo por código, sonda y clasificador por embeddings como candidato. |
 | 1.4 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana: §12.8 afirmaciones sin números y entidades no cerradas; §12.9 formato de citas; §12.10 tasa de rechazo; K6-AP-11 y K6-AP-12. |
 | 1.3 | 2026-11-11 | Banco integral sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) (Movilidad Urbana): §12.7 cifra atada a su categoría y a su orden. |
 | 1.2 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): caso Geometría rotulado como del libro; ficha de concepto con `contexto` opcional y cobertura por términos. |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas (sistema de reservas sintético, 24 huecos): gramática de `::: roles`; `delivery` como audiencia y qué pasa sin `roles` o sin `status`; frontmatter completo de ejemplo; ficha frente a página por tarea; cálculo de la raíz; calibración del umbral de coseno; §8.0 criterio de palabra común; qué se compara antes de pasar una intención al modelo; fechas y horas como argumento y como cifra con origen; una sola política (ver) y el hacer por el criterio de §16; `Alcance` del dominio; propuesta de id de instancia; criterios de frontera de la ayuda. |
+| 1.0 | 2026-11-11 | Creación, destilada del corpus de ayuda, las funciones de consulta y el catálogo de destinos de la consola de PushDispatch (expediente de la capa de IA, PR #465 a #480 y el alta por enlace); detalla los pasos 5 y 8 del pipeline de K2. |

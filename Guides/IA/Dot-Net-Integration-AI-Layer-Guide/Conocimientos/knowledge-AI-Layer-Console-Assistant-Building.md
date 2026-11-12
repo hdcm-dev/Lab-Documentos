@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al implementar la consola o tocar su enrutado, corpus, destinos, votos o despliegue; después de tener la especificación de K1; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (borrador provisorio); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); guía de diseño conversacional (en redacción: sus remisiones se agregan al publicarse). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.4
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); `Conversational-Design-Framework-Guide.md` 1.4.0 (su norma del turno se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
+**Versión:** 1.5
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
 **Fecha:** 2026-11-12
 
@@ -164,7 +164,7 @@ y al ADR-09 [Guía §14.10](../Dot-Net-Integration-AI-Layer-Guide.md#c14-10).
 | # | Paso | Entrada → salida | Si falla |
 |---|---|---|---|
 | 1 | **Contexto de pantalla** | pantalla actual + chip quitable → pista de tema | se ignora la pista |
-| 2 | **Alcance** | pregunta + sesión → cuenta / aplicación / global, o candidatas | §6: elegir entre candidatas; nunca «¿sobre qué aplicación?» si la pregunta admite una respuesta global |
+| 2 | **Alcance** | pregunta + sesión → cuenta / aplicación / global, o candidatas | sólo si el contrato pide alcance; se aclara bajo [K5 §M.4](knowledge-AI-Layer-Conversational-Design.md#k5-m4) (§6); nunca «¿sobre qué aplicación?» si hay respuesta global |
 | 3 | **Rol** | sesión → rol efectivo (incluido el raíz, §9) | sin rol, sin consola: error explícito |
 | 4 | **Anillo e intención** | pregunta → anillo 1/2/3/afuera e intención [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2) | entre dos anillos: una pregunta cerrada con opciones |
 | 5 | **Herramienta o recuperación** | anillo 1 → herramienta de lectura con el alcance ya fijado; anillo 2 → RAG filtrado por rol (§4) | sin datos o bajo umbral → R2 |
@@ -172,7 +172,9 @@ y al ADR-09 [Guía §14.10](../Dot-Net-Integration-AI-Layer-Guide.md#c14-10).
 | 7 | **Validación** | texto → texto con cifras verificadas (R3), sin URLs libres (R5) | texto fijo |
 | 8 | **Destino** | intención + rol → id del catálogo revalidado (§5) | sin destino; nunca uno que termine en 403 |
 
-**Reglas del pipeline.**
+**Reglas del pipeline.** El orden de cálculo de la tabla no es el orden de decisión: la aclaración se decide en el
+nodo 4 del árbol de [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m), después de la intención; el paso 2 resuelve candidatas pero no pregunta si
+la intención no necesita alcance.
 - Resolvé el **alcance antes de responder** (paso 2). *Porqué:* «¿Cuántos suscriptores tengo?» contestaba
   «¿Sobre qué aplicación?» y la falla no era de herramientas sino de alcance. *Prueba:* para cada pregunta de
   cantidad, un caso con 0, 1 y varias aplicaciones; si la persona **no nombró** ninguna, con varias la respuesta
@@ -286,12 +288,14 @@ Cada *Prueba:* de esta sección se escribe según [K7](knowledge-AI-Layer-Testin
 ## 6. Elegir entre candidatas
 
 **Cuándo.** El paso 2 encuentra más de una entidad que coincide con lo nombrado (apps de nombre parecido, la
-misma app en dos cuentas) o ninguna exacta pero sí parecidas.
+misma app en dos cuentas) o ninguna exacta pero sí parecidas, **y** la regla de [K5 §M.4](knowledge-AI-Layer-Conversational-Design.md#k5-m4) pide aclarar.
+Una pregunta conceptual de alguien con varias cuentas no llega acá.
 
 **Lógica (la forma del diálogo es de [K5 §5](knowledge-AI-Layer-Conversational-Design.md#k5-5) y de [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2), «cuando el pedido cae entre dos…»):**
 1. Implementá un **resolutor puro** `nombre + entidades visibles para el rol → exacta | candidatas | ninguna`.
 2. Con candidatas, mostrá **de 2 a 4**, ordenadas por parecido, **con su cifra** relevante y «y k más» si sobran.
-3. Si la entidad existe en **varias cuentas** visibles, la aclaración es entre cuentas antes que entre apps.
+3. Si la entidad existe en **varias cuentas** visibles y la cuenta cambia la respuesta, la aclaración es entre
+   cuentas antes que entre apps, con el nombre humano de cada una (nunca su identificador técnico, R11).
 4. Sólo entidades visibles para el rol: nunca se revela por la aclaración que existe algo ajeno.
 5. «No encuentro esa aplicación» sólo con cero candidatas, y con el destino a la lista.
 
@@ -340,7 +344,9 @@ callejón ni un comodín que todo lo ve sin reglas.
 
 **Prueba:** matriz rol × pantalla; por cada rol, una prueba que abre la consola, pregunta una sugerencia propia
 y obtiene una respuesta no vacía con un destino permitido. Toda sugerencia de un rol pasa por la revalidación de §5.
-La matriz va en la especificación (K1 §3, actores) y la prueba en el CI.
+La matriz va en la especificación (K1 §3, actores) y la prueba en el CI. Se juzga con R12 de
+[K5 §M.6](knowledge-AI-Layer-Conversational-Design.md#k5-m6): si la matriz da consola a un rol y el rol no la ve,
+es un defecto; si no se la da, el rol ve por qué y a dónde ir; sin matriz escrita, R12 vale 0.
 
 <a id="k2-10"></a>
 ## 10. Despliegue: un modelo cargado y la IA apagada a la vista
@@ -491,7 +497,7 @@ del §9 tiene dos filas, alumno y docente; sin modelo, rige la plantilla del doc
 - Se destiló de **un** sistema; las cifras (≤ 500 caracteres, 2–4 candidatas, 5 + «Otras», 3 a 7,5 s de recarga) son
   puntos de partida medidos allí, no constantes: cada sistema las vuelve a medir con K3.
 - No fija proveedor ni modelo; asume un servidor de inferencia que puede tener un solo modelo residente.
-- Las formas de respuesta están en [K5](knowledge-AI-Layer-Conversational-Design.md), que es borrador provisorio hasta que se publique la guía de diseño conversacional;
+- El marco del turno y las formas de respuesta están en [K5](knowledge-AI-Layer-Conversational-Design.md), que destila la guía de diseño conversacional;
   si esa guía contradice algo de §3, §6 o §7, rige la guía y se actualiza este conocimiento.
 - No reemplaza la mesa: cómo se organiza el trabajo (especialistas, refutador, rondas, coordinación) está en K4.
 
@@ -529,6 +535,7 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.5 | 2026-11-12 | Remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m) (marco del turno): el paso 2 no pregunta si la intención no necesita alcance; §6 aclara sólo bajo §M.4 y con nombres humanos; §9 se juzga con R12. |
 | 1.4 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (aplicación a ciegas y rebanada EXP-0005): §5.7 pertinencia por estado además del permiso; §5.8 rótulo del chip por rol; §5.9 parámetro de valor fijo y página igual sin nada que abrir; §5.5 conformidad de permisos por bUnit cuando no hay `[Authorize(Policy)]`. |
 | 1.3 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): excepción «la ficha es la respuesta» en §3; en §10, regla de clave parecida, corte del servicio < corte del cliente, fusionar ≠ encender y conformidad por reflexión con procesos separados. |
 | 1.2 | 2026-11-11 | Remisiones mínimas a K6 (§4, §5, mapa de carga) y a K7 (pruebas); nada de 1.1 cambió de sentido. |

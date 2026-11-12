@@ -1,0 +1,512 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420mm" height="297mm" viewBox="0 0 420 297" font-family="DejaVu Sans">
+<defs>
+<marker id="f-continuo" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="2.6" markerHeight="2.6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2b2b2b"/></marker>
+<marker id="f-trazos" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="2.6" markerHeight="2.6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#236c9c"/></marker>
+<marker id="f-punteado" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="2.6" markerHeight="2.6" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a6418"/></marker>
+</defs>
+<rect x="0" y="0" width="420" height="297" fill="#ffffff"/>
+<rect x="4" y="4" width="412" height="289" fill="none" stroke="#2b2b2b" stroke-width="0.5"/>
+<text x="8.00" y="11.00" font-size="4.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="titulo">LD-01 · Aplicación conversacional — arquitectura de referencia</text>
+<rect x="8.0" y="14.80" width="257.00" height="20.90" fill="#f6f6f4" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z1"/>
+<text x="9.50" y="26.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z1">Usuario</text>
+<rect x="8.0" y="48.80" width="257.00" height="20.90" fill="#efefec" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z2"/>
+<text x="9.50" y="58.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">Interfaz</text>
+<text x="9.50" y="61.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z2">conversacional</text>
+<rect x="8.0" y="82.80" width="257.00" height="20.90" fill="#e9e9e5" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z3"/>
+<text x="9.50" y="92.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">Orquestador</text>
+<text x="9.50" y="95.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z3">del turno</text>
+<rect x="8.0" y="116.80" width="257.00" height="20.90" fill="#f3f3f0" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z4"/>
+<text x="9.50" y="128.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z4">Mecanismos</text>
+<rect x="8.0" y="150.80" width="257.00" height="20.90" fill="#ebebe7" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z5"/>
+<text x="9.50" y="160.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">Datos y</text>
+<text x="9.50" y="163.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z5">conocimiento</text>
+<rect x="8.0" y="184.80" width="257.00" height="20.90" fill="#f1f1ee" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z6"/>
+<text x="9.50" y="196.15" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z6">Respuesta</text>
+<rect x="8.0" y="218.80" width="257.00" height="20.90" fill="#e6e6e2" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z7"/>
+<text x="9.50" y="228.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">Proveedores</text>
+<text x="9.50" y="231.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z7">de IA</text>
+<rect x="8.0" y="252.80" width="257.00" height="20.90" fill="#eeeeea" stroke="#c9c9c4" stroke-width="0.25" data-zona="Z8"/>
+<text x="9.50" y="262.55" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">Gobierno</text>
+<text x="9.50" y="265.75" font-size="2.6" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-zona-titulo="Z8">transversal</text>
+<rect x="35.00" y="16.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="1"/>
+<circle cx="38.10" cy="19.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="19.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="1" data-en="1">1</text>
+<text x="41.60" y="20.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="1">Usuario con rol</text>
+<text x="36.60" y="23.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">quien pregunta; sus permisos</text>
+<text x="36.60" y="25.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="1">viajan con cada turno</text>
+<rect x="35.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="2"/>
+<circle cx="38.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="2" data-en="2">2</text>
+<text x="41.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">Panel</text>
+<text x="36.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="2">conversacional</text>
+<rect x="74.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="3"/>
+<circle cx="77.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="3" data-en="3">3</text>
+<text x="80.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">Pastillas de</text>
+<text x="75.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="3">sugerencia</text>
+<text x="75.60" y="60.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="3">se ordenan por éxito medido</text>
+<rect x="113.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="4"/>
+<circle cx="116.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="4" data-en="4">4</text>
+<text x="119.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">Aclaración con</text>
+<text x="114.60" y="56.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="4">opciones</text>
+<text x="114.60" y="60.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">y rechazo con salida: nunca</text>
+<text x="114.60" y="62.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="4">un callejón</text>
+<rect x="152.00" y="50.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="5"/>
+<circle cx="155.10" cy="53.00" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="53.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="5" data-en="5">5</text>
+<text x="158.60" y="54.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="5">Voto sin texto</text>
+<text x="153.60" y="57.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">señal de calidad sin pedir</text>
+<text x="153.60" y="59.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="5">redacción</text>
+<rect x="35.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="6"/>
+<circle cx="38.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="6" data-en="6">6</text>
+<text x="41.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">Normalizador del</text>
+<text x="36.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="6">pedido</text>
+<rect x="74.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="7"/>
+<circle cx="77.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="7" data-en="7">7</text>
+<text x="80.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">Frontera de</text>
+<text x="75.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">competencia por</text>
+<text x="75.60" y="93.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="7">anillos</text>
+<text x="75.60" y="96.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="7">adentro / borde / afuera</text>
+<rect x="113.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="8"/>
+<circle cx="116.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="8" data-en="8">8</text>
+<text x="119.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">Catálogo de</text>
+<text x="114.60" y="90.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">intenciones y</text>
+<text x="114.60" y="93.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="8">contrato</text>
+<rect x="152.00" y="84.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="9"/>
+<circle cx="155.10" cy="87.00" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="87.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="9" data-en="9">9</text>
+<text x="158.60" y="88.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="9">Enrutador</text>
+<text x="153.60" y="91.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">elige un mecanismo por</text>
+<text x="153.60" y="93.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="9">intención</text>
+<rect x="35.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="10"/>
+<circle cx="38.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="10" data-en="10">10</text>
+<text x="41.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">Función (function</text>
+<text x="36.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">calling sobre casos</text>
+<text x="36.60" y="127.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="10">de uso)</text>
+<text x="36.60" y="130.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">con los permisos del que</text>
+<text x="36.60" y="133.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="10">pregunta</text>
+<rect x="74.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="11"/>
+<circle cx="77.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="11" data-en="11">11</text>
+<text x="80.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">Deeplink a</text>
+<text x="75.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="11">pantalla</text>
+<text x="75.60" y="128.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="11">revalida el permiso al abrir</text>
+<rect x="113.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="12"/>
+<circle cx="116.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="12" data-en="12">12</text>
+<text x="119.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">Recuperación</text>
+<text x="114.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="12">(RAG)</text>
+<rect x="152.00" y="118.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="13"/>
+<circle cx="155.10" cy="121.00" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="121.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="13" data-en="13">13</text>
+<text x="158.60" y="122.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">Rechazo con</text>
+<text x="153.60" y="124.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="13">salida</text>
+<rect x="35.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="14"/>
+<circle cx="38.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="14" data-en="14">14</text>
+<text x="41.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">Casos de uso de</text>
+<text x="36.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="14">la aplicación</text>
+<text x="36.60" y="162.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">el dato exacto se consulta,</text>
+<text x="36.60" y="164.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="14">no se recuerda</text>
+<rect x="74.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="15"/>
+<circle cx="77.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="15" data-en="15">15</text>
+<text x="80.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">Catálogo de</text>
+<text x="75.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="15">pantallas</text>
+<rect x="113.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="16"/>
+<circle cx="116.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="16" data-en="16">16</text>
+<text x="119.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">Corpus</text>
+<text x="114.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="16">DocsAsCode</text>
+<rect x="152.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="17"/>
+<circle cx="155.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="17" data-en="17">17</text>
+<text x="158.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">Trozos y</text>
+<text x="153.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="17">embeddings</text>
+<rect x="191.00" y="152.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="18"/>
+<circle cx="194.10" cy="155.00" r="2.2" fill="#2b2b2b"/>
+<text x="194.10" y="155.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="18" data-en="18">18</text>
+<text x="197.60" y="156.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">Índice vectorial</text>
+<text x="192.60" y="158.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">(en memoria o base</text>
+<text x="192.60" y="161.70" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="18">vectorial)</text>
+<text x="192.60" y="164.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">búsqueda híbrida léxica +</text>
+<text x="192.60" y="167.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="18">semántica fusionada por RRF</text>
+<rect x="35.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="19"/>
+<circle cx="38.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="19" data-en="19">19</text>
+<text x="41.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">Redacción</text>
+<text x="36.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="19">anclada con control</text>
+<text x="36.60" y="196.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">cifras con su categoría, citas,</text>
+<text x="36.60" y="198.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">registro, «no peor que la</text>
+<text x="36.60" y="200.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="19">plantilla»</text>
+<rect x="74.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="20"/>
+<circle cx="77.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="20" data-en="20">20</text>
+<text x="80.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">Plantilla de</text>
+<text x="75.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="20">respaldo</text>
+<rect x="113.00" y="186.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="21"/>
+<circle cx="116.10" cy="189.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="189.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="21" data-en="21">21</text>
+<text x="119.60" y="190.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">Forma de la</text>
+<text x="114.60" y="192.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="21">respuesta</text>
+<text x="114.60" y="196.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">frase, tabla, barras o torta</text>
+<text x="114.60" y="198.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="21">según la serie</text>
+<rect x="35.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="22"/>
+<circle cx="38.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="22" data-en="22">22</text>
+<text x="41.60" y="224.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">Abstracción de</text>
+<text x="36.60" y="226.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="22">chat (IChatClient)</text>
+<rect x="74.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="23"/>
+<circle cx="77.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="23" data-en="23">23</text>
+<text x="80.60" y="224.10" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">Abstracción de</text>
+<text x="75.60" y="226.90" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">embeddings</text>
+<text x="75.60" y="229.70" font-size="2.1" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="23">(IEmbeddingGenerator)</text>
+<rect x="113.00" y="220.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="24"/>
+<circle cx="116.10" cy="223.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="223.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="24" data-en="24">24</text>
+<text x="119.60" y="224.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">Adaptadores de</text>
+<text x="114.60" y="226.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="24">proveedor</text>
+<text x="114.60" y="230.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">un default por función;</text>
+<text x="114.60" y="232.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">habilitados sólo tras la</text>
+<text x="114.60" y="234.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="24">batería</text>
+<rect x="35.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="25"/>
+<circle cx="38.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
+<text x="38.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="25" data-en="25">25</text>
+<text x="41.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">Límites de</text>
+<text x="36.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="25">consumo</text>
+<rect x="74.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="26"/>
+<circle cx="77.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
+<text x="77.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="26" data-en="26">26</text>
+<text x="80.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">Monitoreo y</text>
+<text x="75.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="26">registro del turno</text>
+<rect x="113.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="27"/>
+<circle cx="116.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
+<text x="116.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="27" data-en="27">27</text>
+<text x="119.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="27">Servidor MCP</text>
+<text x="114.60" y="261.30" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">traé tu propia IA, con la</text>
+<text x="114.60" y="263.70" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="27">misma autorización</text>
+<rect x="152.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="28"/>
+<circle cx="155.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
+<text x="155.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="28" data-en="28">28</text>
+<text x="158.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">Seguridad OWASP</text>
+<text x="153.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="28">LLM</text>
+<text x="153.60" y="264.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="28">transversal a todas las zonas</text>
+<rect x="191.00" y="254.00" width="32.0" height="18.5" rx="1" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.35" data-part="29"/>
+<circle cx="194.10" cy="257.00" r="2.2" fill="#2b2b2b"/>
+<text x="194.10" y="257.80" font-size="2.2" font-weight="bold" text-anchor="middle" fill="#ffffff" data-num="29" data-en="29">29</text>
+<text x="197.60" y="258.10" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">Ciclo de diseño y</text>
+<text x="192.60" y="260.90" font-size="2.3" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-en="29">medición</text>
+<text x="192.60" y="264.10" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">relevar → catálogo →</text>
+<text x="192.60" y="266.50" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">contrato → batería → medir →</text>
+<text x="192.60" y="268.90" font-size="1.95" text-anchor="start" fill="#4a4a4a" data-en="29">volver</text>
+<polyline points="51.00,34.50 51.00,42.25 51.00,42.25 51.00,50.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C1"/>
+<rect x="48.94" y="35.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="37.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C1">C1</text>
+<polyline points="51.00,68.50 51.00,74.05 51.00,74.05 51.00,84.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C2"/>
+<rect x="48.94" y="69.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="71.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C2">C2</text>
+<polyline points="63.00,102.50 63.00,107.81 78.00,107.81 78.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C3"/>
+<rect x="60.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C3">C3</text>
+<polyline points="102.00,102.50 102.00,108.42 117.00,108.42 117.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C4"/>
+<rect x="99.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C4">C4</text>
+<polyline points="96.00,102.50 96.00,109.03 156.00,109.03 156.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C5"/>
+<rect x="93.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="96.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C5">C5</text>
+<polyline points="141.00,102.50 141.00,109.64 156.00,109.64 156.00,102.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C6"/>
+<rect x="138.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="141.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C6">C6</text>
+<polyline points="129.00,84.00 129.00,75.15 129.00,75.15 129.00,68.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C7"/>
+<rect x="126.94" y="80.35" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="129.00" y="82.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C7">C7</text>
+<polyline points="162.00,102.50 162.00,110.25 63.00,110.25 63.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C8"/>
+<rect x="159.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="162.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C8">C8</text>
+<polyline points="168.00,102.50 168.00,110.86 102.00,110.86 102.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C9"/>
+<rect x="165.94" y="103.45" width="4.12" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="168.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C9">C9</text>
+<polyline points="174.00,102.50 174.00,111.47 141.00,111.47 141.00,118.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C10"/>
+<rect x="171.28" y="103.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="174.00" y="105.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C10">C10</text>
+<polyline points="51.00,136.50 51.00,141.84 51.00,141.84 51.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C11"/>
+<rect x="48.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C11">C11</text>
+<polyline points="90.00,136.50 90.00,142.53 90.00,142.53 90.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C12"/>
+<rect x="87.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="90.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C12">C12</text>
+<polyline points="141.00,170.50 141.00,175.84 156.00,175.84 156.00,170.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C13"/>
+<rect x="138.28" y="171.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="141.00" y="173.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C13">C13</text>
+<polyline points="180.00,170.50 180.00,176.53 195.00,176.53 195.00,170.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C14"/>
+<rect x="177.28" y="171.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="180.00" y="173.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C14">C14</text>
+<polyline points="141.00,136.50 141.00,143.22 195.00,143.22 195.00,152.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C15"/>
+<rect x="138.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="141.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C15">C15</text>
+<polyline points="102.00,220.00 102.00,210.05 146.75,210.05 146.75,177.22 162.00,177.22 162.00,170.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C16"/>
+<rect x="99.28" y="216.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="218.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C16">C16</text>
+<polyline points="45.00,136.50 45.00,143.91 68.75,143.91 68.75,177.91 51.00,177.91 51.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C17"/>
+<rect x="42.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="45.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C17">C17</text>
+<polyline points="117.00,136.50 117.00,144.59 72.25,144.59 72.25,178.59 63.00,178.59 63.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C18"/>
+<rect x="114.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="117.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C18">C18</text>
+<polyline points="51.00,220.00 51.00,211.15 51.00,211.15 51.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C19"/>
+<rect x="48.28" y="216.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="51.00" y="218.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C19">C19</text>
+<polyline points="63.00,204.50 63.00,212.25 78.00,212.25 78.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C20"/>
+<rect x="60.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C20">C20</text>
+<polyline points="57.00,204.50 57.00,213.35 117.00,213.35 117.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C21"/>
+<rect x="54.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="57.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C21">C21</text>
+<polyline points="102.00,204.50 102.00,214.45 123.00,214.45 123.00,204.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C22"/>
+<rect x="99.28" y="205.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="207.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C22">C22</text>
+<polyline points="156.00,136.50 156.00,145.28 148.50,145.28 148.50,179.28 141.00,179.28 141.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C23"/>
+<rect x="153.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="156.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C23">C23</text>
+<polyline points="102.00,136.50 102.00,145.97 109.50,145.97 109.50,179.97 117.00,179.97 117.00,186.00" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C24"/>
+<rect x="99.28" y="137.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="139.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C24">C24</text>
+<polyline points="123.00,186.00 123.00,180.66 107.75,180.66 107.75,76.25 63.00,76.25 63.00,68.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C25"/>
+<rect x="120.28" y="182.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="123.00" y="184.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C25">C25</text>
+<polyline points="63.00,238.50 63.00,243.75 117.00,243.75 117.00,238.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C26"/>
+<rect x="60.28" y="239.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="63.00" y="241.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C26">C26</text>
+<polyline points="102.00,238.50 102.00,244.25 123.00,244.25 123.00,238.50" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="C27"/>
+<rect x="99.28" y="239.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.25"/>
+<text x="102.00" y="241.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#2b2b2b" data-con="C27">C27</text>
+<polyline points="63.00,254.00 63.00,244.75 129.00,244.75 129.00,238.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C28"/>
+<rect x="60.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="63.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C28">C28</text>
+<polyline points="102.00,254.00 102.00,245.25 150.25,245.25 150.25,112.08 180.00,112.08 180.00,102.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C29"/>
+<rect x="99.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="102.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C29">C29</text>
+<polyline points="117.00,254.00 117.00,245.75 70.50,245.75 70.50,146.66 63.00,146.66 63.00,136.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C30"/>
+<rect x="114.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="117.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C30">C30</text>
+<polyline points="156.00,68.50 156.00,77.35 111.25,77.35 111.25,246.25 96.00,246.25 96.00,254.00" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C31"/>
+<rect x="153.28" y="69.45" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="156.00" y="71.48" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C31">C31</text>
+<polyline points="90.00,254.00 90.00,246.75 195.00,246.75 195.00,254.00" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C32"/>
+<rect x="87.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="90.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C32">C32</text>
+<polyline points="201.00,254.00 201.00,247.25 185.75,247.25 185.75,112.69 135.00,112.69 135.00,102.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C33"/>
+<rect x="198.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="201.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C33">C33</text>
+<polyline points="207.00,254.00 207.00,247.75 141.00,247.75 141.00,238.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C34"/>
+<rect x="204.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="207.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C34">C34</text>
+<polyline points="84.00,254.00 84.00,248.25 187.50,248.25 187.50,78.45 90.00,78.45 90.00,68.50" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="C35"/>
+<rect x="81.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#8a6418" stroke-width="0.25"/>
+<text x="84.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#8a6418" data-con="C35">C35</text>
+<polyline points="156.00,254.00 156.00,248.75 32.50,248.75 32.50,25.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" data-con="C36"/>
+<polyline points="32.50,25.25 30.20,25.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,59.25 30.20,59.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,93.25 30.20,93.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,127.25 30.20,127.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,161.25 30.20,161.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,195.25 30.20,195.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,229.25 30.20,229.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<polyline points="32.50,263.25 30.20,263.25" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="C36"/>
+<rect x="153.28" y="250.35" width="5.45" height="2.7" rx="0.6" fill="#ffffff" stroke="#236c9c" stroke-width="0.25"/>
+<text x="156.00" y="252.38" font-size="1.9" font-weight="bold" text-anchor="middle" fill="#236c9c" data-con="C36">C36</text>
+<text x="270.00" y="16.00" font-size="3.4" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="tabla">Preguntas conceptuales</text>
+<text x="270.00" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >#</text>
+<text x="276.50" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >Pregunta</text>
+<text x="314.00" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >Respuesta breve</text>
+<text x="396.00" y="20.20" font-size="2.1" font-weight="bold" text-anchor="start" fill="#4a4a4a" >Partes</text>
+<line x1="270.0" y1="21.10" x2="412.0" y2="21.10" stroke="#2b2b2b" stroke-width="0.3"/>
+<text x="270.00" y="23.80" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P1</text>
+<text x="276.50" y="23.80" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Por dónde empiezo?</text>
+<text x="314.00" y="23.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Por relevar qué preguntan los usuarios y fijar la frontera; después el catálogo</text>
+<text x="314.00" y="26.40" font-size="2.0" text-anchor="start" fill="#2b2b2b" >de intenciones con su contrato. El modelo viene al final.</text>
+<text x="396.00" y="23.80" font-size="2.0" text-anchor="start" fill="#4a4a4a" >29 7 8</text>
+<line x1="270.0" y1="28.00" x2="412.0" y2="28.00" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="30.50" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P2</text>
+<text x="276.50" y="30.50" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Esto es función, deeplink o</text>
+<text x="276.50" y="33.10" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >RAG?</text>
+<text x="314.00" y="30.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Dato exacto del sistema: función. Ir a hacer algo: deeplink. Cómo o por qué, en</text>
+<text x="314.00" y="33.10" font-size="2.0" text-anchor="start" fill="#2b2b2b" >documentación: RAG. Fuera de frontera: rechazo con salida.</text>
+<text x="396.00" y="30.50" font-size="2.0" text-anchor="start" fill="#4a4a4a" >9 10 11 12 13</text>
+<line x1="270.0" y1="34.70" x2="412.0" y2="34.70" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="37.20" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P3</text>
+<text x="276.50" y="37.20" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Qué decide el código y qué</text>
+<text x="276.50" y="39.80" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >el modelo?</text>
+<text x="314.00" y="37.20" font-size="2.0" text-anchor="start" fill="#2b2b2b" >El código decide frontera, permisos, ruta, cifras y forma. El modelo interpreta</text>
+<text x="314.00" y="39.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" >el pedido y redacta sobre lo ya obtenido.</text>
+<text x="396.00" y="37.20" font-size="2.0" text-anchor="start" fill="#4a4a4a" >7 9 19 21</text>
+<line x1="270.0" y1="41.40" x2="412.0" y2="41.40" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="43.90" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P4</text>
+<text x="276.50" y="43.90" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Cuándo apago el modelo?</text>
+<text x="314.00" y="43.90" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Cuando no supera la batería, excede el límite de consumo o redacta peor que</text>
+<text x="314.00" y="46.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" >la plantilla: responde la plantilla.</text>
+<text x="396.00" y="43.90" font-size="2.0" text-anchor="start" fill="#4a4a4a" >20 24 25</text>
+<line x1="270.0" y1="48.10" x2="412.0" y2="48.10" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="50.60" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P5</text>
+<text x="276.50" y="50.60" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Dónde viven los vectores?</text>
+<text x="314.00" y="50.60" font-size="2.0" text-anchor="start" fill="#2b2b2b" >En memoria si el corpus es chico y se reconstruye al arrancar; en base</text>
+<text x="314.00" y="53.20" font-size="2.0" text-anchor="start" fill="#2b2b2b" >vectorial si crece o se comparte. Cambiar embeddings obliga a revectorizar.</text>
+<text x="396.00" y="50.60" font-size="2.0" text-anchor="start" fill="#4a4a4a" >17 18 23</text>
+<line x1="270.0" y1="54.80" x2="412.0" y2="54.80" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="57.30" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P6</text>
+<text x="276.50" y="57.30" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Cómo sé que mejora?</text>
+<text x="314.00" y="57.30" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Midiendo: votos, aciertos de ruta, recuperación y la batería antes y después de</text>
+<text x="314.00" y="59.90" font-size="2.0" text-anchor="start" fill="#2b2b2b" >cada cambio. Sin medición no hay mejora.</text>
+<text x="396.00" y="57.30" font-size="2.0" text-anchor="start" fill="#4a4a4a" >5 26 29</text>
+<line x1="270.0" y1="61.50" x2="412.0" y2="61.50" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="64.00" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P7</text>
+<text x="276.50" y="64.00" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Puede el asistente ver más</text>
+<text x="276.50" y="66.60" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >que el usuario?</text>
+<text x="314.00" y="64.00" font-size="2.0" text-anchor="start" fill="#2b2b2b" >No. Funciones, deeplinks y MCP usan los permisos del que pregunta; el</text>
+<text x="314.00" y="66.60" font-size="2.0" text-anchor="start" fill="#2b2b2b" >deeplink los revalida al abrir.</text>
+<text x="396.00" y="64.00" font-size="2.0" text-anchor="start" fill="#4a4a4a" >1 10 11 27</text>
+<line x1="270.0" y1="68.20" x2="412.0" y2="68.20" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="70.70" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P8</text>
+<text x="276.50" y="70.70" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Por qué búsqueda híbrida?</text>
+<text x="314.00" y="70.70" font-size="2.0" text-anchor="start" fill="#2b2b2b" >La léxica acierta códigos y nombres exactos; la semántica, paráfrasis. RRF</text>
+<text x="314.00" y="73.30" font-size="2.0" text-anchor="start" fill="#2b2b2b" >fusiona ambos rankings sin calibrar puntajes.</text>
+<text x="396.00" y="70.70" font-size="2.0" text-anchor="start" fill="#4a4a4a" >18</text>
+<line x1="270.0" y1="74.90" x2="412.0" y2="74.90" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="77.40" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P9</text>
+<text x="276.50" y="77.40" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Qué hago si la pregunta es</text>
+<text x="276.50" y="80.00" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >ambigua?</text>
+<text x="314.00" y="77.40" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Aclarar con opciones elegibles, no adivinar. Un toque resuelve y el turno sigue.</text>
+<text x="396.00" y="77.40" font-size="2.0" text-anchor="start" fill="#4a4a4a" >4 8</text>
+<line x1="270.0" y1="81.60" x2="412.0" y2="81.60" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="84.10" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P10</text>
+<text x="276.50" y="84.10" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Cómo cambio de proveedor</text>
+<text x="276.50" y="86.70" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >de IA?</text>
+<text x="314.00" y="84.10" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Detrás de IChatClient e IEmbeddingGenerator se cambia el adaptador; el</text>
+<text x="314.00" y="86.70" font-size="2.0" text-anchor="start" fill="#2b2b2b" >nuevo modelo entra sólo si pasa la batería.</text>
+<text x="396.00" y="84.10" font-size="2.0" text-anchor="start" fill="#4a4a4a" >22 23 24</text>
+<line x1="270.0" y1="88.30" x2="412.0" y2="88.30" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="90.80" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P11</text>
+<text x="276.50" y="90.80" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Para qué un servidor MCP?</text>
+<text x="314.00" y="90.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Para que el usuario traiga su propia IA y use las mismas funciones con la</text>
+<text x="314.00" y="93.40" font-size="2.0" text-anchor="start" fill="#2b2b2b" >misma autorización: la consola al revés.</text>
+<text x="396.00" y="90.80" font-size="2.0" text-anchor="start" fill="#4a4a4a" >27 10</text>
+<line x1="270.0" y1="95.00" x2="412.0" y2="95.00" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="97.50" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P12</text>
+<text x="276.50" y="97.50" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Dónde entra la seguridad?</text>
+<text x="314.00" y="97.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" >En todas las zonas: el texto recuperado es dato, no instrucción; la agencia se</text>
+<text x="314.00" y="100.10" font-size="2.0" text-anchor="start" fill="#2b2b2b" >limita a casos de uso con permiso.</text>
+<text x="396.00" y="97.50" font-size="2.0" text-anchor="start" fill="#4a4a4a" >28</text>
+<line x1="270.0" y1="101.70" x2="412.0" y2="101.70" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="104.20" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P13</text>
+<text x="276.50" y="104.20" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Gráfico o frase?</text>
+<text x="314.00" y="104.20" font-size="2.0" text-anchor="start" fill="#2b2b2b" >Lo decide la serie, no el modelo: un valor, frase; varias filas, tabla;</text>
+<text x="314.00" y="106.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" >comparación, barras; partes de un total, torta.</text>
+<text x="396.00" y="104.20" font-size="2.0" text-anchor="start" fill="#4a4a4a" >21</text>
+<line x1="270.0" y1="108.40" x2="412.0" y2="108.40" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="110.90" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >P14</text>
+<text x="276.50" y="110.90" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >¿Qué es «no peor que la</text>
+<text x="276.50" y="113.50" font-size="2.15" font-weight="bold" text-anchor="start" fill="#2b2b2b" >plantilla»?</text>
+<text x="314.00" y="110.90" font-size="2.0" text-anchor="start" fill="#2b2b2b" >El control que exige que la redacción del modelo no pierda cifras, citas ni</text>
+<text x="314.00" y="113.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" >exactitud frente a la plantilla de respaldo.</text>
+<text x="396.00" y="110.90" font-size="2.0" text-anchor="start" fill="#4a4a4a" >19 20</text>
+<line x1="270.0" y1="115.10" x2="412.0" y2="115.10" stroke="#c9c9c4" stroke-width="0.2"/>
+<text x="270.00" y="120.20" font-size="3.0" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="conexiones">Conexiones</text>
+<text x="270.00" y="124.00" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C1</text>
+<text x="275.20" y="124.00" font-size="1.9" text-anchor="start" fill="#2b2b2b" >1→2 pregunta</text>
+<text x="270.00" y="126.55" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C2</text>
+<text x="275.20" y="126.55" font-size="1.9" text-anchor="start" fill="#2b2b2b" >2→6 turno + rol</text>
+<text x="270.00" y="129.10" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C3</text>
+<text x="275.20" y="129.10" font-size="1.9" text-anchor="start" fill="#2b2b2b" >6→7 pedido normalizado</text>
+<text x="270.00" y="131.65" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C4</text>
+<text x="275.20" y="131.65" font-size="1.9" text-anchor="start" fill="#2b2b2b" >7→8 adentro o borde</text>
+<text x="270.00" y="134.20" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C5</text>
+<text x="275.20" y="134.20" font-size="1.9" text-anchor="start" fill="#2b2b2b" >7→13 afuera</text>
+<text x="270.00" y="136.75" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C6</text>
+<text x="275.20" y="136.75" font-size="1.9" text-anchor="start" fill="#2b2b2b" >8→9 intención + contrato</text>
+<text x="270.00" y="139.30" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C7</text>
+<text x="275.20" y="139.30" font-size="1.9" text-anchor="start" fill="#2b2b2b" >8→4 ambigua: opciones</text>
+<text x="270.00" y="141.85" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C8</text>
+<text x="275.20" y="141.85" font-size="1.9" text-anchor="start" fill="#2b2b2b" >9→10 dato exacto</text>
+<text x="270.00" y="144.40" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C9</text>
+<text x="275.20" y="144.40" font-size="1.9" text-anchor="start" fill="#2b2b2b" >9→11 ir a hacerlo</text>
+<text x="270.00" y="146.95" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C10</text>
+<text x="275.20" y="146.95" font-size="1.9" text-anchor="start" fill="#2b2b2b" >9→12 cómo / por qué</text>
+<text x="270.00" y="149.50" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C11</text>
+<text x="275.20" y="149.50" font-size="1.9" text-anchor="start" fill="#2b2b2b" >10→14 invoca</text>
+<text x="270.00" y="152.05" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C12</text>
+<text x="275.20" y="152.05" font-size="1.9" text-anchor="start" fill="#2b2b2b" >11→15 resuelve</text>
+<text x="270.00" y="154.60" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C13</text>
+<text x="275.20" y="154.60" font-size="1.9" text-anchor="start" fill="#2b2b2b" >16→17 ingesta (fuera del turno)</text>
+<text x="270.00" y="157.15" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C14</text>
+<text x="275.20" y="157.15" font-size="1.9" text-anchor="start" fill="#2b2b2b" >17→18 indexa</text>
+<text x="270.00" y="159.70" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C15</text>
+<text x="275.20" y="159.70" font-size="1.9" text-anchor="start" fill="#2b2b2b" >12→18 consulta híbrida</text>
+<text x="270.00" y="162.25" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C16</text>
+<text x="275.20" y="162.25" font-size="1.9" text-anchor="start" fill="#2b2b2b" >23→17 vectoriza</text>
+<text x="270.00" y="164.80" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C17</text>
+<text x="275.20" y="164.80" font-size="1.9" text-anchor="start" fill="#2b2b2b" >10→19 resultado</text>
+<text x="270.00" y="167.35" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C18</text>
+<text x="275.20" y="167.35" font-size="1.9" text-anchor="start" fill="#2b2b2b" >12→19 fragmentos + citas</text>
+<text x="341.00" y="124.00" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C19</text>
+<text x="346.20" y="124.00" font-size="1.9" text-anchor="start" fill="#2b2b2b" >22→19 redacta</text>
+<text x="341.00" y="126.55" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C20</text>
+<text x="346.20" y="126.55" font-size="1.9" text-anchor="start" fill="#2b2b2b" >19→20 falla el control o no hay modelo</text>
+<text x="341.00" y="129.10" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C21</text>
+<text x="346.20" y="129.10" font-size="1.9" text-anchor="start" fill="#2b2b2b" >19→21 aprobada</text>
+<text x="341.00" y="131.65" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C22</text>
+<text x="346.20" y="131.65" font-size="1.9" text-anchor="start" fill="#2b2b2b" >20→21 respaldo</text>
+<text x="341.00" y="134.20" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C23</text>
+<text x="346.20" y="134.20" font-size="1.9" text-anchor="start" fill="#2b2b2b" >13→21 rechazo con salida</text>
+<text x="341.00" y="136.75" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C24</text>
+<text x="346.20" y="136.75" font-size="1.9" text-anchor="start" fill="#2b2b2b" >11→21 enlace</text>
+<text x="341.00" y="139.30" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C25</text>
+<text x="346.20" y="139.30" font-size="1.9" text-anchor="start" fill="#2b2b2b" >21→2 respuesta</text>
+<text x="341.00" y="141.85" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C26</text>
+<text x="346.20" y="141.85" font-size="1.9" text-anchor="start" fill="#2b2b2b" >22→24 adapta</text>
+<text x="341.00" y="144.40" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" >C27</text>
+<text x="346.20" y="144.40" font-size="1.9" text-anchor="start" fill="#2b2b2b" >23→24 adapta</text>
+<text x="341.00" y="146.95" font-size="1.9" font-weight="bold" text-anchor="start" fill="#236c9c" >C28</text>
+<text x="346.20" y="146.95" font-size="1.9" text-anchor="start" fill="#2b2b2b" >25→24 corta al exceder</text>
+<text x="341.00" y="149.50" font-size="1.9" font-weight="bold" text-anchor="start" fill="#236c9c" >C29</text>
+<text x="346.20" y="149.50" font-size="1.9" text-anchor="start" fill="#2b2b2b" >26→9 registra cada turno</text>
+<text x="341.00" y="152.05" font-size="1.9" font-weight="bold" text-anchor="start" fill="#236c9c" >C30</text>
+<text x="346.20" y="152.05" font-size="1.9" text-anchor="start" fill="#2b2b2b" >27→10 expone las mismas funciones</text>
+<text x="341.00" y="154.60" font-size="1.9" font-weight="bold" text-anchor="start" fill="#236c9c" >C31</text>
+<text x="346.20" y="154.60" font-size="1.9" text-anchor="start" fill="#2b2b2b" >5→26 voto</text>
+<text x="341.00" y="157.15" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C32</text>
+<text x="346.20" y="157.15" font-size="1.9" text-anchor="start" fill="#2b2b2b" >26→29 mide</text>
+<text x="341.00" y="159.70" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C33</text>
+<text x="346.20" y="159.70" font-size="1.9" text-anchor="start" fill="#2b2b2b" >29→8 actualiza catálogo y contrato</text>
+<text x="341.00" y="162.25" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C34</text>
+<text x="346.20" y="162.25" font-size="1.9" text-anchor="start" fill="#2b2b2b" >29→24 batería: habilita o retira un modelo</text>
+<text x="341.00" y="164.80" font-size="1.9" font-weight="bold" text-anchor="start" fill="#8a6418" >C35</text>
+<text x="346.20" y="164.80" font-size="1.9" text-anchor="start" fill="#2b2b2b" >26→3 ordena por éxito</text>
+<text x="341.00" y="167.35" font-size="1.9" font-weight="bold" text-anchor="start" fill="#236c9c" >C36</text>
+<text x="346.20" y="167.35" font-size="1.9" text-anchor="start" fill="#2b2b2b" >28→todas inyección, fuga, exceso de agencia</text>
+<text x="270.00" y="171.90" font-size="3.0" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rol="leyenda">Leyenda</text>
+<text x="270.00" y="175.50" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Esquemática: cada caja es una responsabilidad, no un componente desplegado ni un servidor. No a escala.</text>
+<text x="270.00" y="178.80" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Sin cifras: la lámina no lleva medidas; los valores (umbrales, límites, métricas) viven en la especificación de cada aplicación.</text>
+<text x="270.00" y="182.10" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">Línea continua: flujo del turno. Línea a trazos: control o gobierno transversal. Línea punteada: ciclo de diseño (fuera del turno).</text>
+<polyline points="270.00,184.70 282.00,184.70" fill="none" stroke="#2b2b2b" stroke-width="0.35" marker-end="url(#f-continuo)" data-con="L-continuo"/>
+<text x="284.00" y="185.40" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">continuo</text>
+<polyline points="270.00,187.50 282.00,187.50" fill="none" stroke="#236c9c" stroke-width="0.35" stroke-dasharray="2.4 1.2" marker-end="url(#f-trazos)" data-con="L-trazos"/>
+<text x="284.00" y="188.20" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">trazos</text>
+<polyline points="270.00,190.30 282.00,190.30" fill="none" stroke="#8a6418" stroke-width="0.35" stroke-dasharray="0.5 0.9" marker-end="url(#f-punteado)" data-con="L-punteado"/>
+<text x="284.00" y="191.00" font-size="2.0" text-anchor="start" fill="#2b2b2b" data-leyenda="1">punteado</text>
+<rect x="269.00" y="271.00" width="144.00" height="18.00" fill="#ffffff" stroke="#2b2b2b" stroke-width="0.4" data-rol="rotulo"/>
+<text x="270.60" y="273.90" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Dispositivo</text>
+<text x="291.00" y="273.90" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Aplicación conversacional — arquitectura de referencia</text>
+<text x="270.60" y="277.20" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Lámina</text>
+<text x="291.00" y="277.20" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">LD-01 · v1.0.0 · 2026-11-11</text>
+<text x="270.60" y="280.50" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Fuente</text>
+<text x="291.00" y="280.50" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">hdcm-dev/Lab-Documentos origin/main 1403c468e87c16408106ebf80cd6b6d6de1b5e01 —</text>
+<text x="291.00" y="282.90" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Dot-Net-Integration-AI-Layer-Guide.md, Conversational-Design-Framework-Guide.md, Conocimientos K1–K7</text>
+<text x="270.60" y="286.20" font-size="1.9" font-weight="bold" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Conocimiento</text>
+<text x="291.00" y="286.20" font-size="1.9" text-anchor="start" fill="#2b2b2b" data-rotulo="1">Knowledge-Estilo-ilustracion-Lamina (BORRADOR) que hereda de Knowledge-Estilo-ilustracion-tecnica</text>
+</svg>

@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al implementar la consola o tocar su enrutado, corpus, destinos, votos o despliegue; después de tener la especificación de K1; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); `Conversational-Design-Framework-Guide.md` 1.4.0 (su norma del turno se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.5
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); `Conversational-Design-Framework-Guide.md` 1.5.0 (su norma del turno se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
+**Versión:** 1.6
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
 **Fecha:** 2026-11-12
 
@@ -332,6 +332,8 @@ validador) [Guía §3.7.5](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-5), [Gu
    [Guía §3.7.5](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-5). *Prueba:* no hay lector del voto en el pipeline.
 4. Registrá con la misma huella las otras dos señales: «No está en la ayuda» y la clasificación «afuera».
 5. La tabla se crea por migración versionada del producto, no a mano.
+6. **Las pastillas salen de la tabla de votos, por intención.** Puntaje por rol = cota inferior de Wilson de la tasa de acierto (voto útil, o clic en el destino sin reformular), con un mínimo de 20 eventos para mover el orden; se muestran las 3 mejores del catálogo aplicables al rol y 1 de exploración que rota. El texto es el canónico de la intención, nunca una pregunta de otro usuario. Las intenciones con «No es lo que pregunté» > 30 % aparecen en la vista del raíz como deuda de diseño [Guía DC §15.2.1](../Conversational-Design-Framework-Guide.md#c15-2-1). *Prueba:* con datos sembrados el orden cambia; ningún campo de la tabla es texto libre.
+7. **Cada llamada al modelo pasa por un decorador de registro de consumo** que alimenta cuotas y tablero ([K1 §6.1](knowledge-AI-Layer-Integration-Designing-Specification.md#k1-6-1)); los clientes los arma la fábrica por tipo de proveedor, no la consola.
 
 <a id="k2-9"></a>
 ## 9. Rol raíz explícito
@@ -535,6 +537,7 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.6 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch: §8 R6 pastillas por intención con cota de Wilson, mínimo de eventos y exploración; §8 R7 decorador de consumo y fábrica por proveedor. |
 | 1.5 | 2026-11-12 | Remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m) (marco del turno): el paso 2 no pregunta si la intención no necesita alcance; §6 aclara sólo bajo §M.4 y con nombres humanos; §9 se juzga con R12. |
 | 1.4 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (aplicación a ciegas y rebanada EXP-0005): §5.7 pertinencia por estado además del permiso; §5.8 rótulo del chip por rol; §5.9 parámetro de valor fijo y página igual sin nada que abrir; §5.5 conformidad de permisos por bUnit cuando no hay `[Authorize(Policy)]`. |
 | 1.3 | 2026-11-11 | Banco de traslado sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): excepción «la ficha es la respuesta» en §3; en §10, regla de clave parecida, corte del servicio < corte del cliente, fusionar ≠ encender y conformidad por reflexión con procesos separados. |

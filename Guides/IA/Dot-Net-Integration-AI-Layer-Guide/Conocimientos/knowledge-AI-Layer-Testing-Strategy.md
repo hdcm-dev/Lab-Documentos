@@ -8,7 +8,7 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.5
+**Versión:** 1.6
 **Estado:** Vigente
 **Fecha:** 2026-11-12
 
@@ -240,6 +240,28 @@ catálogo ([K6 §4](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.
 ese nombre exacto en la plantilla de configuración del despliegue y en la especificación. *Por qué:* el
 despliegue configuró la clave con otro nombre y la IA quedó apagada (K3-AP-4; §13, error 6). *Prueba:* una
 prueba lee las claves usadas por el código de habilitación y las busca en la plantilla; falla si falta una.
+
+<a id="k7-5-5"></a>
+**R5.5 — Catálogo de intenciones ↔ enrutador, y matriz de forma.** Una compuerta recorre las clases del
+enrutador y falla si alguna no tiene su fila en el catálogo de intenciones (tipo F/D/R, fuente, alcance,
+negativa). Una prueba por tabla cruza cada naturaleza de serie con cada forma pedida y fija la salida (honrar o
+explicar y caer a la forma por omisión) [Guía DC §6.3](../Conversational-Design-Framework-Guide.md#c6-3-pedido). *Por qué:* una intención sin fila cae a
+la ayuda, y un pedido «en torta» sin regla recibe lo que el código ya hacía. *Prueba roja:* quitar una línea del
+ruteo o una fila del catálogo hace fallar la compuerta.
+
+<a id="k7-5-6"></a>
+**R5.6 — Pastillas y consumo con datos sembrados.** Con eventos sembrados el orden de las pastillas cambia según
+la cota de Wilson y no se mueve por debajo del mínimo de eventos; ningún campo de la tabla de votos admite texto
+libre. Con un doble del modelo que devuelve uso de tokens, N llamadas dejan N filas de consumo con costo según la
+tabla de precios, y una falla del registro no corta la respuesta. Las cuotas se prueban al 80 % (aviso), al 100 %
+(corte o respaldo según política), con excepción vigente y vencida, y con modelo local (cuenta tokens).
+
+<a id="k7-5-7"></a>
+**R5.7 — MCP en contenedor.** Servidor: sin token → 401 con metadatos del recurso; token vencido → 401; sin
+alcance → 403; un usuario no ve cuentas ajenas; la cuota se aplica; una entrada con instrucciones inyectadas no
+cambia el alcance. Cliente: contra un servidor MCP falso en memoria, rechazar la tarjeta de confirmación no
+escribe nada, aceptar escribe una vez, y el filtro de salida no deja pasar suscriptores ni identificadores
+[Guía DC §17.3.9](../Conversational-Design-Framework-Guide.md#c17-3-9).
 
 ---
 
@@ -721,6 +743,7 @@ conocidos con `Skip` (R6.9); el filtro de salida, con el corpus de R9.11 (expedi
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.6 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto: R5.5 catálogo de intenciones ↔ enrutador y matriz de forma; R5.6 pastillas y consumo con datos sembrados; R5.7 MCP servidor y cliente en contenedor. |
 | 1.5 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): R6.7 número hablado parseado, dígito por la misma función, clase «número que cita la fórmula»; R6.10 criterio del enrutador frente al del corpus de fichas; R9.8 todo control trae su caso rojo; R9.11 procedimiento en la voz; R9.12 límite de tasa en las corridas. |
 | 1.4 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (enrutador del asistente de conceptos): R6.7 clasificador probado en los dos sentidos; R6.8 sonda adversarial por rondas con control cotidiano; R6.9 sonda permanente y casos conocidos; R9.11 falsos positivos contra corpus de respuestas buenas; K7-AP-13 a K7-AP-15. |
 | 1.3 | 2026-11-11 | Rondas 2 y 3 del banco Movilidad Urbana sobre [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor): R9.7 semilla y temperatura variadas; R9.8 compuerta a ciegas ejercida; R9.9 eco sin lista corta; R9.10 falsos positivos; K7-AP-9 a K7-AP-12. |

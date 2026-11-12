@@ -8,7 +8,7 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** [K1](knowledge-AI-Layer-Integration-Designing-Specification.md), [K2](knowledge-AI-Layer-Console-Assistant-Building.md), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas, vigente); `Dot-Net-Integration-AI-Layer-Guide.md` edición 1.2.0 (las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §14 y basta para aplicarlo): Knowledge-Razonamiento-Del-Gestor, Knowledge-Mesa-De-Expertos-A-Pedido, Knowledge-Logica-De-Decision, Knowledge-Conformacion-Pull-Request-Automatico, Knowledge-Turnos-De-Recursos-Compartidos-En-Un-Host
-**Versión:** 1.3
+**Versión:** 1.4
 **Estado:** Vigente
 **Fecha:** 2026-11-12
 
@@ -45,7 +45,7 @@ qué orden, con quién, con qué evidencia y con qué controles. Lo que funcion�
 código: fue un método. Las piezas de código se copian; el método, si no se escribe, se pierde.
 
 **Fuente para personas.** Los libros mandan: la Guía 16 (`../Dot-Net-Integration-AI-Layer-Guide.md`) y la guía de
-diseño conversacional (`../Conversational-Design-Framework-Guide.md` 1.4.0; su base «Criterio y juicio» se cita por
+diseño conversacional (`../Conversational-Design-Framework-Guide.md` 1.5.0; su base «Criterio y juicio» se cita por
 [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Este conocimiento destila, remite por sección y **nunca los contradice**. Si un agente
 encuentra una contradicción o un hueco del libro, lo anota para la mesa del libro y no lo resuelve acá (§13).
 
@@ -247,6 +247,8 @@ brecha, o una fila del registro con el motivo por el que no la hay.
    con checks en verde, la rama se borra sólo con `merged=true`.
 
 ---
+
+**Plan por rebanadas con dependencias declaradas.** Cuando una ronda del dueño del producto abre varios frentes (en el caso: proveedores, límites de consumo, tablero, MCP en dos sentidos), la mesa los parte en rebanadas con id, título, dependencia y criterio de aceptación, y marca cuáles **arrancan ya** porque no comparten archivos con los PR abiertos (en el caso: la fábrica de clientes, el registro de consumo y la medición previa del proveedor de identidad). Las observaciones del dueño del producto prevalecen sobre el dictamen anterior, que se versiona y se reemplaza, no se parcha; las rebanadas de dictámenes previos se fusionan en el plan nuevo en lugar de duplicarse. La documentación (K1–K7, guía de diseño conversacional, guía del producto) es una rebanada más, al cierre [Guía DC §18.4](../Conversational-Design-Framework-Guide.md#c18-l10).
 
 <a id="k4-5-frentes"></a>
 ## 5. Registro de frentes medido
@@ -485,6 +487,7 @@ Se resumen para que un agente nuevo trabaje igual sin cargarlos.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.4 | 2026-11-12 | §4 plan por rebanadas con dependencias, lo que arranca ya y dictamen versionado ante las observaciones del dueño del producto. |
 | 1.3 | 2026-11-12 | La guía de diseño conversacional está publicada: K5 vigente con el marco del turno; cierre de fase con R13/R14 (§13). |
 | 1.2 | 2026-11-11 | §2.2 punto 4: cláusula fija en la carta de los subagentes ante mensajes a mitad de turno (lección de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)). |
 | 1.1 | 2026-11-11 | Tras la prueba a ciegas: §14 resume las reglas tomadas de conocimientos externos, que dejan de ser herencia obligatoria; fases tipo con salida (§1.1); quién encarna cada rol (§2.2); brecha optativa con motivo (§3); tabla índice única de antipatrones con ids prefijados (§8); capturas en claro y oscuro; K5 enlazado. |

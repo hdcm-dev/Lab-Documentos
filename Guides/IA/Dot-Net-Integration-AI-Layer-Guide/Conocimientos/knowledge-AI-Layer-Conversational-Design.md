@@ -7,8 +7,8 @@
 **Condicion-de-carga:** al decidir si un turno aclara, al juzgar un diseño o un cambio con la rúbrica; al escribir una plantilla de respuesta, una negativa, una aclaración o un gráfico del asistente; al armar la columna de conducta de una batería; al leer respuestas como crítico; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` 1.4.0 (Guía DC: libro de diseño conversacional; las remisiones `[Guía DC §x]` usan sus anclas; si algo choca, rige el libro)
-**Versión:** 1.0
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` 1.5.0 (Guía DC: libro de diseño conversacional; las remisiones `[Guía DC §x]` usan sus anclas; si algo choca, rige el libro)
+**Versión:** 1.1
 **Estado:** Vigente (formas medidas en un sistema; el marco del turno de §M es criterio del libro, con umbrales no calibrados)
 **Fecha:** 2026-11-12
 
@@ -238,6 +238,8 @@ cuando el modelo se abstiene con fragmentos («No lo encontré en la ayuda»). L
 3. **Nunca sumes métricas que no se suman** (activos de varias apps, promedios). *Prueba:* la herramienta marca la
    métrica como no sumable y el código no arma F2 con ella.
 4. **Dato parcial, se dice en la nota** («faltan datos de las últimas 2 horas»), no en un descargo genérico.
+5. **La forma es un parámetro del contrato.** La herramienta declara la naturaleza de la serie (`ParteDeUnTodo`, `EnElTiempo`, `Ranking`, `Comparacion`); el clasificador detecta el modificador pedido («en torta», «en barras», «en tabla», «sólo el número»); el código cruza ambos: compatible → se honra; incompatible → una línea que lo dice y la forma por omisión («Una torta no muestra la evolución; te lo dejo en barras»). La tabla acompaña plegada («Ver datos»), no como segundo gráfico. *Porqué:* en el caso, el pedido «en torta» recibía barras y tabla porque nada entendía la forma [Guía DC §6.3](../Conversational-Design-Framework-Guide.md#c6-3-pedido). *Prueba:* matriz naturaleza × pedido ([K7 R5.5](knowledge-AI-Layer-Testing-Strategy.md#k7-5-5)).
+6. **La negativa de una función trae lo más cercano**, por prefijo o subcadena sin acentos y sólo entre lo que el usuario ve: «No exactamente; tenés *Acme Sur*», con su rol y «Abrir». «No encontré esto en la ayuda» sólo se admite cuando la intención es de ayuda. *Prueba:* una cuenta ajena con el mismo prefijo no aparece.
 
 <a id="k5-5"></a>
 ## 5. Candidatas: aclarar o totalizar
@@ -393,6 +395,7 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.1 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch: §4.5 forma como parámetro del contrato (naturaleza × pedido); §4.6 negativa por cercanía y «en la ayuda» sólo para intenciones de ayuda. |
 | 1.0 | 2026-11-12 | Pasa a Vigente con la Guía DC 1.4.0: §M marco normativo del turno (T-1 a T-8 con precedencia, prueba de anillo, alcance, contrato con `NecesitaDatoDeAlcance`, árbol, regla de aclaración de cuatro condiciones, compuestas, rúbrica R1–R14); CD-5, F3 y §5 condicionados a §M.4; K5-AP-13 y K5-AP-14. K1, K2 y K6 remiten acá. |
 | 0.13 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): F6 trae la ficha (no un botón); §6.5 pertinencia por estado; §6.6 rótulo del chip igual al de la acción y según el rol; §6.7 negativa con contenido; §7.5 procedimiento en la voz. |
 | 0.12 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): K5-AP-12 enrutador por listas de palabras. |

@@ -7,10 +7,10 @@
 **Condicion-de-carga:** al escribir o cambiar una página de ayuda, una función o un destino; después de K2 §0–§3; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Console-Assistant-Building (K2): el pipeline de K2 manda y este conocimiento detalla sus pasos 5 y 8; AI-Layer-Integration-Designing-Specification (K1): los requisitos `REQ-IA-nn` no se redefinen acá
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); `Conversational-Design-Framework-Guide.md` 1.5.0, por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m); [K7](knowledge-AI-Layer-Testing-Strategy.md)
-**Versión:** 1.8
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (§7.1, §7.6, §8.2–§8.7, §9.2–§9.5, §12.2–§12.4, §14.5, §14.10; remisiones `[Guía §x]` con anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); `Conversational-Design-Framework-Guide.md` 1.6.0, por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m); [K7](knowledge-AI-Layer-Testing-Strategy.md)
+**Versión:** 1.9
 **Estado:** Borrador (pasa a Vigente cuando K7 lo acepte aplicado sobre un segundo sistema, igual que K2)
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
 
 ---
 
@@ -400,6 +400,18 @@ tiene que ser un dato, no un juicio del momento.
   igualdad, una sección antes que la introducción.
 - *Prueba:* sobre la ayuda real, las preguntas de alta, enviar, programar y archivar devuelven la sección de la
   acción y nunca la introducción, con y sin modelo (en PushDispatch, `PlantillaDeRespaldoTests`).
+
+<a id="k6-8-4"></a>
+**Defectos de anclaje y recorte que trajo un cambio de corpus.** En PushDispatch, guías nuevas más largas con bloques por rol bajaron la redacción de 33/33 a 18/33 sin tocar su código ([K3 R2.13](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-13)). Seis defectos, cada uno con prueba roja y luego verde:
+
+1. **Una receta se recorta sólo por el final.** Recortar en el medio dejaba huecos en una lista numerada («1, 2, 4, 5»).
+2. **Una cita fuera del pedido se re-ancla**, no descarta la oración: se busca el fragmento que la respalda solo; si no hay, se quita la cita.
+3. **Una oración que cita la sección de la acción es pertinente**: el filtro de pertinencia quitaba pasos de la sección preguntada.
+4. **El fin de oración admite marcas de formato**: una oración que empieza en negrita no se separaba.
+5. **Deduplicar exige el mismo rótulo**: se quitaban pasos parecidos con otro rótulo en negrita.
+6. **Las palabras vacías no cuentan como términos ausentes**, aunque sean largas («la ayuda no habla de “alguien”»).
+
+**Definición anclada.** Para «qué es X», el buscador devuelve la definición (la sección «Qué es X», o la oración o el ítem que define) antes que los pasos ([K5 CD-9](knowledge-AI-Layer-Conversational-Design.md#k5-r9)); por eso cada concepto del producto tiene su sección o su ítem de definición en el corpus. *Prueba:* por concepto de la batería, el primer fragmento recuperado es la definición.
 
 **Diagnosticá con datos.** La batería vuelca, por pregunta, los trozos recuperados con su puntaje; así se vio que
 la mayoría de los descartes no eran del control sino abstenciones correctas del modelo. Sin ese volcado, cada
@@ -859,6 +871,7 @@ página (§3.6).
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.9 | 2026-11-15 | Rondas 2 y 3 del juicio de la consola de PushDispatch: §8 seis defectos de anclaje y recorte tras un cambio de corpus y definición anclada para «qué es X»; Guía DC 1.6.0. |
 | 1.8 | 2026-11-12 | §9 catálogo de intenciones como artefacto con regla F/D/R fija, ejemplo de contrato y compuerta de CI. |
 | 1.7 | 2026-11-12 | §15.2 remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m): la cuenta del destino se pregunta sólo si cambia la respuesta; si sólo cambia el enlace, cuenta activa dicha. Estado aclarado: Borrador en cabecera, README e historial. |
 | 1.6 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): §17.4 acción sin parámetro → parámetro de valor fijo; el fragmento `#id` como deuda declarada. |

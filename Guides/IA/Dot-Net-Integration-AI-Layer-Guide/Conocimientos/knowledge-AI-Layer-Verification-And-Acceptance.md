@@ -8,9 +8,11 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` son lo que este conocimiento mide); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construcción de la consola); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa, tabla índice de antipatrones y resumen del registro de frentes y del ciclo del PR en su §14); [K5](knowledge-AI-Layer-Conversational-Design.md) (qué forma debe tener cada respuesta: lo que la lectura humana juzga); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escribe la suite y los scripts que producen esta evidencia); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (recall@3 del corpus, funciones y destinos que se miden). Opcionales, no hacen falta para aplicar este conocimiento: Knowledge-Razonamiento-Del-Gestor y Knowledge-Conformacion-Pull-Request-Automatico, si el repo anfitrión los tiene
-**Versión:** 1.8
+**Versión:** 1.9
 **Estado:** Vigente
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
+
+**Cambios en 1.9** (rondas 1 a 3 del juicio de la consola de PushDispatch): R2.13 un cambio de corpus o de rol obliga a la batería ×3 de la redacción aunque su código no cambie; R2.14 cada PR lista los casos de batería que cambia y trae pares antes y después a ciegas; K3-AP-15; el mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md) para las capturas por estado de la interfaz.
 
 **Cambios en 1.8** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): R2.11 la batería ×3 es la compuerta para habilitar un modelo; R2.12 aceptación de consumo, cuotas y servidor MCP con cifras contra la fuente.
 
@@ -79,7 +81,7 @@ secciones: las vuelve operativas y les suma la práctica que hizo funcionar la i
 | Voy a declarar cerrada una fase | §1, §11, §13, §15 |
 | Tengo que armar o correr la batería | §2, §3, §10 + [Guía §11.4](../Dot-Net-Integration-AI-Layer-Guide.md#c11-4), [§11.7](../Dot-Net-Integration-AI-Layer-Guide.md#c11-7) |
 | Soy el crítico de una ronda | §4, §5, §14 |
-| Cambió la pantalla de la consola | §6, §7 |
+| Cambió la pantalla de la consola | §6, §7 y la lista de estados de [K8](knowledge-AI-Layer-Chat-Console-Interface.md) §4 |
 | Hay que desplegar o se desplegó | §7, §10, §11 + [Guía §13.5](../Dot-Net-Integration-AI-Layer-Guide.md#c13-5) |
 | La respuesta muestra cifras | §8 |
 | Reviso un informe ajeno | §14, §15 |
@@ -218,6 +220,11 @@ conocidos, la configuración aceptada y la condición de reapertura.
 **R2.11 La batería es la compuerta de habilitación de un modelo.** Un modelo nuevo de redacción, de cualquier proveedor, se carga y se prueba su conexión, pero no se habilita ni se ofrece al usuario sin la batería ×3 aprobada con ese modelo, registrada con fecha y versión de la batería. Habilitar sin aprobación devuelve un conflicto. Cambiar la versión de un SDK de proveedor también corre la batería. *Porqué:* la conducta medida está anclada al modelo con el que se midió; otro modelo es otro sistema [Guía DC §17.3.8](../Conversational-Design-Framework-Guide.md#c17-3-8). *Prueba:* habilitar sin aprobada → 409.
 
 **R2.12 Consumo y MCP se aceptan con cifras contra la fuente.** N consultas de la batería dejan N filas de consumo con tokens > 0 y costo coherente con la tabla de precios; el tablero da las mismas cifras que una consulta SQL directa (R8); las cuotas se aceptan al 80 % (aviso) y al 100 % (corte o respaldo según política). El servidor MCP se acepta conectado desde un asistente real con un usuario de prueba que ve sólo sus cuentas, y con los casos sin token (401 con metadatos), token vencido y sin alcance (403).
+
+<a id="k3-2-13"></a>
+**R2.13 — Un cambio de corpus o de rol se mide como un cambio de la redacción.** Guías nuevas o más largas, bloques por rol, destinos por cuenta o una línea de rol en el pedido rompen la redacción sin tocar su código. Ante cualquiera de ellos corré la batería ×3 de la redacción; si cae, ubicá el merge por bisección (×3 en cada punto) antes de tocar nada. *Por qué:* en PushDispatch un PR de corpus y roles bajó la redacción de 33/33 a 18/33; la bisección lo ubicó y seis defectos de anclaje y recorte, cada uno con prueba roja y luego verde, la devolvieron a 30/30 ([K6 §8.4](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-8-4)). *Prueba:* el informe del PR que toca corpus o roles trae las tres corridas de la redacción.
+
+**R2.14 — Cada PR lista los casos de batería que cambia y trae pares a ciegas.** El PR nombra los casos cuyo veredicto o expectativa cambia (R14 de [K5 §M.6](knowledge-AI-Layer-Conversational-Design.md#k5-m6)) y adjunta pares antes y después leídos a ciegas (R13), con captura a 1280 y 390. Una expectativa que el cambio de producto volvió vieja se trata como sonda hasta que se reescriba, nunca se borra. *Por qué:* las rondas 0 a 2 del juicio (3/28, 10/28, 11/28) se pudieron comparar sólo porque cada una listó sus casos. *Prueba:* plantilla del PR con la lista y los pares.
 
 <a id="k3-3-condiciones"></a>
 ## 3. Condiciones de medición: en frío y pagando el cambio de modelo
@@ -536,6 +543,7 @@ Cada ítem se tacha sólo con un artefacto que existe.
 | <a id="k3-ap-11"></a>K3-AP-11 | Confiar en la demo | La demo no mostraba la IA apagada ni la plantilla equivocada | R7.1 |
 | <a id="k3-ap-12"></a>K3-AP-12 | Tomar el anclaje como calidad | Movilidad Urbana: 6 de 13 pares peores con 0 cifras inventadas | R2.8 |
 | <a id="k3-ap-13"></a>K3-AP-13 | «Peores 0» sin que el juez actúe | ronda 3 no aprobada: la compuerta nunca se ejerció | R2.8; K7 R9.8 |
+| <a id="k3-ap-15"></a>K3-AP-15 | No medir la redacción porque «no se tocó su código» | un PR de corpus y roles la bajó de 33/33 a 18/33 | R2.13 |
 | <a id="k3-ap-14"></a>K3-AP-14 | Aceptar un enrutador heurístico como garantía | Geometría: 16 de 54 planteos cotidianos fallaban tras una sonda que ya había secado | R2.9; K7 R6.8 |
 
 La tabla índice de todos los antipatrones del conjunto está en AI-Layer-Integration-Working-Method; acá viven

@@ -7,10 +7,12 @@
 **Condicion-de-carga:** al decidir si un servicio necesita capa de IA; al escribir o revisar su especificación; al armar el checklist de completitud; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** la versión 1.0 de este mismo archivo (2026-11-01)
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan su numeración y sus anclas estables `cN-k` [Guía §0.7]: el capítulo 1 es «Fundamentos del framework», la frontera de competencia es §3.7 y la autoevaluación es el capítulo 17); `Conversational-Design-Framework-Guide.md` 1.5.0 (Guía DC: la norma del turno —prueba de anillo, regla de aclaración, rúbrica— se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m), que la destila); los conocimientos hermanos de esta carpeta: [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construir la consola), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (verificar y aceptar), [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa) y [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas de respuesta)
-**Versión:** 1.5
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta misma carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan su numeración y sus anclas estables `cN-k` [Guía §0.7]: el capítulo 1 es «Fundamentos del framework», la frontera de competencia es §3.7 y la autoevaluación es el capítulo 17); `Conversational-Design-Framework-Guide.md` 1.6.0 (Guía DC: la norma del turno —prueba de anillo, regla de aclaración, rúbrica— se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m), que la destila); los conocimientos hermanos de esta carpeta: [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (construir la consola), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (verificar y aceptar), [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo de la mesa) [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas de respuesta) y [K8](knowledge-AI-Layer-Chat-Console-Interface.md) (la consola de chat como interfaz)
+**Versión:** 1.6
 **Estado:** Vigente (falta la revisión humana del checklist en los casos y en la prueba; las reglas nuevas de 1.1 están probadas en un caso, PushDispatch)
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
+
+**Cambios en 1.6** (rondas 1 a 3 del juicio de la consola de PushDispatch): C-28 matriz de acceso por rol escrita y probada; C-29 almacenes de la conversación (historial, trazas, votos) con lector, retención y contenido, remitiendo a [K8](knowledge-AI-Layer-Chat-Console-Interface.md); dos antipatrones de especificación nuevos en §12.1; §14 remite a K8 para la interfaz.
 
 **Cambios en 1.5** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): §6.1 proveedores como adaptadores con modelo por omisión por función y habilitación por batería, consumo y límites, MCP en los dos sentidos.
 
@@ -733,7 +735,10 @@ ACT-x»; en PROD eso es NO [Prueba].
 | C-26 | Habilitación con motivo exacto y modelo por variable de entorno con una sola clave (REQ-IA-29, 31); ningún nombre de modelo ni dirección en el repositorio | DEBE | DEBE |
 | C-27 | Voto con motivo cerrado persistido sin texto ni persona, y una consola o un «no» probado por cada rol, raíz incluido (REQ-IA-30, 32) | DEBERÍA | DEBE |
 
-C-20 a C-27 aplican sólo si la capacidad es conversacional (paso 3a); si no, van en NO APLICA con ese motivo.
+| C-28 | Matriz de acceso por rol escrita (una fila por rol, raíz y roles de cuenta incluidos: qué ve, qué puede hacer y qué recibe ante una pregunta que no le corresponde), con un caso de batería por celda | DEBE | DEBE |
+| C-29 | Una fila por almacén de la conversación (historial de la persona, trazas del operador, votos) con lector, retención y contenido; la captura de texto en las trazas está apagada por omisión ([K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11) | DEBERÍA | DEBE |
+
+C-20 a C-29 aplican sólo si la capacidad es conversacional (paso 3a); si no, van en NO APLICA con ese motivo.
 
 <a id="k1-12-1-antipatrones"></a>
 ### 12.1 Antipatrones de especificación con su control
@@ -751,6 +756,8 @@ conocimientos hermanos de construcción y verificación.
 | La ayuda como respuesta | la respuesta era un puntero a la guía y la búsqueda emparejaba por una palabra suelta | la ayuda es contexto para redactar, con umbral real de rechazo (REQ-IA-33) |
 | Falla de búsqueda que era falta de corpus | se ajustaba la recuperación sobre páginas que no existían | ARQ-4 y REQ-IA-25 antes de elegir K2 |
 | Destino que termina en «prohibido» | se validaba el permiso de la página, no el de la acción | ARQ-6 y REQ-IA-28 |
+| Matriz por rol sin escribir | en la ronda 1 del juicio de PushDispatch la rúbrica vetó la entrega (10/28) porque nadie podía decir qué recibía cada rol; el raíz caía en un callejón | C-28: matriz escrita y probada; el rol que no puede recibe una explicación con salida, no un callejón |
+| Guardar el texto de las conversaciones «por si acaso» | — (control preventivo) | C-29: historial y trazas son almacenes distintos; la captura de contenido se enciende sólo con motivo, aviso y retención ([K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11) |
 | Frontera ampliada con el prompt | «también podés ayudar con X» sin capacidad detrás | F-6 y §11.1 |
 
 <a id="k1-13"></a>
@@ -787,7 +794,8 @@ conocimientos hermanos de construcción y verificación.
   el servidor). En un cliente móvil o en un asistente sin panel pueden necesitar ajuste; un segundo caso las
   pasa a firmes.
 - **No especifica la forma de la conversación** (chat o fichas, negativa útil, visualizaciones, tono): eso es de
-  [K5](knowledge-AI-Layer-Conversational-Design.md) y de su libro.
+  [K5](knowledge-AI-Layer-Conversational-Design.md) y de su libro; la superficie de la consola (componentes,
+  estados, teclado, teléfono, historial) es de [K8](knowledge-AI-Layer-Chat-Console-Interface.md).
 - **No dice cómo se construye ni cómo se acepta**: la batería, las capturas y la verificación en el sitio real
   son de [K2](knowledge-AI-Layer-Console-Assistant-Building.md) y [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); acá sólo se nombran los requisitos que miden.
 - **No resuelve** cómo medir sin sesgo cuando la persona que confirma ve la propuesta (el oráculo queda influido),

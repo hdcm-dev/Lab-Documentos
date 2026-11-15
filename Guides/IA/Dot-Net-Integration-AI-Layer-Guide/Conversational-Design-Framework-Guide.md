@@ -2,13 +2,13 @@
 doc_id: GUIA-DISENO-CONVERSACIONAL
 doc_type: guia-de-estudio
 title: Diseño conversacional de un asistente de producto — un método por competencia
-version: 1.5.0
+version: 1.6.0
 status: vigente
 origin: ia-assisted
 confidence: media
 confidence_nota: alta en lo referenciado y en lo observado al construir los casos; media en lo rotulado como criterio de la guía; lo no verificado está marcado
 owner: Lab-Documentos
-last_review: 2026-11-12
+last_review: 2026-11-15
 tope_palabras: 67000
 audience: [estudiante, docente, po, desarrollo, qa]
 audience_nota: guía académica y general para estudiantes, docentes y profesionales sin experiencia en diseño conversacional ni en IA que quieren aplicar el marco a cualquier sistema, existente o por desarrollar
@@ -19,7 +19,7 @@ related: [./Dot-Net-Integration-AI-Layer-Guide.md]
 
 # Diseño conversacional de un asistente de producto — un método por competencia
 
-> **Versión** 1.5.0 · **Fecha** 2026-11-12 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
+> **Versión** 1.6.0 · **Fecha** 2026-11-15 · **Estado**: vigente. Acompaña a la guía de integración de una capa de IA en .NET ([Dot-Net-Integration-AI-Layer-Guide.md](./Dot-Net-Integration-AI-Layer-Guide.md)), que resuelve cómo se construye lo que acá se diseña. Índice general: [0.0](#c0-0).
 
 <a id="prologo"></a>
 ## Prólogo
@@ -3623,6 +3623,11 @@ Estas lecciones son **experiencia propia medida**. Salvo que se diga otra cosa, 
 <a id="c18-l10"></a>
 10. **Proveedores, consumo y MCP, por rebanadas.** Tras una ronda del dueño del producto, la mesa separó el plan en rebanadas chicas: primero la fábrica de clientes con el servidor propio (sin cambio de conducta), después el registro de consumo por llamada con precios y trazas abiertas, y una medición previa que concluyó que el proveedor de identidad no emitía tokens y que hacía falta un servidor de autorización propio antes de publicar el servidor MCP. Las pantallas del raíz, las cuotas, el tablero y los dos sentidos de MCP vienen después, cada una con su criterio de aceptación (*experiencia propia medida, conducta*).
 
+<a id="c18-l11"></a>
+11. **Definir antes de ofrecer el dónde.** En la ronda 2 del juicio la rúbrica vetó R3: «qué es una organización» respondía con los pasos para crearla. La corrección fue que el buscador devuelva primero la definición anclada y, si la pregunta también pide dónde o cómo, eso vaya como otra parte; un concepto nunca pide cuenta ni aplicación ([B.4](#cj-4)). La misma ronda dejó otras reglas: toda negativa con salida y sin arrastrar una guía ajena, candidatas con rótulos humanos y nunca identificadores, la receta hasta su confirmación y el mismo número en todas las superficies (*experiencia propia medida, conducta*).
+<a id="c18-l12"></a>
+12. **Un cambio de corpus rompe la redacción sin tocar su código.** Guías nuevas, más largas y con bloques por rol bajaron la redacción de 33 a 18 aciertos de 33; la bisección de merges ×3 ubicó el PR y seis defectos de anclaje y recorte, cada uno con su prueba, la devolvieron a 30 de 30. Desde entonces cada PR lista los casos de batería que cambia y trae pares antes y después a ciegas (R13, R14 del [Anexo I](#anexo-i)) (*experiencia propia medida, conducta*).
+
 <a id="c18-decision"></a>
 ### 18.5 Decisión: qué llevarse del caso a otro sistema
 
@@ -4142,6 +4147,7 @@ Este libro cita fuentes que cambian. La tabla dice qué se verificó, cuándo, y
 
 | Versión | Fecha | Cambios |
 |---|---|---|
+| 1.6.0 | 2026-11-15 | Rondas 1 a 3 del juicio de la consola del caso aplicado: lecciones 11 (definir antes de ofrecer el dónde) y 12 (un cambio de corpus rompe la redacción; bisección ×3, casos y pares por PR). Los conocimientos de la carpeta suman K8, la consola de chat como interfaz |
 | 1.5.0 | 2026-11-12 | Mesas de proveedores y de la ronda del dueño del producto: contrato con negativa y forma como parámetro, con ejemplo (B.2, §7.2.1); pastillas por cota de Wilson (§15.2.1); consumo y monitoreo (§15.2.2); proveedores con modelo por omisión por función, habilitación por batería y respaldo por nivel (§17.3.8); MCP en los dos sentidos (§17.3.9); lección 10; REF-023 a REF-025; el control `tope_palabras` sube a 67.000 (la prosa medida por `tools/contar.sh` queda en 87 % de su tope) |
 | 1.4.0 | 2026-11-12 | Base «Criterio y juicio» ([B](#cj)): principios del turno T-1…T-8 con precedencia, prueba de anillo ordenada, alcance, contrato de la intención, árbol del turno, regla de aclaración de cuatro condiciones, preguntas compuestas, juicio sobre los tres casos; rúbrica R1–R14 como [Anexo I](#anexo-i); §5.4, §6.4.2, §1.2, §3, §6.2, §7.2.1 y §18.4 remiten a la base; REF-022; se condensan preguntas guía, ejemplos y §6.2.2 para sostener el tope |
 | 1.3.0 | 2026-11-12 | Banco de diálogo sobre Lab-Geometria: los ejemplos de Geometría de los capítulos temáticos se declaran hipotéticos (§1); negativa con la ficha, chip por estado y rótulo por rol en un dominio didáctico (§5); A.3 unifica «falso amigo» (antes «engañoso») y la primera vez es por conversación |

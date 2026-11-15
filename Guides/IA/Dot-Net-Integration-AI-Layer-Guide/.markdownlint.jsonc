@@ -1,0 +1,11 @@
+{
+  // Mismas reglas estructurales que scripts/docs-guard.markdownlint-cli2.jsonc, salvo MD025: los dos libros
+  // de esta carpeta se dividen en Partes con encabezado de nivel 1, a propósito (Prólogo, Parte I…, Cierre, Anexos).
+  "default": false,
+  "MD001": true,
+  "MD003": { "style": "atx" },
+  "MD024": { "siblings_only": true },
+  "MD025": false,
+  "MD042": true,
+  "MD056": true
+}

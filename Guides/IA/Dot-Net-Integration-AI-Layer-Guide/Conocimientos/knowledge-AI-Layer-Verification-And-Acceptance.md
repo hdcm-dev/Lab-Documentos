@@ -12,7 +12,7 @@
 **Estado:** Vigente
 **Fecha:** 2026-11-15
 
-**Cambios en 1.9** (rondas 1 a 3 del juicio de la consola de PushDispatch): R2.13 un cambio de corpus o de rol obliga a la batería ×3 de la redacción aunque su código no cambie; R2.14 cada PR lista los casos de batería que cambia y trae pares antes y después a ciegas; K3-AP-15; el mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md) para las capturas por estado de la interfaz.
+**Cambios en 1.9** (juicio inicial y rondas 1 y 2 de la consola de PushDispatch (3/28 → 10/28 → 11/28)): R2.13 un cambio de corpus o de rol obliga a la batería ×3 de la redacción aunque su código no cambie; R2.14 cada PR lista los casos de batería que cambia y trae pares antes y después a ciegas; K3-AP-15; el mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md) para las capturas por estado de la interfaz.
 
 **Cambios en 1.8** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): R2.11 la batería ×3 es la compuerta para habilitar un modelo; R2.12 aceptación de consumo, cuotas y servidor MCP con cifras contra la fuente.
 

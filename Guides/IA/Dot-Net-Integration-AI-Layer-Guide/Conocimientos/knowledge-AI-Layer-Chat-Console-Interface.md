@@ -111,13 +111,13 @@ Una tarjeta de **un solo turno** en una pantalla (como la de Geometría) tambié
 | Id | Regla (imperativo) | Porqué | Prueba |
 |---|---|---|---|
 | <a id="k8-r1"></a>CI-1 | **Un solo estado de conversación, varias superficies.** Si la consola se muestra como lateral, hoja, página o tarjeta, todas leen el mismo estado del hilo; cambiar de superficie no crea otra conversación ni navega | en PushDispatch, expandir el lateral al centro sin navegar fue la corrección de una refutación: navegar perdía el hilo y la pantalla de fondo | bUnit: abrir lateral, expandir, volver; el hilo y el id son los mismos |
-| <a id="k8-r2"></a>CI-2 | **Cada estado visible existe y se distingue:** vacío, pensando, respuesta, error, sin permiso, aclaración, IA apagada, conversación no disponible | un estado que no existe se resuelve en silencio (un spinner eterno, una lista vacía) y la persona no sabe qué pasó | bUnit por estado ([K7 §4](knowledge-AI-Layer-Testing-Strategy.md#k7-4)) |
+| <a id="k8-r2"></a>CI-2 | **Cada estado visible existe y se distingue:** los diez estados de la tabla de [§4](#k8-4), única lista que rige (redactando sólo si hay streaming) | un estado que no existe se resuelve en silencio (un spinner eterno, una lista vacía) y la persona no sabe qué pasó | bUnit por estado de §4 ([K7 R4.1](knowledge-AI-Layer-Testing-Strategy.md#k7-4)) |
 | <a id="k8-r3"></a>CI-3 | **La interfaz no inventa contenido ni rutas:** dibuja lo que el servidor devolvió; un enlace sólo se acepta si es relativo y viene del catálogo; el texto se arma con nodos, nunca como HTML crudo | una ruta o una etiqueta dentro del texto del modelo es la vía de inyección de la salida (K2 R5) | bUnit con un texto que trae `<a>` y una ruta absoluta → se muestran como texto y no hay destino |
 | <a id="k8-r4"></a>CI-4 | **Todo se opera con teclado y se anuncia:** foco a un lugar definido después de cada acción, región viva para lo que llega, controles nativos con nombre | la consola es un diálogo que se actualiza solo; sin región viva, el lector de pantalla no se entera | E2E con teclado sólo, y la tabla de foco de §7 como casos |
 | <a id="k8-r5"></a>CI-5 | **La consola no tapa la salida del producto:** el menú de sesión y la navegación principal siempre quedan alcanzables | en PushDispatch el panel abierto tapaba el menú de sesión: para cerrar sesión había que cerrar el chat ([Guía DC §14.3.1](../Conversational-Design-Framework-Guide.md#c14-3-1)) | E2E a 1280 y 390 con la consola abierta: el menú de sesión se abre y se usa |
-| <a id="k8-r6"></a>CI-6 | **La pestaña guarda ids, nunca texto.** El texto de la conversación, si se guarda, vive en el servidor y se filtra por la persona; una conversación ajena es indistinguible de una inexistente | el almacenamiento del navegador es legible por cualquier script de la página y sobrevive al cierre de sesión en equipos compartidos | inspección del almacenamiento de la pestaña tras una conversación: sólo ids; pedir un id ajeno → 404 igual que uno inexistente |
+| <a id="k8-r6"></a>CI-6 | **El almacenamiento de la pestaña guarda ids, nunca texto** (lo tecleado que vive sólo en el campo, §8, no cuenta). El texto de la conversación, si se guarda, vive en el servidor y se filtra por la persona; una conversación ajena es indistinguible de una inexistente | el almacenamiento del navegador es legible por cualquier script de la página y sobrevive al cierre de sesión en equipos compartidos | inspección del almacenamiento de la pestaña tras una conversación: sólo ids; pedir un id ajeno → 404 igual que uno inexistente |
 | <a id="k8-r7"></a>CI-7 | **Historial para la persona ≠ trazas para el operador.** Son dos almacenes con dos lectores, dos retenciones y dos políticas; la traza del operador no lleva texto salvo captura encendida a propósito (§11) | mezclar los dos es lo que lleva a guardar todo «por si acaso» o a no poder dar historial | la especificación tiene una fila por almacén con lector, retención y contenido; la traza por omisión no tiene pregunta ni respuesta |
-| <a id="k8-r8"></a>CI-8 | **Nada de lo provisional queda.** Lo que se muestra mientras se redacta (texto parcial) se reemplaza por la versión validada o por la plantilla; detener o cerrar cancela | un texto a medias que queda visible es una respuesta que nadie validó (K2 R3) | E2E: detener a mitad → queda la plantilla con su aviso, no el parcial |
+| <a id="k8-r8"></a>CI-8 | **Nada de lo provisional queda.** Lo que se muestra mientras se redacta (texto parcial) se reemplaza por la versión validada o por la plantilla; detener o cerrar cancela | un texto a medias que queda visible es una respuesta que nadie validó ([K2 R1](knowledge-AI-Layer-Console-Assistant-Building.md): el modelo sólo redacta sobre lo ya calculado y validado) | E2E: detener a mitad → queda la plantilla con su aviso, no el parcial |
 
 <a id="k8-3"></a>
 ## 3. Anatomía y componentes
@@ -139,8 +139,10 @@ responsabilidad no.
 1. **El rótulo de origen va en cada respuesta** («Respuesta fija», «Según la guía «X»», «Redactado con IA a partir
    de la ayuda: verificá»). *Porqué:* las tres consolas lo tienen; sin él la persona no sabe cuánto confiar.
    *Prueba:* cada forma F1–F8 en bUnit trae su rótulo.
-2. **La forma de la respuesta queda en el DOM** como atributo de datos (`data-forma`, `data-intencion`). *Porqué:*
-   las E2E y las capturas se atan a la forma, no al texto. *Prueba:* selector por forma en la E2E.
+2. **La forma de la respuesta queda en el DOM** como atributos de datos estables por forma; los nombres son libres
+   (en los ejemplos, `data-forma` y `data-intencion`; PushDispatch usa `data-tarjeta`, `data-origen`,
+   `data-bloqueo`). En una respuesta compuesta, cada parte lleva los suyos. *Porqué:* las E2E y las capturas se
+   atan a la forma, no al texto. *Prueba:* selector por forma en la E2E.
 3. **El formato del texto es un subconjunto cerrado** (negrita y código; listas si hacen falta) armado con nodos.
    *Porqué:* los asteriscos crudos se vieron en Movilidad Urbana ([K5-AP-7](knowledge-AI-Layer-Conversational-Design.md#k5-ap-7)).
    *Prueba:* captura sin `**` ni `#`.
@@ -152,17 +154,44 @@ responsabilidad no.
    primer elemento de la respuesta es el bloqueo.
 6. **Los textos fijos de la interfaz son configurables** ([K2 §16 E-4](knowledge-AI-Layer-Console-Assistant-Building.md#k2-16)).
 
+<a id="k8-3-1"></a>
+### 3.1 Cómo se dibuja cada forma
+
+Qué forma toca lo decide K5 §3; esta tabla dice cómo se ve y con qué rótulo de origen. Los rótulos son textos
+fijos configurables; el valor esperado de la prueba de la regla 1 es la columna «Rótulo».
+
+| Forma | Dibujo | Rótulo |
+|---|---|---|
+| F1 Cifra | cifra grande con su nota de métrica debajo; procedencia plegada; «Ir a» si hay destino | «Calculado con tus datos» |
+| F2 Total con desglose | como F1, más una píldora «Ver por {entidad}» que dispara el desglose sin el modelo | «Calculado con tus datos» |
+| F3 Aclaración | una línea («¿Cuál de estas?»), 2 a 4 píldoras con rótulo humano y su cifra distintiva; «y k más» es una píldora que abre la lista completa en la misma tarjeta | — (no es respuesta) |
+| F4 Pasos desde la ayuda | lista numerada, cada paso con su cita; «Fuentes» plegado; «Ir a» | «Redactado con IA a partir de la ayuda: verificá» o, sin modelo, «Según la guía «X»» |
+| F5 Abstención | texto fijo y dos salidas como píldoras («Probá con otras palabras», «Abrir la ayuda») | «Respuesta fija» |
+| F6 Negativa útil | qué no y qué sí en dos líneas; la ficha del concepto como `<details>` cerrado («Qué es {concepto}»); píldoras de lo que sí | «Respuesta fija» |
+| F7 Afuera | texto fijo y 2 o 3 píldoras de ejemplo | «Respuesta fija» |
+| F7 derivación | texto fijo «Esto lo responde {quién}» con el canal (enlace externo del catálogo o teléfono) como acción principal; sin píldoras | «Respuesta fija» |
+| F7 derivación urgente | banda de alerta (`role="alert"`, ícono y texto, no sólo color) al tope de la tarjeta con el canal de urgencia como primera acción; sin sugerencias, sin voto, sin copiar; se anuncia completa | «Respuesta fija» |
+| F8 IA apagada | aviso con el motivo en la cabecera de la tarjeta y respuestas deterministas debajo | «Respuesta fija» |
+| Compuesta | una tarjeta con una sección por intención, separadas por un divisor y cada una con su encabezado (la pregunta parcial) y su rótulo; un solo pie con voto | el de cada parte |
+| Confirmación | ver regla 7 | — |
+
+7. **Lo irreversible no se confirma en la consola.** El asistente no actúa (K2 §15): un destino a una acción
+   irreversible (cancelar un turno, borrar) abre la pantalla de esa acción, y la confirmación explícita que pide K5
+   §M.3 paso 5 es el diálogo de confirmación del producto en esa pantalla. La consola no dibuja «¿Confirmás?».
+   *Porqué:* una confirmación en la consola sería una escritura sin construir. *Prueba:* bUnit: ningún componente
+   de la consola tiene un control que escriba; E2E: el destino de cancelar llega al diálogo del producto.
+
 <a id="k8-4"></a>
 ## 4. Estados visibles
 
 | Estado | Qué se ve | Qué se anuncia | Qué no puede pasar |
 |---|---|---|---|
 | **Vacío** | encabezado con la pregunta que el asistente sabe contestar («¿Qué querés saber de tus aplicaciones?»), una bajada con el alcance y 3 o 4 sugerencias como tarjetas | nada (el encabezado tiene foco programático de respaldo) | un campo solo sin pista de qué preguntar |
-| **Pensando** | la burbuja de la pregunta ya está; debajo, «Buscando…» con animación que respeta `prefers-reduced-motion`; el campo se vacía antes de esperar | «Buscando en la ayuda…» por región viva; el compositor con `aria-busy` | perder lo tecleado si la respuesta falla |
-| **Redactando (si hay streaming)** | texto provisional marcado como tal y oculto al lector, con **Detener** arriba del texto (para que el botón no se corra); aviso de lentitud a los pocos segundos sin primer fragmento | el aviso de lentitud y el final, no cada fragmento | que quede el parcial (CI-8) |
+| **Pensando** | la burbuja de la pregunta ya está; debajo, «Buscando…» con animación que respeta `prefers-reduced-motion`; el campo se vacía antes de esperar; se puede teclear, pero Enviar queda en `aria-disabled` hasta que llega la respuesta (no hay cola); a los 5 s sin respuesta, «Sigue buscando…»; al corte de espera del servidor (K2 §10.2) pasa a Error | «Buscando en la ayuda…» por región viva; el compositor con `aria-busy` | perder lo tecleado si la respuesta falla |
+| **Redactando (si hay streaming)** | texto provisional marcado como tal y oculto al lector, con **Detener** arriba del texto (para que el botón no se corra); aviso de lentitud a los 5 s sin primer fragmento; tras Detener queda la plantilla con el aviso «Detuviste la redacción; esta es la respuesta fija.» | el aviso de lentitud y el final, no cada fragmento | que quede el parcial (CI-8) |
 | **Respuesta** | la tarjeta de §3 | un resumen de una línea; si hay bloqueo, el bloqueo primero | anunciar el texto entero |
 | **Error** | «No pudimos responder ahora. Tu texto quedó en el campo.»; sin destino ni voto | el mismo texto | ofrecer un destino que ninguna validación respaldó |
-| **Sin permiso** | igual que «no hay datos» (403 y 404 se ven igual); el chip se quita | el mismo texto | insinuar que la entidad existe |
+| **Sin permiso** | sobre una **entidad** ajena: igual que «no hay datos» (403 y 404 se ven igual) y el chip se quita; sobre una **acción** que el rol no tiene: la negativa útil F6 (K5 CD-3) | el mismo texto | insinuar que la entidad existe |
 | **Aclaración** | opciones como píldoras con rótulos humanos (nunca identificadores técnicos); al elegir, la burbuja muestra la elección; teclear el rótulo también elige | «Elegí una opción» | aclarar lo que no cambia la respuesta (K5 §M.4) |
 | **IA apagada** | la consola funciona con las respuestas deterministas; sólo desaparecen los controles que necesitan el modelo, y la cabecera dice el motivo exacto sin valores (K2 §10) | el motivo una vez | apagado en silencio o con un control muerto |
 | **Consola apagada** | no hay rastro: ni botón ni panel | — | un botón que abre un panel vacío |
@@ -170,6 +199,16 @@ responsabilidad no.
 
 *Prueba:* una prueba bUnit por fila ([K7 R4.1](knowledge-AI-Layer-Testing-Strategy.md#k7-4)) y una captura por
 fila a 1280 y 390 en la entrega (K3 §6).
+
+**Cuándo hay streaming.** Por omisión **no**: la respuesta se muestra entera después de la validación del servidor
+(K2 §3, paso 7), y el estado «Redactando» no existe. Se admite sólo si la especificación lo pide con motivo
+(respuestas largas con espera medida mayor a 5 s) y **nunca** en un contexto sensible (K1 CTX-SENS): ahí un texto
+provisional no validado no se muestra. Con streaming, el texto provisional se reemplaza por el validado o por la
+plantilla (CI-8).
+
+**Compositor.** Enviar queda en `aria-disabled` con el campo vacío o sólo espacios, mientras se espera una respuesta
+y si el texto supera el máximo. El campo no corta lo tecleado: el contador pasa a «{n} de más» y Enviar no actúa
+hasta recortarlo.
 
 <a id="k8-5"></a>
 ## 5. Sugerencias, destinos con acción y gráficos
@@ -217,15 +256,23 @@ pertinencia, rótulo igual al de la página). La interfaz agrega:
 
 **Reglas.**
 
-1. **Medí con la ventana dinámica (`dvh`), no con `vh`.** *Porqué:* con el teclado virtual abierto, `vh` deja el
-   compositor debajo del teclado. Si el compositor igual queda tapado en un navegador, se ajusta con
-   `visualViewport` (alto visible) y se prueba en el dispositivo. *Prueba:* E2E a 390 con el campo enfocado: el
+1. **Medí con la ventana dinámica (`dvh`), no con `vh`, y tratá el teclado aparte.** *Porqué:* `dvh` evita el
+   salto por las barras del navegador, pero no sigue al teclado virtual: en iOS Safari el teclado no cambia la
+   ventana de layout, y en Chrome para Android tampoco por omisión desde la versión 108. Para el teclado se usa
+   `visualViewport` (alto visible) o `interactive-widget=resizes-content` en el meta viewport, y se prueba en el
+   dispositivo. *Prueba:* E2E a 390 con el campo enfocado: el
    compositor es visible (en emulación) y captura en un teléfono real en la entrega.
 2. **Las capas son tokens, no números sueltos:** un token por capa (contenido, encabezado, menú de sesión, consola,
    diálogo modal, aviso) con un orden escrito; el menú de sesión y los diálogos del producto quedan por encima de
    la consola. *Porqué:* en PushDispatch el menú de sesión quedó debajo del panel porque vivía dentro de un
    encabezado con su propio contexto de apilamiento; el arreglo con tokens quedó planificado pero no estaba en la
    rama principal al relevarla. *Prueba:* E2E con la consola abierta → el menú de sesión responde al clic.
+**Hoja inferior.** Es un diálogo no modal como el lateral: el fondo sigue visible pero no se desplaza mientras el
+dedo está en la hoja (`overscroll-behavior: contain`); no se arrastra para redimensionar ni para cerrar (se cierra
+con su botón o con Escape); su cabecera deja libre el menú de sesión (CI-5). *Prueba:* E2E y captura **a 768 px**
+además de 1280 y 390 cuando la consola tiene hoja inferior: la hoja se abre, el fondo no se desplaza y el menú de
+sesión responde.
+
 3. **El historial en el teléfono es su propia hoja o una vista dentro del panel**, no un menú flotante que se
    salga de la pantalla. *Prueba:* captura a 390 con el historial abierto.
 4. **Áreas de toque de 44 px como mínimo** en píldoras, «Ir a» e ítems del historial por debajo de 576 px.
@@ -259,11 +306,19 @@ pertinencia, rótulo igual al de la página). La interfaz agrega:
 | ↑ ↓ Inicio Fin | historial | mueve la opción activa |
 | Enter | historial | retoma la conversación |
 | Supr | historial | borra la conversación activa (con anuncio) |
+| Escape | página propia | vuelve a la superficie anterior, como «Volver a {pantalla}» |
+| Escape | fuera de la consola (lateral abierto) | no actúa sobre la consola |
 
 **El historial es un listbox** con `aria-activedescendant` (el foco queda en la lista y la opción activa se
 anuncia), siguiendo el patrón *Listbox* de la guía de prácticas de ARIA del W3C
 (<https://www.w3.org/WAI/ARIA/apg/patterns/listbox/>, consultado 2026-11-15). Escape cierra el historial y detiene
 la propagación para no cerrar también el panel.
+
+**Borrar en el teléfono.** Sin teclado físico, el historial se muestra como una lista de botones (no listbox):
+cada ítem es un botón que retoma y, a su lado, un botón «Borrar {título}» de 44 px. Borrar una conversación no
+pide confirmación y deja «Conversación borrada · Deshacer» durante 10 s, anunciado; «Borrar todo» pide
+confirmación con un diálogo («Se borran {n} conversaciones. No se puede deshacer.»). Las mismas reglas valen para
+Supr en escritorio. *Prueba:* E2E a 390: borrar y deshacer; borrar todo con su diálogo.
 
 **Foco por acción.** El foco nunca cae a `body`.
 
@@ -284,21 +339,37 @@ la propagación para no cerrar también el panel.
 *Prueba:* E2E con sólo teclado que recorre la tabla de foco; una auditoría automática de accesibilidad sobre cada
 estado de §4 sin errores; lectura con un lector de pantalla real en la entrega (conducta, no tasa).
 
+<a id="k8-7-1"></a>
+**Cómo se acepta la accesibilidad.** K3 lo recibe así, como parte del informe de la interfaz:
+
+| Control | Herramienta | Aprueba si |
+|---|---|---|
+| Auditoría automática | axe-core desde la E2E de Playwright (`@axe-core/playwright`), reglas WCAG 2.1 A y AA, en cada estado de §4 y en 1280, 768 (si hay hoja) y 390 | cero violaciones de impacto *serious* o *critical*; las *moderate* se listan con su motivo |
+| Teclado | la E2E sólo con teclado de la tabla de foco | ningún paso deja el foco en `body` |
+| Lector de pantalla | NVDA con Firefox o Chrome en escritorio, y VoiceOver con Safari en el teléfono | el guion de seis pasos (abrir, preguntar, oír el resumen, elegir una aclaración, abrir el historial y retomar, cerrar y volver al botón) da lo esperado en cada paso |
+| Teléfono real | un Android y un iPhone | compositor visible con el teclado abierto y menú de sesión alcanzable |
+
+La evidencia es una tabla en el informe: paso, lo que se oyó o vio, lo esperado y sí/no, con la versión de cada
+herramienta. Un «no» impide aceptar.
+
 <a id="k8-8"></a>
 ## 8. Historial: dónde vive cada dato, límites y borrado
 
 | Dato | Dónde vive | Por qué |
 |---|---|---|
-| Texto de los turnos | **servidor**, por (persona, conversación); en memoria con vencimiento, o en una tabla si se quiere durable (§11) | se filtra por persona y se borra al cerrar sesión |
-| Id de la conversación actual | **pestaña** (almacenamiento de sesión, cifrado o firmado si el marco lo permite) y, para compartir entre pestañas, la URL (`?consola={id}`) | sobrevive a la navegación sin guardar texto en el navegador (CI-6) |
+| Texto de los turnos | **servidor**, por (persona, conversación); **efímero** (en memoria, con vencimiento; se borra al cerrar sesión) o **durable** (en una tabla, con firma, §11.6: sobrevive al cierre de sesión, sigue a la persona entre dispositivos y se borra por retención o a pedido) | se filtra por persona |
+| Id de la conversación actual | **pestaña** (almacenamiento de sesión, cifrado o firmado si el marco lo permite) y, para compartir entre pestañas, la URL (`?consola={id}`); el id es aleatorio de 128 bits o más, no adivinable, y en la URL no da acceso por sí solo: sin la sesión de su dueña da 404 | sobrevive a la navegación sin guardar texto en el navegador (CI-6) |
 | Superficie abierta (cerrado, lateral, página) | pestaña | comodidad; al recargar puede arrancar cerrada |
 | Lo tecleado sin enviar | **sólo el campo** del navegador; el servidor no lo pisa salvo cuando cambia desde afuera (vaciar al enviar, reponer tras error, nueva conversación) | un render atrasado del servidor borraba lo que la persona seguía tecleando |
 
 **Reglas.**
 
-1. **Límites escritos:** vencimiento por inactividad (en PushDispatch, 2 h), máximo de conversaciones por persona
+1. **Límites escritos:** vencimiento por inactividad (en PushDispatch, 2 h sin uso y 8 h como máximo desde que se
+   creó), máximo de conversaciones por persona
    (5) y de turnos por conversación (30), largo del título (60 caracteres, la primera pregunta recortada). Son
-   puntos de partida medidos en un caso, no constantes. *Prueba:* unitarias de cada límite.
+   puntos de partida medidos en un caso, no constantes. Al llegar al máximo de turnos, el compositor dice «Esta
+   conversación llegó a su límite» con «Empezar una nueva»; al superar el máximo de conversaciones se descarta la
+   más vieja sin aviso, y la lista lo dice en su leyenda. *Prueba:* unitarias de cada límite.
 2. **Lo ajeno no existe:** pedir una conversación de otra persona devuelve lo mismo que una inexistente. *Prueba:*
    404 igual en los dos casos.
 3. **Al cambiar de usuario o cerrar sesión se olvida todo** lo de la pestaña y el servidor descarta lo de esa
@@ -306,12 +377,18 @@ estado de §4 sin errores; lectura con un lector de pantalla real en la entrega 
 4. **Si la conversación venció**, el turno nuevo se guarda en una nueva y la pestaña la adopta sin error visible.
 5. **Prioridad al iniciar:** primero el id de la URL, después el de la pestaña.
 6. **Nueva conversación:** la actual queda en el historial; se repone el chip de contexto; el foco va al campo.
-7. **Borrar** una conversación y «Borrar todo» existen y se anuncian; la lista dice cuánto dura lo guardado («Las
-   conversaciones se guardan hasta 2 h sin uso y se borran al cerrar sesión») y tiene su vacío («No hay otras
+7. **Borrar** una conversación y «Borrar todo» existen y se anuncian (§7, «Borrar en el teléfono»); la lista dice
+   cuánto dura lo guardado según el almacén (en el caso efímero: «Las conversaciones se guardan hasta 2 h sin uso y
+   se borran al cerrar sesión»; en uno durable: «Las conversaciones se guardan {retención} y podés borrarlas») y tiene su vacío («No hay otras
    conversaciones»). *Porqué:* la persona tiene que saber qué se guarda para confiar.
-8. **Cada ítem del historial** muestra la primera pregunta recortada, la hora y el contexto (la aplicación).
+8. **Cada ítem del historial** muestra la primera pregunta recortada, la hora y el contexto (la pantalla o
+   entidad). Con datos sensibles (K1 CTX-SENS), ni el título ni el chip muestran la pregunta ni el nombre de una
+   persona: el título es la intención del catálogo y la hora («Turnos · 10:42»), y el chip dice la pantalla.
 9. **Lo que viaja al modelo es otra cosa:** cuántos turnos previos se envían como contexto lo decide el servidor
    ([Guía §6.2](../Dot-Net-Integration-AI-Layer-Guide.md#c6-2)); mostrar 30 turnos no obliga a mandarlos.
+10. **Retomar una conversación vieja** muestra sus turnos tal como fueron, con una línea «Conversación del
+    {fecha}: las cifras son de ese momento»; los chips de destino viejos se dibujan inactivos; el chip de contexto
+    es el de la pantalla actual.
 
 <a id="k8-9"></a>
 ## 9. Aviso de cambios sin guardar
@@ -330,8 +407,8 @@ mensaje a medias en el compositor, navegar lo pierde.
 3. **El chip de destino respeta el aviso**: navegar desde la consola pasa por la misma guarda que cualquier enlace.
    *Prueba:* E2E: editar, tocar «Ir a» → aparece el diálogo.
 4. **El compositor de la consola es un editor**: si la persona escribió y no envió, decidí y escribí una de dos
-   cosas: o el borrador se conserva por pestaña (en memoria, nunca persistido en el servidor), o el compositor
-   entra en la guarda. *Porqué:* en el caso de origen el compositor no estaba cubierto y lo tecleado sin enviar se
+   cosas: o el borrador se conserva en la memoria de la página mientras no se recargue (nunca en el almacenamiento
+   de la pestaña ni en el servidor, CI-6), o el compositor entra en la guarda. Con datos sensibles, la guarda. *Porqué:* en el caso de origen el compositor no estaba cubierto y lo tecleado sin enviar se
    perdía al recargar sin aviso; es coherente con no guardar borradores, pero tiene que ser una decisión escrita.
 5. **Al expirar la sesión** lo editado se pierde; si se quiere evitar, el autoguardado es otra decisión con su
    propia especificación.
@@ -349,6 +426,10 @@ El almacén y la métrica son de [K2 §8](knowledge-AI-Layer-Console-Assistant-B
 4. **El voto se persiste en una tabla, no en el log.** Un voto que sólo va a un registro de texto no se mide
    ([K2-AP-6](knowledge-AI-Layer-Console-Assistant-Building.md#k2-ap-6)); en el caso de origen el gesto existía y
    el voto sólo iba al log, que es justo el antipatrón.
+5. **El voto es definitivo.** La fila de K2 §8 no guarda quién ni el turno, así que no se cambia ni se retira:
+   después de votar, los botones quedan con `aria-pressed="true"` en el elegido y `aria-disabled` en ambos. Al
+   retomar desde el historial, el estado del voto sale del estado de la conversación en el servidor (que sí conoce
+   el turno), nunca de la tabla de votos. *Prueba:* bUnit: votar dos veces deja una fila; retomar muestra el voto.
 
 <a id="k8-11"></a>
 ## 11. Persistencia y observabilidad de conversaciones
@@ -360,7 +441,7 @@ La práctica de la industria separa dos cosas que la consola suele confundir:
 | Para qué | retomar, releer, borrar | medir, depurar, auditar |
 | Quién lee | la persona dueña, sólo ella | quien opera el sistema, con permiso propio |
 | Contenido | el texto de sus turnos | atributos cerrados: intención, forma, anillo, herramienta, modelo, tokens, latencia, resultado, respaldo, correlación; **sin texto por omisión** |
-| Retención | la que la persona ve escrita (§8.7) | acotada y escrita (30 a 90 días es el rango habitual) |
+| Retención | la que la persona ve escrita (§8.7) | acotada y escrita; con contenido, la más corta (§11.5) |
 | Borrado | la persona lo borra | por vencimiento; a pedido de la persona si la traza tuviera contenido |
 
 **Reglas.**
@@ -373,30 +454,44 @@ La práctica de la industria separa dos cosas que la consola suele confundir:
    omisión**, porque puede llevar datos personales. *Porqué:* un esquema común deja cambiar de herramienta de
    observación sin reescribir. *Prueba:* un span de una consulta trae los atributos y no trae el texto.
 2. **Identidad de la persona en el span, no en las métricas** (las métricas se agregan; un id por persona explota
-   la cardinalidad y expone a la persona).
-3. **La captura de contenido se enciende sólo:** en entornos de prueba con datos sembrados, o en producción **con
-   aviso visible** a la persona, por un período acotado y con un motivo escrito (una investigación de calidad).
-   *Prueba:* la clave que la enciende está en la plantilla de configuración con valor apagado; con la clave
-   encendida, la consola muestra el aviso.
+   la cardinalidad y expone a la persona). Es un **atributo propio**, fuera de `gen_ai.*`, igual que los de la
+   consola: usá un espacio de nombres del sistema (por ejemplo `app.consola.intencion`, `.forma`, `.anillo`,
+   `.respaldo`, `.resultado`) con valores cerrados del catálogo. La identidad va como **seudónimo**: un id opaco
+   derivado con una clave del operador (HMAC), nunca nombre ni correo. Con datos sensibles, la intención va con su
+   id genérico del catálogo y sin la entidad. Las trazas las lee sólo el rol operador, y su acceso queda
+   registrado.
+3. **La captura de contenido se enciende sólo en desarrollo o en pruebas con datos sembrados.** Rige
+   [K1 REQ-IA-09](knowledge-AI-Layer-Integration-Designing-Specification.md): fuera de desarrollo los spans no
+   traen mensajes. Capturar en producción para una investigación es un cambio de la especificación (REQ-IA-09)
+   firmado por quien responde por la seguridad, no una opción de esta interfaz. *Prueba:* la clave que la enciende
+   está en la plantilla de configuración con valor apagado y atada al entorno (en PushDispatch, a
+   `IsDevelopment()`).
 4. **Enmascará antes de guardar**, no al leer: correos, teléfonos, documentos, claves y tokens se reemplazan por
    marcas en el colector o en el decorador del cliente. *Prueba:* una pregunta sembrada con un correo y una clave
    → la traza guardada no los tiene.
-5. **Retención acotada y automática** (entre 30 y 90 días para trazas con contenido; la de los atributos cerrados
+5. **Retención acotada y automática** (criterio de este conocimiento: entre 30 y 90 días para trazas con contenido; la de los atributos cerrados
    puede ser mayor si no identifican a la persona). *Prueba:* tarea de purga con su prueba sobre datos vencidos.
 6. **El historial durable de la persona es una excepción explícita** a la minimización de
    [Guía §12.4](../Dot-Net-Integration-AI-Layer-Guide.md#c12-4) y no toca la regla del voto: el voto sigue sin
    texto (K2 §8); el historial es otro almacén, con otro lector (la persona), su retención escrita y su borrado. Si
    la especificación no lo pide y no lo firma quien responde por la seguridad, el historial queda efímero (en
    memoria, con vencimiento). *Prueba:* la especificación tiene la fila del almacén con firma; sin firma, no hay
-   tabla de conversaciones.
+   tabla de conversaciones. El historial durable trae además su retención (criterio de este conocimiento: 90 días
+   sin uso), la exportación a pedido y el borrado al dar de baja a la persona.
 7. **Las herramientas de observación de aplicaciones con modelos** (por ejemplo Langfuse, LangSmith
-   <https://docs.smith.langchain.com/>, consultado 2026-11-15, o Phoenix) sirven de referencia para trazas por
+   <https://docs.langchain.com/langsmith>, consultado 2026-11-15, o Phoenix) sirven de referencia para trazas por
    turno, evaluaciones y conjuntos de datos; su uso no cambia las reglas 1 a 6: el contenido sigue apagado por
    omisión y enmascarado si se enciende. *Porqué:* esas herramientas reciben lo que se les manda; la política es
    del sistema, no de la herramienta.
 8. **El consumo es una traza más, sin texto:** una fila por llamada con función, proveedor, modelo, tokens, costo
    estimado, latencia y resultado; una falla del registro no corta la respuesta
    ([K1 §6.1](knowledge-AI-Layer-Integration-Designing-Specification.md#k1-6-1)).
+<a id="k8-11-9"></a>
+9. **El texto libre de la propia persona** (lo que escribe en el compositor) se trata como dato sensible cuando el
+   dominio lo es (K1 CTX-SENS, F-8): el historial queda efímero salvo firma; antes de viajar al modelo, la pregunta
+   y los turnos previos pasan por la misma proyección y enmascarado que los datos de terceros (F-8), y nunca llega a
+   las trazas. *Prueba:* pregunta sembrada con un síntoma, un documento y un correo → el modelo recibe las marcas,
+   la traza no tiene texto y, sin firma, no hay fila durable.
 
 <a id="k8-12"></a>
 ## 12. Procedimiento paso a paso
@@ -407,7 +502,7 @@ Cada paso termina con su artefacto; sin artefacto el paso no está hecho.
    del producto. Parada: si falta la especificación, volvé a K1.
 2. **Elegí las superficies por ancho** (§6). Artefacto: tabla ancho → superficie, con la decisión de acompañar o
    cerrar al navegar.
-3. **Maqueta con los estados de §4** a 1280 y 390, en claro y oscuro. Artefacto: una captura por estado.
+3. **Maqueta con los estados de §4** a 1280 y 390 (y 768 si hay hoja inferior), en claro y oscuro. Artefacto: una captura por estado.
 4. **Componentes de §3** con un solo estado compartido (CI-1). Artefacto: bUnit de montaje único y de cambio de
    superficie.
 5. **Estados** (§4) con su prueba por estado (K7 §4).
@@ -448,8 +543,55 @@ respuesta no es obligatoria.
 | **Votos de la sala** | si la sala decide, el voto es por participante y visible; distinto del voto de calidad de §10, que sigue sin texto | prueba: un voto de calidad no aparece en el acta |
 | **Accesibilidad** | región viva que anuncia autor y resumen, con un límite de frecuencia (una sala activa no puede anunciar cada mensaje) | E2E con lector: ráfaga de mensajes → un anuncio resumido |
 
-Lo que sigue igual: el código elige la forma de lo que dice cada agente (K5), los destinos salen del catálogo,
-la captura de contenido para el operador sigue apagada por omisión.
+Lo que sigue igual: los destinos salen del catálogo y la captura de contenido para el operador sigue apagada fuera
+de desarrollo (§11.3).
+
+<a id="k8-13-1"></a>
+### 13.1 Decisiones de la propuesta
+
+Para que la propuesta se pueda construir sin inventar, estas decisiones quedan escritas. Siguen siendo propuesta:
+el primer sistema que las construya las confirma o las corrige.
+
+1. **Formas de sala.** Un agente debatiente no responde con F1–F8: publica una de cinco formas de sala, elegidas
+   por código según lo que pidió la mención o la regla de disparo. Las formas son **S1 posición** (tesis y
+   fundamentos, con fuentes citadas si las usa), **S2 réplica** (cita el mensaje al que responde), **S3 resumen**
+   (de un hilo o de la sala, con enlaces a los mensajes resumidos), **S4 pregunta a la sala** y **S5 dato**. S5 es
+   una F1 o una F4 de K5, con su anclaje y su validación. Cada mensaje de agente lleva el rótulo «Opinión de
+   {agente}, con IA» (S1–S4) o el de su forma K5 (S5). Lo que no es S5 no afirma cifras: el validador de K2 R3 lo
+   rechaza. *Prueba:* bUnit por forma; una S1 con un número sin herramienta no se publica.
+2. **Alcance del agente.** El agente lee con el **alcance mínimo común** de los participantes presentes: sólo lo
+   que todos pueden ver. Nunca usa el de quien lo menciona, porque lo que publica lo leen todos. *Prueba:* sala con
+   dos roles; el agente mencionado por el de más permiso no muestra lo que el otro no ve.
+3. **Qué viaja al modelo.** Los mensajes de otros participantes son **texto de terceros no confiable** (K1 §10,
+   F-8): viajan delimitados como datos, nunca como instrucciones. Viajan sólo los visibles y no ocultos del hilo en
+   curso, hasta los últimos 10 (punto de partida), con el mismo enmascarado de §11.9. *Prueba:* un mensaje con una
+   instrucción inyectada no cambia la forma ni el destino del agente.
+4. **Disparo y topes.** Una regla de disparo se escribe `cuando {evento de sala} → {agente} publica {forma}`
+   (por ejemplo, «cuando la moderación cierra un hilo → el relator publica S3»). Un agente **no menciona** a otro
+   agente. Hay un tope de 3 mensajes de agente por cada mensaje humano en la sala, un presupuesto de consumo por
+   sala (§11.8) y un límite de tasa por agente. Al llegar a un tope, el agente queda «en pausa» a la vista.
+   *Prueba:* dos agentes que se mencionarían no producen un bucle; el tope corta.
+5. **Pertenencia.** Las salas son privadas por invitación de la moderación. Quien entra tarde ve el historial
+   completo, con el aviso del acta (fila «Registro de deliberación»). Quien sale deja de ver la sala, y sus mensajes
+   quedan con su nombre. «Lo ajeno no existe» (CI-6) se aplica a la **sala**: una sala a la que no pertenecés da
+   404. *Prueba:* un no miembro pide la sala → 404; un miembro que salió → 404.
+6. **Anatomía mínima.** Cabecera de sala (tema, lista de participantes con presencia y con «agente» rotulado,
+   acciones de moderación), lista de mensajes con autor, hora y forma, panel de hilo como lateral dentro de la
+   sala, y compositor con menciones (listbox, §7) y «Pedir la palabra». En la sala no hay «escribiendo…» de agentes:
+   un agente que redacta se ve como un mensaje pendiente con su nombre. *Estados:* los de §4 más sala cerrada (sólo
+   lectura), sin la palabra (compositor en `aria-disabled` con el motivo), expulsado (vista de 404), mensaje
+   oculto («Oculto por la moderación: {motivo}», visible a su autor y a la moderación) y agente en pausa o apagado.
+   *Superficies:* página propia en todo ancho, con el hilo como hoja inferior por debajo de 992 px. *Teclado:* el de
+   §7, y además Alt+↑/↓ entre mensajes y Escape para cerrar el hilo.
+7. **Acta.** La leen los participantes y la moderación. Su retención va escrita en la sala y se avisa al entrar.
+   A pedido de su autor, un mensaje se reemplaza por «Retirado por su autor» en la sala y en el acta. «Qué se
+   decidió» lo escribe la moderación; un agente sólo puede proponer un borrador S3, que la moderación confirma o
+   edita antes de que entre al acta. El acta es otro almacén con su fila en la especificación (K1 C-29). *Prueba:*
+   un S3 de agente no llega al acta sin la confirmación de la moderación.
+8. **Pruebas.** La E2E de sala usa **dos contextos de navegador** de Playwright en la misma prueba (dos
+   participantes) sobre el transporte real en tiempo real. Comprueba: llegada al otro en orden, ráfaga con un solo
+   anuncio, mensaje oculto, y salir que da 404. La batería por agente sigue K3 con el mismo umbral que la consola
+   para S5, y con la rúbrica de K5 §M.6 para S1–S4.
 
 <a id="k8-14"></a>
 ## 14. Checklist binario de completitud
@@ -462,9 +604,11 @@ Cada ítem es sí/no; un «no» impide cerrar.
 - [ ] La E2E sólo con teclado recorre la tabla de foco de §7 sin caer a `body` (CI-4).
 - [ ] Con la consola abierta, el menú de sesión se abre y se usa a 1280 y 390 (CI-5).
 - [ ] El almacenamiento de la pestaña tiene sólo ids; un id ajeno da lo mismo que uno inexistente (CI-6).
-- [ ] La especificación tiene una fila por almacén (historial, trazas, votos, acta) con lector, retención y contenido (CI-7).
+- [ ] La especificación tiene una fila por almacén (historial, trazas, votos, consumo y, si hay sala, acta) con lector, retención y contenido (CI-7; K1 C-29).
 - [ ] Detener o cerrar durante la redacción deja la plantilla, no el parcial (CI-8).
-- [ ] Cada respuesta trae su rótulo de origen y su forma en el DOM (§3).
+- [ ] Cada respuesta trae el rótulo de origen de la tabla de §3.1 y su forma en el DOM (§3).
+- [ ] La auditoría automática, el guion del lector de pantalla y el teléfono real están en el informe con la tabla de §7.1.
+- [ ] Si hay hoja inferior, hay E2E y captura a 768 px (§6).
 - [ ] El gráfico tiene escala honesta, máximo con texto y valores en texto (§5).
 - [ ] Las capas son tokens con orden escrito (§6.2).
 - [ ] Con el teclado virtual abierto, el compositor queda visible en un teléfono real (§6.1).
@@ -491,7 +635,7 @@ La tabla índice de los antipatrones de la integración está en
 | <a id="k8-ap-5"></a>K8-AP-5 | Capturar todo el contenido en las trazas «por si acaso» | — (control preventivo; la práctica de la industria lo apaga por omisión) | CI-7, §11.3–§11.5 |
 | <a id="k8-ap-6"></a>K8-AP-6 | Control muerto con la IA apagada | un botón que no hace nada parece un error | §3 compositor; §4 IA apagada |
 | <a id="k8-ap-7"></a>K8-AP-7 | Panel sin Escape ni manejo del foco | en un caso, abrir no movía el foco ni había Escape para cerrar | §7, tabla de foco |
-| <a id="k8-ap-8"></a>K8-AP-8 | `vh` en el teléfono | el compositor quedaba debajo del teclado virtual | §6.1 |
+| <a id="k8-ap-8"></a>K8-AP-8 | `vh` en el teléfono, o creer que `dvh` sigue al teclado | — (control preventivo; los casos usaron `dvh` y `env(safe-area-inset-bottom)` desde el origen) | §6.1 |
 | <a id="k8-ap-9"></a>K8-AP-9 | Gesto de voto que sólo va al log | no se pudo medir nada | §10.4, K2-AP-6 |
 | <a id="k8-ap-10"></a>K8-AP-10 | Navegar desde un chip pierde lo editado sin aviso | lo tecleado en el compositor se perdía al recargar | §9 |
 | <a id="k8-ap-11"></a>K8-AP-11 | Aclaración con identificadores técnicos en las píldoras | la persona no reconoce las opciones | §4 aclaración; [K5-AP-13](knowledge-AI-Layer-Conversational-Design.md#k5-ap-13) |
@@ -499,14 +643,15 @@ La tabla índice de los antipatrones de la integración está en
 <a id="k8-16"></a>
 ## 16. Casos
 
-**PushDispatch (caso de origen, panel con roles).** Una conversación con tres superficies (portada, lateral y
+**PushDispatch (caso de origen, panel con roles).** Una conversación con tres superficies (portada —la tarjeta de la pantalla de inicio—, lateral y
 página `/asistente`) sobre un mismo estado; expandir no navega y la pantalla de fondo queda inerte. Cabecera de
 cuatro íconos, chip de contexto validado por el servidor, compositor de 500 caracteres con ayuda de teclado y sin
 controles muertos, respuesta con bloqueo primero y procedencia plegada, gráfico con escala honesta, historial como
 listbox con borrar, lateral a ≥ 992 px, hoja inferior entre 576 y 991 px y pantalla completa debajo. El texto vive
-en el servidor en memoria (2 h sin uso, 5 conversaciones, 30 turnos); la pestaña guarda sólo el id cifrado. Hay
+en el servidor en memoria (2 h sin uso y 8 h como máximo, 5 conversaciones, 30 turnos); la pestaña guarda sólo el id cifrado. Hay
 guarda de cambios sin guardar en siete editores largos, pero no en el compositor. El voto existía como gesto y
-sólo iba al log; el consumo se registra por llamada sin texto con atributos `gen_ai.*`. Faltaban, al relevarlo,
+sólo iba al log; el consumo se registra por llamada sin texto con atributos `gen_ai.*`, y el contenido en trazas se enciende
+sólo en Development (el interruptor atado a `IsDevelopment()`, REQ-IA-09), que es el ejemplo real de §11.3. Faltaban, al relevarlo,
 los tokens de capas (el menú de sesión quedaba debajo del panel), el historial durable, el voto en tabla y la
 consola del raíz montada.
 
@@ -525,11 +670,29 @@ propuesta). Muestra que §8–§10 son optativos cuando la superficie es de un t
 <a id="k8-17"></a>
 ## 17. Límites
 
-- Se destiló de **tres** consolas; sólo una tiene historial, hoja inferior y guarda de cambios. Las cifras (400 px,
-  62 dvh, 2 h, 5 conversaciones, 30 turnos, 500 caracteres) son puntos de partida medidos allí, no constantes.
-- La persistencia durable y la captura de contenido de §11 son práctica de la industria y criterio de este
-  conocimiento; ningún caso las construyó todavía.
-- §13 es propuesta rotulada: nada de ella está probado.
+- Se destiló de **tres** consolas; sólo una tiene historial, hoja inferior y guarda de cambios. Las cifras (cortes
+  de 992 y 576 px, 400 px, 62 dvh, 2 h y 8 h, 5 conversaciones, 30 turnos, 500 caracteres, 5 s, 10 s) son puntos de
+  partida medidos allí o elegidos acá, no constantes.
+- La persistencia durable no la construyó ningún caso. La captura de contenido existe en PushDispatch sólo como
+  interruptor atado al entorno de desarrollo, sin enmascarado ni purga.
+- §13 y su §13.1 son propuesta rotulada: nada de ella está probado.
+- **Huecos conocidos, sin decidir todavía** (se resuelven con un criterio razonable y se anotan en la
+  especificación del sistema):
+  - el atajo de teclado para abrir la consola y el recorrido de tabulación dentro de la tarjeta;
+  - cómo se anuncia «Volver a la conversación (n)» y qué cuenta n;
+  - el umbral de «editor largo» (§9.1) no está medido, y no se dice cómo convive el diálogo con la pantalla completa;
+  - el orden de capas es una lista sin caso construido (§6.2);
+  - no hay reglas de tema: tokens de color, contraste en oscuro, gráfico en oscuro;
+  - con render interactivo del servidor, no hay estado de conexión perdida, ni regla del historial en memoria con
+    varias instancias o tras un reinicio;
+  - la consola para una persona sin sesión (sitio público) y el alcance «por cuenta de otra persona»;
+  - el orden de las sugerencias con pocos eventos y quién genera los seguimientos (K2 §8.6 y K5 §7);
+  - la huella del voto es distinta en K2 §8.2 y en K1 REQ-IA-30, y hay que unificarlas;
+  - en la sala: interfaz de cola de palabra, apelación, rol observador, tipo de votación y quórum, profundidad de
+    hilos, edición de mensajes, orden ante llegadas simultáneas, notificación al mencionado, límite numérico de la
+    región viva, y voto y copiar en mensajes de personas;
+  - el glosario no unifica todavía los nombres de los controles en todos los conocimientos (píldora, pastilla,
+    chip, tarjeta de acción).
 - Las convenciones GenAI de OpenTelemetry están en estado *Development* y pueden cambiar nombres de atributos.
 - No cubre voz (entrada o salida hablada) ni adjuntos de archivos.
 - Si el repo anfitrión tiene su propio sistema de diseño (tokens, componentes, capas), rige el anfitrión y este
@@ -547,10 +710,21 @@ propuesta). Muestra que §8–§10 son optativos cuando la superficie es de un t
 - **Editor largo:** pantalla cuyo contenido cuesta rehacer; recibe la guarda de cambios sin guardar.
 - **Captura de contenido:** guardar el texto de preguntas y respuestas en las trazas del operador.
 - **Acta de deliberación:** registro de una sala multi-participante (§13).
+- **Turno:** en la consola de una persona, el par pregunta y respuesta; en una sala (§13), un mensaje de un autor.
+  «Turno asignado por la moderación» se dice «la palabra».
+- **Píldora:** botón compacto que dispara una intención o una opción (sugerencia, seguimiento, aclaración). En K2 y
+  K7 se la llama «pastilla».
+- **Chip:** el chip de contexto (§3) o el chip de destino de K5 §6 («Ir a …»). **Tarjeta de acción:** un destino
+  con parámetros, con ícono, título y «Abrir» (§5).
+- **Anillo y forma:** de K5 (anillos de la frontera de K1 §3.1; formas F1–F8 y variantes, §3.1).
+- **Procedencia:** bloque plegado con herramienta, método, período, hora y fuentes (§3.4).
+- **Respaldo:** la respuesta determinista que se da cuando el modelo no está o falla (K2 §10).
+- **Portada:** la tarjeta de la consola en la pantalla de inicio, una superficie de tipo tarjeta.
+- **Raíz** y **circuito:** el modo raíz de K2 §9 y el circuito de render interactivo del servidor de K2 §16 E-1.
 
 <a id="k8-historial"></a>
 ## Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.0 | 2026-11-15 | Creación, como Borrador, a partir de las consolas de PushDispatch (expediente de la capa de IA), Geometría y Movilidad Urbana: anatomía, estados, destinos y gráficos, escritorio y teléfono, accesibilidad, historial, guarda de cambios, voto, persistencia y observabilidad con captura apagada por omisión, y la variante multi-participante como propuesta rotulada. K1, K2 y K5 remiten acá. |
+| 1.0 | 2026-11-15 | Creación, como Borrador, a partir de las consolas de PushDispatch (expediente de la capa de IA), Geometría y Movilidad Urbana: anatomía, estados, destinos y gráficos, escritorio y teléfono, accesibilidad, historial, guarda de cambios, voto, persistencia y observabilidad con captura apagada fuera de desarrollo (alineada con K1 REQ-IA-09), y la variante multi-participante como propuesta rotulada con sus decisiones (§13.1). Antes de publicarse se cerraron los huecos bloqueantes de una prueba a ciegas (dibujo por forma §3.1, confirmación, streaming, hoja a 768 px, borrar en el teléfono, aceptación de accesibilidad §7.1, historial durable, voto definitivo, seudónimo, texto libre sensible); los menores quedan en §17. K1, K2, K3, K4, K5 y K7 remiten acá. |

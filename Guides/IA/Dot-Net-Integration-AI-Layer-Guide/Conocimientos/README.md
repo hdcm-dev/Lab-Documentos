@@ -31,7 +31,7 @@ autocontenidos: los conocimientos del workspace de origen que se nombran como op
 y K4 §14. Repo público: no se nombran el producto de referencia del mercado, clientes, servidores, direcciones,
 usuarios, claves ni el modelo de IA.
 
-**Última retroalimentación (2026-11-15, interfaz de la consola y rondas 1 a 3 del juicio).** Un relevamiento de
+**Última retroalimentación (2026-11-15, interfaz de la consola y juicio inicial y rondas 1 y 2).** Un relevamiento de
 las tres consolas construidas (PushDispatch, Geometría y Movilidad Urbana) mostró que K1–K7 reproducían el motor y
 el criterio pero no la interfaz: entra K8 1.0 Borrador (anatomía, estados, teléfono, accesibilidad, historial,
 cambios sin guardar, persistencia y observabilidad con captura apagada por omisión, y la variante

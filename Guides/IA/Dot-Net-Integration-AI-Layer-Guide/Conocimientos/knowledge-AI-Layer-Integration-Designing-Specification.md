@@ -12,7 +12,7 @@
 **Estado:** Vigente (falta la revisión humana del checklist en los casos y en la prueba; las reglas nuevas de 1.1 están probadas en un caso, PushDispatch)
 **Fecha:** 2026-11-15
 
-**Cambios en 1.6** (rondas 1 a 3 del juicio de la consola de PushDispatch): C-28 matriz de acceso por rol escrita y probada; C-29 almacenes de la conversación (historial, trazas, votos) con lector, retención y contenido, remitiendo a [K8](knowledge-AI-Layer-Chat-Console-Interface.md); dos antipatrones de especificación nuevos en §12.1; §14 remite a K8 para la interfaz.
+**Cambios en 1.6** (juicio inicial y rondas 1 y 2 de la consola de PushDispatch (3/28 → 10/28 → 11/28)): C-28 matriz de acceso por rol escrita y probada; C-29 almacenes de la conversación (historial, trazas, votos, consumo y acta) con lector, retención y contenido, remitiendo a [K8](knowledge-AI-Layer-Chat-Console-Interface.md); dos antipatrones de especificación nuevos en §12.1; §14 remite a K8 para la interfaz.
 
 **Cambios en 1.5** (mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch): §6.1 proveedores como adaptadores con modelo por omisión por función y habilitación por batería, consumo y límites, MCP en los dos sentidos.
 
@@ -29,7 +29,7 @@
 | 3 | Grupo C de requisitos, REQ-IA-22 a REQ-IA-33, con su prueba: validador de cifras, alcance, ruteo, cobertura del corpus, filtro de rol, destino revalidado, ver ≠ hacer, motivo exacto de habilitación, huella del voto sin texto, modelo por variable de entorno con una sola clave, consola por rol, «No está en la ayuda». Los requisitos propios del proyecto pasan a empezar en REQ-IA-40 | [§9](#k1-9) |
 | 4 | LLM08 deja de estar «a definir»: lo cubre REQ-IA-26 | [§10](#k1-10) |
 | 5 | Pasos 3a y 8a del procedimiento y criterios de parada | [§11](#k1-11), [§11.1](#k1-11-1-parada) |
-| 6 | Ocho ítems más del checklist, C-20 a C-27 | [§12](#k1-12) |
+| 6 | Diez ítems más del checklist, C-20 a C-29 | [§12](#k1-12) |
 | 7 | Antipatrones de especificación con su control | [§12.1](#k1-12-1-antipatrones) |
 | 8 | PushDispatch como caso aplicado ([Caso P]) y la demo de Movilidad Urbana como [Caso M] | [§13](#k1-13) |
 | 9 | Reglas provisorias F-7 (dominio de riesgo profesional) y F-8 (categorías especiales de datos), en espera del libro | [§3.1](#k1-3-1-frontera) |
@@ -99,7 +99,7 @@ contexto CTX-PROTO o CTX-PROD del proyecto (§3).
 |---|---|
 | decidir si el servicio necesita capa de IA | §1, §3 |
 | fijar las reglas que no se negocian | §2 |
-| especificar un asistente o consola de ayuda dentro del producto | §3.1, §4.1, grupo C de §9, C-20 a C-27, §12.1, [Caso P] |
+| especificar un asistente o consola de ayuda dentro del producto | §3.1, §4.1, grupo C de §9, C-20 a C-29, §12.1, [Caso P] |
 | dibujar la arquitectura | §4, §4.1, §5, §6 |
 | escribir la especificación | §7, §8, §9 |
 | analizar la seguridad | §10 |
@@ -736,7 +736,7 @@ ACT-x»; en PROD eso es NO [Prueba].
 | C-27 | Voto con motivo cerrado persistido sin texto ni persona, y una consola o un «no» probado por cada rol, raíz incluido (REQ-IA-30, 32) | DEBERÍA | DEBE |
 
 | C-28 | Matriz de acceso por rol escrita (una fila por rol, raíz y roles de cuenta incluidos: qué ve, qué puede hacer y qué recibe ante una pregunta que no le corresponde), con un caso de batería por celda | DEBE | DEBE |
-| C-29 | Una fila por almacén de la conversación (historial de la persona, trazas del operador, votos) con lector, retención y contenido; la captura de texto en las trazas está apagada por omisión ([K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11) | DEBERÍA | DEBE |
+| C-29 | Una fila por almacén de la conversación —historial de la persona, trazas del operador, votos, consumo y, si hay sala multi-participante, acta— con lector, retención y contenido; la traza no lleva texto fuera de desarrollo (REQ-IA-09); el historial durable lleva firma de quien responde por la seguridad. El detalle de interfaz está en [K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11, en Borrador; esta fila vale sin él | DEBERÍA | DEBE |
 
 C-20 a C-29 aplican sólo si la capacidad es conversacional (paso 3a); si no, van en NO APLICA con ese motivo.
 
@@ -757,7 +757,7 @@ conocimientos hermanos de construcción y verificación.
 | Falla de búsqueda que era falta de corpus | se ajustaba la recuperación sobre páginas que no existían | ARQ-4 y REQ-IA-25 antes de elegir K2 |
 | Destino que termina en «prohibido» | se validaba el permiso de la página, no el de la acción | ARQ-6 y REQ-IA-28 |
 | Matriz por rol sin escribir | en la ronda 1 del juicio de PushDispatch la rúbrica vetó la entrega (10/28) porque nadie podía decir qué recibía cada rol; el raíz caía en un callejón | C-28: matriz escrita y probada; el rol que no puede recibe una explicación con salida, no un callejón |
-| Guardar el texto de las conversaciones «por si acaso» | — (control preventivo) | C-29: historial y trazas son almacenes distintos; la captura de contenido se enciende sólo con motivo, aviso y retención ([K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11) |
+| Guardar el texto de las conversaciones «por si acaso» | — (control preventivo) | C-29: historial y trazas son almacenes distintos; la captura de contenido se enciende sólo en desarrollo o pruebas con datos sembrados (REQ-IA-09; [K8](knowledge-AI-Layer-Chat-Console-Interface.md) §11) |
 | Frontera ampliada con el prompt | «también podés ayudar con X» sin capacidad detrás | F-6 y §11.1 |
 
 <a id="k1-13"></a>

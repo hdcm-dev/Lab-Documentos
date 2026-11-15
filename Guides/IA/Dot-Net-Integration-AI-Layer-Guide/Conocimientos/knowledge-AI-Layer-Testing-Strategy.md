@@ -195,8 +195,10 @@ fixture declara «no son datos reales» y el grep de §12 da cero.
 <a id="k7-4"></a>
 ## 4. bUnit de la consola
 
-**R4.1 — Probá cada estado visible de la consola con bUnit:** apagada con su motivo, cargando, respuesta,
-«No está en la ayuda», aclaración con opciones, chip de destino, voto, detener; y la **página destino con su
+**R4.1 — Probá cada estado visible de la consola con bUnit:** los diez estados de
+[K8 §4](knowledge-AI-Layer-Chat-Console-Interface.md#k8-4) (vacío, pensando, redactando, respuesta, error, sin permiso,
+aclaración, IA apagada, consola apagada, conversación no disponible; redactando sólo si hay streaming), más «No está
+en la ayuda», chip de destino, voto y detener; y la **página destino con su
 parámetro de acción** (`?alta=1`: con permiso abre el modal una vez, sin permiso carga normal, recargar tras
 cerrar no lo reabre, [K6 §17.2](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-17)). *Por qué:* son los estados que
 la lectura humana juzga (K5) y los que se rompen al tocar el componente. *Prueba:* en PushDispatch
@@ -508,7 +510,7 @@ cuenta para el ×3 ([K3 R2.6b](knowledge-AI-Layer-Verification-And-Acceptance.md
 
 **R9.13 — Bisección de merges ×3 cuando cae la redacción.** El script de batería acepta un commit y corre ×3 en él; ante una caída se corre en el último merge bueno y en el primero malo hasta aislar el PR. *Prueba:* en PushDispatch, 33/33 en el merge anterior y 18/33 en el siguiente aislaron el cambio de corpus ([K3 R2.13](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-13)).
 
-**R9.14 — La batería usa el catálogo y los roles de producción.** Los destinos, roles y cuentas de la batería salen del mismo catálogo que la app (no de un catálogo de prueba propio), y una expectativa que el producto cambió pasa a sonda con motivo hasta reescribirse. *Porqué:* un catálogo de prueba viejo dio un falso positivo («Mi perfil» sin enlace en el panel del sistema). *Prueba:* compuerta que compara el catálogo de la batería con el de la app.
+**R9.14 — La batería usa el catálogo y los roles de producción.** Los destinos, roles y cuentas de la batería salen del mismo catálogo que la app (no de un catálogo de prueba propio), y una expectativa que el producto cambió pasa a sonda con motivo hasta reescribirse. *Porqué:* un catálogo de prueba viejo dio una falla que producción no tenía, una falsa alarma («Mi perfil» sin enlace en el panel del sistema). *Prueba:* compuerta que compara el catálogo de la batería con el de la app.
 
 **R9.15 — Cada veto de la rúbrica tiene su prueba de juicio.** Un veto (por ejemplo R3, «qué es X» devolvía pasos) se fija como una clase de pruebas que sale roja antes del arreglo (en el caso, 17 de 24) y verde después, y corre con la batería ×3. *Prueba:* la clase existe y su rojo quedó registrado.
 
@@ -751,7 +753,7 @@ conocidos con `Skip` (R6.9); el filtro de salida, con el corpus de R9.11 (expedi
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
-| 1.7 | 2026-11-15 | Rondas 1 a 3 del juicio de la consola de PushDispatch: R9.13 bisección de merges ×3; R9.14 batería con el catálogo y los roles de producción; R9.15 prueba de juicio por veto; K7-AP-16; mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md). |
+| 1.7 | 2026-11-15 | Juicio inicial y rondas 1 y 2 de la consola de PushDispatch: R9.13 bisección de merges ×3; R9.14 batería con el catálogo y los roles de producción; R9.15 prueba de juicio por veto; K7-AP-16; R4.1 prueba los diez estados de K8 §4; mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md). |
 | 1.6 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto: R5.5 catálogo de intenciones ↔ enrutador y matriz de forma; R5.6 pastillas y consumo con datos sembrados; R5.7 MCP servidor y cliente en contenedor. |
 | 1.5 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): R6.7 número hablado parseado, dígito por la misma función, clase «número que cita la fórmula»; R6.10 criterio del enrutador frente al del corpus de fichas; R9.8 todo control trae su caso rojo; R9.11 procedimiento en la voz; R9.12 límite de tasa en las corridas. |
 | 1.4 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (enrutador del asistente de conceptos): R6.7 clasificador probado en los dos sentidos; R6.8 sonda adversarial por rondas con control cotidiano; R6.9 sonda permanente y casos conocidos; R9.11 falsos positivos contra corpus de respuestas buenas; K7-AP-13 a K7-AP-15. |

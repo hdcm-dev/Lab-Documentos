@@ -218,13 +218,23 @@ cuando el modelo se abstiene con fragmentos («No lo encontré en la ayuda»). L
 | # | Forma | Cuándo la elige el código | Qué lleva | Qué no puede pasar | Prueba |
 |---|---|---|---|---|---|
 | F1 | **Cifra** | anillo 1, una entidad resuelta | número de una herramienta + nota de métrica + destino si hay | número sin origen en una herramienta (K2 R3) | validador de cifras |
-| F2 | **Total con desglose ofrecido** | pregunta de cantidad **sin** nombre y varias entidades visibles | total + nota + oferta de abrirlo («¿Lo abro por aplicación?») | preguntar «¿sobre qué aplicación?» cuando hay respuesta global | caso con 0, 1 y varias entidades |
+| F2 | **Total con desglose ofrecido** | pregunta de cantidad **sin** nombre y varias entidades visibles | total + nota + oferta de abrirlo («¿Querés verlo por aplicación?») | preguntar «¿sobre qué aplicación?» cuando hay respuesta global | caso con 0, 1 y varias entidades |
 | F3 | **Aclaración** | nombre dado con 2 o más coincidencias visibles **y** se cumple §M.4 | 2 a 4 candidatas con una cifra distintiva y «y k más» | revelar una candidata ajena al rol | resolutor por tabla (K2 §6) |
 | F4 | **Pasos desde la ayuda** | anillo 1 o 2 con fragmentos sobre el umbral | redacción anclada, cita por oración, destino del catálogo | devolver el fragmento crudo o sólo un enlace (K2 §3) | lectura humana + control de anclaje |
 | F5 | **Abstención** | sin fragmento sobre el umbral, o el modelo se abstiene | plantilla fija + salida (otras palabras, Ayuda) | un dato o un paso inventado | recuperación vacía |
 | F6 | **Negativa útil** | la intención existe pero el rol no puede | qué no, qué sí, a quién pedirlo o a dónde ir; si nombra un concepto, **la ficha viaja en la misma respuesta** (plegada) | un destino que termina en 403; revelar qué tiene otro rol; remitir a un botón «Abrir la ficha» en lugar de traerla | rol sin permiso de hacer |
 | F7 | **Afuera** | anillo «Afuera» de la frontera | texto fijo + 2 o 3 preguntas de ejemplo que sí contesta | una respuesta del modelo [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2) | pregunta afuera → sin llamada al modelo |
 | F8 | **IA apagada** | habilitación distinta de `Habilitada` (K2 §10) | aviso con el motivo («falta configurar X») + respaldo por pertinencia | un texto genérico de introducción | arranque sin la variable |
+
+**Variantes de F7 y composición.** El nodo «anillo 3 → derivar» de §M.3 y las preguntas de criterio profesional de
+[K1 F-7](knowledge-AI-Layer-Integration-Designing-Specification.md#k1-3-1-frontera) se responden con **F7 en
+variante derivación**: texto fijo que dice a quién corresponde y cómo llegar, sin preguntas de ejemplo. Si el
+mensaje describe una urgencia del dominio (en salud, un síntoma de alarma), la variante es **derivación urgente**:
+texto fijo con el canal de urgencia primero, sin sugerencias ni voto, y sin llamada al modelo. «Una forma por
+respuesta» (CD-1) se lee **por intención**: una respuesta compuesta (§M.5) lleva una parte por intención, cada una
+con su forma. Cómo se dibuja cada forma y variante está en
+[K8 §3.1](knowledge-AI-Layer-Chat-Console-Interface.md#k8-3-1). *Prueba:* un caso por variante en la batería; la
+urgente no llama al modelo.
 
 <a id="k5-4"></a>
 ## 4. Datos: cifra, desglose, torta o barras
@@ -407,7 +417,7 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.2 | 2026-11-15 | Rondas 1 a 3 del juicio de la consola de PushDispatch (3/28 → 10/28 → 11/28, vetos R12 y R3): CD-9 definición primero; §4.7 mismo número en todas las superficies; §6.8 negativa sin guía ajena y con salidas; §6.9 receta hasta su confirmación; K5-AP-15 a K5-AP-17; remisión a [K8](knowledge-AI-Layer-Chat-Console-Interface.md) para la interfaz. |
+| 1.2 | 2026-11-15 | Juicio inicial y rondas 1 y 2 de la consola de PushDispatch (3/28 → 10/28 → 11/28, vetos R12 y R3): CD-9 definición primero; §4.7 mismo número en todas las superficies; §6.8 negativa sin guía ajena y con salidas; §6.9 receta hasta su confirmación; K5-AP-15 a K5-AP-17; variantes derivación y derivación urgente de F7 y CD-1 por intención (§3); F2 sin primera persona de acción; remisión a [K8 §3.1](knowledge-AI-Layer-Chat-Console-Interface.md#k8-3-1) para el dibujo de cada forma. |
 | 1.1 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch: §4.5 forma como parámetro del contrato (naturaleza × pedido); §4.6 negativa por cercanía y «en la ayuda» sólo para intenciones de ayuda. |
 | 1.0 | 2026-11-12 | Pasa a Vigente con la Guía DC 1.4.0: §M marco normativo del turno (T-1 a T-8 con precedencia, prueba de anillo, alcance, contrato con `NecesitaDatoDeAlcance`, árbol, regla de aclaración de cuatro condiciones, compuestas, rúbrica R1–R14); CD-5, F3 y §5 condicionados a §M.4; K5-AP-13 y K5-AP-14. K1, K2 y K6 remiten acá. |
 | 0.13 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): F6 trae la ficha (no un botón); §6.5 pertinencia por estado; §6.6 rótulo del chip igual al de la acción y según el rol; §6.7 negativa con contenido; §7.5 procedimiento en la voz. |

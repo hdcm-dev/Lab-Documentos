@@ -8,9 +8,9 @@
 **Hereda-de:** —
 **Sustituye:** —
 **Compatible-con:** [K1](knowledge-AI-Layer-Integration-Designing-Specification.md), [K2](knowledge-AI-Layer-Console-Assistant-Building.md), [K3](knowledge-AI-Layer-Verification-And-Acceptance.md), [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas, vigente); `Dot-Net-Integration-AI-Layer-Guide.md` edición 1.2.0 (las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §14 y basta para aplicarlo): Knowledge-Razonamiento-Del-Gestor, Knowledge-Mesa-De-Expertos-A-Pedido, Knowledge-Logica-De-Decision, Knowledge-Conformacion-Pull-Request-Automatico, Knowledge-Turnos-De-Recursos-Compartidos-En-Un-Host
-**Versión:** 1.4
+**Versión:** 1.5
 **Estado:** Vigente
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
 
 ---
 
@@ -45,7 +45,7 @@ qué orden, con quién, con qué evidencia y con qué controles. Lo que funcion�
 código: fue un método. Las piezas de código se copian; el método, si no se escribe, se pierde.
 
 **Fuente para personas.** Los libros mandan: la Guía 16 (`../Dot-Net-Integration-AI-Layer-Guide.md`) y la guía de
-diseño conversacional (`../Conversational-Design-Framework-Guide.md` 1.5.0; su base «Criterio y juicio» se cita por
+diseño conversacional (`../Conversational-Design-Framework-Guide.md` 1.6.0; su base «Criterio y juicio» se cita por
 [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Este conocimiento destila, remite por sección y **nunca los contradice**. Si un agente
 encuentra una contradicción o un hueco del libro, lo anota para la mesa del libro y no lo resuelve acá (§13).
 
@@ -487,6 +487,7 @@ Se resumen para que un agente nuevo trabaje igual sin cargarlos.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.5 | 2026-11-15 | Guía DC 1.6.0; el conjunto suma [K8](knowledge-AI-Layer-Chat-Console-Interface.md) (la consola de chat como interfaz), con sus antipatrones K8-AP-n en su §15. Nada de 1.4 cambió de sentido. |
 | 1.4 | 2026-11-12 | §4 plan por rebanadas con dependencias, lo que arranca ya y dictamen versionado ante las observaciones del dueño del producto. |
 | 1.3 | 2026-11-12 | La guía de diseño conversacional está publicada: K5 vigente con el marco del turno; cierre de fase con R13/R14 (§13). |
 | 1.2 | 2026-11-11 | §2.2 punto 4: cláusula fija en la carta de los subagentes ante mensajes a mitad de turno (lección de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria)). |

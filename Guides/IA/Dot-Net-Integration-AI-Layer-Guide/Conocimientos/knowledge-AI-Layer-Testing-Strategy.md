@@ -8,9 +8,9 @@
 **Hereda-de:** [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (los umbrales y la evidencia de aceptación mandan; este conocimiento los implementa como suite y scripts)
 **Sustituye:** —
 **Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` (libro de esta carpeta, edición 1.2.0; las remisiones `[Guía §x]` usan esa numeración y sus anclas `#cN-M`; base teórica en §11.1–§11.7 y §11.12); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (los `REQ-IA-nn` que cada prueba ata); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (las reglas de construcción que se prueban); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (ciclo del PR y registro de frentes); [K5](knowledge-AI-Layer-Conversational-Design.md) (forma esperada de cada respuesta); K6, AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks (corpus, funciones y destinos que se prueban)
-**Versión:** 1.6
+**Versión:** 1.7
 **Estado:** Vigente
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
 
 **Por qué nace Vigente:** destila prácticas ya medidas en un sistema (mismo criterio que K3); cada regla cita la prueba o la cifra que la respalda.
 
@@ -73,6 +73,7 @@ de configuración y la lista de errores medidos.
 | Antes de cerrar una fase | §8, §9, §10, §11 y luego K3 |
 | Monto o reviso la CI | §12, §13 |
 | Reviso un PR de pruebas | §16, §17 |
+| Pruebo la interfaz de la consola (estados, teclado, teléfono, historial) | §4, §8 y [K8](knowledge-AI-Layer-Chat-Console-Interface.md) §14 |
 
 ---
 
@@ -194,8 +195,10 @@ fixture declara «no son datos reales» y el grep de §12 da cero.
 <a id="k7-4"></a>
 ## 4. bUnit de la consola
 
-**R4.1 — Probá cada estado visible de la consola con bUnit:** apagada con su motivo, cargando, respuesta,
-«No está en la ayuda», aclaración con opciones, chip de destino, voto, detener; y la **página destino con su
+**R4.1 — Probá cada estado visible de la consola con bUnit:** los diez estados de
+[K8 §4](knowledge-AI-Layer-Chat-Console-Interface.md#k8-4) (vacío, pensando, redactando, respuesta, error, sin permiso,
+aclaración, IA apagada, consola apagada, conversación no disponible; redactando sólo si hay streaming), más «No está
+en la ayuda», chip de destino, voto y detener; y la **página destino con su
 parámetro de acción** (`?alta=1`: con permiso abre el modal una vez, sin permiso carga normal, recargar tras
 cerrar no lo reabre, [K6 §17.2](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-17)). *Por qué:* son los estados que
 la lectura humana juzga (K5) y los que se rompen al tocar el componente. *Prueba:* en PushDispatch
@@ -505,6 +508,12 @@ minuto, tres corridas seguidas cobran errores de límite que no son del asistent
 respuesta. *Prueba:* el registro de cada corrida trae la pausa y el conteo de 429; con 429 > 0 la corrida no
 cuenta para el ×3 ([K3 R2.6b](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-6b)).
 
+**R9.13 — Bisección de merges ×3 cuando cae la redacción.** El script de batería acepta un commit y corre ×3 en él; ante una caída se corre en el último merge bueno y en el primero malo hasta aislar el PR. *Prueba:* en PushDispatch, 33/33 en el merge anterior y 18/33 en el siguiente aislaron el cambio de corpus ([K3 R2.13](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-2-13)).
+
+**R9.14 — La batería usa el catálogo y los roles de producción.** Los destinos, roles y cuentas de la batería salen del mismo catálogo que la app (no de un catálogo de prueba propio), y una expectativa que el producto cambió pasa a sonda con motivo hasta reescribirse. *Porqué:* un catálogo de prueba viejo dio una falla que producción no tenía, una falsa alarma («Mi perfil» sin enlace en el panel del sistema). *Prueba:* compuerta que compara el catálogo de la batería con el de la app.
+
+**R9.15 — Cada veto de la rúbrica tiene su prueba de juicio.** Un veto (por ejemplo R3, «qué es X» devolvía pasos) se fija como una clase de pruebas que sale roja antes del arreglo (en el caso, 17 de 24) y verde después, y corre con la batería ×3. *Prueba:* la clase existe y su rojo quedó registrado.
+
 ---
 
 <a id="k7-10"></a>
@@ -674,6 +683,7 @@ Cuando el error es el mismo que uno de K3, la fuente es K3 y acá sólo se remit
 | <a id="k7-ap-13"></a>K7-AP-13 | Ampliar una lista de palabras para atrapar un caso sin correr el otro lado | R6.7 |
 | <a id="k7-ap-14"></a>K7-AP-14 | Sonda de una sola ronda, o sin ronda de control cotidiana | R6.8 |
 | <a id="k7-ap-15"></a>K7-AP-15 | Fallas de la sonda arregladas y no fijadas como prueba, o borradas si no se resolvieron | R6.9 |
+| <a id="k7-ap-16"></a>K7-AP-16 | Batería con un catálogo de prueba propio | R9.14 |
 | — | Un 90 % sin repetir | ver [K3-AP-6](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-6) |
 | — | Medir con el modelo cargado | ver [K3-AP-7](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-7) |
 | — | Ajustar la batería para que pase | ver [K3-AP-10](knowledge-AI-Layer-Verification-And-Acceptance.md#k3-ap-10) |
@@ -743,6 +753,7 @@ conocidos con `Skip` (R6.9); el filtro de salida, con el corpus de R9.11 (expedi
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.0 | 2026-11-11 | Creación. Detalle de testing que K3 §9 y K2 dejaban en general; K3 conserva la norma de aceptación. |
+| 1.7 | 2026-11-15 | Juicio inicial y rondas 1 y 2 de la consola de PushDispatch: R9.13 bisección de merges ×3; R9.14 batería con el catálogo y los roles de producción; R9.15 prueba de juicio por veto; K7-AP-16; R4.1 prueba los diez estados de K8 §4; mapa de carga remite a [K8](knowledge-AI-Layer-Chat-Console-Interface.md). |
 | 1.6 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto: R5.5 catálogo de intenciones ↔ enrutador y matriz de forma; R5.6 pastillas y consumo con datos sembrados; R5.7 MCP servidor y cliente en contenedor. |
 | 1.5 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): R6.7 número hablado parseado, dígito por la misma función, clase «número que cita la fórmula»; R6.10 criterio del enrutador frente al del corpus de fichas; R9.8 todo control trae su caso rojo; R9.11 procedimiento en la voz; R9.12 límite de tasa en las corridas. |
 | 1.4 | 2026-11-11 | Lecciones de [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (enrutador del asistente de conceptos): R6.7 clasificador probado en los dos sentidos; R6.8 sonda adversarial por rondas con control cotidiano; R6.9 sonda permanente y casos conocidos; R9.11 falsos positivos contra corpus de respuestas buenas; K7-AP-13 a K7-AP-15. |

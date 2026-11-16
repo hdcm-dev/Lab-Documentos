@@ -7,10 +7,10 @@
 **Condicion-de-carga:** al implementar la consola o tocar su enrutado, corpus, destinos, votos o despliegue; después de tener la especificación de K1; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** AI-Layer-Integration-Designing-Specification (K1): la especificación manda; este conocimiento no redefine requisitos, los implementa
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); `Conversational-Design-Framework-Guide.md` 1.5.0 (su norma del turno se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
-**Versión:** 1.6
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan esa numeración y sus anclas `cN-k`); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md); [K4](knowledge-AI-Layer-Integration-Working-Method.md); [K5](knowledge-AI-Layer-Conversational-Design.md) (marco del turno y formas); [K6](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md) (detalle de corpus, funciones y destinos); [K7](knowledge-AI-Layer-Testing-Strategy.md) (cómo se escriben las pruebas que este conocimiento pide); [K8](knowledge-AI-Layer-Chat-Console-Interface.md) (la interfaz de la consola); `Conversational-Design-Framework-Guide.md` 1.6.0 (su norma del turno se cita por [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m)). Opcionales, si el repo anfitrión los tiene (lo que este conocimiento necesita de ellos está resumido en §16): Template-Blazor-Interactive-Server-Panel-De-Control, Bundle-JS, Parametros-De-Sistema, Release-Y-Despliegue-Versionado
+**Versión:** 1.7
 **Estado:** Borrador (pasa a Vigente cuando K3 lo acepte aplicado sobre un segundo sistema)
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
 
 ---
 
@@ -55,6 +55,7 @@ No repite lo que ya está escrito en otro lado; lo cita:
 | Endpoint, tiempos, umbrales y textos configurables | [§16 E-4](#k2-16) | dónde vive cada parámetro que no es secreto |
 | Versión, etiqueta, despliegue, verificación post-release | [§16 E-5](#k2-16) | el ciclo; acá sólo lo propio de la IA |
 | Formas de respuesta, negativa útil, candidatas, gráficos | [K5](knowledge-AI-Layer-Conversational-Design.md) | qué forma toma cada respuesta (F1–F8) |
+| Anatomía, estados, teclado, teléfono e historial de la consola | [K8](knowledge-AI-Layer-Chat-Console-Interface.md) | cómo se ve y se opera lo que este conocimiento calcula |
 | Frontera de competencia, anillos, señales sin texto | [Guía §3.7](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7) | criterio de cada rama del pipeline |
 
 **Mapa de carga.** Cargá §0–§3 siempre; después sólo la sección del tema que tocás.
@@ -68,6 +69,7 @@ No repite lo que ya está escrito en otro lado; lo cita:
 | Agregar o cambiar una función del modelo | §2, §3 y [K6 Parte B](knowledge-AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks.md#k6-9) |
 | Escribir las pruebas de lo que tocaste | [K7](knowledge-AI-Layer-Testing-Strategy.md#k7-0) |
 | La consola no encuentra la entidad que nombran | §6 |
+| Dibujar la consola, su historial o su versión de teléfono | [K8](knowledge-AI-Layer-Chat-Console-Interface.md) |
 | Agregar un gráfico | §7 |
 | Votos, señales, métricas de la frontera | §8 |
 | Agregar o cambiar un rol | §9 |
@@ -403,7 +405,8 @@ Cada paso termina con su artefacto; sin artefacto el paso no está hecho.
 6. **Ingesta y recuperación** (§4) con filtro por rol previo y umbral; medí recall.
 7. **Redacción, validador de cifras, eliminación de URLs** (R2, R3, R5) con doble de `IChatClient`.
 8. **Componente de consola** en el panel según [§16 E-1](#k2-16): chip de contexto, sugerencias por
-   pantalla y rol, votos (§8), visualización (§7). Linkeá estilos ([§16 E-3](#k2-16)).
+   pantalla y rol, votos (§8), visualización (§7). Linkeá estilos ([§16 E-3](#k2-16)). La anatomía, los
+   estados, el teclado, el teléfono y el historial están en [K8](knowledge-AI-Layer-Chat-Console-Interface.md); su checklist entra en la entrega.
 9. **Matriz de roles con el raíz** (§9) y su prueba.
 10. **Configuración y habilitación** (§10) con [§16 E-4](#k2-16) para lo que no es secreto.
 11. **Entregá a K3**: batería real ×3, crítico, capturas a 1280 y 390 en claro y oscuro (cuatro pares por
@@ -537,6 +540,7 @@ normas para lo mismo, rigen las del anfitrión y estas sirven de control.
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.7 | 2026-11-15 | Remisiones mínimas a [K8](knowledge-AI-Layer-Chat-Console-Interface.md) (la consola de chat como interfaz): §0, mapa de carga y §11 paso 8; Guía DC 1.6.0. Nada de 1.6 cambió de sentido. |
 | 1.6 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch: §8 R6 pastillas por intención con cota de Wilson, mínimo de eventos y exploración; §8 R7 decorador de consumo y fábrica por proveedor. |
 | 1.5 | 2026-11-12 | Remite a [K5 §M](knowledge-AI-Layer-Conversational-Design.md#k5-m) (marco del turno): el paso 2 no pregunta si la intención no necesita alcance; §6 aclara sólo bajo §M.4 y con nombres humanos; §9 se juzga con R12. |
 | 1.4 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) (aplicación a ciegas y rebanada EXP-0005): §5.7 pertinencia por estado además del permiso; §5.8 rótulo del chip por rol; §5.9 parámetro de valor fijo y página igual sin nada que abrir; §5.5 conformidad de permisos por bUnit cuando no hay `[Authorize(Policy)]`. |

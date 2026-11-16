@@ -7,10 +7,10 @@
 **Condicion-de-carga:** al decidir si un turno aclara, al juzgar un diseño o un cambio con la rúbrica; al escribir una plantilla de respuesta, una negativa, una aclaración o un gráfico del asistente; al armar la columna de conducta de una batería; al leer respuestas como crítico; se carga por secciones según el «Mapa de carga» de §0
 **Hereda-de:** —
 **Sustituye:** —
-**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); `Conversational-Design-Framework-Guide.md` 1.5.0 (Guía DC: libro de diseño conversacional; las remisiones `[Guía DC §x]` usan sus anclas; si algo choca, rige el libro)
-**Versión:** 1.1
+**Compatible-con:** `Dot-Net-Integration-AI-Layer-Guide.md` 1.2.0 (libro de esta carpeta; las remisiones `[Guía §x]` usan sus anclas `cN-k`); [K1](knowledge-AI-Layer-Integration-Designing-Specification.md) (frontera y requisitos); [K2](knowledge-AI-Layer-Console-Assistant-Building.md) (implementación); [K3](knowledge-AI-Layer-Verification-And-Acceptance.md) (medición); [K4](knowledge-AI-Layer-Integration-Working-Method.md) (forma de trabajo); [K8](knowledge-AI-Layer-Chat-Console-Interface.md) (cómo se dibuja cada forma en la consola); `Conversational-Design-Framework-Guide.md` 1.6.0 (Guía DC: libro de diseño conversacional; las remisiones `[Guía DC §x]` usan sus anclas; si algo choca, rige el libro)
+**Versión:** 1.2
 **Estado:** Vigente (formas medidas en un sistema; el marco del turno de §M es criterio del libro, con umbrales no calibrados)
-**Fecha:** 2026-11-12
+**Fecha:** 2026-11-15
 
 ---
 
@@ -58,6 +58,7 @@ con la Guía 16, **rige el libro** y se corrige esta.
 | Tono, persona gramatical, sugerencias | §7 |
 | Armar la lectura humana o la columna de conducta de la batería | §8, y K3 §5 |
 | Revisar un PR que toca textos del asistente | §9, §10 |
+| Cómo se ve la forma en la consola (estados, píldoras, chip, gráfico, historial) | [K8](knowledge-AI-Layer-Chat-Console-Interface.md) |
 
 <a id="k5-1"></a>
 ## 1. Cuándo usarlo y cuándo no
@@ -202,6 +203,7 @@ en el sitio real (K3); 1 = ≥ 7/10. Tolerancia cero (R4, R12): 2 = 0 fallas; 1 
 | <a id="k5-r5"></a>CD-5 | **Ante un nombre que coincide con varias cosas, y sólo si la regla de §M.4 pide aclarar, se aclara con candidatas y su cifra; nunca se elige ni se suma en silencio** | la persona tiene que ver sobre qué objeto se le responde | resolutor con dos coincidencias → aclaración, sin cifra agregada |
 | <a id="k5-r6"></a>CD-6 | **El asistente no actúa ni dice que actúa:** explica y lleva; la acción la hace la persona en la pantalla | el anillo 1 es de lectura y navegación (K2 §1); «yo te lo creo» promete lo que el software no hace | control del texto: ninguna oración en primera persona de acción |
 | <a id="k5-r8"></a>CD-8 | **Redactá con el modelo sólo donde aporta** (cifras con su contexto) y aceptá cada forma redactada sólo si **no es peor que su plantilla fija**, medido a ciegas | en el banco Movilidad Urbana de [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) la redacción pasó todos los controles de cifras y citas y aun así salió peor que la plantilla en 6 de 13 pares a ciegas: el anclaje no mide calidad | compuerta a ciegas por forma (K3 R2.8); una respuesta que sólo suma citas a la plantilla no cuenta como redactada |
+| <a id="k5-r9"></a>CD-9 | **Ante «qué es X», primero la definición anclada** (la sección «Qué es X», la oración o el ítem que define); el dónde o el cómo van después, como otra parte, sólo si la pregunta los pide | en la ronda 2 del juicio de PushDispatch (11/28) la rúbrica vetó R3: «qué es X» devolvía los pasos de la sección de alta; se respondía otra pregunta | caso de batería por concepto: el primer párrafo de la respuesta contiene la definición; si el modelo no dice la mitad de sus términos, queda la plantilla |
 | <a id="k5-r7"></a>CD-7 | **La forma de los datos (torta, barras, número solo) la decide el código por regla**, no el modelo | el modelo no sabe cuántas categorías hay ni si suman un todo | tabla de casos `(n categorías, tipo) → forma` |
 
 **Texto de la abstención.** La plantilla es fija y vive en el código; el texto exacto lo elige cada proyecto. En
@@ -216,13 +218,23 @@ cuando el modelo se abstiene con fragmentos («No lo encontré en la ayuda»). L
 | # | Forma | Cuándo la elige el código | Qué lleva | Qué no puede pasar | Prueba |
 |---|---|---|---|---|---|
 | F1 | **Cifra** | anillo 1, una entidad resuelta | número de una herramienta + nota de métrica + destino si hay | número sin origen en una herramienta (K2 R3) | validador de cifras |
-| F2 | **Total con desglose ofrecido** | pregunta de cantidad **sin** nombre y varias entidades visibles | total + nota + oferta de abrirlo («¿Lo abro por aplicación?») | preguntar «¿sobre qué aplicación?» cuando hay respuesta global | caso con 0, 1 y varias entidades |
+| F2 | **Total con desglose ofrecido** | pregunta de cantidad **sin** nombre y varias entidades visibles | total + nota + oferta de abrirlo («¿Querés verlo por aplicación?») | preguntar «¿sobre qué aplicación?» cuando hay respuesta global | caso con 0, 1 y varias entidades |
 | F3 | **Aclaración** | nombre dado con 2 o más coincidencias visibles **y** se cumple §M.4 | 2 a 4 candidatas con una cifra distintiva y «y k más» | revelar una candidata ajena al rol | resolutor por tabla (K2 §6) |
 | F4 | **Pasos desde la ayuda** | anillo 1 o 2 con fragmentos sobre el umbral | redacción anclada, cita por oración, destino del catálogo | devolver el fragmento crudo o sólo un enlace (K2 §3) | lectura humana + control de anclaje |
 | F5 | **Abstención** | sin fragmento sobre el umbral, o el modelo se abstiene | plantilla fija + salida (otras palabras, Ayuda) | un dato o un paso inventado | recuperación vacía |
 | F6 | **Negativa útil** | la intención existe pero el rol no puede | qué no, qué sí, a quién pedirlo o a dónde ir; si nombra un concepto, **la ficha viaja en la misma respuesta** (plegada) | un destino que termina en 403; revelar qué tiene otro rol; remitir a un botón «Abrir la ficha» en lugar de traerla | rol sin permiso de hacer |
 | F7 | **Afuera** | anillo «Afuera» de la frontera | texto fijo + 2 o 3 preguntas de ejemplo que sí contesta | una respuesta del modelo [Guía §3.7.2](../Dot-Net-Integration-AI-Layer-Guide.md#c3-7-2) | pregunta afuera → sin llamada al modelo |
 | F8 | **IA apagada** | habilitación distinta de `Habilitada` (K2 §10) | aviso con el motivo («falta configurar X») + respaldo por pertinencia | un texto genérico de introducción | arranque sin la variable |
+
+**Variantes de F7 y composición.** El nodo «anillo 3 → derivar» de §M.3 y las preguntas de criterio profesional de
+[K1 F-7](knowledge-AI-Layer-Integration-Designing-Specification.md#k1-3-1-frontera) se responden con **F7 en
+variante derivación**: texto fijo que dice a quién corresponde y cómo llegar, sin preguntas de ejemplo. Si el
+mensaje describe una urgencia del dominio (en salud, un síntoma de alarma), la variante es **derivación urgente**:
+texto fijo con el canal de urgencia primero, sin sugerencias ni voto, y sin llamada al modelo. «Una forma por
+respuesta» (CD-1) se lee **por intención**: una respuesta compuesta (§M.5) lleva una parte por intención, cada una
+con su forma. Cómo se dibuja cada forma y variante está en
+[K8 §3.1](knowledge-AI-Layer-Chat-Console-Interface.md#k8-3-1). *Prueba:* un caso por variante en la batería; la
+urgente no llama al modelo.
 
 <a id="k5-4"></a>
 ## 4. Datos: cifra, desglose, torta o barras
@@ -240,6 +252,8 @@ cuando el modelo se abstiene con fragmentos («No lo encontré en la ayuda»). L
 4. **Dato parcial, se dice en la nota** («faltan datos de las últimas 2 horas»), no en un descargo genérico.
 5. **La forma es un parámetro del contrato.** La herramienta declara la naturaleza de la serie (`ParteDeUnTodo`, `EnElTiempo`, `Ranking`, `Comparacion`); el clasificador detecta el modificador pedido («en torta», «en barras», «en tabla», «sólo el número»); el código cruza ambos: compatible → se honra; incompatible → una línea que lo dice y la forma por omisión («Una torta no muestra la evolución; te lo dejo en barras»). La tabla acompaña plegada («Ver datos»), no como segundo gráfico. *Porqué:* en el caso, el pedido «en torta» recibía barras y tabla porque nada entendía la forma [Guía DC §6.3](../Conversational-Design-Framework-Guide.md#c6-3-pedido). *Prueba:* matriz naturaleza × pedido ([K7 R5.5](knowledge-AI-Layer-Testing-Strategy.md#k7-5-5)).
 6. **La negativa de una función trae lo más cercano**, por prefijo o subcadena sin acentos y sólo entre lo que el usuario ve: «No exactamente; tenés *Acme Sur*», con su rol y «Abrir». «No encontré esto en la ayuda» sólo se admite cuando la intención es de ayuda. *Prueba:* una cuenta ajena con el mismo prefijo no aparece.
+
+7. **El mismo número en todas las superficies.** Una cifra que la portada, una pantalla y el asistente muestran se calcula con el mismo criterio (por ejemplo, lo archivado no se cuenta en ninguna). *Porqué:* en la ronda 1 de PushDispatch el asistente contaba lo archivado y la portada no. *Prueba:* caso de batería que compara la cifra del asistente con la de la pantalla.
 
 <a id="k5-5"></a>
 ## 5. Candidatas: aclarar o totalizar
@@ -281,6 +295,8 @@ herramienta y se filtra por permiso como cualquier otra.
    plegada en la misma respuesta. *Porqué:* en Lab-Geometria (EXP-0004, H2) «[Abrir la ficha]» fue lo primero que
    se corrigió: una negativa que obliga a otro clic para lo que sí se puede saber pierde su utilidad. *Prueba:*
    caso de batería «pedir resolver» → la respuesta contiene el texto de la ficha.
+8. **La negativa no arrastra una guía ajena y lleva salidas.** Una negativa (F6 o F7) no se acompaña con la ayuda de otra tarea que el buscador encontró por cercanía; trae 2 o 3 píldoras de lo que sí se puede. *Porqué:* en la ronda 2 de PushDispatch la negativa arrastraba una guía que no venía al caso. *Prueba:* caso fuera de alcance → sin cita de ayuda, con píldoras.
+9. **La receta termina en su confirmación.** Los pasos de una tarea llegan hasta el control que la completa («Crear segmento»), no hasta el penúltimo. *Prueba:* por receta de la batería, el último paso nombra el control de confirmación.
 
 <a id="k5-7"></a>
 ## 7. Voz y sugerencias
@@ -331,6 +347,9 @@ columnas y cada forma F1–F8 tiene al menos un caso.
 - [ ] Cada forma redactada pasó la compuerta «no peor que la fija» a ciegas (CD-8).
 - [ ] El control de registro detecta formas ajenas («vuestra», tuteo) y tiene prueba de falsos positivos (§7).
 - [ ] La lectura humana tiene una columna por criterio de §8 y cada forma tiene un caso.
+- [ ] Cada concepto de la batería responde primero con su definición (CD-9).
+- [ ] Las cifras que se muestran en varias superficies coinciden (§4.7).
+- [ ] Las negativas no citan guías ajenas y las recetas terminan en su confirmación (§6.8, §6.9).
 
 <a id="k5-10"></a>
 ## 10. Antipatrones con su control
@@ -350,6 +369,9 @@ columnas y cada forma F1–F8 tiene al menos un caso.
 | <a id="k5-ap-12"></a>K5-AP-12 | Enrutador que elige la forma (o la negativa) con listas de palabras ampliadas a mano | en [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria) cada ampliación rechazó preguntas legítimas o dejó escapar pedidos | regla por función del elemento en la frase, probada en los dos sentidos ([K7 R6.7](knowledge-AI-Layer-Testing-Strategy.md#k7-6-7)) y con sonda ([K7 R6.8](knowledge-AI-Layer-Testing-Strategy.md#k7-6-8)) |
 | <a id="k5-ap-13"></a>K5-AP-13 | Aclaración irrelevante: «varias cuentas → ¿En qué cuenta?» ante una pregunta conceptual, con chips de identificadores técnicos | la conversación quedó trabada en un dato que no cambiaba la respuesta | §M.4 y R4, R11 |
 | <a id="k5-ap-14"></a>K5-AP-14 | Mejora invisible: se anuncia «mejoró» y la captura de la batería es igual | el dueño del producto no vio mejora | R13, R14 (§M.6) |
+| <a id="k5-ap-15"></a>K5-AP-15 | «Qué es X» responde con los pasos | ronda 2 del juicio: veto R3, 11/28 | CD-9 |
+| <a id="k5-ap-16"></a>K5-AP-16 | Negativa que arrastra una guía ajena | la persona recibía instrucciones de otra tarea | §6.8 |
+| <a id="k5-ap-17"></a>K5-AP-17 | La misma cifra distinta según la superficie | el asistente contaba lo archivado y la portada no | §4.7 |
 | <a id="k5-ap-7"></a>K5-AP-7 | Marcas de formato crudas en el panel (`**Encuesta**`) | en [Lab-E2E.WebBlazor](https://github.com/hdcm-dev/Lab-E2E.WebBlazor) se veían los asteriscos en respuestas fijas y redactadas | el panel renderiza un subconjunto cerrado (negrita, listas) o lo quita; captura sin `**` ni `#` |
 
 La tabla índice de todos los antipatrones de la integración está en
@@ -395,6 +417,7 @@ batería, que se aceptó con 36 de 36 redacciones ancladas en cada una de tres c
 
 | Versión | Fecha | Cambio |
 |---|---|---|
+| 1.2 | 2026-11-15 | Juicio inicial y rondas 1 y 2 de la consola de PushDispatch (3/28 → 10/28 → 11/28, vetos R12 y R3): CD-9 definición primero; §4.7 mismo número en todas las superficies; §6.8 negativa sin guía ajena y con salidas; §6.9 receta hasta su confirmación; K5-AP-15 a K5-AP-17; variantes derivación y derivación urgente de F7 y CD-1 por intención (§3); F2 sin primera persona de acción; remisión a [K8 §3.1](knowledge-AI-Layer-Chat-Console-Interface.md#k8-3-1) para el dibujo de cada forma. |
 | 1.1 | 2026-11-12 | Tras las mesas de proveedores, consumo y MCP y de la ronda del dueño del producto sobre la consola de PushDispatch: §4.5 forma como parámetro del contrato (naturaleza × pedido); §4.6 negativa por cercanía y «en la ayuda» sólo para intenciones de ayuda. |
 | 1.0 | 2026-11-12 | Pasa a Vigente con la Guía DC 1.4.0: §M marco normativo del turno (T-1 a T-8 con precedencia, prueba de anillo, alcance, contrato con `NecesitaDatoDeAlcance`, árbol, regla de aclaración de cuatro condiciones, compuestas, rúbrica R1–R14); CD-5, F3 y §5 condicionados a §M.4; K5-AP-13 y K5-AP-14. K1, K2 y K6 remiten acá. |
 | 0.13 | 2026-11-12 | Banco de diálogo sobre [Lab-Geometria](https://github.com/hdcm-dev/Lab-Geometria): F6 trae la ficha (no un botón); §6.5 pertinencia por estado; §6.6 rótulo del chip igual al de la acción y según el rol; §6.7 negativa con contenido; §7.5 procedimiento en la voz. |

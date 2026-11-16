@@ -118,6 +118,7 @@ Una tarjeta de **un solo turno** en una pantalla (como la de Geometría) tambié
 | <a id="k8-r6"></a>CI-6 | **El almacenamiento de la pestaña guarda ids, nunca texto** (lo tecleado que vive sólo en el campo, §8, no cuenta). El texto de la conversación, si se guarda, vive en el servidor y se filtra por la persona; una conversación ajena es indistinguible de una inexistente | el almacenamiento del navegador es legible por cualquier script de la página y sobrevive al cierre de sesión en equipos compartidos | inspección del almacenamiento de la pestaña tras una conversación: sólo ids; pedir un id ajeno → 404 igual que uno inexistente |
 | <a id="k8-r7"></a>CI-7 | **Historial para la persona ≠ trazas para el operador.** Son dos almacenes con dos lectores, dos retenciones y dos políticas; la traza del operador no lleva texto salvo captura encendida a propósito (§11) | mezclar los dos es lo que lleva a guardar todo «por si acaso» o a no poder dar historial | la especificación tiene una fila por almacén con lector, retención y contenido; la traza por omisión no tiene pregunta ni respuesta |
 | <a id="k8-r8"></a>CI-8 | **Nada de lo provisional queda.** Lo que se muestra mientras se redacta (texto parcial) se reemplaza por la versión validada o por la plantilla; detener o cerrar cancela | un texto a medias que queda visible es una respuesta que nadie validó ([K2 R1](knowledge-AI-Layer-Console-Assistant-Building.md): el modelo sólo redacta sobre lo ya calculado y validado) | E2E: detener a mitad → queda la plantilla con su aviso, no el parcial |
+| <a id="k8-r9"></a>CI-9 | **El historial de conversaciones es persistente para la persona y se opera desde la cabecera** ([§8.11](#k8-8-11)): ícono de reloj → panel con «Buscar conversaciones», lista con la primera pregunta recortada como título, tiempo relativo («hace 4 días»), marca de la actual, desplazamiento y «Nueva conversación»; con retención escrita, borrar una y borrar todas, y aviso de qué se guarda. **No es observabilidad:** el historial lo lee la persona; las trazas las lee el operador y por omisión no tienen texto (CI-7, §11) | es el diseño de un producto de referencia del mercado y lo que la persona espera: retomar lo que preguntó ayer; un historial que muere al cerrar sesión obliga a repreguntar, y confundirlo con las trazas lleva a guardar texto donde no corresponde | bUnit del panel (buscar filtra, título recortado, «hace 4 días» con reloj fijado, marca de la actual, nueva, borrar una y todas con su anuncio); integración: cerrar sesión y volver a entrar → la conversación sigue; vencida la retención → no está; la traza de la misma consulta no tiene texto |
 
 <a id="k8-3"></a>
 ## 3. Anatomía y componentes
@@ -389,6 +390,30 @@ herramienta. Un «no» impide aceptar.
 10. **Retomar una conversación vieja** muestra sus turnos tal como fueron, con una línea «Conversación del
     {fecha}: las cifras son de ese momento»; los chips de destino viejos se dibujan inactivos; el chip de contexto
     es el de la pantalla actual.
+11. **El historial recomendado es persistente** y se abre desde el reloj de la cabecera: §8.11 (CI-9).
+
+<a id="k8-8-11"></a>
+### 8.11 Historial persistente para la persona (diseño recomendado)
+
+Observación del PO (2026-11-15, aprobada): el historial que sobrevive a la sesión es parte del **diseño
+recomendado**, como en un producto de referencia del mercado. El almacén efímero de §8 queda como mínimo aceptable
+sólo si la especificación dice por qué (por ejemplo, datos que no deben guardarse, K1 CTX-SENS).
+
+| Elemento | Cómo es | Prueba |
+|---|---|---|
+| Entrada | ícono de **reloj** en la cabecera de la consola, con nombre accesible «Historial de conversaciones» y `aria-expanded` | bUnit: el botón existe, tiene nombre y abre el panel; foco al buscador |
+| Buscador | campo «Buscar conversaciones» que filtra por título (y, si el servidor lo ofrece, por texto de la persona) mientras se teclea; sin resultados: «No hay conversaciones que coincidan» | bUnit: teclear filtra; vacío con su texto |
+| Lista | una fila por conversación, de la más reciente a la más vieja: **título** = la primera pregunta recortada (60 caracteres, con «…»; con CTX-SENS, la regla 8), **tiempo relativo** («hace 5 min», «ayer», «hace 4 días»; la fecha completa en el `title` y para el lector), y la **marca de la actual** («Actual», también como `aria-current`) | bUnit con reloj fijado: título recortado, «hace 4 días», marca sólo en la actual |
+| Desplazamiento | la lista se desplaza dentro del panel (la cabecera y el buscador quedan fijos); con muchas conversaciones, carga por páginas | bUnit con 50 conversaciones: el buscador sigue visible |
+| Nueva conversación | botón «Nueva conversación» en el panel (y en la cabecera), regla 6 | bUnit: la actual pasa a la lista sin la marca; foco al campo |
+| Retención | escrita en la especificación (p. ej. 30 a 90 días sin uso, criterio de este conocimiento), aplicada en el servidor | integración: pasada la retención con reloj fijado, la conversación no está |
+| Borrar una / borrar todas | por fila (menú o botón, §7 «Borrar en el teléfono») y «Borrar todo» al pie con confirmación; se anuncia en la región viva | bUnit: borrar quita la fila y anuncia; «Borrar todo» pide confirmación y vacía la lista |
+| Aviso | al pie del panel: «Tus conversaciones se guardan {retención} para que puedas retomarlas. Podés borrarlas cuando quieras.» | bUnit: el aviso dice la retención configurada |
+
+**Distinto de la observabilidad.** El historial es de la persona: lo lee sólo ella (lo ajeno no existe, regla 2),
+lo borra ella y su retención se le dice. Las trazas son del operador (§11): sin texto por omisión, con su propia
+retención, y borrar el historial no depende de ellas ni las revive. Una misma consulta deja una fila en el
+historial con su texto y un span sin texto; la especificación los pone en dos filas distintas (CI-7, K1 C-29).
 
 <a id="k8-9"></a>
 ## 9. Aviso de cambios sin guardar
@@ -614,6 +639,7 @@ Cada ítem es sí/no; un «no» impide cerrar.
 - [ ] Con el teclado virtual abierto, el compositor queda visible en un teléfono real (§6.1).
 - [ ] El historial es un listbox con ↑ ↓ Inicio Fin, Enter, Supr y Escape (§7).
 - [ ] Los límites del historial están escritos y probados, y la lista dice cuánto se guarda (§8).
+- [ ] El historial es persistente para la persona y el panel del reloj tiene buscador, título recortado, tiempo relativo, marca de la actual, desplazamiento, nueva conversación, retención, borrar una y todas y aviso, cada uno con su prueba; la especificación lo separa de las trazas (CI-9, §8.11).
 - [ ] Hay lista de editores largos con guarda y decisión escrita sobre el compositor (§9).
 - [ ] El voto va a una tabla y la interfaz dice que se guarda sin texto (§10).
 - [ ] Un span de una consulta trae `gen_ai.*` y no trae texto; la captura está apagada en la plantilla (§11).
@@ -667,13 +693,19 @@ respuesta o el error el foco va a ellos, que en una tarjeta de un turno es lo co
 ficha plegada; las compuestas se muestran parte por parte. Sin voto ni sugerencias iniciales (quedaron como
 propuesta). Muestra que §8–§10 son optativos cuando la superficie es de un turno.
 
+**Un producto de referencia del mercado (diseño recomendado del historial, CI-9).** El asistente de ayuda de
+un producto de referencia del mercado abre el historial desde un ícono de reloj en la cabecera: buscador «Buscar
+conversaciones», lista con la primera pregunta recortada como título y el tiempo relativo («hace 4 días»), la
+conversación actual marcada, lista con desplazamiento y «Nueva conversación». Es la referencia de §8.11; la
+retención, el borrado y el aviso se agregan acá como exigencia, sean o no visibles allí.
+
 <a id="k8-17"></a>
 ## 17. Límites
 
 - Se destiló de **tres** consolas; sólo una tiene historial, hoja inferior y guarda de cambios. Las cifras (cortes
   de 992 y 576 px, 400 px, 62 dvh, 2 h y 8 h, 5 conversaciones, 30 turnos, 500 caracteres, 5 s, 10 s) son puntos de
   partida medidos allí o elegidos acá, no constantes.
-- La persistencia durable no la construyó ningún caso. La captura de contenido existe en PushDispatch sólo como
+- La persistencia durable no la construyó ningún caso propio; el diseño de §8.11 viene del producto de referencia y de la observación del PO, sin implementación probada todavía. La captura de contenido existe en PushDispatch sólo como
   interruptor atado al entorno de desarrollo, sin enmascarado ni purga.
 - §13 y su §13.1 son propuesta rotulada: nada de ella está probado.
 - **Huecos conocidos, sin decidir todavía** (se resuelven con un criterio razonable y se anotan en la
@@ -727,4 +759,4 @@ propuesta). Muestra que §8–§10 son optativos cuando la superficie es de un t
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.0 | 2026-11-15 | Creación, como Borrador, a partir de las consolas de PushDispatch (expediente de la capa de IA), Geometría y Movilidad Urbana: anatomía, estados, destinos y gráficos, escritorio y teléfono, accesibilidad, historial, guarda de cambios, voto, persistencia y observabilidad con captura apagada fuera de desarrollo (alineada con K1 REQ-IA-09), y la variante multi-participante como propuesta rotulada con sus decisiones (§13.1). Antes de publicarse se cerraron los huecos bloqueantes de una prueba a ciegas (dibujo por forma §3.1, confirmación, streaming, hoja a 768 px, borrar en el teléfono, aceptación de accesibilidad §7.1, historial durable, voto definitivo, seudónimo, texto libre sensible); los menores quedan en §17. K1, K2, K3, K4, K5 y K7 remiten acá. |
+| 1.0 | 2026-11-15 | Creación, como Borrador, a partir de las consolas de PushDispatch (expediente de la capa de IA), Geometría y Movilidad Urbana: anatomía, estados, destinos y gráficos, escritorio y teléfono, accesibilidad, historial, guarda de cambios, voto, persistencia y observabilidad con captura apagada fuera de desarrollo (alineada con K1 REQ-IA-09), y la variante multi-participante como propuesta rotulada con sus decisiones (§13.1). Antes de publicarse se cerraron los huecos bloqueantes de una prueba a ciegas (dibujo por forma §3.1, confirmación, streaming, hoja a 768 px, borrar en el teléfono, aceptación de accesibilidad §7.1, historial durable, voto definitivo, seudónimo, texto libre sensible); los menores quedan en §17. Por observación del PO, el historial persistente con panel desde el reloj de la cabecera entra como diseño recomendado (CI-9, §8.11, checklist y casos), separado de la observabilidad. K1, K2, K3, K4, K5 y K7 remiten acá. |

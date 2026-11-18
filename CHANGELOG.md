@@ -3,6 +3,16 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-18 (Framework Concept: la entrega de iOS corre en macos-15 de GitHub)
+
+### .github/workflows/framework-concept-ios.yml
+
+#### Cambiado
+
+- **Runner:** el workflow corre sólo en `macos-15` de GitHub, por decisión del PO del 2026-11-18 para los repositorios públicos. El uso de los runners estándar de GitHub en un repositorio público es gratuito y sin límite de minutos ([documentación de GitHub](https://docs.github.com/en/actions/reference/runners/github-hosted-runners)), y GitHub desaconseja los runners propios en repositorios públicos ([seguridad de Actions](https://docs.github.com/en/actions/reference/security/secure-use)). Se quitan el input `runner`, el job `elegir` y la rama del runner propio. Esto supera la elección de runner del 2026-11-02.
+- **Versiones fijas:** se mantienen. El Xcode es el `.xip` fijado por SHA-256 y comprobado por `XCODE_BUILD`; el runtime de iOS se comprueba por `IOS_RUNTIME_BUILD`; el manifiesto de herramientas sigue registrando la imagen. La delegación del merge del 2026-10-25 (expediente 0001 de Framework Concept) cubre este PR.
+
+
 ## 2026-11-11 (Guía de diseño conversacional 1.0.0)
 
 ### Guides/IA/Dot-Net-Integration-AI-Layer-Guide/Conversational-Design-Framework-Guide.md

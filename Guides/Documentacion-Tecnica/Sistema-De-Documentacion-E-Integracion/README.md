@@ -121,8 +121,7 @@ anexo quedó cada una de sus secciones, y cuáles se trasladaron sólo en parte 
 | [Anexo: lista de verificación](99-Anexos/Lista-De-Verificacion.md) | `ANX-SDEI-VER` | anexo | borrador | Ítems `VER-*` que se revisan sobre una guía antes de pasarla a vigente |
 | [Anexo: cómo decidir](99-Anexos/Como-Decidir.md) | `ANX-SDEI-DECIDIR` | anexo | borrador | Criterios, escala anclada, filtros, regla de firmeza y una matriz trabajada |
 | [Anexo: ejercicios](99-Anexos/Ejercicios.md) | `ANX-SDEI-EJERCICIOS` | anexo | borrador | Ejercicios de transferencia `EJR-SDEI-nn`, con claves al final |
-| [Conocimiento: diseñar el sistema documentador](Conocimientos/knowledge-DocsAsCode-Designing-Specification.md) | `ANX-SDEI-ESPECIFICACION` | anexo | borrador | Conocimiento 1.4 para diseñar la documentación como código de un proyecto: decisiones, artefactos A-01 a A-13 y compuertas |
-| [Plantilla A-01: ficha vacía](Conocimientos/A-01-ficha-vacia.md) | `ANX-SDEI-FICHA-VACIA` | anexo | borrador | Esqueleto vacío de la ficha de diseño documental que se entrega al aplicador |
+| [Conocimiento: diseñar el sistema documentador](Conocimientos/README.md) | — | anexo | — | Conocimiento 1.4, mudado a la base de conocimientos: `DocsAsCode-Designing-Specification` 1.5 (la plantilla A-01 quedó en su §5.1) |
 | [Libro: DocsAsCode Developer Guide](DocsAsCode-Developer-Guide.md) | `DOC-SDEI-LIBRO` | guía de estudio | borrador | Edición de lectura del cuerpo: raíz con el índice general y el glosario-índice, y nueve piezas (`DOC-SDEI-LIBRO-P0` a `-P6`, la Parte V en `-P5A` y `-P5B`, y `-ANX`), con citas ancladas a las fuentes; las fuentes siguen siendo estos documentos |
 | [Tutorial de la mini demo (MovilidadUrbana)](Examples/MovilidadUrbana-Mini-Demo/README.md) | `DEMO-MU-00` | ejemplo | borrador | Las piezas de `ESC-SDEI-2` sobre la app real, ancladas a su SHA: fichas, ayuda, contrato y registro de requerimientos |
 | [Ejemplo: ayuda por rol](Examples/Prueba-Ayuda-Por-Rol/README.md) | — | ejemplo | — | Prueba de concepto en Blazor: ayuda contextual que se sirve según el rol |
@@ -141,12 +140,12 @@ propio. Los **anexos** guardan el material de consulta, separado del recorrido.
 
 ```text
 Sistema-De-Documentacion-E-Integracion/
-├── README.md                 este índice (corpus_id y versión viven acá; excepción: Conocimientos/)
+├── README.md                 este índice (corpus_id y versión viven acá)
 ├── 00-Marco.md               escenarios, contextos, actores, convenciones
 ├── 01-Mapa.md                estoy acá → qué aplico
 ├── DocsAsCode-Developer-Guide.md  libro: raíz con el índice general y el glosario-índice
 ├── DocsAsCode-Developer-Guide-*.md  libro: una pieza por Parte (V en dos) y los anexos B a J
-├── Conocimientos/            conocimiento de especificación (lleva su version) y plantilla A-01
+├── Conocimientos/            puntero al conocimiento, mudado a la base de conocimientos
 ├── 99-Anexos/                material de consulta
 └── Examples/                 ejemplos ejecutables y guías prácticas
 ```
@@ -159,8 +158,8 @@ está en el [anexo del esquema](99-Anexos/Esquema-Frontmatter-Y-Prefijos.md).
 
 ## 6. Versión y estado
 
-La versión del cuerpo sigue SemVer y vive sólo en este README; la única excepción es el conocimiento de
-especificación, que repite en `version` la de su **Versión:** ([Marco §5](00-Marco.md#5-convenciones)). Es la 2 porque el cuerpo reemplaza a la guía de un
+La versión del cuerpo sigue SemVer y vive sólo en este README (el conocimiento de especificación, que también
+la llevaba, se mudó a la base de conocimientos como `DocsAsCode-Designing-Specification`) ([Marco §5](00-Marco.md#5-convenciones)). Es la 2 porque el cuerpo reemplaza a la guía de un
 solo archivo, primera forma del mismo contenido **[criterio propio del plan de implementación]**. El orden es este:
 la compuerta `docs-guard` corre en cada pull request y pasa con documentos en borrador; cuando están los siete temas y
 la revisión del escalón da su visto bueno, una persona pasa cada documento a `vigente` en un pull request propio

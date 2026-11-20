@@ -51,7 +51,7 @@ regla de ancla de versión que el libro enseña, aplicada a sí mismo (P.5).
 | 7 y 8 (Parte III) | `TEM-04-Doble-Audiencia.md`, `TEM-05-Ayuda-Al-Usuario-Final.md` | `31660d3` |
 | 9 y 10 (Parte IV) | `TEM-06-Compuertas-Y-CI.md`, `TEM-07-Marco-SDD.md` | `31660d3` |
 | 11 a 14 (Parte V) | `01-Mapa.md`; `Examples/Como-Intervenir.md`, `Examples/Como-Intervenir-Lab-Documentos.md`, `Examples/MovilidadUrbana-Mini-Demo/README.md`, `Examples/Prueba-Ayuda-Por-Rol/README.md`, `Examples/Lanzar-Example.md` | `31660d3` |
-| 15 a 17 (Parte V) | `99-Anexos/Como-Decidir.md`, `99-Anexos/Ejercicios.md`; `README.md` §5–§6; `Conocimientos/knowledge-DocsAsCode-Designing-Specification.md` | `31660d3` |
+| 15 a 17 (Parte V) | `99-Anexos/Como-Decidir.md`, `99-Anexos/Ejercicios.md`; `README.md` §5–§6; conocimiento `DocsAsCode-Designing-Specification` 1.4 (hoy en la base de conocimientos) | `31660d3` |
 | 18 (Parte VI) | Casos de `TEM-01`, `TEM-03`, `TEM-04`, `TEM-06` y `TEM-07`; `99-Anexos/Referencias.md` §4–§8 | `31660d3` |
 | Anexos B a H | `99-Anexos/Referencias.md`, `Esquema-Frontmatter-Y-Prefijos.md`, `Criterios-De-Calidad.md`, `Lista-De-Verificacion.md`, `Patrones-De-Ejemplos.md`, `Ejercicios.md` §3; anexos de `TEM-01` a `TEM-07` | `31660d3` |
 | Anexos A, I y J | `99-Anexos/Glosario.md`; este colofón; ensayos fechados de los temas y evidencia del expediente 0003 en Lab-Documentos.Documentacion | `31660d3` |

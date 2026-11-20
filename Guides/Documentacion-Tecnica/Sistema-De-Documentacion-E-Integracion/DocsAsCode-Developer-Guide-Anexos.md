@@ -1169,7 +1169,7 @@ Cada marca con su sección y cada ensayo con su fecha. Las salidas registradas s
 | Marca o ensayo | Sección | Detalle |
 | --- | --- | --- |
 | A VERIFICAR | P.6 | La guía de un solo archivo se archiva en el mismo pull request con la etiqueta anotada sdei-v2.0.0-borrador |
-| A VERIFICAR | Colofón (tabla 0.1), fila «15 a 17» | Conocimientos/knowledge-DocsAsCode-Designing-Specification.md |
+| A VERIFICAR | Colofón (tabla 0.1), fila «15 a 17» | conocimiento DocsAsCode-Designing-Specification 1.4 (hoy 1.5 en la base de conocimientos) |
 | A VERIFICAR | P.4 | Fila «NO VERIFICADO, HISTÓRICO, ESPECULACIÓN» remite al anexo J |
 | [criterio propio] | 1.10 | Tabla 1.4: selección y redacción de los doce principios |
 | [criterio propio: ejemplo construido] | 3.2.6 | Panel con roles que publica paquetes, ejemplo construido para ilustrar la composición por unión |

@@ -322,7 +322,7 @@ enlaces se mide verde y en menos de 150 líneas.
 | Conocimiento (`ANX-SDEI-ESPECIFICACION`) | `**Versión:**` de su cabecera, `1.4`; el `version` del frontmatter la repite | Las correcciones que dejan los ensayos suben la cifra menor | Su autor propone; pasar a vigente, clase H |
 
 *Tabla 17.1. Tres líneas de versión [Compilado: README.md, l. 3, 22, 160–165; resolución del 0003, l. 108, 114, 129, 192;
-Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, cabecera y §10].*
+`DocsAsCode-Designing-Specification` 1.4 cabecera y §10 (base de conocimientos)].*
 
 El conocimiento es la única pieza con `version` propia en un documento que no es el README. La convención del cuerpo
 lo recoge como salvedad («`corpus_id` y `version` sólo en el README, salvo el conocimiento de `Conocimientos/`, cuyo `version` repite su `**Versión:**`») [Compilado: 00-Marco.md, l. 178], y la excepción la
@@ -361,11 +361,15 @@ deuda declarada, que se cierra con el pull request que lo programe o con el foli
 
 #### 17.4 De la explicación al conocimiento
 
+> **Nota (2026-11-19).** El conocimiento se mudó a la base de conocimientos de la organización: hoy es
+> `DocsAsCode-Designing-Specification` 1.5 (base de conocimientos), sin renumerar, y la plantilla A-01 quedó en su §5.1. Lo
+> que sigue describe la 1.4 tal como se compiló; el texto de la 1.4 sigue en el commit `8791fb1`.
+
 El libro explica: por qué existe cada regla, cómo se aplicó en casos reales, qué ensayos la sostienen. El
 conocimiento de especificación especifica: qué hay que decidir para diseñar el sistema documentador de un proyecto,
 qué artefactos deja ese diseño y cómo se comprueba que quedó bien. Lo puede aplicar una persona o un agente que no
 conoce este laboratorio; el conocimiento deja afuera la explicación y remite a esta sección
-[Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §0; resolución del 0003, l. 333–334].
+[Compilado: `DocsAsCode-Designing-Specification` 1.4 §0 (base de conocimientos); resolución del 0003, l. 333–334].
 
 ##### 17.4.1 Dos piezas, dos usos
 
@@ -377,14 +381,14 @@ conoce este laboratorio; el conocimiento deja afuera la explicación y remite a 
 | Alcance | Este cuerpo, con su laboratorio y sus casos | Cualquier proyecto en Git con pull requests y CI; neutral respecto de un marco de especificación concreto |
 | Cómo se carga | Se lee por rutas ([P.3](DocsAsCode-Developer-Guide-Parte-0.md#p3-rutas-de-lectura)) | Por secciones, según su mapa de carga |
 
-*Tabla 17.3. El libro y el conocimiento, rasgo por rasgo [Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md,
-§0, §1, §3.2, §6, §8; resolución del 0003, l. 108, 128–130].*
+*Tabla 17.3. El libro y el conocimiento, rasgo por rasgo [Compilado: `DocsAsCode-Designing-Specification` 1.4
+§0, §1, §3.2, §6, §8 (base de conocimientos); resolución del 0003, l. 108, 128–130].*
 
 ##### 17.4.2 Qué parte del libro destila el conocimiento
 
 El conocimiento no se deriva del libro sino de las mismas fuentes: declara su origen, documento por documento, como
 «derivado de Lab-Documentos» en un SHA, y conserva sólo las tablas normativas y las reglas con nombre
-[Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §9]. Por eso cada sección suya tiene su
+[Compilado: `DocsAsCode-Designing-Specification` 1.4 §9 (base de conocimientos)]. Por eso cada sección suya tiene su
 explicación en un capítulo del libro:
 
 | Sección del conocimiento | Qué conserva | Dónde se explica en el libro |
@@ -419,7 +423,7 @@ una decisión del proyecto que lo aplica:
 | El servicio privado por su alias | «Servicio con paquetes», sin un alias que contenga la sigla |
 
 *Tabla 17.5. Parámetros del laboratorio y su forma general [Compilado:
-Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §2.3, §3.2, §3.3, §3.6, §7; resolución del 0003, l. 117, 130, 365].*
+`DocsAsCode-Designing-Specification` 1.4 §2.3, §3.2, §3.3, §3.6, §7 (base de conocimientos); resolución del 0003, l. 117, 130, 365].*
 
 ##### 17.4.3 Cuándo usar cada uno
 
@@ -442,7 +446,7 @@ cuando hace falta el porqué. Las secciones salen del mapa de carga del conocimi
 
 Para cambiar este mismo cuerpo rige el [capítulo 12](DocsAsCode-Developer-Guide-Parte-V-a.md#12-cómo-intervenir-el-proceso-en-cinco-pasos)
 **[criterio propio]**; el conocimiento diseña el sistema de **otro** proyecto, y copiarle los parámetros del
-laboratorio es uno de sus anti-patrones [Compilado: Conocimientos/knowledge-DocsAsCode-Designing-Specification.md, §7].
+laboratorio es uno de sus anti-patrones [Compilado: `DocsAsCode-Designing-Specification` 1.4 §7 (base de conocimientos)].
 
 ##### 17.4.4 Mantener los dos juntos
 

@@ -3,6 +3,21 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-19 (conocimientos mudados a la base de conocimientos)
+
+### Guides/IA/Dot-Net-Integration-AI-Layer-Guide/Conocimientos/ y Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Conocimientos/
+
+#### Quitado
+
+- **Los ocho conocimientos de la capa de IA en .NET** (K1 a K8: `AI-Layer-Integration-Designing-Specification`, `AI-Layer-Console-Assistant-Building`, `AI-Layer-Verification-And-Acceptance`, `AI-Layer-Integration-Working-Method`, `AI-Layer-Conversational-Design`, `AI-Layer-Retrieval-Corpus-Functions-And-Deeplinks`, `AI-Layer-Testing-Strategy` y `AI-Layer-Chat-Console-Interface`) se mudaron a la base de conocimientos de la organización (repositorio privado), con versión 2.0 y secciones renumeradas a la forma de la base.
+- **El conocimiento de especificación del sistema documentador** (`DocsAsCode-Designing-Specification` 1.4) y su plantilla A-01 se mudaron a la misma base: la pieza sale como 1.5, sin renumerar, con A-01 dentro de su §5.1. Los `doc_id` `ANX-SDEI-ESPECIFICACION` y `ANX-SDEI-FICHA-VACIA` quedan retirados.
+
+#### Cambiado
+
+- **Punteros:** en cada carpeta `Conocimientos/` queda un `README.md` que nombra los alias, dice cómo se citan hoy («`<Alias>` §N (base de conocimientos)»), cómo se leen las citas anteriores (contra el commit `8791fb1`) y, para la familia K, la correspondencia de secciones.
+- **Referencias:** la guía de la capa de IA (`related`, cabecera, 0.6 y el caso de 13), el `LEEME.md` de las láminas, el README, el Marco y el esquema de frontmatter del cuerpo SDEI, el glosario, el colofón, las marcas «Compilado» de 17 y el anexo de verificación del libro DocsAsCode citan ahora por alias. 17.4 lleva una nota: describe la 1.4 tal como se compiló. Las procedencias fijadas por SHA (láminas, historial de la guía de diseño conversacional) no se reescriben. La versión del cuerpo SDEI y la edición 1.2.0 de la guía no cambian.
+
+
 ## 2026-11-18 (Framework Concept: la entrega de iOS corre en macos-15 de GitHub)
 
 ### .github/workflows/framework-concept-ios.yml

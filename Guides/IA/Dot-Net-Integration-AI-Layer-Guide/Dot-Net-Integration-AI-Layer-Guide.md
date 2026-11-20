@@ -16,12 +16,12 @@ traces: []
 description: Guía de estudio para sumar una capa de IA a una aplicación .NET existente, con ejemplos compilables y criterios.
 prerequisites: ["C# y .NET 10", "inyección de dependencias, ASP.NET Core, EF Core con SQLite y NUnit en lo básico", "capas Domain/Application/Infrastructure"]
 sdk_validado: ".NET SDK 10.0.403 en la imagen mcr.microsoft.com/dotnet/sdk:10.0"
-related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md, Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md]
+related: [../../Dot-NET-Arquitectura-Guide/Dot-NET-Arquitectura-Guide.md]
 ---
 
 # Integración de una capa de IA en aplicaciones .NET
 
-> **Versión** 1.2.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación en [`Conocimientos/`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md).
+> **Versión** 1.2.0 · **Fecha** 2026-11-11 · **Estado**: vigente. Ejemplos en [`Examples/`](Examples/); demo en [`Demos/MovilidadUrbana.Asistente/`](Demos/MovilidadUrbana.Asistente/); Conocimiento de especificación: `AI-Layer-Integration-Designing-Specification` (base de conocimientos); puntero en [`Conocimientos/`](Conocimientos/README.md).
 
 Libro de estudio para sumar una capa de IA a una aplicación .NET que ya existe: dónde vive la llamada al modelo, qué sabe el modelo y qué puede hacer, cómo se prueba, se asegura y se opera, y qué decisiones de arquitectura quedan escritas. Índice general: [0.0](#c0-0).
 
@@ -170,7 +170,7 @@ El único mapa de los ejemplos es el [Anexo E.1](#anexo-e-1) (orden, dificultad,
 <a id="c0-6"></a>
 ### 0.6 El Conocimiento de especificación
 
-**Definición.** El *Conocimiento de especificación* es un documento corto, aparte del libro, que condensa sus principios y decisiones para especificar la capa de IA de un servicio .NET: si hace falta, qué arquitectura, ADR, requisitos con prueba y riesgos. Lo usa quien diseña, persona o agente; el libro enseña por qué. Vive en [`Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md`](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md) y remite a los principios del [capítulo 1](#c1) por su Id.
+**Definición.** El *Conocimiento de especificación* es un documento corto, aparte del libro, que condensa sus principios y decisiones para especificar la capa de IA de un servicio .NET: si hace falta, qué arquitectura, ADR, requisitos con prueba y riesgos. Lo usa quien diseña, persona o agente; el libro enseña por qué. Vive en la base de conocimientos como `AI-Layer-Integration-Designing-Specification` (base de conocimientos; [puntero](Conocimientos/README.md)) y remite a los principios del [capítulo 1](#c1) por su Id.
 
 <a id="c0-7"></a>
 ### 0.7 Anclas estables
@@ -3470,7 +3470,7 @@ Cuando una pista necesite un dato que el pedido no trae y que un caso de uso de 
 <a id="c16-conocimiento"></a>
 ### 16.7 Del libro a la especificación
 
-El caso se especificó aplicando sólo el borrador del [Conocimiento de especificación](Conocimientos/knowledge-AI-Layer-Integration-Designing-Specification.md), sin abrir este libro, para medir si el Conocimiento alcanza solo ([0.6](#c0-6)). Lo que faltó volvió al Conocimiento como regla: la rama «en parte» del árbol de decisión, la escalera de conocimiento, el patrón filtro posterior más plantilla, LLM09 en las capacidades que explican, la minimización del pedido (R-02) y «un filtro garantiza sólo lo que mide» (R-04). El Conocimiento cita el caso como [Caso G] en su §13; este capítulo es el recorrido inverso: del caso a los capítulos que lo explican.
+El caso se especificó aplicando sólo el borrador del [Conocimiento de especificación](Conocimientos/README.md), sin abrir este libro, para medir si el Conocimiento alcanza solo ([0.6](#c0-6)). Lo que faltó volvió al Conocimiento como regla: la rama «en parte» del árbol de decisión, la escalera de conocimiento, el patrón filtro posterior más plantilla, LLM09 en las capacidades que explican, la minimización del pedido (R-02) y «un filtro garantiza sólo lo que mide» (R-04). El Conocimiento cita el caso como [Caso G] en `AI-Layer-Integration-Designing-Specification` §1.2 (base de conocimientos; §13 en la versión 1.6); este capítulo es el recorrido inverso: del caso a los capítulos que lo explican.
 
 <a id="c16-8"></a>
 ### 16.8 Docs as Code dentro de una capa de IA

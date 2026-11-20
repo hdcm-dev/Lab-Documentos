@@ -5,7 +5,7 @@
 Una sola hoja que da el panorama completo de una aplicación conversacional, desde el usuario con su rol hasta el proveedor de IA. Recorre el turno: interfaz, orquestador, mecanismo, redacción controlada y forma de la respuesta. Muestra además lo que lo gobierna: límites, monitoreo, MCP, seguridad OWASP LLM y el ciclo de diseño. Al pie lleva catorce preguntas conceptuales, cada una con su respuesta breve y las partes a las que se refiere.
 
 - **Definición:** `LD-01-arquitectura-conversacional.def.json`. Tiene 29 partes numeradas en orden, 8 zonas, 36 conexiones rotuladas y la tabla de preguntas.
-- **Fuentes:** `../Dot-Net-Integration-AI-Layer-Guide.md`, `../Conversational-Design-Framework-Guide.md` y `../Conocimientos/` (K1–K7), tomadas de origin/main `1403c468e87c16408106ebf80cd6b6d6de1b5e01`.
+- **Fuentes:** `../Dot-Net-Integration-AI-Layer-Guide.md`, `../Conversational-Design-Framework-Guide.md` y `../Conocimientos/` (K1–K7, en ese commit; hoy en la base de conocimientos, con los alias del [puntero](../Conocimientos/README.md)), tomadas de origin/main `1403c468e87c16408106ebf80cd6b6d6de1b5e01`.
 - **Alcance:** la lámina es genérica. No nombra productos, proveedores ni modelos concretos, ni datos de despliegue.
 
 ### Zonas

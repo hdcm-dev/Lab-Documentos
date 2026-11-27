@@ -25,8 +25,15 @@ public sealed class DescargasController(TusDiskStore almacen) : ControllerBase
         if (!estado.Existe) return NotFound();
         if (!estado.Completa) return Conflict("La suba todavía no terminó");
 
+        // El tipo viene del cliente (metadato filetype): se usa sólo si es un tipo válido.
+        // Se decide antes de abrir el archivo, así un tipo inválido no deja un stream abierto.
+        var tipo = System.Net.Http.Headers.MediaTypeHeaderValue.TryParse(estado.Tipo, out _)
+                   && Microsoft.Net.Http.Headers.MediaTypeHeaderValue.TryParse(estado.Tipo, out _)
+            ? estado.Tipo
+            : "application/octet-stream";
+
         var archivo = await almacen.GetFileAsync(id, ct);
         var contenido = await archivo.GetContentAsync(ct);
-        return File(contenido, estado.Tipo, estado.Nombre);
+        return File(contenido, tipo, estado.Nombre);
     }
 }

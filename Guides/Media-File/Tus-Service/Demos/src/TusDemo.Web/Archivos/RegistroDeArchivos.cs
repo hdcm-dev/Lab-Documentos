@@ -53,8 +53,14 @@ public sealed class RegistroDeArchivos
                 Descripcion: descripcion,
                 FechaAlta: DateTimeOffset.UtcNow,
                 UsuarioAlta: usuario);
+            // Escritura atómica: primero la lista nueva a un temporal y después se reemplaza el
+            // archivo con un Move. Si algo falla antes, ni el disco ni la memoria cambian.
+            var nuevas = new List<ArchivoRegistrado>(_filas) { fila };
+            var json = JsonSerializer.Serialize(nuevas);
+            var temporal = _ruta + ".tmp";
+            File.WriteAllText(temporal, json);
+            File.Move(temporal, _ruta, overwrite: true);
             _filas.Add(fila);
-            File.WriteAllText(_ruta, JsonSerializer.Serialize(_filas));
             return (fila, true);
         }
     }

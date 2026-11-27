@@ -16,6 +16,8 @@ cd src/TusDemo.Web && dotnet run          # http://localhost:5080
 docker compose up --build                  # http://localhost:8090
 ```
 
+`/scalar` y `/openapi/v1.json` sólo existen en el entorno Development (el de `dotnet run` y el de `compose.yaml`).
+
 La clave de la demo está en `appsettings.json` (`Archivos:ClaveDemo`) y va en la cabecera `X-Clave-Demo`.
 
 ## Probar

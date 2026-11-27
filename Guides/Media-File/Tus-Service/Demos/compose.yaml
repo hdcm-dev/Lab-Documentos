@@ -8,5 +8,8 @@ services:
       - tus-datos:/data          # volumen nombrado: sobrevive a borrar el contenedor
     environment:
       Archivos__ClaveDemo: "clave-de-demo-cambiar"
+      # La demo quiere mostrar Scalar (y /openapi/v1.json) también en Docker; fuera de Development no se publican.
+      # Development también muestra la página de errores con la traza: sólo para aprender, nunca en producción.
+      ASPNETCORE_ENVIRONMENT: "Development"
 volumes:
   tus-datos:

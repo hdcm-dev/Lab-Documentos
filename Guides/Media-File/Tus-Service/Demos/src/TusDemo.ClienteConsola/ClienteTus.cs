@@ -6,7 +6,7 @@ namespace TusDemo.ClienteConsola;
 
 /// <summary>
 /// Cliente tus 1.0.0 mínimo sobre HttpClient: crear (POST), consultar el avance (HEAD) y enviar (PATCH).
-/// Es el mismo esqueleto que trae el conocimiento Media-File-Service-TUS §5.4 para una aplicación móvil.
+/// Es el mismo esqueleto que usaría una aplicación móvil (.NET MAUI).
 /// </summary>
 public sealed class ClienteTus(HttpClient http)
 {

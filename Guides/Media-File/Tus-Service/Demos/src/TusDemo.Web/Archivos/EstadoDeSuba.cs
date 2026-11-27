@@ -16,9 +16,10 @@ public static class AlmacenExtensiones
     public static async Task<EstadoDeSuba> ConsultarAsync(this TusDiskStore almacen, string id, CancellationToken ct)
     {
         var noExiste = new EstadoDeSuba(false, false, 0, "", "");
-        // El id llega del cliente: sólo se aceptan letras y dígitos (el almacén genera GUID sin guiones).
-        // Así un id como "../otra-carpeta" nunca llega a armar una ruta en disco.
-        if (string.IsNullOrWhiteSpace(id) || !id.All(char.IsAsciiLetterOrDigit))
+        // El id llega del cliente. El almacén genera GUID de 32 hexadecimales sin guiones (formato "N")
+        // y rechaza con una excepción cualquier otro formato. Validarlo acá convierte esa excepción en
+        // "no existe" y evita que un id como "../otra-carpeta" llegue al disco.
+        if (!Guid.TryParseExact(id, "N", out _))
             return noExiste;
         if (!await almacen.FileExistAsync(id, ct))
             return noExiste;

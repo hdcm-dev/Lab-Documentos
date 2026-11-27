@@ -43,8 +43,12 @@ app.UseAuthorization();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapOpenApi();                    // /openapi/v1.json
-app.MapScalarApiReference();         // interfaz de Scalar sobre ese documento
+// En producción no se publica la descripción de la API ni la consola de pruebas.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();                // /openapi/v1.json
+    app.MapScalarApiReference();     // interfaz de Scalar sobre ese documento
+}
 app.MapControllers();                // /api/archivos y /descargas
 app.MapTus("/archivos", ConfiguracionTus.CrearAsync);   // endpoint del protocolo tus
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();

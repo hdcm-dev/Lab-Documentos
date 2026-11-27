@@ -24,11 +24,13 @@ public static class ConfiguracionTus
             Store = almacen,
             MaxAllowedUploadSizeInBytesLong = opciones.TopeBytes,
             Expiration = new SlidingExpiration(TimeSpan.FromHours(opciones.HorasDeVencimiento)),
+            // Sin terminación (DELETE): borrar una suba completa y registrada dejaría una fila sin archivo.
+            AllowedExtensions = TusExtensions.All.Except(TusExtensions.Termination),
             Events = new Events
             {
                 // 1) Primero en todo pedido tus: ¿quién pide?
-                //    OPTIONS (GetOptions) queda libre: el navegador lo manda sin credenciales
-                //    para descubrir el servidor y en el preflight de CORS.
+                //    OPTIONS (GetOptions) queda libre: es el pedido de descubrimiento del protocolo,
+                //    que la especificación exime de Tus-Resumable y que los clientes mandan sin credenciales.
                 OnAuthorizeAsync = ctx =>
                 {
                     if (ctx.Intent == IntentType.GetOptions) return Task.CompletedTask;
@@ -37,7 +39,7 @@ public static class ConfiguracionTus
                     return Task.CompletedTask;
                 },
 
-                // 2) Antes de crear la suba: ¿trae los metadatos y una extensión permitida?
+                // 2) Antes de crear la suba: ¿trae los metadatos, una extensión permitida y un filetype válido?
                 OnBeforeCreateAsync = ctx =>
                 {
                     if (!ctx.Metadata.ContainsKey("filename") || !ctx.Metadata.ContainsKey("filetype"))
@@ -48,7 +50,14 @@ public static class ConfiguracionTus
                     var nombre = ctx.Metadata["filename"].GetString(Encoding.UTF8);
                     var extension = Path.GetExtension(nombre);
                     if (!extensiones.Contains(extension))
+                    {
                         ctx.FailRequest($"Extensión no permitida: '{extension}'");
+                        return Task.CompletedTask;
+                    }
+                    // filetype se devuelve después como Content-Type de la descarga: tiene que ser un tipo válido.
+                    var tipo = ctx.Metadata["filetype"].GetString(Encoding.UTF8);
+                    if (!System.Net.Http.Headers.MediaTypeHeaderValue.TryParse(tipo, out _))
+                        ctx.FailRequest($"filetype no es un tipo de contenido válido: '{tipo}'");
                     return Task.CompletedTask;
                 },
 

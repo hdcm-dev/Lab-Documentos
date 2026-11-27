@@ -79,7 +79,8 @@ else
 
     private async Task SubirAsync()
     {
-        if (modulo is null || yo is null) return;
+        // Doble clic: si ya hay una suba en curso, el segundo clic no hace nada.
+        if (subiendo || modulo is null || yo is null) return;
         subiendo = true;
         mensaje = "Subiendo…";
         var opciones = new
@@ -90,12 +91,39 @@ else
         };
         // El módulo arranca la suba y vuelve enseguida; el avance y el final llegan por los
         // métodos [JSInvokable] de abajo. Así una suba larga no choca con el tiempo máximo de interop.
-        await modulo.InvokeVoidAsync("subir", selector, opciones, yo);
+        try
+        {
+            await modulo.InvokeVoidAsync("subir", selector, opciones, yo);
+        }
+        catch (Exception e) when (EsFallaDeInterop(e))
+        {
+            AnotarFallaDeInterop("subir", e);
+        }
     }
 
     private async Task PausarAsync()
     {
-        if (modulo is not null) await modulo.InvokeVoidAsync("pausar");
+        if (modulo is null) return;
+        try
+        {
+            await modulo.InvokeVoidAsync("pausar");
+        }
+        catch (Exception e) when (EsFallaDeInterop(e))
+        {
+            AnotarFallaDeInterop("pausar", e);
+        }
+    }
+
+    // Fallas posibles de una llamada a JS: error del script, circuito cerrado o tiempo agotado
+    // (TaskCanceledException deriva de OperationCanceledException).
+    private static bool EsFallaDeInterop(Exception e) =>
+        e is JSException or JSDisconnectedException or OperationCanceledException;
+
+    // Una falla al subir o pausar deja la suba detenida; una falla al descargar no toca la suba en curso.
+    private void AnotarFallaDeInterop(string accion, Exception e, bool detieneLaSuba = true)
+    {
+        mensaje = $"No se pudo {accion} en el navegador: {e.Message}";
+        if (detieneLaSuba) subiendo = false;
     }
 
     [JSInvokable]
@@ -124,18 +152,42 @@ else
     [JSInvokable]
     public async Task Fallo(string tipo, string detalle)
     {
-        mensaje = tipo == "AbortError"
-            ? "Pausado. Elegí el mismo archivo y tocá «Subir o retomar» para seguir."
-            : $"Error: {detalle}";
-        subiendo = false;
+        if (tipo == "EnCurso")
+        {
+            // El módulo rechazó una segunda suba: la primera sigue y avisará con Terminado o Fallo.
+            mensaje = "Ya hay una suba en curso: esperá que termine o pausala.";
+            subiendo = true;
+        }
+        else
+        {
+            mensaje = tipo == "AbortError"
+                ? "Pausado. Elegí el mismo archivo y tocá «Subir o retomar» para seguir."
+                : $"Error: {detalle}";
+            subiendo = false;
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task DescargaFallo(string detalle)
+    {
+        mensaje = $"No se pudo descargar: {detalle}";
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task DescargarAsync(ArchivoRegistrado archivo)
     {
-        if (modulo is null) return;
+        if (modulo is null || yo is null) return;
         var url = Nav.ToAbsoluteUri(archivo.Documento).ToString();
-        await modulo.InvokeVoidAsync("descargar", url, Opciones.Value.ClaveDemo, archivo.Nombre);
+        // Igual que subir: el módulo arranca la descarga y vuelve enseguida; si falla, avisa con DescargaFallo.
+        try
+        {
+            await modulo.InvokeVoidAsync("descargar", url, Opciones.Value.ClaveDemo, archivo.Nombre, yo);
+        }
+        catch (Exception e) when (EsFallaDeInterop(e))
+        {
+            AnotarFallaDeInterop("descargar", e, detieneLaSuba: false);
+        }
     }
 
     private async Task AlCambiarLaListaAsync()

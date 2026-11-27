@@ -1,0 +1,12 @@
+services:
+  tus-demo:
+    build: .
+    image: tus-demo:local
+    ports:
+      - "8090:8080"
+    volumes:
+      - tus-datos:/data          # volumen nombrado: sobrevive a borrar el contenedor
+    environment:
+      Archivos__ClaveDemo: "clave-de-demo-cambiar"
+volumes:
+  tus-datos:

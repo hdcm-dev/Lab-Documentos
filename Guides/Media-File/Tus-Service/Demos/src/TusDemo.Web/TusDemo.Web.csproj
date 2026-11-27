@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>TusDemo.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Versiones fijas: nada de comodines (§6 del conocimiento Media-File-Service-TUS). -->
+    <PackageReference Include="tusdotnet" Version="2.12.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.15" />
+    <PackageReference Include="Scalar.AspNetCore" Version="3.3.0" />
+  </ItemGroup>
+
+</Project>

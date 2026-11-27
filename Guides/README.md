@@ -25,6 +25,7 @@ traces: [LAB-DOCUMENTOS-README, IDX-SDEI]
 | Despliegue | [`Despliegue/`](Despliegue/) |
 | Control de versiones | [`GitFlow/`](GitFlow/) |
 | IA | [`IA/`](IA/) |
+| Archivos y multimedia | [Servicio de subas reanudables con tus en .NET](Media-File/Tus-Service/Tus-Net-Service-Devel-Guide.md) |
 | Metodologías | [`Metodologia-Agiles/`](Metodologia-Agiles/) · [`Metodologia-Entorno-Desarrollo/`](Metodologia-Entorno-Desarrollo/) |
 | Pruebas | [`Testing/`](Testing/) |
 | UX/UI | [`UX-UI-Design/`](UX-UI-Design/) |

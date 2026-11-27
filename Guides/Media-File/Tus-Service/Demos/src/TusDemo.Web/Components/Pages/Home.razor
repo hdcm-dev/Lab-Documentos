@@ -1,0 +1,157 @@
+@page "/"
+@rendermode InteractiveServer
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject IOptions<OpcionesArchivos> Opciones
+@inject RegistroDeArchivos Registro
+@inject ServicioDeArchivos Servicio
+@inject AvisoDeArchivos Aviso
+@inject NavigationManager Nav
+
+<PageTitle>Subas reanudables con tus</PageTitle>
+
+<h1>Subas reanudables con tus</h1>
+<p>Elegí un archivo y subilo. Si pausás, cerrás la pestaña o se corta la red, volvé a elegir el
+mismo archivo y la suba sigue desde donde quedó.</p>
+
+<section class="tarjeta">
+    <label>Archivo <input type="file" @ref="selector" disabled="@subiendo" /></label>
+    <label>Descripción <input type="text" @bind="descripcion" disabled="@subiendo" /></label>
+    <div class="acciones">
+        <button @onclick="SubirAsync" disabled="@subiendo">Subir o retomar</button>
+        <button @onclick="PausarAsync" disabled="@(!subiendo)">Pausar</button>
+    </div>
+    <progress max="100" value="@porcentaje"></progress>
+    <span>@porcentaje %</span>
+    <p role="status">@mensaje</p>
+</section>
+
+<h2>Archivos registrados</h2>
+@if (archivos.Count == 0)
+{
+    <p>Todavía no hay archivos.</p>
+}
+else
+{
+    <table>
+        <thead>
+            <tr><th>Id</th><th>Nombre</th><th>Tipo</th><th>Bytes</th><th>Descripción</th><th>Documento</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var a in archivos)
+            {
+                <tr>
+                    <td>@a.Id</td>
+                    <td>@a.Nombre</td>
+                    <td>@a.Tipo</td>
+                    <td>@a.Bytes.ToString("N0")</td>
+                    <td>@a.Descripcion</td>
+                    <td><code>@a.Documento</code></td>
+                    <td><button @onclick="() => DescargarAsync(a)">Descargar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ElementReference selector;
+    private IJSObjectReference? modulo;
+    private DotNetObjectReference<Home>? yo;
+    private bool subiendo;
+    private int porcentaje;
+    private string mensaje = "";
+    private string descripcion = "";
+    private IReadOnlyList<ArchivoRegistrado> archivos = [];
+
+    protected override void OnInitialized()
+    {
+        archivos = Registro.Todos();
+        Aviso.Cambio += AlCambiarLaListaAsync;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool primeraVez)
+    {
+        if (!primeraVez) return;
+        modulo = await JS.InvokeAsync<IJSObjectReference>("import", "./js/tus-cliente.js");
+        yo = DotNetObjectReference.Create(this);
+    }
+
+    private async Task SubirAsync()
+    {
+        if (modulo is null || yo is null) return;
+        subiendo = true;
+        mensaje = "Subiendo…";
+        var opciones = new
+        {
+            endpoint = Nav.ToAbsoluteUri("archivos").ToString(),
+            clave = Opciones.Value.ClaveDemo,
+            trozo = Opciones.Value.TrozoBytes
+        };
+        // El módulo arranca la suba y vuelve enseguida; el avance y el final llegan por los
+        // métodos [JSInvokable] de abajo. Así una suba larga no choca con el tiempo máximo de interop.
+        await modulo.InvokeVoidAsync("subir", selector, opciones, yo);
+    }
+
+    private async Task PausarAsync()
+    {
+        if (modulo is not null) await modulo.InvokeVoidAsync("pausar");
+    }
+
+    [JSInvokable]
+    public async Task Avance(long recibido, long total)
+    {
+        porcentaje = total == 0 ? 100 : (int)(recibido * 100 / total);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task Terminado(string idSuba)
+    {
+        // La suba terminó: recién ahora se inserta la fila.
+        var (resultado, fila) = await Servicio.RegistrarAsync(idSuba, descripcion, "demo-web", CancellationToken.None);
+        mensaje = resultado switch
+        {
+            ResultadoDeRegistro.Creado => $"Listo: registrado como {fila!.Documento}.",
+            ResultadoDeRegistro.YaExistia => $"Ya estaba registrado como {fila!.Documento}.",
+            _ => $"La suba {idSuba} no se pudo registrar ({resultado})."
+        };
+        subiendo = false;
+        descripcion = "";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public async Task Fallo(string tipo, string detalle)
+    {
+        mensaje = tipo == "AbortError"
+            ? "Pausado. Elegí el mismo archivo y tocá «Subir o retomar» para seguir."
+            : $"Error: {detalle}";
+        subiendo = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task DescargarAsync(ArchivoRegistrado archivo)
+    {
+        if (modulo is null) return;
+        var url = Nav.ToAbsoluteUri(archivo.Documento).ToString();
+        await modulo.InvokeVoidAsync("descargar", url, Opciones.Value.ClaveDemo, archivo.Nombre);
+    }
+
+    private async Task AlCambiarLaListaAsync()
+    {
+        archivos = Registro.Todos();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Aviso.Cambio -= AlCambiarLaListaAsync;
+        yo?.Dispose();
+        if (modulo is not null)
+        {
+            try { await modulo.DisposeAsync(); }
+            catch (JSDisconnectedException) { }
+        }
+    }
+}

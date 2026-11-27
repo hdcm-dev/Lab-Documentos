@@ -3,6 +3,27 @@
 Cambios relevantes de las guías del repositorio. El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
 
+## 2026-11-27 (guía de desarrollo y demo: servicio de subas reanudables con tus en .NET 10)
+
+### Guides/Media-File/Tus-Service/
+
+#### Agregado
+
+- **`Tus-Net-Service-Devel-Guide.md`:** guía de estudio autocontenida, con índice y glosario, para quien nunca armó un servicio de archivos: el protocolo tus 1.0.0 pedido por pedido, el servidor con tusdotnet 2.12.0 (almacén, eventos, autenticación, estado de una suba, fila de archivo después de la suba, API con controllers, OpenAPI y Scalar), un cliente de navegador escrito a mano, la página Blazor Interactive Server, un cliente .NET con corte simulado, el contenedor y lo medido. Los fragmentos de código salen de la demo y se comprobaron línea por línea contra ella.
+- **`Demos/`:** solución .NET 10 con `TusDemo.Web` (tus + API + Blazor) y `TusDemo.ClienteConsola`, `Dockerfile` con imágenes de parche fijo (`sdk:10.0.404`, `aspnet:10.0.15`), `compose.yaml` y `scripts/probar.sh`. Compilada y probada el 2026-11-27 en contenedores efímeros con turno de INFRA: 35 comprobaciones del servicio (entre ellas un corte a mitad de trozo que se retoma con la misma huella SHA-256), cliente .NET con corte y retoma, tres contrapruebas que quitan una validación por vez (id y `filetype`), imagen con uid 1654 y volumen que sobrevive al contenedor. Antes del merge pasó por una revisión independiente con verificación adversarial; lo confirmado se corrigió en el código, en las pruebas y en la guía.
+
+#### Cambiado
+
+- **`Guides/README.md`:** fila «Archivos y multimedia» en el índice.
+
+#### Delegación del merge (Conformacion-Pull-Request-Automatico)
+
+- **Fecha:** 2026-11-27. **Decidió:** el responsable del producto (PO). **Responsable de ejecutarla:** el agente que conduce la unidad.
+- **Testimonio del PO (regla general, literal):** «siempre para conformar los pr sigue `IA/IA.Knowledge.Base/Knowledges/Knowledge-Conformacion-Pull-Request-Automatico.md`».
+- **Alcance:** este PR (guía y demo tus).
+- **Guarda:** G1–G4 (estado `clean` y todos los controles de la cabeza en éxito), techo de espera 120 minutos e intervalo de relectura 30 segundos. **Método:** commit de merge atado al SHA de la cabeza, nunca `squash`; la rama remota se borra tras leer que el merge dio.
+- **Excepción:** un cuestionamiento particular del PO sobre la unidad la vuelve manual.
+
 ## 2026-11-19 (conocimientos mudados a la base de conocimientos)
 
 ### Guides/IA/Dot-Net-Integration-AI-Layer-Guide/Conocimientos/ y Guides/Documentacion-Tecnica/Sistema-De-Documentacion-E-Integracion/Conocimientos/

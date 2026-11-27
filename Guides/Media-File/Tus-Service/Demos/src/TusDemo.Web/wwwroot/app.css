@@ -1,0 +1,14 @@
+:root { font-family: system-ui, sans-serif; color: #1d232a; background: #f6f7f9; }
+body { margin: 0; }
+.barra { display: flex; justify-content: space-between; align-items: center; padding: .75rem 1rem; background: #1f3b57; color: #fff; }
+.barra nav a { color: #fff; margin-left: 1rem; }
+.contenido { max-width: 960px; margin: 0 auto; padding: 1rem; }
+.tarjeta { display: grid; gap: .6rem; padding: 1rem; background: #fff; border: 1px solid #d8dde3; border-radius: 8px; }
+.tarjeta label { display: grid; gap: .25rem; }
+.acciones { display: flex; gap: .5rem; }
+progress { width: 100%; height: 1rem; }
+table { width: 100%; border-collapse: collapse; background: #fff; }
+th, td { text-align: left; padding: .4rem; border-bottom: 1px solid #e3e6ea; font-size: .9rem; }
+button { padding: .4rem .8rem; }
+/* Blazor muestra este aviso solo cuando hay un error en el circuito. */
+#blazor-error-ui { display: none; position: fixed; bottom: 0; left: 0; right: 0; padding: .6rem 1rem; background: #ffe9a8; }

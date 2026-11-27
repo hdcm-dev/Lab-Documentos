@@ -1,0 +1,22 @@
+@inherits LayoutComponentBase
+@inject IWebHostEnvironment Entorno
+
+<header class="barra">
+    <strong>Demo tus .NET</strong>
+    <nav>
+        <a href="/">Subir</a>
+        @if (Entorno.IsDevelopment())
+        {
+            <a href="/scalar" target="_blank">API (Scalar)</a>
+        }
+    </nav>
+</header>
+<main class="contenido">
+    @Body
+</main>
+
+<div id="blazor-error-ui" data-nosnippet>
+    Ocurrió un error.
+    <a href="." class="reload">Recargar</a>
+    <span class="dismiss">🗙</span>
+</div>
